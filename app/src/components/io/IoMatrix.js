@@ -55,19 +55,20 @@ export default class IoMatrix extends Component {
   }
   disconnect(indices) {
     this.clearConnectionBuffer();
-    let keep = [];
     let connections = this.state.connections;
     indices.forEach(index => {
       let connection = connections[index];
-      console.log("Disconnecting: " + connection.source.guid + " from " + connection.destination.guid);
       try {
         connection.source.target.disconnect(connection.destination.target);
       } catch (e) {
         console.error(e);
       }
     });
+    for (let i = indices.length - 1; i >= 0; i--) {
+      connections.splice(indices[i], 1);
+    }
     this.setState({
-      connections: keep
+      connections: connections
     });
     setTimeout(() => {
       console.log(this.state.connections);
