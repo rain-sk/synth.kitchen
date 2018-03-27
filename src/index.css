@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: monospace;
+}
+
+div.app {
+  display: flex;
+  justify-content: space-between;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  flex-flow: row wrap;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+div.mod-block {
+  width: 100px;
+  height: 100px;
+  margin: 50px;
+  background: #000;
+  position: relative;
+}
+
+span.mod-block-label {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  color: #eee;
+  margin-top: 5px;
+}
+
+button.io {
+  position: absolute;
+  bottom: 0;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-weight: 400;
+  background: #FF6AC1;
+  border: none;
+}
+
+button.io:hover, button.io:active {
+  background: #CB5DFF;
+}
+
+button.io-mod, button.io-input {
+  left: 0;
+}
+
+button.io-output {
+  right: 0;
+}
