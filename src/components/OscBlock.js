@@ -16,8 +16,8 @@ export default class OscBlock extends Component {
   render() {
     return (
       <ModBlock name={this.props.name}>
-        <IoMod property={this.state.osc.frequency} matrix={this.state.matrix} />
-        <IoOutput property={this.state.osc} matrix={this.state.matrix} />
+        <IoMod name={this.props.name + "-input"} property={this.state.osc.frequency} matrix={this.state.matrix} />
+        <IoOutput name={this.props.name + "-output"} property={this.state.osc} matrix={this.state.matrix} />
       </ModBlock>
     )
   }

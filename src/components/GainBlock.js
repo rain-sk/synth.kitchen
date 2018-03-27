@@ -15,8 +15,8 @@ export default class GainBlock extends Component {
   render() {
     return (
       <ModBlock name={this.props.name}>
-        <IoInput property={this.state.gain} matrix={this.state.matrix} />
-        <IoOutput property={this.state.gain} matrix={this.state.matrix} />
+        <IoInput name={this.props.name + '-input'} property={this.state.gain} matrix={this.state.matrix} />
+        <IoOutput name={this.props.name + '-output'} property={this.state.gain} matrix={this.state.matrix} />
       </ModBlock>
     )
   }

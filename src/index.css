@@ -17,10 +17,6 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
   overflow: hidden;
 }
 
@@ -56,6 +52,10 @@ button.io {
 
 button.io:hover, button.io:active {
   background: #CB5DFF;
+}
+
+button.io:active {
+  outline: 3px #aaf;
 }
 
 button.io-mod, button.io-input {
