@@ -17,7 +17,7 @@ export default class IoMatrix extends Component {
     }
     props.register(this);
   }
-  connect(source, destination) {
+  tryConnect(source, destination) {
     if (this.noExistingConnection(source, destination)) {
       try {
         source.target.connect(destination.target);
@@ -25,11 +25,11 @@ export default class IoMatrix extends Component {
         connections.push({
           source: {
             target: source.target,
-            name: source.name
+            guid: source.guid
           },
           destination: {
             target: destination.target,
-            name: destination.name
+            guid: destination.guid
           },
           curve: {
             sourceX: source.x,
@@ -39,7 +39,7 @@ export default class IoMatrix extends Component {
             cp1x: this.mean(destination.x, source.x) - ((destination.x - source.x) * 0.1),
             cp1y: this.mean(destination.y, source.y) + ((destination.y - source.y) * 0.2) + Math.abs(source.x - destination.x) * .2,
             cp2x: this.mean(destination.x, source.x) + ((destination.x - source.x) * 0.1),
-            cp2y: (this.mean(destination.y, source.y) + ((destination.y - source.y) * 0.2)) + Math.abs(source.x - destination.x) * .2
+            cp2y: this.mean(destination.y, source.y) + ((destination.y - source.y) * 0.2) + Math.abs(source.x - destination.x) * .2
           }
         });
         this.setState({
@@ -49,14 +49,37 @@ export default class IoMatrix extends Component {
         console.error(e);
       }
     }
+    setTimeout(() => {
+      console.log(this.state.connections);
+    }, 50);
   }
-  sourceMouseDown(source, x, y, targetName) {
+  disconnect(indices) {
+    this.clearConnectionBuffer();
+    let keep = [];
+    let connections = this.state.connections;
+    indices.forEach(index => {
+      let connection = connections[index];
+      console.log("Disconnecting: " + connection.source.guid + " from " + connection.destination.guid);
+      try {
+        connection.source.target.disconnect(connection.destination.target);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+    this.setState({
+      connections: keep
+    });
+    setTimeout(() => {
+      console.log(this.state.connections);
+    }, 50);
+  }
+  sourceMouseDown(source, x, y, guid) {
     if (this.awaitingMouseDown) {
       let newSource = {
         target: source,
+        guid: guid,
         x: x,
-        y: y,
-        name: targetName
+        y: y
       };
       this.setState({
         newSource: newSource
@@ -65,60 +88,44 @@ export default class IoMatrix extends Component {
       this.clearConnectionBuffer();
     }
   }
-  destinationMouseUp(destination, x, y, targetName) {
+  destinationMouseUp(destination, x, y, guid) {
     if (this.awaitingMouseUp) {
       let newSource = this.state.newSource;
       let newDestination = {
         target: destination,
-        name: targetName,
+        guid: guid,
         x: x,
         y: y
       };
       this.setState({
         newDestination: newDestination
       });
-      this.connect(newSource, newDestination);
+      this.tryConnect(newSource, newDestination);
     }
     this.clearConnectionBuffer();
   }
-  sourceDisconnect(target, targetName) {
+  sourceDisconnect(guid) {
     let indices = [];
-    for (let i = 0; i < this.state.connections.length; i++) {
-      if (this.state.connections[i].source.name === targetName) {
-        indices.push(i);
-      }
-    }
-    this.disconnect(indices);
-  }
-  destinationDisconnect(target, targetName) {
-    let indices = [];
-    for (let i = 0; i < this.state.connections.length; i++) {
-      if (this.state.connections[i].destination.name === targetName) {
-        indices.push(i);
-      }
-    }
-    this.disconnect(indices);
-  }
-  disconnect(indices) {
-    this.clearConnectionBuffer();
-    let connections = this.state.connections;
-    indices.forEach(index => {
-      try {
-        connections[index].source.target.disconnect(connections[index].destination.target);
-      } catch (e) {
-        console.error(e);
+    this.state.connections.forEach((connection, index) => {
+      if (connection.source.guid === guid) {
+        indices.push(index);
       }
     });
-    for (let i = indices.length - 1; i >= 0; i--) {
-      connections.splice(indices[i], 1);
-    }
-    this.setState({
-      connections: connections
+    this.disconnect(indices);
+  }
+  destinationDisconnect(guid) {
+    let indices = [];
+    this.state.connections.forEach((connection, index) => {
+      if (connection.destination.guid === guid) {
+        indices.push(index);
+      }
     });
+    this.disconnect(indices);
   }
   noExistingConnection(source, destination) {
     for (let i = 0; i < this.state.connections.length; i++) {
-      if (this.state.connections[i].source.name === source.name && this.state.connections[i].destination.name === destination.name) {
+      if (this.state.connections[i].source.guid === source.guid && this.state.connections[i].destination.guid === destination.guid) {
+        this.disconnect([i]);
         return false;
       }
     }

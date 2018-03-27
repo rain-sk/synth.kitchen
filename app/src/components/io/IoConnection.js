@@ -13,6 +13,10 @@ export default class IoConnection extends Component {
     ctx.strokeStyle = "#CB5DFF";
     ctx.lineWidth = 5;
     ctx.stroke();
+
+    ctx.font = "14px monospace";
+    ctx.fillText(this.props.connection.source.guid, this.props.connection.curve.sourceX + 20, this.props.connection.curve.sourceY);
+    ctx.fillText(this.props.connection.destination.guid, this.props.connection.curve.destX - 45, this.props.connection.curve.destY);
   }
   mean(num1, num2) {
     return (num1 + num2) / 2.0;

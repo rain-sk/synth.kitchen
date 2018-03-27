@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { OperatorBlock, OscBlock, OutputBlock, GainBlock, LfoBlock } from './components';
+import { OscBlock, OutputBlock, GainBlock, LfoBlock } from './components';
 import { IoMatrix } from './components/io';
 
 class App extends Component {
