@@ -51,8 +51,6 @@ export default class IoMatrix extends Component {
     }
   }
   sourceMouseDown(source, x, y, targetName) {
-    console.log(source);
-    console.log(targetName);
     if (this.awaitingMouseDown) {
       let newSource = {
         target: source,

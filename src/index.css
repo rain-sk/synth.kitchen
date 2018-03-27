@@ -6,7 +6,6 @@ body {
 
 div.app {
   display: flex;
-  justify-content: space-between;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -20,12 +19,30 @@ canvas {
   overflow: hidden;
 }
 
+div.mod-block-wrapper {
+  width: 33vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 div.mod-block {
-  width: 100px;
-  height: 100px;
-  margin: 50px;
+  width: 150px;
+  height: 150px;
+  margin: 20px;
   background: #000;
   position: relative;
+}
+
+div.output {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  display: block;
+  width: 100px;
+  height: 20px;
 }
 
 span.mod-block-label {
@@ -35,6 +52,24 @@ span.mod-block-label {
   text-align: center;
   color: #eee;
   margin-top: 5px;
+}
+
+div.mod-block span.control {
+  display: block;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+}
+
+div.mod-block span.control input {
+  width: 100%;
+  margin: 0;
+}
+
+div.output button.io {
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 button.io {
@@ -63,5 +98,6 @@ button.io-mod, button.io-input {
 }
 
 button.io-output {
+  top: 0;
   right: 0;
 }
