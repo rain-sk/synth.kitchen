@@ -1,23 +1,23 @@
 export default class Connection {
-  constructor(src, dst) {
+  constructor(source, destination) {
     try {
       this.source = {
-        target: src.target,
-        guid: src.guid
+        target: source.target,
+        guid: source.guid
       };
       this.destination = {
-        target: dst.target,
-        guid: dst.guid
+        target: destination.target,
+        guid: destination.guid
       };
       this.curve = {
-        sourceX: src.x,
-        sourceY: src.y,
-        destX: dst.x,
-        destY: dst.y,
-        cp1x: this.mean(dst.x, src.x) - ((dst.x - src.x) * 0.1),
-        cp1y: this.mean(dst.y, src.y) + (Math.abs(dst.y - src.y) * 0.2) + Math.abs(src.x - dst.x) * .2,
-        cp2x: this.mean(dst.x, src.x) + ((dst.x - src.x) * 0.1),
-        cp2y: this.mean(dst.y, src.y) + (Math.abs(dst.y - src.y) * 0.2) + Math.abs(src.x - dst.x) * .2
+        sourceX: source.x,
+        sourceY: source.y,
+        destX: destination.x,
+        destY: destination.y,
+        cp1x: this.mean(destination.x, source.x) - ((destination.x - source.x) * 0.1),
+        cp1y: this.mean(destination.y, source.y) + (Math.abs(destination.y - source.y) * 0.2) + Math.abs(source.x - destination.x) * .2,
+        cp2x: this.mean(destination.x, source.x) + ((destination.x - source.x) * 0.1),
+        cp2y: this.mean(destination.y, source.y) + (Math.abs(destination.y - source.y) * 0.2) + Math.abs(source.x - destination.x) * .2
       };
       if (this.source.target.connect != null) {
         this.source.target.connect(this.destination.target);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import ModBlock from './ModBlock';
-import { IoInput, IoOutput } from './io';
+import { ModBlock}  from '.';
+import { IoInput, IoOutput } from '../io';
+import { Controls, RangeInput } from '../controls';
 
 export default class GainBlock extends Component {
   constructor(props) {
@@ -23,12 +24,9 @@ export default class GainBlock extends Component {
   render() {
     return (
       <ModBlock name={this.props.name}>
-        <span className="control">
-          <label>
-            vol:
-            <input type="range" min={0} max={1} step={0.01} value={this.state.gain.gain.value} onChange={this.gainVolumeChange} />
-          </label>
-        </span>
+        <Controls>
+          <RangeInput name={'vol'} min={0} max={1} step={0.01} value={this.state.gain.gain.value} callback={this.gainVolumeChange} />
+        </Controls>
         <IoInput name={this.props.name + '-input'} property={this.state.gain} matrix={this.state.matrix} />
         <IoOutput name={this.props.name + '-output'} property={this.state.gain} matrix={this.state.matrix} />
       </ModBlock>
