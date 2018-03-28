@@ -8,16 +8,16 @@ export default class IoConnection extends Component {
 
     let ctx = canvas.getContext("2d");
     ctx.beginPath();
-    ctx.moveTo(this.props.connection.curve.sourceX, this.props.connection.curve.sourceY);
-    ctx.bezierCurveTo(this.props.connection.curve.cp1x, this.props.connection.curve.cp1y, this.props.connection.curve.cp2x, this.props.connection.curve.cp2y, this.props.connection.curve.destX, this.props.connection.curve.destY);
+    ctx.moveTo(this.props.curve.sourceX, this.props.curve.sourceY);
+    ctx.bezierCurveTo(this.props.curve.cp1x, this.props.curve.cp1y, this.props.curve.cp2x, this.props.curve.cp2y, this.props.curve.destX, this.props.curve.destY);
     ctx.strokeStyle = "#CB5DFF";
     ctx.lineWidth = 5;
     ctx.stroke();
 
     // debug stuff
     // ctx.font = "14px monospace";
-    // ctx.fillText(this.props.connection.source.guid, this.props.connection.curve.sourceX + 20, this.props.connection.curve.sourceY);
-    // ctx.fillText(this.props.connection.destination.guid, this.props.connection.curve.destX - 45, this.props.connection.curve.destY);
+    // ctx.fillText(this.props.connection.source.guid, this.props.curve.sourceX + 20, this.props.curve.sourceY);
+    // ctx.fillText(this.props.connection.destination.guid, this.props.curve.destX - 45, this.props.curve.destY);
   }
   mean(num1, num2) {
     return (num1 + num2) / 2.0;

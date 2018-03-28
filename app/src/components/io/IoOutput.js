@@ -4,7 +4,7 @@ export default class IoOutput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      guid: S4()
+      guid: S8()
     };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onClick = this.onClick.bind(this);
@@ -22,6 +22,6 @@ export default class IoOutput extends Component {
   }
 }
 
-function S4() {
-  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+function S8() {
+  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 }

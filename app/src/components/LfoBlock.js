@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ModBlock from './ModBlock';
-import { IoInput, IoOutput, IoMod } from './io';
+import { IoOutput, IoMod } from './io';
 
 export default class LfoBlock extends Component {
   constructor(props) {

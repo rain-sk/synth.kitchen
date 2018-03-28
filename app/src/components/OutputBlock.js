@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import ModBlock from './ModBlock';
-import { IoInput, IoOutput } from './io';
+import { IoInput } from './io';
 
 export default class OutputBlock extends Component {
   constructor(props) {

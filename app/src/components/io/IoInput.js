@@ -4,12 +4,12 @@ export default class IoInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      guid: S4()
+      guid: S8()
     };
     this.onClick = this.onClick.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
-  onClick(e) {
+  onClick() {
     this.props.matrix.destinationDisconnect(this.state.guid);
   }
   onMouseUp(e) {
@@ -22,6 +22,6 @@ export default class IoInput extends Component {
   }
 }
 
-function S4() {
-  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+function S8() {
+  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 }

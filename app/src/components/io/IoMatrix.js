@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IoConnection } from '.';
+import { Matrix, IoConnection, Drag } from '.';
 
 export default class IoMatrix extends Component {
   get awaitingMouseUp() {
@@ -11,73 +11,35 @@ export default class IoMatrix extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      connections: [],
+      matrix: new Matrix(),
       newSource: null,
+      drag: null,
       newDestination: null
     }
     props.register(this);
+    // this.onDrag = this.onDrag.bind(this);
+    // this.destinationMouseUp = this.destinationMouseUp.bind(this);
+    // document.addEventListener("drag", this.onDrag);
+    // document.addEventListener("mouseup", this.destinationMouseUp);
+    setInterval(() => {
+      console.log(this.state.matrix);
+    }, 2000);
   }
   tryConnect(source, destination) {
-    if (this.noExistingConnection(source, destination)) {
-      try {
-        source.target.connect(destination.target);
-        let connections = this.state.connections;
-        connections.push({
-          source: {
-            target: source.target,
-            guid: source.guid
-          },
-          destination: {
-            target: destination.target,
-            guid: destination.guid
-          },
-          curve: {
-            sourceX: source.x,
-            sourceY: source.y,
-            destX: destination.x,
-            destY: destination.y,
-            cp1x: this.mean(destination.x, source.x) - ((destination.x - source.x) * 0.1),
-            cp1y: this.mean(destination.y, source.y) + ((destination.y - source.y) * 0.2) + Math.abs(source.x - destination.x) * .2,
-            cp2x: this.mean(destination.x, source.x) + ((destination.x - source.x) * 0.1),
-            cp2y: this.mean(destination.y, source.y) + ((destination.y - source.y) * 0.2) + Math.abs(source.x - destination.x) * .2
-          }
-        });
-        this.setState({
-          connections: connections
-        });
-      } catch (e) {
-        console.error(e);
-      }
+    let matrixCopy = this.state.matrix;
+    try {
+      matrixCopy.connect(source, destination);
+      this.setState({
+        matrix: matrixCopy
+      });
+    } catch (e) {
+      console.error(e);
     }
-    setTimeout(() => {
-      console.log(this.state.connections);
-    }, 50);
   }
-  disconnect(indices) {
-    this.clearConnectionBuffer();
-    let connections = this.state.connections;
-    indices.forEach(index => {
-      let connection = connections[index];
-      try {
-        connection.source.target.disconnect(connection.destination.target);
-      } catch (e) {
-        console.error(e);
-      }
-    });
-    for (let i = indices.length - 1; i >= 0; i--) {
-      connections.splice(indices[i], 1);
-    }
-    this.setState({
-      connections: connections
-    });
-    setTimeout(() => {
-      console.log(this.state.connections);
-    }, 50);
-  }
-  sourceMouseDown(source, x, y, guid) {
+  sourceMouseDown(target, x, y, guid) {
     if (this.awaitingMouseDown) {
       let newSource = {
-        target: source,
+        target: target,
         guid: guid,
         x: x,
         y: y
@@ -89,11 +51,11 @@ export default class IoMatrix extends Component {
       this.clearConnectionBuffer();
     }
   }
-  destinationMouseUp(destination, x, y, guid) {
+  destinationMouseUp(target, x, y, guid) {
     if (this.awaitingMouseUp) {
       let newSource = this.state.newSource;
       let newDestination = {
-        target: destination,
+        target: target,
         guid: guid,
         x: x,
         y: y
@@ -105,49 +67,54 @@ export default class IoMatrix extends Component {
     }
     this.clearConnectionBuffer();
   }
+  // onDrag(e) {
+  //   this.setState({
+  //     drag: new Drag(
+  //       this.state.newSource,
+  //       {
+  //         x: e.clientX,
+  //         y: e.clientY
+  //       }
+  //     )
+  //   });
+  // }
+  // onMouseup(e) {
+  //   setTimeout(() => {
+  //     if (!this.awaitingMouseUp) {
+  //       this.clearConnectionBuffer();
+  //     }
+  //   }, 10);
+  // }
   sourceDisconnect(guid) {
-    let indices = [];
-    this.state.connections.forEach((connection, index) => {
-      if (connection.source.guid === guid) {
-        indices.push(index);
-      }
+    this.clearConnectionBuffer();
+    let matrixCopy = this.state.matrix;
+    while (matrixCopy.nodeMap.has(guid)) {
+      matrixCopy.delete(guid);
+    }
+    this.setState({
+      matrix: matrixCopy
     });
-    this.disconnect(indices);
   }
   destinationDisconnect(guid) {
-    let indices = [];
-    this.state.connections.forEach((connection, index) => {
-      if (connection.destination.guid === guid) {
-        indices.push(index);
-      }
+    this.clearConnectionBuffer();
+    let matrixCopy = this.state.matrix;
+    matrixCopy.delete(guid);
+    this.setState({
+      matrix: matrixCopy
     });
-    this.disconnect(indices);
-  }
-  noExistingConnection(source, destination) {
-    for (let i = 0; i < this.state.connections.length; i++) {
-      if (this.state.connections[i].source.guid === source.guid && this.state.connections[i].destination.guid === destination.guid) {
-        this.disconnect([i]);
-        return false;
-      }
-    }
-    return true;
   }
   clearConnectionBuffer() {
     this.setState({
       newSource: null,
-      newDestination: null
+      newDestination: null,
+      drag: null
     });
   }
-  mean(num1, num2) {
-    return (num1 + num2) / 2.0;
-  }
   render() {
-    let connections = []
-    this.state.connections.forEach((connection, index) => {
-      connections.push(
-        <IoConnection key={'io-' + index} id={'io-' + index} connection={connection} />
-      );
-    })
+    let connections = [];
+    this.state.matrix.subMap.forEach((value, key) => {
+      connections.push(<IoConnection key={'io-' + key} id={'io-' + key} curve={value.curve} />);
+    });
     return (
       <div className="io-matrix">
         {connections}
