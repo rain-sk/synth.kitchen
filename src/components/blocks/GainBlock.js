@@ -7,6 +7,7 @@ export default class GainBlock extends Component {
   constructor(props) {
     super(props);
     let gain = props.context.createGain();
+    gain.gain.value = 0.3;
     this.state = {
       context: props.context,
       matrix: props.matrix,
