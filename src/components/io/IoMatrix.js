@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Matrix, IoConnection, Drag } from '.';
+import { Matrix, IoConnection } from '.';
 
 export default class IoMatrix extends Component {
   get awaitingMouseUp() {
@@ -21,9 +21,6 @@ export default class IoMatrix extends Component {
     // this.destinationMouseUp = this.destinationMouseUp.bind(this);
     // document.addEventListener("drag", this.onDrag);
     // document.addEventListener("mouseup", this.destinationMouseUp);
-    setInterval(() => {
-      console.log(this.state.matrix);
-    }, 2000);
   }
   tryConnect(source, destination) {
     let matrixCopy = this.state.matrix;
@@ -96,7 +93,6 @@ export default class IoMatrix extends Component {
   destinationDisconnect(guid) {
     this.clearConnectionBuffer();
     let matrixCopy = this.state.matrix;
-    console.log(guid);
     matrixCopy.delete(guid);
     this.setState({
       matrix: matrixCopy
