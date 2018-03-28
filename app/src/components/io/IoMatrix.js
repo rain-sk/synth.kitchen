@@ -88,9 +88,7 @@ export default class IoMatrix extends Component {
   sourceDisconnect(guid) {
     this.clearConnectionBuffer();
     let matrixCopy = this.state.matrix;
-    while (matrixCopy.nodeMap.has(guid)) {
-      matrixCopy.delete(guid);
-    }
+    matrixCopy.delete(guid);
     this.setState({
       matrix: matrixCopy
     });
@@ -98,6 +96,7 @@ export default class IoMatrix extends Component {
   destinationDisconnect(guid) {
     this.clearConnectionBuffer();
     let matrixCopy = this.state.matrix;
+    console.log(guid);
     matrixCopy.delete(guid);
     this.setState({
       matrix: matrixCopy
