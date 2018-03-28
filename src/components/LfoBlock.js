@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ModBlock from './ModBlock';
 import { IoOutput, IoMod } from './io';
+import { Controls, RangeInput, SelectInput } from './controls';
 
 export default class LfoBlock extends Component {
   constructor(props) {
@@ -45,11 +46,11 @@ export default class LfoBlock extends Component {
   logSlider(position) {
     // position will be between 0 and 100
     var minp = 0;
-    var maxp = 200;
+    var maxp = 100;
 
     // The result should be between 100 an 10000000
     var minv = Math.log(0.01);
-    var maxv = Math.log(50);
+    var maxv = Math.log(1000);
 
     // calculate adjustment factor
     var scale = (maxv - minv) / (maxp - minp);
@@ -59,11 +60,10 @@ export default class LfoBlock extends Component {
   logposition(value) {
     // position will be between 0 and 100
     var minp = 0;
-    var maxp = 200;
+    var maxp = 100;
 
-    // The result should be between 100 an 10000000
     var minv = Math.log(0.01);
-    var maxv = Math.log(50);
+    var maxv = Math.log(1000);
 
     // calculate adjustment factor
     var scale = (maxv - minv) / (maxp - minp);
@@ -71,28 +71,20 @@ export default class LfoBlock extends Component {
     return (Math.log(value) - minv) / scale + minp;
   }
   render() {
+    let waveforms = [
+      { value: "sine", name: "sin" },
+      { value: "triangle", name: "tri" },
+      { value: "square", name: "sqr" },
+      { value: "sawtooth", name: "saw" }
+    ];
     return (
       <ModBlock name={this.props.name}>
         <IoMod name={this.props.name + "-input"} property={this.state.osc.frequency} matrix={this.state.matrix} />
-        <span className="control">
-          <label>
-            freq:
-            <input type="range" min={0} max={200} step={0.1} value={this.logposition(this.state.osc.frequency.value)} onChange={this.oscFrequencyChange} />
-          </label>
-          <label>
-            mod:
-            <input type="range" min={0} max={1000} step={0.1} value={this.state.gain.gain.value} onChange={this.modValueChange} />
-          </label>
-          <label>
-            wave:
-            <select onChange={this.oscTypeChange}>
-              <option value="sine">sin</option>
-              <option value="square">sqr</option>
-              <option value="triangle">tri</option>
-              <option value="sawtooth">saw</option>
-            </select>
-          </label>
-        </span>
+        <Controls>
+          <RangeInput name={'freq'} min={0} max={100} step={0.1} value={this.logposition(this.state.osc.frequency.value)} callback={this.oscFrequencyChange} />
+          <RangeInput name={'mod'} min={0} max={1000} step={0.1} value={this.state.gain.gain.value} callback={this.modValueChange} />
+          <SelectInput name={'wave'} options={waveforms} callback={this.oscTypeChange} />
+        </Controls>
         <IoOutput name={this.props.name + "-output"} property={this.state.gain} matrix={this.state.matrix} />
       </ModBlock>
     )
