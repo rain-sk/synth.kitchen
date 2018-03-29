@@ -17,6 +17,7 @@ canvas {
   top: 0;
   left: 0;
   overflow: hidden;
+  opacity: 0.5;
 }
 
 div.mod-block-wrapper {
@@ -72,6 +73,10 @@ div.output button.io {
   transform: translateX(-50%);
 }
 
+button {
+  cursor: pointer;
+}
+
 button.io {
   position: absolute;
   bottom: 0;
@@ -100,4 +105,28 @@ button.io-mod, button.io-input {
 button.io-output {
   top: 0;
   right: 0;
+}
+
+div.help-context {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+button.help-trigger {
+  position: relative;
+  border: 3px solid #FF6AC1;
+  border-radius: 50%;
+  color: #fff;
+  background: #000;
+  font-size: 14pt;
+  padding: 5px 10px;
+  margin: 15px;
+}
+
+button.help-trigger:hover::after {
+  content: 'help';
+  position: absolute;
+  color: #000;
+  margin-left: 20px;
 }

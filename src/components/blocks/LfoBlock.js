@@ -81,8 +81,8 @@ export default class LfoBlock extends Component {
       <ModBlock name={this.props.name}>
         <IoMod name={this.props.name + "-input"} property={this.state.osc.frequency} matrix={this.state.matrix} />
         <Controls>
-          <RangeInput name={'freq'} min={0} max={100} step={0.1} value={this.logposition(this.state.osc.frequency.value)} callback={this.oscFrequencyChange} />
-          <RangeInput name={'mod'} min={0} max={100} step={0.1} value={this.state.gain.gain.value} callback={this.modValueChange} />
+          <RangeInput name={'freq'} min={0.01} max={100} step={0.01} value={this.logposition(this.state.osc.frequency.value)} callback={this.oscFrequencyChange} />
+          <RangeInput name={'mod'} min={1} max={200} step={0.1} value={this.state.gain.gain.value} callback={this.modValueChange} />
           <SelectInput name={'wave'} options={waveforms} callback={this.oscTypeChange} />
         </Controls>
         <IoOutput name={this.props.name + "-output"} property={this.state.gain} matrix={this.state.matrix} />

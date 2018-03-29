@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { OscBlock, OutputBlock, GainBlock, LfoBlock } from './components/blocks';
 import { IoMatrix } from './components/io';
+import { HelpContext } from './components/help';
 
 class App extends Component {
   constructor(props) {
@@ -31,6 +32,7 @@ class App extends Component {
   render() {
     return (
       <div className="app">
+        <HelpContext />
         <IoMatrix register={this.registerMatrix} />
         {this.state.children}
       </div>
