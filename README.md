@@ -1,5 +1,5 @@
 # Note
-This work is continuing in the [Synth-Kitchen repository|https://github.com/spencerudnick/synth-kitchen]
+This work is continuing in the [Synth-Kitchen repository](https://github.com/spencerudnick/synth-kitchen).
 http://synth.kitchen
 
 MOD SYNTH TODO
