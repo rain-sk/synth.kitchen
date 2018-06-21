@@ -1,3 +1,7 @@
+# Note
+This work is continuing in the [Synth-Kitchen repository|https://github.com/spencerudnick/synth-kitchen]
+http://synth.kitchen
+
 MOD SYNTH TODO
 * Reusable react components for user interaction with generic audio nodes / node groups.
 * Redux container to encapsulate app state.
