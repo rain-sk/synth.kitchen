@@ -1,132 +1,58 @@
-body {
+body, #root {
   margin: 0;
   padding: 0;
-  font-family: monospace;
-}
-
-div.app {
-  display: flex;
-  width: 100vw;
   height: 100vh;
+  width: 100vw;
   overflow: hidden;
-  flex-flow: row wrap;
 }
 
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  opacity: 0.5;
+div {
+  border: 1px solid #aaa;
+  background: #dadada;
+  box-sizing: border-box;
 }
 
-div.mod-block-wrapper {
-  width: 33vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-div.mod-block {
-  width: 150px;
-  height: 150px;
-  margin: 20px;
-  background: #000;
-  position: relative;
-}
-
-div.output {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #000;
-  display: block;
-  width: 100px;
-  height: 20px;
-}
-
-span.mod-block-label {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  text-align: center;
-  color: #eee;
-  margin-top: 5px;
-}
-
-div.mod-block span.control {
-  display: block;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #fff;
-}
-
-div.mod-block span.control input {
-  width: 100%;
-  margin: 0;
-}
-
-div.output button.io {
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-button {
-  cursor: pointer;
-}
-
-button.io {
-  position: absolute;
-  bottom: 0;
-  width: 15px;
-  height: 15px;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  font-weight: 400;
-  background: #FF6AC1;
+#root, .kitchen-wrapper {
   border: none;
 }
 
-button.io:hover, button.io:active {
-  background: #CB5DFF;
+.kitchen-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  width: auto;
+  height: calc(100vh - 2rem);
 }
 
-button.io:active {
-  outline: 3px #aaf;
+.kitchen-nav-wrapper {
+  flex: 1 1 100%;
+  height: 2rem;
 }
 
-button.io-mod, button.io-input {
-  left: 0;
+.kitchen-utility-wrapper {
+  width: 6rem;
+  height: calc(100vh - 2rem);
 }
 
-button.io-output {
-  top: 0;
-  right: 0;
+.kitchen-rack-collection {
+  display: flex;
+  flex: 1;
+  overflow-x: scroll;
+  height: calc(100vh - 2rem);
 }
 
-div.help-context {
-  position: absolute;
-  width: 0;
-  height: 0;
+.kitchen-rack-item {
+  width: 55%;
+  min-width: 20rem;
+  height: calc(100vh - 2rem);
+  overflow-y: scroll;
 }
 
-button.help-trigger {
-  position: relative;
-  border: 3px solid #FF6AC1;
-  border-radius: 50%;
-  color: #fff;
-  background: #000;
-  font-size: 14pt;
-  padding: 5px 10px;
-  margin: 15px;
+.kitchen-module-collection {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0px;
 }
 
-button.help-trigger:hover::after {
-  content: 'help';
-  position: absolute;
-  color: #000;
-  margin-left: 20px;
+.kitchen-module-item {
+  height: 100px;
 }

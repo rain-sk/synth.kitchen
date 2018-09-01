@@ -1,9 +1,6 @@
-# Note
-This work is continuing in the [Synth-Kitchen repository](https://github.com/spencerudnick/synth-kitchen).
-
 http://synth.kitchen
 
-MOD SYNTH TODO
+Synth Kitchen TODO
 * Reusable react components for user interaction with generic audio nodes / node groups.
 * Redux container to encapsulate app state.
 * "Russian-Doll" style API to allow limitless* nesting of audio nodes. API will:
