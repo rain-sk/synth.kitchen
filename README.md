@@ -1,18 +1,34 @@
-# Note
-This work is continuing in the [Synth-Kitchen repository](https://github.com/spencerudnick/synth-kitchen).
+# Synth Kitchen
+## http://synth.kitchen
 
-http://synth.kitchen
+In-browser modular synthesis with the Web Audio API.
 
-MOD SYNTH TODO
-* Reusable react components for user interaction with generic audio nodes / node groups.
-* Redux container to encapsulate app state.
-* "Russian-Doll" style API to allow limitless* nesting of audio nodes. API will:
-  - Support a UI for users to construct modules out of "building blocks" (other modules) and save their configurations as JSON / to a web server (firebase?).
-  - Support internal IO routes, as well as allowing the user to expose custom input, modulation, parameter, and output connectors to parent modules.
-  - Treat a base-level module (oscillator, gain, filter, etc.) the same as a user-constructed module (LFO, noise, etc.) such that they are rendered using the same react components and IO Matrix.
-* Repaint IO Matrix on resize (module connectors should be "aware" of their location and be able to "broadcast" it to the matrix at the end of a resize).
-* Web MIDI API interface to send note start/stop commands to module groups.
-* Internal MIDI API for programming sequences of note / parameter / modulation control.
-* Recording and downloading sounds produced in the app.
-* Support samplers (AudioBufferNode or uploaded mp3 / ogg) to produce music using existing sounds.
+Short-Term Roadmap:
+- [x] UI Skeleton - wrapper components with functional styles applied
+- [ ] IO Map - visual representation of module connections, updates on scroll
+- [ ] Install Sass - extend react-scripts-ts with a sass loader
+- [ ] App Models - define models for racks, modules, IO, etc.
+- [ ] UI States - add enum for UI state to SynthKitchen component
+- + [ ] "Default" - clean kitchen
+- + [ ] IO Context - clean kitchen
+- [ ] Predictable State - with stripped-down flux implementation
+- + [ ] Rack CRUD
+- + [ ] Module CRUD
+- + [ ] Modules reliably map to immutable AudioNodes
+- + [ ] IO CRUD
+- [ ] Accessibility
+- + [ ] Screen Readers - highly descriptive labels for UI elements
+- + [ ] Keyboard Users - intuitive, functional UI for keyboard users ( [shift +] tab, space, enter, arrow keys )
+- [ ] Serializable / Deserializable State - enable import / export of synth configurations in json
+- [ ] Database Integration - utilizing the Wordpress REST API as a backend to store serialized configurations
+
+Pipe Dreams:
+* Authentication through Wordpress REST API to enable users to make public and private configurations, and share them with friends.
+* "Russian-Doll" style UI to allow "limitless" nesting of module and IO arrangements
+* Web MIDI API-supported global BPM
+* Web MIDI API interface to send pitch, value, and on/off commands to the synth
+* Web MIDI API mapping to route MIDI signals
+* Built-In MIDI Sequence designer for looping of note and modulation signals
+* Recording and downloading sounds produced in the app
+* Support samplers (AudioBufferNode or uploaded mp3 / ogg) to produce music using existing sounds
 * Record samples and loop them in real time
