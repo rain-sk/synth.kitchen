@@ -47,7 +47,7 @@ export class SynthKitchen extends React.Component<ISynthKitchenProps, ISynthKitc
         loading: false,
         name: 'New Kitchen',
         racks: [
-          [1, 4, 2, 5]
+          []
         ],
         modules: new Map<string, any>(),
         history: []
