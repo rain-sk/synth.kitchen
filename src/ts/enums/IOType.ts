@@ -1,0 +1,8 @@
+export enum IOType {
+  SOURCE = 'IO_SOURCE',
+  DESTINATION = 'IO_DESTINATION',
+  MOD = 'IO_MOD',
+  PARAM = 'IO_PARAM',
+  A_RATE = 'IO_A_RATE',
+  K_RATE = 'IO_K_RATE'
+}

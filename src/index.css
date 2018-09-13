@@ -20,7 +20,7 @@ div {
   display: flex;
   flex-wrap: wrap;
   width: auto;
-  height: calc(100vh - 2rem);
+  height: 100vh;
 }
 
 .kitchen-nav-wrapper {
@@ -30,20 +30,20 @@ div {
 
 .kitchen-utility-wrapper {
   width: 6rem;
-  height: calc(100vh - 2rem);
+  height: 100vh;
 }
 
 .kitchen-rack-collection {
   display: flex;
   flex: 1;
   overflow-x: scroll;
-  height: calc(100vh - 2rem);
+  height: 100vh;
 }
 
 .kitchen-rack-item {
   width: 55%;
   min-width: 20rem;
-  height: calc(100vh - 2rem);
+  height: 100vh;
   overflow-y: scroll;
 }
 

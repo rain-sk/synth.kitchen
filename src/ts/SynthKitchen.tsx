@@ -1,120 +1,61 @@
 import * as React from 'react';
-import { KitchenWrapper, NavWrapper, UtilityWrapper } from './components/wrappers';
-import { RackCollection } from './components/collections';
-import { IRackCollection, RackActions } from './components/collections/RackCollection';
-import { ModuleActions } from './components/collections/ModuleCollection';
+
+import { createContext } from './flux/createContext';
 
 export interface ISynthKitchenProps {
   id?: number;
 }
-
 export interface ISynthKitchenState {
-  history: ISynthKitchenState[];
   id: number;
   loading: boolean;
   name: string;
-  racks: any[][];
-  modules: Map<string, any>;
+  modules: string[];
+  connections: string[];
 }
 
-export type Actions = RackActions | ModuleActions;
-
 export interface Action {
-  type: Actions,
+  //type: Actions,
   payload?: any
 }
 
+export const context = createContext();
+
 export class SynthKitchen extends React.Component<ISynthKitchenProps, ISynthKitchenState> {
   /** app startup */
-  constructor(props: any) {
+  constructor(props: ISynthKitchenProps) {
     super(props);
     this.init(props.id);
   }
   private init(id?: number) {
-    if (!!id) {
+    if (id !== undefined) {
       this.state = {
         id: id,
         loading: true,
         name: '',
-        racks: [],
-        modules: new Map<string, any>(),
-        history: []
+        modules: [],
+        connections: []
       };
       this.initFromStorage(id);
     } else {
       this.state = {
         id: -1,
         loading: false,
-        name: 'New Kitchen',
-        racks: [
-          []
-        ],
-        modules: new Map<string, any>(),
-        history: []
+        name: 'Clean Kitchen',
+        modules: [],
+        connections: []
       };
     }
   }
   private initFromStorage(id: number) {
     console.log(`loading configuration with ID: ${id}`);
   }
-  /** /app startup */
-
-  /** app state */
-  private config(): IRackCollection {
-    return {
-      racks: this.state.racks,
-      reduce: this.reduce.bind(this)
-    };
-  };
-
-  /** reducers */
-  private addRack(): void {
-    const racks = this.state.racks;
-    racks.push([]);
-    this.setState({ racks });
-  }
-  private addModule(rackIndex: number) {
-    const racks = this.state.racks;
-    if (!!racks[rackIndex]) {
-      racks[rackIndex].push(0);
-    }
-    this.setState({ racks });
-  }
-  private registerModule(hash: string, rackIndex: number, moduleIndex: number) {
-    const modules = this.state.modules.set(hash, this.state.racks[rackIndex][moduleIndex]);
-    this.setState({ modules });
-  }
-  private reduce(action: Action) {
-    console.log(action);
-    if (action.type === RackActions.AddRack) {
-      this.addRack();
-    } else if (action.type === RackActions.RemoveRack) {
-      console.log(`remove rack ${action.payload}`);
-    } else if (action.type === ModuleActions.AddModule) {
-      this.addModule(action.payload + 0);
-    } else if (action.type === ModuleActions.RemoveModule) {
-      console.log(`remove module ${action.payload}`);
-    } else if (action.type === ModuleActions.RegisterModule) {
-      this.registerModule(
-        action.payload.hash,
-        action.payload.rackIndex,
-        action.payload.moduleIndex
-      );
-    }
-  }
-
   public render() {
-    const config = this.config();
     return this.state.loading ?
       (
         <h1>loading...</h1>
       ) :
       (
-        <KitchenWrapper>
-          <NavWrapper />
-          <UtilityWrapper />
-          <RackCollection {...config} />
-        </KitchenWrapper>
+        null
       );
   }
 }
