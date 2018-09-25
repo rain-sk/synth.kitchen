@@ -1,8 +1,8 @@
 import { BaseEntity } from "./BaseEntity";
-import { NodeType } from "../../enums/NodeType";
+import { ModuleType } from "../../enums/ModuleType";
 
 export class Node extends BaseEntity {
-  constructor(type: NodeType) {
+  constructor(type: ModuleType) {
     super();
 
   }

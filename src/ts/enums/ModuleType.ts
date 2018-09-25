@@ -1,4 +1,4 @@
-export enum NodeType {
+export enum ModuleType {
   BIQUAD_FILTER = 'MODULE_BIQUAD_FILTER',
   OSCILLATOR = 'MODULE_OSCILLATOR',
   GAIN = 'MODULE_GAIN',

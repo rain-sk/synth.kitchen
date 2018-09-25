@@ -1,61 +1,95 @@
 import * as React from 'react';
 
-import { createContext } from './flux/createContext';
+import { Kitchen } from './components/kitchen';
+import { IModule } from './interfaces/IModule';
+import { IAction } from './interfaces/IAction';
+import { ModuleType } from './enums/ModuleType';
 
-export interface ISynthKitchenProps {
-  id?: number;
-}
-export interface ISynthKitchenState {
-  id: number;
-  loading: boolean;
-  name: string;
-  modules: string[];
-  connections: string[];
+export interface ISynthKitchen {
+  modules: IModule[][];
 }
 
-export interface Action {
-  //type: Actions,
-  payload?: any
+export const dispatch = (action: IAction): void => {
+  console.log(action);
 }
 
-export const context = createContext();
+export const getState = (): IModule[][] => {
+  return [
+    [{ type: ModuleType.COMPLEX, dispatch }, { type: ModuleType.OSCILLATOR, dispatch },],
+    [{ type: ModuleType.COMPLEX, dispatch }, { type: ModuleType.OSCILLATOR, dispatch },]
+  ];
+}
 
-export class SynthKitchen extends React.Component<ISynthKitchenProps, ISynthKitchenState> {
-  /** app startup */
-  constructor(props: ISynthKitchenProps) {
+export class SynthKitchen extends React.Component<any, ISynthKitchen> {
+  constructor(props: any) {
     super(props);
-    this.init(props.id);
-  }
-  private init(id?: number) {
-    if (id !== undefined) {
-      this.state = {
-        id: id,
-        loading: true,
-        name: '',
-        modules: [],
-        connections: []
-      };
-      this.initFromStorage(id);
-    } else {
-      this.state = {
-        id: -1,
-        loading: false,
-        name: 'Clean Kitchen',
-        modules: [],
-        connections: []
-      };
-    }
-  }
-  private initFromStorage(id: number) {
-    console.log(`loading configuration with ID: ${id}`);
-  }
-  public render() {
-    return this.state.loading ?
-      (
-        <h1>loading...</h1>
-      ) :
-      (
-        null
-      );
+    this.state = {
+      modules: getState()
+    };
+    this.render = () => <Kitchen modules={this.state.modules} dispatch={dispatch} />;
   }
 }
+
+
+
+
+// export class SynthKitchen extends React.PureComponent<any, ISynthKitchen> {
+//   constructor(props: any) {
+//     super(props);
+//     this.addModule = this.addModule.bind(this);
+//     this.addRow = this.addRow.bind(this);
+//     this.removeModule = this.removeModule.bind(this);
+//     this.removeRow = this.removeRow.bind(this);
+//     const currentState = [
+//       [ModuleType.BIQUAD_FILTER, ModuleType.COMPLEX],
+//       [ModuleType.DELAY, ModuleType.IIR_FILTER]
+//     ];
+//     this.state = { currentState };
+//   }
+//   addRow() {
+//     const current = this.state.currentState;
+//     const state = stateMap.get(current);
+//     if (!!state) {
+//       state.push([]);
+//       stateMap.delete(current);
+//       const currentState = S8();
+//       stateMap.set(currentState, state);
+//       this.setState({ currentState });
+//     }
+//   }
+//   removeRow(index: number) {
+//     const current = this.state.currentState;
+//     const state = stateMap.get(current);
+//     if (!!state) {
+//       state.splice(index);
+//       stateMap.delete(current);
+//       const currentState = S8();
+//       stateMap.set(currentState, state);
+//       this.setState({ currentState });
+//     }
+//   }
+//   addModule(index: number) {
+//     const current = this.state.currentState;
+//     if (!!state) {
+//       state[index].push(S8());
+//       stateMap.delete(current);
+//       const currentState = S8();
+//       stateMap.set(currentState, state);
+//       this.setState({ currentState });
+//     }
+//   }
+//   removeModule(rowIndex: number, moduleIndex: number) {
+//     const current = this.state.currentState;
+//     const state = stateMap.get(current);
+//     if (!!state) {
+//       state[rowIndex].splice(moduleIndex);
+//       stateMap.delete(current);
+//       const currentState = S8();
+//       stateMap.set(currentState, state);
+//       this.setState({ currentState });
+//     }
+//   }
+//   public render() {
+//     return;
+//   }
+// }

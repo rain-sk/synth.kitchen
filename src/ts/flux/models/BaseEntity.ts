@@ -12,4 +12,7 @@ export class BaseEntity implements IBaseEntity {
   get hashKey(): string {
     return `${this.hash}`;
   }
+  register(callback: (hash: string) => void) {
+    callback(this.hash);
+  }
 }

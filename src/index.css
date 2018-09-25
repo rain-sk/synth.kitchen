@@ -1,58 +1,39 @@
-body, #root {
+body {
   margin: 0;
   padding: 0;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+  overflow: scroll;
+  background: #dadada;
 }
 
-div {
-  border: 1px solid #aaa;
-  background: #dadada;
+#root {
+  display: grid;
+  grid-template-columns: minmax(15rem, 45rem);
+  grid-template-rows: 10rem;
+  grid-gap: 3rem;
+  overflow: scroll;
+  padding: 1.5rem;
+  padding-bottom: 2rem;
+  padding-right: 2rem;
+  min-height: 100vh;
   box-sizing: border-box;
 }
 
-#root, .kitchen-wrapper {
-  border: none;
+.row {
+  display: grid;
+  grid-gap: 3rem;
 }
 
-.kitchen-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  width: auto;
-  height: 100vh;
+.module {
+  grid-row: 1;
+  display: block;
+  border: 1px solid white;
+  box-shadow: 0 0 1px 1px rgba(0,0,0,0.2);
+  border-top-left-radius: 0.5rem;
+  min-height: 5rem;
+  min-width: 15rem;
+  max-width: 45rem;
 }
 
-.kitchen-nav-wrapper {
-  flex: 1 1 100%;
-  height: 2rem;
-}
-
-.kitchen-utility-wrapper {
-  width: 6rem;
-  height: 100vh;
-}
-
-.kitchen-rack-collection {
-  display: flex;
-  flex: 1;
-  overflow-x: scroll;
-  height: 100vh;
-}
-
-.kitchen-rack-item {
-  width: 55%;
-  min-width: 20rem;
-  height: 100vh;
-  overflow-y: scroll;
-}
-
-.kitchen-module-collection {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  min-height: 0px;
-}
-
-.kitchen-module-item {
-  height: 100px;
+.module > * {
+  margin: 0.5rem;
 }
