@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row } from './row';
+import { Row } from '.';
 import { IDispatch } from '../interfaces/IDispatch';
 import { IModule } from '../interfaces/IModule';
 

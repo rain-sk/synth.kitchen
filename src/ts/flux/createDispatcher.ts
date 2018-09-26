@@ -1,4 +1,4 @@
-import { IAction } from "./IAction";
+import { IAction } from "../interfaces/IAction";
 
 export const createDispatcher = (reducers: any[]) => (action: IAction): any => {
   let state = undefined;

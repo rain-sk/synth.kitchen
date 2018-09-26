@@ -15,7 +15,7 @@ export const dispatch = (action: IAction): void => {
 
 export const getState = (): IModule[][] => {
   return [
-    [{ type: ModuleType.COMPLEX, dispatch }, { type: ModuleType.OSCILLATOR, dispatch },],
+    [{ type: ModuleType.GAIN, dispatch }, { type: ModuleType.OSCILLATOR, dispatch },],
     [{ type: ModuleType.COMPLEX, dispatch }, { type: ModuleType.OSCILLATOR, dispatch },]
   ];
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Module } from './module';
+import { Module } from '.';
 import { IRow } from '../interfaces/IRow';
 
 export class Row extends React.Component<IRow> {

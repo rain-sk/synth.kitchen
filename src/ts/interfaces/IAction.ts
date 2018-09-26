@@ -1,5 +1,6 @@
+import { IOContract } from '../enums';
 
 export interface IAction {
-  type: string;
+  type: IOContract;
   payload?: any;
 }
