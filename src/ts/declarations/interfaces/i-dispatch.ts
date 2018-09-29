@@ -1,4 +1,4 @@
-import { IAction } from "./IAction";
+import { IAction } from ".";
 
 export interface IDispatch {
   dispatch: (action: IAction) => void;

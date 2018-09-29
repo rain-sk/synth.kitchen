@@ -1,4 +1,4 @@
-import { ModuleType } from "../enums/ModuleType";
+import { ModuleType } from "..";
 import { IDispatch } from ".";
 
 export interface IModule extends IDispatch {

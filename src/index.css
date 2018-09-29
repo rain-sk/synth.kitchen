@@ -8,7 +8,7 @@ body {
 #root {
   display: grid;
   grid-template-columns: minmax(15rem, 45rem);
-  grid-template-rows: 10rem;
+  grid-auto-rows: 10rem;
   grid-gap: 3rem;
   overflow: scroll;
   padding: 1.5rem;

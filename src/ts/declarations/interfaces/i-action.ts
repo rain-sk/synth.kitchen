@@ -1,4 +1,4 @@
-import { IOContract } from '../enums';
+import { IOContract } from '..';
 
 export interface IAction {
   type: IOContract;

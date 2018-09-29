@@ -1,4 +1,5 @@
-import { IOType } from '../enums';
+import { IOType } from '..';
+import { IDispatch } from '.';
 
 export type Range = [
   number,
@@ -7,7 +8,7 @@ export type Range = [
   (nodeValue: number) => number
 ];
 
-export interface IIO {
+export interface IIO extends IDispatch {
   name: string;
   types: IOType[];
   target: any;

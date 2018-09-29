@@ -1,32 +1,28 @@
 import * as React from 'react';
 
 import { Kitchen } from './components/kitchen';
-import { IModule } from './interfaces/IModule';
-import { IAction } from './interfaces/IAction';
-import { ModuleType } from './enums/ModuleType';
+import { IModule } from './interfaces/i-module';
+import { IAction, ModuleType } from './declarations';
 
 export interface ISynthKitchen {
   modules: IModule[][];
 }
 
-export const dispatch = (action: IAction): void => {
-  console.log(action);
-}
-
-export const getState = (): IModule[][] => {
-  return [
-    [{ type: ModuleType.GAIN, dispatch }, { type: ModuleType.OSCILLATOR, dispatch },],
-    [{ type: ModuleType.COMPLEX, dispatch }, { type: ModuleType.OSCILLATOR, dispatch },]
-  ];
-}
-
 export class SynthKitchen extends React.Component<any, ISynthKitchen> {
   constructor(props: any) {
     super(props);
+    this.dispatch = this.dispatch.bind(this);
+    const dispatch = this.dispatch;
     this.state = {
-      modules: getState()
+      modules: [
+        [{ type: ModuleType.GAIN, dispatch }, { type: ModuleType.OSCILLATOR, dispatch },],
+        [{ type: ModuleType.COMPLEX, dispatch }, { type: ModuleType.OSCILLATOR, dispatch },]
+      ]
     };
-    this.render = () => <Kitchen modules={this.state.modules} dispatch={dispatch} />;
+    this.render = () => <Kitchen modules={this.state.modules} dispatch={this.dispatch} />;
+  }
+  dispatch(action: IAction): void {
+    console.log(action);
   }
 }
 

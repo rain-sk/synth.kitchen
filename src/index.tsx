@@ -1,15 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { SynthKitchen } from './ts/SynthKitchen';
+import { SynthKitchen } from './ts/synth-kitchen';
 
 import './index.css';
-import * as People from './test.json';
-
-export const context = new AudioContext();
-
-People.forEach((person: any) => {
-  console.log(`${person}`);
-});
 
 ReactDOM.render(
   <SynthKitchen />,

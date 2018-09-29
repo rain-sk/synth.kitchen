@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Row } from '.';
-import { IDispatch } from '../interfaces/IDispatch';
-import { IModule } from '../interfaces/IModule';
+import { IDispatch, IModule } from '../declarations';
 
 export interface IKitchenProps extends IDispatch {
   modules: IModule[][];

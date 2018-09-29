@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Module } from '.';
-import { IRow } from '../interfaces/IRow';
+import { IRow } from '../declarations';
 
 export class Row extends React.Component<IRow> {
   constructor(props: IRow) {
