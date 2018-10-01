@@ -1,3 +1,7 @@
-export { IOContract } from './contract-io';
-export { IOType } from './type-io';
-export { ModuleType } from './type-module';
+/** contracts */
+export { IOContract } from './contracts/contract-io';
+export { ModuleContract } from './contracts/contract-module';
+
+/** types */
+export { IOType } from './types/type-io';
+export { ModuleType } from './types/type-module';

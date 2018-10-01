@@ -6,7 +6,7 @@ import {
   IOType
 } from "../declarations";
 
-export const createGain = (dispatch: (action: IAction) => void, context: AudioContext, node = context.createGain()): IModuleState => {
+export const createReverb = (dispatch: (action: IAction) => void, context: AudioContext, node = context.createConvolver()): IModuleState => {
   return {
     node,
     inputs: [{
@@ -28,6 +28,19 @@ export const createGain = (dispatch: (action: IAction) => void, context: AudioCo
       accessor: 'gain',
       dispatch
     }],
-    params: []
+    params: [{
+      name: 'buffer',
+      types: [IOType.PARAM],
+      target: node,
+      accessor: 'buffer',
+      dispatch,
+      options: []
+    }, {
+      name: 'normalize',
+      types: [IOType.BOOLEAN],
+      target: node,
+      accessor: 'normalize',
+      dispatch
+    }]
   }
 }

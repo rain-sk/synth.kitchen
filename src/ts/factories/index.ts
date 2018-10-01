@@ -1,3 +1,6 @@
+export { createDelay } from './delay';
+export { createDistortion } from './distortion';
+export { createFilter } from './filter';
 export { createGain } from './gain';
-export { createModuleState } from './create-module-state';
+export { createModuleState } from './module-state';
 export { createOscillator } from './oscillator';

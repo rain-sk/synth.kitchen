@@ -14,5 +14,5 @@ export interface IIO extends IDispatch {
   target: any;
   accessor?: string;
   range?: Range;
-  options?: any;
+  options?: string[] | [string, any][];
 }

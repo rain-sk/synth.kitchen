@@ -15,8 +15,7 @@ export class IO extends React.Component<IIO, IOState> {
     props.dispatch({
       type: IOContract.REGISTER,
       payload: {
-        hash: this.state.hash,
-        element: this.ioRef
+        ...this.state
       }
     });
     this.onClick = this.onClick.bind(this);
