@@ -25,14 +25,21 @@ export const createDelay = (dispatch: (action: IAction) => void, context: AudioC
       target: output,
       dispatch
     }],
-    mods: [],
-    params: [{
+    mods: [{
       name: 'delayTime',
       types: [IOType.A_RATE, IOType.MOD, IOType.READONLY],
-      target: node,
-      accessor: 'delayTime',
+      getter: () => node.delayTime,
+      setter: (to: number) => {
+        const newNode = context.createDelay(to);
+        input.connect(newNode);
+        input.disconnect(node);
+        newNode.connect(output);
+        node.disconnect(output);
+        node = newNode;
+      },
       dispatch
-    }, {
+    }],
+    params: [{
       name: 'oversample',
       types: [IOType.PARAM],
       target: node,

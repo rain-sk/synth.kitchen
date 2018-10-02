@@ -1,18 +1,13 @@
 import { IOType } from '..';
 import { IDispatch } from '.';
 
-export type Range = [
-  number,
-  number,
-  (controlSetting: number) => number,
-  (nodeValue: number) => number
-];
-
 export interface IIO extends IDispatch {
   name: string;
   types: IOType[];
-  target: any;
+  target?: any;
   accessor?: string;
+  getter?: () => AudioParam;
+  setter?: (to: number) => void;
   range?: Range;
   options?: string[] | [string, any][];
 }
