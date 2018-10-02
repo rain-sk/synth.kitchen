@@ -7,7 +7,7 @@ export interface IOutputWrapper extends IDispatch {
 }
 
 export const OutputWrapper = (props: IOutputWrapper) =>
-  <div>
+  <div className="outputs">
     {
       props.outputs
         ? props.outputs.map((output, _) => {

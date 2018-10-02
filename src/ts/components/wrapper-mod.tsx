@@ -7,7 +7,7 @@ export interface IModWrapper extends IDispatch {
 }
 
 export const ModWrapper = (props: IModWrapper) =>
-  <div>
+  <div className="mods">
     {
       props.mods
         ? props.mods.map((mod, _) => {

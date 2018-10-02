@@ -7,7 +7,7 @@ export interface IInputWrapper extends IDispatch {
 }
 
 export const InputWrapper = (props: IInputWrapper) =>
-  <div>
+  <div className="inputs">
     {
       props.inputs
         ? props.inputs.map((input, _) => {

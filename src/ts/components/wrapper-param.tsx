@@ -7,7 +7,7 @@ export interface IParamWrapper extends IDispatch {
 }
 
 export const ParamWrapper = (props: IParamWrapper) =>
-  <div>
+  <div className="params">
     {
       props.params
         ? props.params.map((param, _) => {

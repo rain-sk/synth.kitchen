@@ -25,10 +25,7 @@ export class Module extends React.Component<IModule, IModuleState> {
   }
   render() {
     return (
-      <article
-        //id={`module_${props.mod.type}`}
-        className={`module ${this.props.type.toLocaleLowerCase()}`}>
-        {this.props.type}
+      <article className={`module ${this.props.type.toLocaleLowerCase()}`}>
         <ParamWrapper params={this.state.params} dispatch={this.props.dispatch} />
         <InputWrapper inputs={this.state.inputs} dispatch={this.props.dispatch} />
         <ModWrapper mods={this.state.mods} dispatch={this.props.dispatch} />
