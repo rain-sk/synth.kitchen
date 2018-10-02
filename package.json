@@ -5,13 +5,13 @@
   "dependencies": {
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-fast-compare": "^2.0.2",
     "react-scripts-ts": "2.17.0"
   },
   "scripts": {
     "s": "react-scripts-ts start",
-    "b": "react-scripts-ts build",
-    "t": "react-scripts-ts test --env=jsdom",
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
@@ -19,6 +19,6 @@
     "@types/node": "^10.9.4",
     "@types/react": "^16.4.13",
     "@types/react-dom": "^16.0.7",
-    "typescript": "^3.0.3"
+    "typescript": "^3.1.1"
   }
 }

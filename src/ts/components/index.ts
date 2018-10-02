@@ -6,3 +6,4 @@ export { Module } from './module';
 export { OutputWrapper } from './wrapper-output';
 export { ParamWrapper } from './wrapper-param';
 export { Row } from './row';
+export { Icon } from './icon';

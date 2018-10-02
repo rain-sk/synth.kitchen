@@ -2,15 +2,14 @@ body {
   margin: 0;
   padding: 0;
   overflow: scroll;
-  background: #dadada;
+  background: #252525;
 }
 
 #root {
   display: grid;
   grid-template-columns: minmax(15rem, 45rem);
   grid-auto-rows: 10rem;
-  grid-gap: 3rem;
-  overflow: scroll;
+  grid-gap: 5rem;
   padding: 1.5rem;
   padding-bottom: 2rem;
   padding-right: 2rem;
@@ -20,20 +19,32 @@ body {
 
 .row {
   display: grid;
-  grid-gap: 3rem;
+  grid-gap: 5rem;
 }
 
 .module {
   grid-row: 1;
   display: block;
   border: 1px solid white;
+  background-color: #8FF75B;
   box-shadow: 0 0 1px 1px rgba(0,0,0,0.2);
   border-top-left-radius: 0.5rem;
   min-height: 5rem;
   min-width: 15rem;
   max-width: 45rem;
+
+  display: grid;
+  grid-template-columns: 2rem auto 2rem;
+  grid-template-rows: 2rem auto 2rem;
 }
 
-.module > * {
-  margin: 0.5rem;
+.module > *:first-child, .module > *:last-child {
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+.visually-hidden {
+  position: absolute;
+  top: 0;
+  left: -3000px;
 }

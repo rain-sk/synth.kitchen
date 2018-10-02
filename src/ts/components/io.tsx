@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IIO, IOContract } from '../declarations';
+import { IIO, IOContract, IOType } from '../declarations';
 import { guid } from '../guid';
 
 export interface IOState {
@@ -24,11 +24,25 @@ export class IO extends React.Component<IIO, IOState> {
     this.props.dispatch({
       type: IOContract.CLICK,
       payload: {
-        id: this.state.id
+        ...this.state
       }
     });
   }
   render() {
-    return <button type="button" onClick={this.onClick} ref={this.ioRef}>{this.props.name}</button>;
+    return (
+      <label>
+        <span className="visually-hidden">{this.props.name}</span>
+        <button type="button" onClick={this.onClick} ref={this.ioRef}>
+          <span tabIndex={-1}>{
+            this.props.types.indexOf(IOType.DESTINATION)
+              ? '+'
+              : this.props.types.indexOf(IOType.SOURCE)
+                ? '-'
+                : this.props.types.indexOf(IOType.MOD)
+                  ? '~'
+                  : 'x'
+          }</span>
+        </button>
+      </label>);
   }
 }

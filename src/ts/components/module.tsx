@@ -3,7 +3,7 @@ import { IModule, IModuleState } from '../declarations';
 import { context } from '../context';
 import { ParamWrapper, InputWrapper, ModWrapper, OutputWrapper } from '.';
 import { createModuleState } from '../factories';
-
+import { Icon } from './icon';
 
 export class Module extends React.Component<IModule, IModuleState> {
   constructor(props: IModule) {
@@ -26,10 +26,14 @@ export class Module extends React.Component<IModule, IModuleState> {
   render() {
     return (
       <article className={`module ${this.props.type.toLocaleLowerCase()}`}>
-        <ParamWrapper params={this.state.params} dispatch={this.props.dispatch} />
+        <header>
+          <Icon type={this.props.type} />
+          {this.props.type.toLocaleLowerCase()}
+        </header>
         <InputWrapper inputs={this.state.inputs} dispatch={this.props.dispatch} />
-        <ModWrapper mods={this.state.mods} dispatch={this.props.dispatch} />
+        <ParamWrapper params={this.state.params} dispatch={this.props.dispatch} />
         <OutputWrapper outputs={this.state.outputs} dispatch={this.props.dispatch} />
+        <ModWrapper mods={this.state.mods} dispatch={this.props.dispatch} />
       </article>
     )
   }
