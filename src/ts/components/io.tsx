@@ -2,6 +2,20 @@ import * as React from 'react';
 import { IIO, IOContract, IOType } from '../declarations';
 import { guid } from '../guid';
 
+const getButtonSymbol = (types: IOType[]): string => {
+  let res = 'x';
+  types.forEach(type => {
+    if (type.includes(IOType.DESTINATION)) {
+      res = '+';
+    } else if (type === IOType.SOURCE) {
+      res = '-';
+    } else if (type === IOType.MOD) {
+      res = '~';
+    }
+  });
+  return res;
+}
+
 export interface IOState {
   id: string;
   element: React.Ref<HTMLButtonElement>;
@@ -29,19 +43,14 @@ export class IO extends React.Component<IIO, IOState> {
     });
   }
   render() {
+    console.log(this.props.types);
     return (
       <label>
         <span className="visually-hidden">{this.props.name}</span>
         <button type="button" onClick={this.onClick} ref={this.ioRef}>
-          <span tabIndex={-1}>{
-            this.props.types.indexOf(IOType.DESTINATION)
-              ? '+'
-              : this.props.types.indexOf(IOType.SOURCE)
-                ? '-'
-                : this.props.types.indexOf(IOType.MOD)
-                  ? '~'
-                  : 'x'
-          }</span>
+          <span tabIndex={-1}>
+            {getButtonSymbol(this.props.types)}
+          </span>
         </button>
       </label>);
   }
