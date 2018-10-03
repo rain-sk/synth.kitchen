@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   overflow: scroll;
-  background: #252525;
+  background: rgba(46, 204, 113, 0.1);
 }
 
 #root {
@@ -25,9 +25,9 @@ body {
 .module {
   grid-row: 1;
   display: block;
-  border: 1px solid white;
-  background-color: #8FF75B;
-  box-shadow: 0 0 1px 1px rgba(0,0,0,0.2);
+  border: 3px solid #3498db;
+  background-color: white;
+  box-shadow: 0 0 5px 5px rgba(251, 255, 66, 0.2);
   border-top-left-radius: 0.5rem;
   min-height: 5rem;
   min-width: 15rem;
