@@ -6,6 +6,8 @@ Because modular synthesizers are expensive, and the Web Audio API makes digital 
 
 You can check out [some sounds created with the synth kitchen](https://soundcloud.com/therudnick/sets/synth-kitchen) on [my SoundCloud](https://soundcloud.com/therudnick).
 
+Color Scheme: https://flatuicolors.com/palette/defo
+
 Short-Term Roadmap:
 - [x] UI Skeleton - wrapper components with functional styles applied
 - [ ] IO Map - visual representation of module connections, updates on scroll

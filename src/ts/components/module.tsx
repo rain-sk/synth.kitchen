@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { IModule, IModuleState } from '../declarations';
 import { context } from '../context';
-import { ParamWrapper, InputWrapper, ModWrapper, OutputWrapper } from '.';
+import { Icon, IOWrapper } from '.';
 import { createModuleState } from '../factories';
-import { Icon } from './icon';
 
 export class Module extends React.Component<IModule, IModuleState> {
   constructor(props: IModule) {
@@ -22,6 +21,7 @@ export class Module extends React.Component<IModule, IModuleState> {
         params: []
       };
     }
+    console.log('new module');
   }
   render() {
     return (
@@ -30,10 +30,10 @@ export class Module extends React.Component<IModule, IModuleState> {
           <Icon type={this.props.type} />
           {this.props.type.toLocaleLowerCase()}
         </header>
-        <InputWrapper inputs={this.state.inputs} dispatch={this.props.dispatch} />
-        <ParamWrapper params={this.state.params} dispatch={this.props.dispatch} />
-        <OutputWrapper outputs={this.state.outputs} dispatch={this.props.dispatch} />
-        <ModWrapper mods={this.state.mods} dispatch={this.props.dispatch} />
+        <IOWrapper name="inputs" io={this.state.inputs} dispatch={this.props.dispatch} />
+        <IOWrapper name="params" io={this.state.params} dispatch={this.props.dispatch} />
+        <IOWrapper name="outputs" io={this.state.outputs} dispatch={this.props.dispatch} />
+        <IOWrapper name="mods" io={this.state.mods} dispatch={this.props.dispatch} />
       </article>
     )
   }

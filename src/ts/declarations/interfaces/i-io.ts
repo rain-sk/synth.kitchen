@@ -10,4 +10,5 @@ export interface IIO extends IDispatch {
   setter?: (to: number) => void;
   range?: Range;
   options?: string[] | [string, any][];
+  activeId?: string;
 }

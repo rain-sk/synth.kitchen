@@ -25,17 +25,16 @@ body {
 .module {
   grid-row: 1;
   display: block;
-  border: 3px solid #3498db;
+  border: 3px solid #16a085;
   background-color: white;
-  box-shadow: 0 0 5px 5px rgba(251, 255, 66, 0.2);
   border-top-left-radius: 0.5rem;
   min-height: 5rem;
   min-width: 15rem;
   max-width: 45rem;
 
   display: grid;
-  grid-template-columns: 2rem auto 2rem;
-  grid-template-rows: 2rem auto 2rem;
+  grid-template-columns: 1.5rem auto 1.5rem;
+  grid-template-rows: 2rem auto 1.5rem;
 }
 
 .module > *:first-child, .module > *:last-child {
@@ -47,4 +46,28 @@ body {
   position: absolute;
   top: 0;
   left: -3000px;
+}
+
+.io-list {
+  display: grid;
+  grid-gap: 1rem;
+}
+
+.inputs, .outputs {
+  justify-content: space-between;
+  align-content: center;
+}
+
+*:focus {
+  outline: 3px solid red;
+}
+
+.io {
+  display: block;
+  margin: 0;
+  padding: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  text-align: center;
+  border-radius: .125rem;
 }

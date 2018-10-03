@@ -2,7 +2,7 @@ import * as React from 'react';
 import { IIO, IOContract, IOType } from '../declarations';
 import { guid } from '../guid';
 
-const getButtonSymbol = (types: IOType[]): string => {
+const buttonSymbol = (types: IOType[]): string => {
   let res = 'x';
   types.forEach(type => {
     if (type.includes(IOType.DESTINATION)) {
@@ -43,15 +43,20 @@ export class IO extends React.Component<IIO, IOState> {
     });
   }
   render() {
-    console.log(this.props.types);
     return (
-      <label>
-        <span className="visually-hidden">{this.props.name}</span>
-        <button type="button" onClick={this.onClick} ref={this.ioRef}>
+      <React.Fragment>
+        <button className="io" type="button" onClick={this.onClick} ref={this.ioRef}>
+          <span className="visually-hidden">{this.props.name}</span>
           <span tabIndex={-1}>
-            {getButtonSymbol(this.props.types)}
+            {
+              !!this.props.activeId && this.props.activeId === this.state.id
+                ? '&darr;'
+                : buttonSymbol(this.props.types)
+            }
           </span>
         </button>
-      </label>);
+
+      </React.Fragment>
+    );
   }
 }

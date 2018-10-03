@@ -11,7 +11,7 @@ const reducers = new Map<string, IContract>([
 
 const reduce = (action: any, store: ISynthKitchen) => {
   reducers.forEach(reducer => {
-    if (action.type === reducer.type) store = reducer.reduce(action, store);
+    store = (action.type === reducer.type) ? reducer.reduce(action, store) : store;
   });
   return store;
 }

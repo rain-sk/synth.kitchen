@@ -14,6 +14,11 @@ export const createFilter = (dispatch: (action: IAction) => void, context: Audio
       types: [IOType.DESTINATION],
       target: node,
       dispatch
+    }, {
+      name: 'input',
+      types: [IOType.DESTINATION],
+      target: node,
+      dispatch
     }],
     outputs: [{
       name: 'output',
