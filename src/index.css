@@ -58,8 +58,17 @@ body {
   align-content: center;
 }
 
-*:focus {
-  outline: 3px solid red;
+*:focus, .io:hover {
+  outline: 3px solid #f0ff00;
+}
+
+.mods {
+  grid-gap: 0;
+}
+
+.mods > .io {
+  grid-row: 1;
+  justify-self: center;
 }
 
 .io {
