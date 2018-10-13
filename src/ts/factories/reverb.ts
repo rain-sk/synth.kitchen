@@ -6,7 +6,7 @@ import {
   IOType
 } from "../declarations";
 
-export const createReverb = (dispatch: (action: IAction) => void, context: AudioContext, node = context.createConvolver()): IModuleState => {
+export const createReverb = (dispatch: (action: IAction<{}>) => void, context: AudioContext, node = context.createConvolver()): IModuleState => {
   return {
     node,
     inputs: [{

@@ -21,7 +21,6 @@ export class Module extends React.Component<IModule, IModuleState> {
         params: []
       };
     }
-    console.log('new module');
   }
   render() {
     return (

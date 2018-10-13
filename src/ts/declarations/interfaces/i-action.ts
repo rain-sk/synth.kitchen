@@ -1,6 +1,6 @@
 import { IOContract } from '..';
 
-export interface IAction {
+export interface IAction<T> {
   type: IOContract;
-  payload?: any;
+  payload?: T;
 }

@@ -8,18 +8,19 @@ body {
 #root {
   display: grid;
   grid-template-columns: minmax(15rem, 45rem);
-  grid-auto-rows: 10rem;
+  grid-auto-rows: max-content;
   grid-gap: 5rem;
-  padding: 1.5rem;
+  margin: 5rem;
   padding-bottom: 2rem;
   padding-right: 2rem;
-  min-height: 100vh;
   box-sizing: border-box;
+  width: 100%;
 }
 
 .row {
   display: grid;
   grid-gap: 5rem;
+  width: 100%;
 }
 
 .module {
@@ -28,18 +29,22 @@ body {
   border: 3px solid #16a085;
   background-color: white;
   border-top-left-radius: 0.5rem;
-  min-height: 5rem;
-  min-width: 15rem;
+  min-height: 12rem;
+  max-height: 20rem;
+  min-width: 20rem;
   max-width: 45rem;
-
   display: grid;
-  grid-template-columns: 1.5rem auto 1.5rem;
-  grid-template-rows: 2rem auto 1.5rem;
+  grid-template-columns: 2rem auto 2rem;
+  grid-template-rows: 2rem auto 2rem;
 }
 
 .module > *:first-child, .module > *:last-child {
   grid-column-start: 1;
   grid-column-end: 4;
+}
+
+.module:last-child {
+  margin-right: 5rem;
 }
 
 .visually-hidden {
@@ -58,8 +63,8 @@ body {
   align-content: center;
 }
 
-*:focus, .io:hover {
-  outline: 3px solid #f0ff00;
+*:focus, .io:hover, .io:focus {
+  outline:1px dashed #E92C6C;
 }
 
 .mods {
@@ -75,8 +80,51 @@ body {
   display: block;
   margin: 0;
   padding: 0;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2rem;
+  height: 2rem;
   text-align: center;
-  border-radius: .125rem;
+  border-radius: 1rem;
+  border: 1px solid #0f6;
+  color: #e92c6c;
+  text-decoration: none;
+  font-size: 2rem;
+  line-height: 0;
+}
+
+.io > span {
+  position: relative;
+  bottom: .125rem;
+}
+  
+.io[aria-label] {
+  position: relative;
+}
+  
+.io[aria-label]:after {
+  content: attr(aria-label);
+  display: none;
+  position: absolute;
+  top: -2px;
+  left: 110%;
+  z-index: 5000;
+  pointer-events: none;
+  padding: 8px 10px;
+  line-height: 15px;
+  white-space: nowrap;
+  text-decoration: none;
+  text-indent: 0;
+  overflow: visible;
+  font-size: 1.3rem;
+  font-weight: normal;
+  color: #fff;
+  text-shadow: 1px 0 1px #888;
+  background-color: #412917;
+  border-left: 6px solid #d37092;
+  border-radius: 2px;
+  -webkit-box-shadow: 1px 2px 6px rgba(0,0,0,0.3);
+  box-shadow: 1px 2px 6px rgba(0,0,0,0.3);
+}
+  
+.io[aria-label]:hover:after, [aria-label]:focus:after {
+  display: block;
 }

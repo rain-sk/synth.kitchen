@@ -1,3 +1,3 @@
-import { IOContract, ModuleContract } from '..';
+import { ConnectionContract, IOContract, ModuleContract } from '..';
 
-export type Contract = IOContract | ModuleContract;
+export type Contract = ConnectionContract | IOContract | ModuleContract;

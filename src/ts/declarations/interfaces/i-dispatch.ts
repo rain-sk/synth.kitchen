@@ -1,5 +1,5 @@
 import { IAction } from ".";
 
 export interface IDispatch {
-  dispatch: (action: IAction) => void;
+  dispatch: (action: IAction<{}>) => void;
 }

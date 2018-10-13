@@ -6,7 +6,7 @@ import {
   IOType
 } from "../declarations";
 
-export const createGain = (dispatch: (action: IAction) => void, context: AudioContext, node = context.createGain()): IModuleState => {
+export const createGain = (dispatch: (action: IAction<{}>) => void, context: AudioContext, node = context.createGain()): IModuleState => {
   return {
     node,
     inputs: [{

@@ -6,7 +6,7 @@ import {
   IOType
 } from "../declarations";
 
-export const createFilter = (dispatch: (action: IAction) => void, context: AudioContext, node = context.createBiquadFilter()): IModuleState => {
+export const createFilter = (dispatch: (action: IAction<{}>) => void, context: AudioContext, node = context.createBiquadFilter()): IModuleState => {
   return {
     node,
     inputs: [{

@@ -6,7 +6,7 @@ import {
   IOType
 } from "../declarations";
 
-export const createDistortion = (dispatch: (action: IAction) => void, context: AudioContext, node = context.createWaveShaper()): IModuleState => {
+export const createDistortion = (dispatch: (action: IAction<{}>) => void, context: AudioContext, node = context.createWaveShaper()): IModuleState => {
   return {
     node,
     inputs: [{

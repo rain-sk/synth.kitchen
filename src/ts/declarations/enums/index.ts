@@ -1,4 +1,5 @@
 /** contracts */
+export { ConnectionContract } from './contract-connection';
 export { IOContract } from './contract-io';
 export { ModuleContract } from './contract-module';
 

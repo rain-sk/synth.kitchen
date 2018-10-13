@@ -6,7 +6,7 @@ import {
   IOType
 } from "../declarations";
 
-export const createOscillator = (dispatch: (action: IAction) => void, context: AudioContext, node = context.createOscillator()): IModuleState => {
+export const createOscillator = (dispatch: (action: IAction<{}>) => void, context: AudioContext, node = context.createOscillator()): IModuleState => {
   return {
     node,
     inputs: [],

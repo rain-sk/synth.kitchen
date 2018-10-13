@@ -1,0 +1,4 @@
+export enum ConnectionContract {
+  CONNECT = 'CONNECTION_CONNECT',
+  DISCONNECT = 'CONNECTION_DISCONNECT'
+}

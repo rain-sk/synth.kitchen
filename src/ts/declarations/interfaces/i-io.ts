@@ -1,4 +1,4 @@
-import { IOType } from '..';
+import { IOType, IOContext } from '..';
 import { IDispatch } from '.';
 
 export interface IIO extends IDispatch {
@@ -10,5 +10,5 @@ export interface IIO extends IDispatch {
   setter?: (to: number) => void;
   range?: Range;
   options?: string[] | [string, any][];
-  activeId?: string;
+  context?: IOContext;
 }

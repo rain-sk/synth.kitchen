@@ -1,9 +1,10 @@
 import { IModule } from ".";
-import { IOType } from "..";
+import { IOContext, MapNode } from "..";
+import { IIOConnection } from "..";
 
 export interface ISynthKitchen {
   modules: IModule[][];
-  clicks: any[];
-  ioContext: [string | undefined, IOType | undefined, boolean];
-  ioList: Map<string, any>;
+  ioContext: IOContext;
+  ioNodes: Map<string, MapNode>;
+  ioConnections: Map<string, IIOConnection>;
 }

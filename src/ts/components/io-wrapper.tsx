@@ -16,7 +16,7 @@ export const IOWrapper = (props: IIOWrapper) =>
           {
             props.io
               ? props.io.map((io, _) => {
-                return <IO key={_} {...io} dispatch={props.dispatch} activeId={context[0]} />
+                return <IO key={_} {...io} dispatch={props.dispatch} context={context} />
               })
               : null
           }
