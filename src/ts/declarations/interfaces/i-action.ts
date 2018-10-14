@@ -1,6 +1,6 @@
-import { IOContract } from '..';
+import { Contract } from '..';
 
 export interface IAction<T> {
-  type: IOContract;
+  type: Contract;
   payload?: T;
 }

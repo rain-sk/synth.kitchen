@@ -1,4 +1,5 @@
 export enum IOContract {
+  CONNECT = 'IO_CONNECT',
   REGISTER = 'IO_REGISTER',
-  CLICK = 'IO_CLICK'
+  TRIGGER = 'IO_TRIGGER'
 }

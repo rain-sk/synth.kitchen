@@ -128,3 +128,17 @@ body {
 .io[aria-label]:hover:after, [aria-label]:focus:after {
   display: block;
 }
+
+.io.invalid {
+  opacity: 0.5;
+}
+
+.io-list > span {
+  position: relative;
+}
+
+.io.connect {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 1rem);
+}

@@ -1,4 +1,4 @@
-import { IModule } from ".";
+import { IAction, IModule } from ".";
 import { IOContext, MapNode } from "..";
 import { IIOConnection } from "..";
 
@@ -7,4 +7,5 @@ export interface ISynthKitchen {
   ioContext: IOContext;
   ioNodes: Map<string, MapNode>;
   ioConnections: Map<string, IIOConnection>;
+  dispatchLoop: IAction<{}>[];
 }

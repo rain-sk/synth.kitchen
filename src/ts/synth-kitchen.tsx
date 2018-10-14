@@ -2,16 +2,21 @@ import * as React from 'react';
 
 import { Kitchen } from './components/kitchen';
 import { IAction, ISynthKitchen, ModuleType, IOContext, IContract, MapNode, IOContract, IIOConnection } from './declarations';
-import { IO_CLICK, IO_REGISTER } from './reducers';
+import { CONNECTION_CONNECT, CONNECTION_DISCONNECT, IO_CONNECT, IO_REGISTER, IO_TRIGGER } from './reducers';
 
 const reducers = new Map<string, IContract>([
-  [IO_CLICK.type, IO_CLICK],
-  [IO_REGISTER.type, IO_REGISTER]
+  [CONNECTION_CONNECT.type, CONNECTION_CONNECT],
+  [CONNECTION_DISCONNECT.type, CONNECTION_DISCONNECT],
+  [IO_CONNECT.type, IO_CONNECT],
+  [IO_REGISTER.type, IO_REGISTER],
+  [IO_TRIGGER.type, IO_TRIGGER]
 ]);
 
-const reduce = (action: any, store: ISynthKitchen) => {
+const reduce = (action: IAction<{}>, store: ISynthKitchen) => {
   reducers.forEach(reducer => {
-    store = (action.type === reducer.type) ? reducer.reduce(action, store) : store;
+    if (action.type === reducer.type) {
+      store = reducer.reduce(action, store);
+    }
   });
   return store;
 }
@@ -30,11 +35,19 @@ export class SynthKitchen extends React.Component<any, ISynthKitchen> {
     const ioContext: IOContext = [false, undefined, undefined];
     const ioNodes = new Map<string, MapNode>();
     const ioConnections = new Map<string, IIOConnection>();
-    this.state = { modules, ioContext, ioNodes, ioConnections };
+    const dispatchLoop = new Array<IAction<{}>>();
+    this.state = { modules, ioContext, ioNodes, ioConnections, dispatchLoop };
   }
   dispatch(action: IAction<{}>): void {
     const state = reduce(action, this.state);
-    this.setState({ ...state }, () => { action.type !== IOContract.REGISTER ? console.table([this.state]) : null; });
+    this.setState({ ...state }, () => {
+      action.type !== IOContract.REGISTER ? console.table(this.state.ioContext) : null;
+      const newAction = this.state.dispatchLoop.pop();
+      if (!!newAction) {
+        console.log(newAction)
+        this.dispatch(newAction);
+      }
+    });
   }
   render() {
     return (

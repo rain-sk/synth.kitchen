@@ -28,39 +28,63 @@ export class IO extends React.Component<IIO, IIOState> {
   constructor(props: IIO) {
     super(props);
     this.state = {
-      id: guid(),
-      trigger: this.trigger,
-      connect: this.connect,
-      disconnect: this.disconnect,
-      clear: this.clear,
-      settings: this.settings
+      id: guid()
     };
     props.dispatch({
       type: IOContract.REGISTER,
       payload: {
-        ...this.state
+        ...this.state,
+        io: this.props
       }
     });
-    this.onClick = this.onClick.bind(this);
+    this.triggerClick = this.triggerClick.bind(this);
+    this.connectClick = this.connectClick.bind(this);
   }
-  onClick() {
+  triggerClick() {
     this.props.dispatch({
-      type: IOContract.CLICK,
+      type: IOContract.TRIGGER,
       payload: {
-        ...this.state
+        id: this.state.id,
+        io: this.props
+      }
+    });
+  }
+  connectClick() {
+    this.props.dispatch({
+      type: IOContract.CONNECT,
+      payload: {
+        id: this.state.id,
+        io: this.props
       }
     });
   }
   get active(): JSX.Element {
     return (
-      <button className="io" type="button" onClick={this.onClick} ref={this.trigger} aria-label={`close ${this.props.name}`}>
-        <span tabIndex={-1}>&darr;</span>
-      </button>
+      <span>
+        <button className="io" type="button" onClick={this.triggerClick} ref={this.trigger} aria-label={`close ${this.props.name}`}>
+          <span tabIndex={-1}>&darr;</span>
+        </button>
+        <button className="io connect" type="button" onClick={this.connectClick} ref={this.connect} aria-label={`connect ${this.props.name}`}>
+          <span tabIndex={-1}>+</span>
+        </button>
+      </span>
     );
   }
   get inactive(): JSX.Element {
+    const contextType = this.contextType;
+    const nodeType = this.props.types[0];
+    const valid =
+      (contextType === IOType.SOURCE && (nodeType === IOType.A_RATE || nodeType === IOType.DESTINATION)) ||
+      (contextType === IOType.DESTINATION && nodeType === IOType.SOURCE) ||
+      (contextType === IOType.A_RATE && nodeType === IOType.SOURCE);
+    const invalid = !!contextType && !valid;
     return (
-      <button className="io" type="button" onClick={this.onClick} ref={this.trigger} aria-label={this.props.name}>
+      <button
+        className={`io${invalid ? ' invalid' : ''}`}
+        aria-label={this.props.name}
+        onClick={this.triggerClick}
+        ref={this.trigger}
+        type="button">
         <span tabIndex={-1}>{this.buttonSymbol}</span>
       </button>
     );
