@@ -6,8 +6,8 @@ export const CONNECTION_DISCONNECT: IContract = {
   type: ConnectionContract.DISCONNECT,
   reduce: (action: IAction<IIOConnection>, state: ISynthKitchen): ISynthKitchen => {
     if (action.type === CONNECTION_DISCONNECT.type && !!action.payload) {
-      const destination = state.ioNodes.get(action.payload.destination.id);
-      const source = state.ioNodes.get(action.payload.source.id);
+      const destination = state.ioNodes.get(action.payload.destinationId);
+      const source = state.ioNodes.get(action.payload.sourceId);
       if (!!destination && !!source) {
 
       }

@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { Kitchen } from './components/kitchen';
 import { IAction, ISynthKitchen, ModuleType, IOContext, IContract, MapNode, IOContract, IIOConnection } from './declarations';
 import { CONNECTION_CONNECT, CONNECTION_DISCONNECT, IO_CONNECT, IO_REGISTER, IO_TRIGGER } from './reducers';
+import { ConnectionMap, Kitchen } from './components';
 
 const reducers = new Map<string, IContract>([
   [CONNECTION_CONNECT.type, CONNECTION_CONNECT],
@@ -20,6 +20,16 @@ const reduce = (action: IAction<{}>, store: ISynthKitchen) => {
   });
   return store;
 }
+const ioContext: IOContext = [false, undefined, undefined];
+const ioNodes = new Map<string, MapNode>();
+const ioConnections = new Map<string, IIOConnection>();
+const dispatchLoop = new Array<IAction<{}>>();
+const initialState = {
+  ioContext,
+  ioNodes,
+  ioConnections,
+  dispatchLoop
+}
 
 export class SynthKitchen extends React.Component<any, ISynthKitchen> {
   constructor(props: any) {
@@ -29,35 +39,33 @@ export class SynthKitchen extends React.Component<any, ISynthKitchen> {
     const modules = [
       [{ type: ModuleType.GAIN, dispatch }, { type: ModuleType.OSCILLATOR, dispatch }],
       [{ type: ModuleType.REVERB, dispatch }, { type: ModuleType.PANNER, dispatch }, { type: ModuleType.BIQUAD_FILTER, dispatch }],
-      // [{ type: ModuleType.GAIN, dispatch }, { type: ModuleType.OSCILLATOR, dispatch }, { type: ModuleType.DELAY, dispatch }],
-      // [{ type: ModuleType.COMPLEX, dispatch }, { type: ModuleType.OSCILLATOR, dispatch }]
     ];
-    const ioContext: IOContext = [false, undefined, undefined];
-    const ioNodes = new Map<string, MapNode>();
-    const ioConnections = new Map<string, IIOConnection>();
-    const dispatchLoop = new Array<IAction<{}>>();
-    this.state = { modules, ioContext, ioNodes, ioConnections, dispatchLoop };
+    this.state = { modules, ...initialState };
   }
-  dispatch(action: IAction<{}>): void {
-    const state = reduce(action, this.state);
-    this.setState({ ...state }, () => {
-      action.type !== IOContract.REGISTER ? console.table(this.state.ioContext) : null;
-      const newAction = this.state.dispatchLoop.pop();
-      if (!!newAction) {
-        console.log(newAction)
-        this.dispatch(newAction);
+  dispatch(action?: IAction<{}>, state?: ISynthKitchen): void {
+    if (!!action) {
+      const updatedState = reduce(action, !!state ? state : this.state);
+      if (updatedState.dispatchLoop.length) {
+        return this.dispatch(updatedState.dispatchLoop.pop(), updatedState);
+      } else {
+        this.setState({ ...updatedState }, () => {
+          if (action.type !== IOContract.REGISTER) console.table(this.state.ioContext);
+          if (this.state.dispatchLoop.length) this.dispatch(this.state.dispatchLoop.pop());
+        });
       }
-    });
+    }
   }
   render() {
+    const connections = [...this.state.ioConnections.values()];
     return (
       <Context.Provider value={this.state.ioContext}>
         <Kitchen modules={this.state.modules} dispatch={this.dispatch} />
+        <ConnectionMap context={this.state.ioContext} connections={connections} />
       </Context.Provider>
     );
   }
 }
 
-const Context = React.createContext<IOContext>([false, undefined, undefined]);
+const Context = React.createContext<IOContext>(ioContext);
 
 export const IOConsumer = Context.Consumer;

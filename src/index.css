@@ -130,7 +130,7 @@ body {
 }
 
 .io.invalid {
-  opacity: 0.5;
+  opacity: 0;
 }
 
 .io-list > span {

@@ -77,7 +77,7 @@ export class IO extends React.Component<IIO, IIOState> {
       (contextType === IOType.SOURCE && (nodeType === IOType.A_RATE || nodeType === IOType.DESTINATION)) ||
       (contextType === IOType.DESTINATION && nodeType === IOType.SOURCE) ||
       (contextType === IOType.A_RATE && nodeType === IOType.SOURCE);
-    const invalid = !!contextType && !valid;
+    const invalid = !!contextType && !valid && this.contextActive;
     return (
       <button
         className={`io${invalid ? ' invalid' : ''}`}

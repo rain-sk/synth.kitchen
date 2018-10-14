@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IOContext } from '../declarations';
+import { IOContext, IIOConnection } from '../declarations';
 
 export interface IMapConnection {
   destinationX: number;
@@ -10,7 +10,7 @@ export interface IMapConnection {
 
 export interface IIOMap {
   context: IOContext;
-  connections: IMapConnection[];
+  connections: IIOConnection[];
 }
 
 export class ConnectionMap extends React.Component<IIOMap> {
