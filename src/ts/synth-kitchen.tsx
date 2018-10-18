@@ -1,8 +1,9 @@
 import * as React from 'react';
 
-import { IAction, ISynthKitchen, ModuleType, IOContext, IContract, MapNode, IOContract, IIOConnection } from './declarations';
+import { IAction, ISynthKitchen, ModuleType, IOContext, IContract, MapNode, IIOConnection } from './declarations';
 import { CONNECTION_CONNECT, CONNECTION_DISCONNECT, IO_CONNECT, IO_REGISTER, IO_TRIGGER } from './reducers';
 import { ConnectionMap, Kitchen } from './components';
+import { IMapConnection } from './components/connection-map';
 
 const reducers = new Map<string, IContract>([
   [CONNECTION_CONNECT.type, CONNECTION_CONNECT],
@@ -49,14 +50,25 @@ export class SynthKitchen extends React.Component<any, ISynthKitchen> {
         return this.dispatch(updatedState.dispatchLoop.pop(), updatedState);
       } else {
         this.setState({ ...updatedState }, () => {
-          if (action.type !== IOContract.REGISTER) console.table(this.state.ioContext);
           if (this.state.dispatchLoop.length) this.dispatch(this.state.dispatchLoop.pop());
         });
       }
     }
   }
   render() {
-    const connections = [...this.state.ioConnections.values()];
+    let connections: IMapConnection[] = [];
+    [...this.state.ioConnections.values()].map(connection => {
+      const src = this.state.ioNodes.get(connection.sourceId);
+      const dst = this.state.ioNodes.get(connection.destinationId);
+      if (!!src && !!dst) {
+        console.log(src[0]);
+        console.log(dst[0]);
+        connections.push({
+          destination: dst[0].getPosition(),
+          source: src[0].getPosition()
+        });
+      }
+    });
     return (
       <Context.Provider value={this.state.ioContext}>
         <Kitchen modules={this.state.modules} dispatch={this.dispatch} />

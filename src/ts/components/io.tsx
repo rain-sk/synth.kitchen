@@ -19,7 +19,7 @@ const buttonSymbol = (types: IOType[]): string => {
 }
 
 export class IO extends React.Component<IIO, IIOState> {
-  trigger: React.Ref<HTMLButtonElement> = React.createRef();
+  trigger: any = React.createRef();
   connect: React.Ref<HTMLButtonElement> = React.createRef();
   disconnect: React.Ref<HTMLButtonElement> = React.createRef();
   clear: React.Ref<HTMLButtonElement> = React.createRef();
@@ -30,15 +30,17 @@ export class IO extends React.Component<IIO, IIOState> {
     this.state = {
       id: guid()
     };
+    this.triggerClick = this.triggerClick.bind(this);
+    this.connectClick = this.connectClick.bind(this);
+    this.getPosition = this.getPosition.bind(this);
     props.dispatch({
       type: IOContract.REGISTER,
       payload: {
         ...this.state,
-        io: this.props
+        io: this.props,
+        getPosition: this.getPosition
       }
     });
-    this.triggerClick = this.triggerClick.bind(this);
-    this.connectClick = this.connectClick.bind(this);
   }
   triggerClick() {
     this.props.dispatch({
@@ -106,5 +108,9 @@ export class IO extends React.Component<IIO, IIOState> {
     return !!this.contextId && this.contextId === this.state.id ? // is this state currently active?
       this.active :
       this.inactive;
+  }
+  getPosition(): [number, number] {
+    const trigger = this.trigger.current;
+    return [trigger.offsetLeft + (trigger.offsetWidth / 2), trigger.offsetTop + (trigger.offsetHeight / 2)]
   }
 }
