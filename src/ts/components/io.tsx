@@ -111,6 +111,7 @@ export class IO extends React.Component<IIO, IIOState> {
   }
   getPosition(): [number, number] {
     const trigger = this.trigger.current;
+    console.log(trigger);
     return [trigger.offsetLeft + (trigger.offsetWidth / 2), trigger.offsetTop + (trigger.offsetHeight / 2)]
   }
 }

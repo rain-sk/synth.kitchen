@@ -61,8 +61,9 @@ export class SynthKitchen extends React.Component<any, ISynthKitchen> {
       const src = this.state.ioNodes.get(connection.sourceId);
       const dst = this.state.ioNodes.get(connection.destinationId);
       if (!!src && !!dst) {
-        console.log(src[0]);
-        console.log(dst[0]);
+        console.log(src);
+        // console.log(src[0]);
+        // console.log(dst[0]);
         connections.push({
           destination: dst[0].getPosition(),
           source: src[0].getPosition()

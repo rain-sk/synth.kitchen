@@ -40,7 +40,6 @@ export const CONNECTION_CONNECT: IContract = {
   type: ConnectionContract.CONNECT,
   reduce: (action: IAction<IIOConnection>, state: ISynthKitchen): ISynthKitchen => {
     if (action.type === CONNECTION_CONNECT.type && !!action.payload) {
-      console.log(action);
       return connect(action.payload, state);
     }
     return state;

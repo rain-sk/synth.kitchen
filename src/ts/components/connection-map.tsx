@@ -28,17 +28,17 @@ export class ConnectionMap extends React.Component<IIOMap> {
     const ctx = canvas.getContext("2d");
     if (!!ctx) {
       this.ctx = ctx;
-      //this.canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
     }
   }
   componentDidUpdate() {
-    console.table(this.props.connections);
     this.draw(this.props.connections);
-    //this.ctx.putImageData(this.canvasData, 0, 0);
   }
   draw(connections: IMapConnection[]) {
     connections.forEach(connection => {
-      console.log(connection);
       this.ctx.beginPath();
       this.ctx.moveTo(connection.source[0], connection.source[1]);
       this.ctx.lineTo(connection.destination[0], connection.destination[1]);
