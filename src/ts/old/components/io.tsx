@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IIO, IOContract, IOType, IIOState } from '../declarations';
-import { guid } from '../guid';
+import { guid } from '../../utils/guid';
 
 const buttonSymbol = (types: IOType[]): string => {
   let res = 'x';
