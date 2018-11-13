@@ -2,7 +2,12 @@ import * as React from 'react';
 import { IoAction, IoReducers } from './actions';
 import { IoState, initialState } from './state';
 
-export const Io = React.createContext<[IoState, (action: IoAction, payload?: any) => void]>([initialState, (action: any) => {}]);
+export interface IIo {
+    state: IoState;
+    dispatch: (action: IoAction, payload?: any) => void;
+}
+
+export const Io = React.createContext<IIo>({ state: initialState, dispatch: (action: any) => {} });
 
 export class IoContext extends React.Component<{}, IoState> {
     constructor(props: any) {
@@ -20,9 +25,11 @@ export class IoContext extends React.Component<{}, IoState> {
         return state;
     }
     dispatch(action: IoAction, payload?: any) {
-        let state = this.reduce(action, payload);
+        console.log(`action: ${action}
+        payload: `);
+        console.log(payload);
         this.setState({
-            ...state
+            ...this.reduce(action, payload)
         }, this.clearDispatchLoop);
     }
     clearDispatchLoop() {
@@ -34,12 +41,12 @@ export class IoContext extends React.Component<{}, IoState> {
         }
     }
     render() {
+        const value = { state: this.state, dispatch: this.dispatch };
+        console.log(value);
         return (
-            <React.Fragment>
-                <Io.Provider value={[this.state, this.dispatch]}>
-                    {this.props.children}
-                </Io.Provider>
-            </React.Fragment>
-        )
+            <Io.Provider value={value}>
+                {this.props.children}
+            </Io.Provider>
+        );
     }
 }

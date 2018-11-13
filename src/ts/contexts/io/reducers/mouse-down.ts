@@ -4,7 +4,7 @@ export const IoMouseDown = (state: IoState, payload: string): IoState => {
     if (!state.active) {
         return {
             ...state,
-            pair: [payload, undefined]
+            dispatchLoop: [...state.dispatchLoop, { action: { type: 'IO_ACTIVATE' }, payload }]
         };
     }
     return {
