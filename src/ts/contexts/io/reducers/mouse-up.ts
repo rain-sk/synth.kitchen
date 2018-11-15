@@ -5,7 +5,7 @@ export const IoMouseUp = (state: IoState, payload: string): IoState => {
         return {
             ...state,
             pair: [state.active, payload],
-            dispatchLoop: [...state.dispatchLoop, { action: { type: 'IO_PROCESS_PAIR' }}]
+            dispatchStack: [...state.dispatchStack, { type: 'IO_PROCESS_PAIR' }]
         };
     }
     return {

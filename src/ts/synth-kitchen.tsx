@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { IoContext } from './contexts/io';
 import { IoList } from './components/io-list';
+import { ContextWrapper } from './components/context-wrapper';
+import { Test } from './components/test';
 
-export class SynthKitchen extends React.Component {
-    render() {
-        return (
-            <IoContext>
-                <IoList />
-            </IoContext>
-        );
-    }
+export const SynthKitchen: React.FunctionComponent = () => {
+    return (
+        <ContextWrapper>
+            <Test />
+            <IoList />
+        </ContextWrapper>
+    );
 }

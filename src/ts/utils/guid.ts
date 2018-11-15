@@ -1,5 +1,5 @@
 export const guid = () => {
-  return `${h()}${h()}-${h()}-${h()}-${h()}-${h()}${h()}${h()}`;
+  return h() + '-' + h() + h();
 };
 
 const h = () => {

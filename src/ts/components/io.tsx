@@ -1,14 +1,19 @@
 import * as React from 'react';
-import { IIo } from '../contexts/io/context';
 
-const ID = '123';
+import { IoState } from '../contexts/io/state';
+import { IoAction } from '../contexts/io/actions';
+import { IoContext } from '../contexts/io';
+import { guid } from '../utils/guid';
 
-export function Io(props: IIo): JSX.Element {
-    const handleClick = () => {
-        props.dispatch('IO_CLICK', ID);
-    };
-    console.log(props);
+export interface IIo {
+    state: IoState;
+    dispatch: (action: IoAction, payload?: any) => void;
+}
+
+export const Io: React.FunctionComponent = () => {
+    const context = React.useContext(IoContext);
+    const [id] = React.useState(guid());
     return (
-        <button onClick={handleClick}>call</button>
+        <button onClick={() => {context.dispatch({ type: 'IO_CLICK', payload: id })}}>click</button>
     );
 }
