@@ -19,7 +19,5 @@ export const IoClear = (state: IoState, payload: string): IoState => {
             });
         });
     }
-    return {
-        ...state
-    };
+    return state;
 };

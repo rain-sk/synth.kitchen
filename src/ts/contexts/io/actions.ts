@@ -1,4 +1,3 @@
-import { IoAction } from './actions';
 import { IoState } from './state';
 import { Reducer } from '../../types/reducer';
 import {

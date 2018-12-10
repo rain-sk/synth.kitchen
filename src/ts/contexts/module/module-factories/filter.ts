@@ -1,62 +1,56 @@
-import {
-  // interfaces
-  IAction,
-  IModuleState,
-  // enums
-  IOType
-} from "../declarations";
+import { ModuleProps } from '../components/module';
+import { IoType } from '../components/io-interface';
+import { guid } from '../utils/guid';
+import { SynthKitchenContext } from '../audio-context';
 
-export const createFilter = (dispatch: (action: IAction<{}>) => void, context: AudioContext, node = context.createBiquadFilter()): IModuleState => {
+export const createFilter = (node = SynthKitchenContext.createBiquadFilter()): ModuleProps => {
   return {
     node,
+    guid: guid(),
     inputs: [{
+      guid: guid(),
       name: 'input',
-      types: [IOType.DESTINATION],
+      type: IoType.Input,
       target: node,
-      dispatch
-    }, {
-      name: 'input',
-      types: [IOType.DESTINATION],
-      target: node,
-      dispatch
+
     }],
     outputs: [{
+      guid: guid(),
       name: 'output',
-      types: [IOType.SOURCE],
+      type: IoType.Output,
       target: node,
-      dispatch
     }],
     mods: [{
+      guid: guid(),
       name: 'detune',
-      types: [IOType.A_RATE, IOType.MOD],
+      type: IoType.Mod,
       target: node,
       accessor: 'detune',
-      dispatch
     }, {
+      guid: guid(),
       name: 'frequency',
-      types: [IOType.A_RATE, IOType.MOD],
+      type: IoType.Mod,
       target: node,
       accessor: 'frequency',
-      dispatch
     }, {
+      guid: guid(),
       name: 'gain',
-      types: [IOType.A_RATE, IOType.MOD],
+      type: IoType.Mod,
       target: node,
       accessor: 'gain',
-      dispatch
     }, {
+      guid: guid(),
       name: 'Q',
-      types: [IOType.A_RATE, IOType.MOD],
+      type: IoType.Mod,
       target: node,
       accessor: 'Q',
-      dispatch
     }],
     params: [{
+      guid: guid(),
       name: 'type',
-      types: [IOType.PARAM],
+      type: IoType.Param,
       target: node,
       accessor: 'type',
-      dispatch,
       options: [
         'lowpass',
         'highpass',

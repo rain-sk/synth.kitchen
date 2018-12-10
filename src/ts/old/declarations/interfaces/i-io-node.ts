@@ -1,4 +1,4 @@
-import { IIO } from "./i-io";
+import { IIO } from "../../factories/i-io";
 
 export interface IIONode {
   id: string;
