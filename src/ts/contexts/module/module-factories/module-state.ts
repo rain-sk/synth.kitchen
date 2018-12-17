@@ -1,17 +1,27 @@
 import { createDelay, createDistortion, createFilter, createGain, createOscillator } from ".";
-import { ModuleType } from '../types/module';
-import { ModuleProps } from '../components/module';
+import { ModuleProps } from '../../../components/module';
+import { createReverb } from './reverb';
 
-export const createModuleState = (type: ModuleType): ModuleProps | {} => {
-  return type === ModuleType.GAIN
+export type ModuleType =
+	| 'GAIN'
+	| 'OSCILLATOR'
+	| 'FILTER'
+	| 'DISTORTION'
+	| 'DELAY'
+	| 'REVERB';
+
+export const createModuleState = (type: ModuleType): ModuleProps | undefined => {
+  return type === 'GAIN'
     ? createGain()
-    : (type === ModuleType.OSCILLATOR)
+    : (type === 'OSCILLATOR')
       ? createOscillator()
-      : (type === ModuleType.BIQUAD_FILTER)
+      : (type === 'FILTER')
         ? createFilter()
-        : (type === ModuleType.DISTORTION)
+        : (type === 'DISTORTION')
           ? createDistortion()
-          : (type === ModuleType.DELAY)
+          : (type === 'DELAY')
             ? createDelay()
-            : {};
+			: (type === 'REVERB')
+				? createReverb()
+				: undefined;
 }

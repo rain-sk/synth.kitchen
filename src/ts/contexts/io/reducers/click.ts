@@ -5,19 +5,19 @@ export const IoClick = (state: IoState, payload: string): IoState => {
         if (!state.active) {
             return {
                 ...state,
-                dispatchStack: [...state.dispatchStack, { type: 'IO_ACTIVATE', payload }]
+                dispatchQueue: [...state.dispatchQueue, { type: 'IO_ACTIVATE', payload }]
             };
         } else {
             if (state.active === payload) {
                 return {
                     ...state,
-                    dispatchStack: [...state.dispatchStack, { type: 'IO_DEACTIVATE' }]
+                    dispatchQueue: [...state.dispatchQueue, { type: 'IO_DEACTIVATE' }]
                 };
             }
             return {
                 ...state,
                 pair: [state.active, payload],
-                dispatchStack: [...state.dispatchStack, { type: 'IO_PROCESS_PAIR' }]
+                dispatchQueue: [...state.dispatchQueue, { type: 'IO_PROCESS_PAIR' }]
             };
         }
     }

@@ -9,7 +9,7 @@ export const IoClear = (state: IoState, payload: string): IoState => {
                     if (connection === externalConnection) {
                         state = {
                             ...state,
-                            dispatchStack: [...state.dispatchStack, {
+                            dispatchQueue: [...state.dispatchQueue, {
                                 type: 'IO_DISCONNECT',
                                 payload: [payload, externalKey]
                             }]

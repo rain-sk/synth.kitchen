@@ -16,5 +16,5 @@ export const initialState: IoState = {
     outerMap: new Map<string, string[]>(),
     innerMap: new Map<string, [any, any]>(),
     ioNodes: new Map<string, any>(),
-    dispatchStack: []
+    dispatchQueue: []
 };

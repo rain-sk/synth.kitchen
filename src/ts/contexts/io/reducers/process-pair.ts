@@ -11,12 +11,12 @@ export function IoProcessPair(state: IoState): IoState {
             firstConnections.some(value => secondConnections.indexOf(value) >= 0)) {
             return {
                 ...state,
-                dispatchStack: [...state.dispatchStack, { type: 'IO_DISCONNECT', payload: state.pair }]
+                dispatchQueue: [...state.dispatchQueue, { type: 'IO_DISCONNECT', payload: state.pair }]
             };
         } else {
             return {
                 ...state,
-                dispatchStack: [...state.dispatchStack, { type: 'IO_CONNECT', payload: state.pair }]
+                dispatchQueue: [...state.dispatchQueue, { type: 'IO_CONNECT', payload: state.pair }]
             };
         }
     }

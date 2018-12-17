@@ -1,66 +1,59 @@
-import { ModuleProps } from '../components/module';
-import { IoType } from '../components/io-interface';
-import { guid } from '../utils/guid';
-import { SynthKitchenContext } from '../audio-context';
+import { ModuleProps } from '../../../components/module';
+import { guid } from '../../../utils/guid';
+import { audioContext } from '../../../utils/audio-context';
 
-export const createFilter = (node = SynthKitchenContext.createBiquadFilter()): ModuleProps => {
-  return {
-    node,
-    guid: guid(),
-    inputs: [{
-      guid: guid(),
-      name: 'input',
-      type: IoType.Input,
-      target: node,
+export const createFilter = (node = audioContext.createBiquadFilter()): ModuleProps => {
+	return {
+		name: 'filter',
+		node,
+		guid: guid(),
+		inputs: [{
+			guid: guid(),
+			name: 'input',
+			target: node,
 
-    }],
-    outputs: [{
-      guid: guid(),
-      name: 'output',
-      type: IoType.Output,
-      target: node,
-    }],
-    mods: [{
-      guid: guid(),
-      name: 'detune',
-      type: IoType.Mod,
-      target: node,
-      accessor: 'detune',
-    }, {
-      guid: guid(),
-      name: 'frequency',
-      type: IoType.Mod,
-      target: node,
-      accessor: 'frequency',
-    }, {
-      guid: guid(),
-      name: 'gain',
-      type: IoType.Mod,
-      target: node,
-      accessor: 'gain',
-    }, {
-      guid: guid(),
-      name: 'Q',
-      type: IoType.Mod,
-      target: node,
-      accessor: 'Q',
-    }],
-    params: [{
-      guid: guid(),
-      name: 'type',
-      type: IoType.Param,
-      target: node,
-      accessor: 'type',
-      options: [
-        'lowpass',
-        'highpass',
-        'bandpass',
-        'lowshelf',
-        'highshelf',
-        'peaking',
-        'notch',
-        'allpass',
-      ]
-    }]
-  }
+		}],
+		outputs: [{
+			guid: guid(),
+			name: 'output',
+			target: node,
+		}],
+		mods: [{
+			guid: guid(),
+			name: 'detune',
+			target: node,
+			accessor: 'detune',
+		}, {
+			guid: guid(),
+			name: 'frequency',
+			target: node,
+			accessor: 'frequency',
+		}, {
+			guid: guid(),
+			name: 'gain',
+			target: node,
+			accessor: 'gain',
+		}, {
+			guid: guid(),
+			name: 'Q',
+			target: node,
+			accessor: 'Q',
+		}],
+		params: [{
+			guid: guid(),
+			name: 'type',
+			target: node,
+			accessor: 'type',
+			options: [
+				'lowpass',
+				'highpass',
+				'bandpass',
+				'lowshelf',
+				'highshelf',
+				'peaking',
+				'notch',
+				'allpass',
+			]
+		}]
+	}
 }

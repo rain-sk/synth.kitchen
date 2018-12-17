@@ -1,7 +1,7 @@
 import { ModuleAction } from './actions';
 
 import { BaseState } from 'flux-fluent'
-import { ModuleProps } from 'src/ts/components/module';
+import { ModuleProps } from '../../components/module';
 
 export interface ModuleState extends BaseState<ModuleAction> {
     moduleMap: Map<string, ModuleProps>;
@@ -11,5 +11,5 @@ export interface ModuleState extends BaseState<ModuleAction> {
 export const initialState: ModuleState = {
     moduleMap: new Map<string, ModuleProps>(),
     modules: [],
-    dispatchStack: []
+    dispatchQueue: []
 };

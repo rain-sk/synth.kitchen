@@ -1,10 +1,15 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { SynthKitchen } from './ts/synth-kitchen';
+import { ContextWrapper } from './ts/contexts/context-wrapper';
+import { SynthKitchen } from './ts/components/synth-kitchen';
+import { GlobalOutput } from './ts/components/global-output';
 
-import './index.css';
+import './main.css';
 
 ReactDOM.render(
-  <SynthKitchen />,
-  document.getElementById('root') as HTMLElement
+    <ContextWrapper>
+        <SynthKitchen />
+        <GlobalOutput />
+    </ContextWrapper>,
+    document.getElementById('root') as HTMLElement
 );

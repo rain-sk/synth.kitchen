@@ -1,48 +1,43 @@
-import { ModuleProps } from '../components/module';
-import { IoType } from '../components/io-interface';
-import { guid } from '../utils/guid';
-import { SynthKitchenContext } from '../audio-context';
+import { ModuleProps } from '../../../components/module';
+import { guid } from '../../../utils/guid';
+import { audioContext } from '../../../utils/audio-context';
 
-export const createReverb = (node = SynthKitchenContext.createConvolver()): ModuleProps => {
-  return {
-    node,
-    guid: guid(),
-    inputs: [{
-      guid: guid(),
-      name: 'input',
-      type: IoType.Input,
-      target: node,
-    }],
-    outputs: [{
-      guid: guid(),
-      name: 'output',
-      type: IoType.Output,
-      target: node,
-    }],
-    mods: [{
-      guid: guid(),
-      name: 'gain',
-      type: IoType.Mod,
-      target: node,
-      accessor: 'gain',
-    }],
-    params: [{
-      guid: guid(),
-      name: 'buffer',
-      type: IoType.Param,
-      target: node,
-      accessor: 'buffer',
-      options: []
-    }, {
-      guid: guid(),
-      name: 'normalize',
-      type: IoType.Param,
-      target: node,
-      accessor: 'normalize',
-      options: [
-        'true',
-        'false'
-      ]
-    }]
-  }
+export const createReverb = (node = audioContext.createConvolver()): ModuleProps => {
+	return {
+		name: 'reverb',
+		node,
+		guid: guid(),
+		inputs: [{
+			guid: guid(),
+			name: 'input',
+			target: node,
+		}],
+		outputs: [{
+			guid: guid(),
+			name: 'output',
+			target: node,
+		}],
+		mods: [{
+			guid: guid(),
+			name: 'gain',
+			target: node,
+			accessor: 'gain',
+		}],
+		params: [{
+			guid: guid(),
+			name: 'buffer',
+			target: node,
+			accessor: 'buffer',
+			options: []
+		}, {
+			guid: guid(),
+			name: 'normalize',
+			target: node,
+			accessor: 'normalize',
+			options: [
+				'true',
+				'false'
+			]
+		}]
+	}
 }

@@ -1,31 +1,28 @@
-import { ModuleProps } from '../components/module';
-import { IoType } from '../components/io-interface';
-import { guid } from '../utils/guid';
-import { SynthKitchenContext } from '../audio-context';
+import { ModuleProps } from '../../../components/module';
+import { guid } from '../../../utils/guid';
+import { audioContext } from '../../../utils/audio-context';
 
-export const createGain = (node = SynthKitchenContext.createGain()): ModuleProps => {
-  return {
-    node,
-    guid: guid(),
-    inputs: [{
-      guid: guid(),
-      name: 'input',
-      type: IoType.Input,
-      target: node
-    }],
-    outputs: [{
-      guid: guid(),
-      name: 'output',
-      type: IoType.Output,
-      target: node
-    }],
-    mods: [{
-      guid: guid(),
-      name: 'gain',
-      type: IoType.Mod,
-      target: node,
-      accessor: 'gain'
-    }],
-    params: []
-  }
+export const createGain = (node = audioContext.createGain()): ModuleProps => {
+	return {
+		name: 'gain',
+		node,
+		guid: guid(),
+		inputs: [{
+			guid: guid(),
+			name: 'input',
+			target: node
+		}],
+		outputs: [{
+			guid: guid(),
+			name: 'output',
+			target: node
+		}],
+		mods: [{
+			guid: guid(),
+			name: 'gain',
+			target: node,
+			accessor: 'gain'
+		}],
+		params: []
+	}
 }
