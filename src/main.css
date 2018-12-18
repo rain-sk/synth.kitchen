@@ -1,0 +1,93 @@
+body {
+	background: #adad2b;
+}
+
+body, #root {
+	margin: 0;
+	padding: 0;
+	width: auto;
+	height: auto;
+	position: absolute;
+	box-sizing: border-box;
+}
+
+h1,h2,h3,h4 {
+	position: absolute;
+	top: -3000px;
+	left: -3000px;;
+}
+
+ul {
+	display: grid;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#kitchen {
+	margin: 1.5rem 1.5rem 0 1.5rem;
+	padding-bottom: 1.5rem;
+	grid-auto-flow: column;
+	grid-gap: 1.5rem;
+}
+
+.track > ul {
+	grid-gap: 1.5rem;
+}
+
+.module {
+	background: rgba(255,255,255,0.5);
+	border: 1px solid black;
+	display: grid;
+	grid-template-rows: 1.5rem auto 1.5rem;
+	grid-template-columns: 1.5rem auto 1.5rem;
+	grid-gap: 0.5rem;
+	min-height: 10rem;
+}
+
+.inputs, .outputs, .mods {
+	grid-gap: 2.5rem;
+}
+
+.inputs {
+	grid-column: 1;
+}
+
+.mods {
+	grid-column-start: 1;
+	grid-column-end: 4;
+	grid-row: 3;
+	justify-content: center;
+	grid-auto-flow: column;
+	margin: 0 2.5rem;
+}
+
+.outputs {
+	grid-column: 3;
+}
+
+.inputs, .outputs {
+	grid-row: 2;
+	align-items: center;
+	margin: 2.5rem 0;
+}
+
+.io button {
+	margin: 0;
+	padding: 0;
+	width: 1.5rem;
+	height: 1.5rem;
+	box-sizing: border-box;
+	border-radius: 0;
+	background: black;
+	color: pink;
+	border: 1px solid pink;
+}
+.io button:hover, .io button:focus {
+	background: red;
+	color: black;
+}
+.io button:active {
+	background: green;
+	color: black;
+}
