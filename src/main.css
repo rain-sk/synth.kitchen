@@ -24,15 +24,15 @@ ul {
 	list-style-type: none;
 }
 
-#kitchen {
+.kitchen-grid {
 	margin: 1.5rem 1.5rem 0 1.5rem;
 	padding-bottom: 1.5rem;
 	grid-auto-flow: column;
-	grid-gap: 1.5rem;
+	grid-gap: 3rem;
 }
 
 .track > ul {
-	grid-gap: 1.5rem;
+	grid-gap: 2rem;
 }
 
 .module {

@@ -1,6 +1,6 @@
 import { IoAction } from './actions';
 
-import { BaseState } from 'flux-fluent'
+import { BaseState } from 'use-flux'
 
 export interface IoState extends BaseState<IoAction> {
     active: false | string;

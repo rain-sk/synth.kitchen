@@ -1,6 +1,6 @@
 import { ModuleAction } from './actions';
 
-import { BaseState } from 'flux-fluent'
+import { BaseState } from 'use-flux'
 import { ModuleProps } from '../../components/module';
 
 export interface ModuleState extends BaseState<ModuleAction> {

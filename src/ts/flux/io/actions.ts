@@ -1,5 +1,5 @@
 import { IoState } from './state';
-import { Reducer } from 'flux-fluent';
+import { Reducer } from 'use-flux';
 import {
     IoActivate,
     IoClear,

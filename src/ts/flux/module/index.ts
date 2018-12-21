@@ -1,4 +1,4 @@
-import { useFlux } from 'flux-fluent';
+import { useFlux } from 'use-flux';
 
 import { ModuleReducers } from './actions';
 import { initialState } from './state';

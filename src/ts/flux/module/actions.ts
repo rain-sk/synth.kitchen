@@ -1,11 +1,11 @@
 import { ModuleState } from './state';
-import { Reducer } from 'flux-fluent';
+import { Reducer } from 'use-flux';
 import {
     //ModuleMove,
     ModuleRegister
 } from './reducers';
 
-export type ModuleAction = 
+export type ModuleAction =
     //| 'MODULE_MOVE'
     | 'MODULE_REGISTER';
 
