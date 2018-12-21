@@ -91,3 +91,8 @@ ul {
 	background: green;
 	color: black;
 }
+
+fieldset {
+	grid-column: 1 / 4;
+	grid-row: 1 / 4;
+}
