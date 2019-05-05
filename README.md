@@ -4,7 +4,7 @@ In-browser modular synthesis with the Web Audio API. Partially inspired by Max M
 # Why program synthesizers in the browser?
 Because modular synthesizers are expensive, and the Web Audio API makes digital audio generation and processing possible anywhere you have a computer with a modern browser.
 
-You can check out [some sounds created with the synth kitchen](https://soundcloud.com/therudnick/sets/synth-kitchen) on [my SoundCloud](https://soundcloud.com/therudnick).
+You can check out [some sounds created with the synth kitchen](https://soundcloud.com/therudnick/sets/synth-kitchen) on SoundCloud.
 
 Color Scheme: https://flatuicolors.com/palette/defo
 
