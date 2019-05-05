@@ -1,12 +1,13 @@
 import * as React from 'react';
 import * as WebMidi from 'webmidi';
 
-import { KitchenContext } from '../flux';
+import { KitchenStore } from '../flux';
 import { midiPlayNote, midiStopNote, midiInitialize } from '../flux/actions';
+import { useFlux } from 'use-flux';
 
 
 export const MidiService: React.FunctionComponent = () => {
-	const { state, dispatch } = React.useContext(KitchenContext);
+	const { state, dispatch } = useFlux(KitchenStore);
 	React.useEffect(() => {
 		if (!state.initialized) {
 			WebMidi.enable(function (err) {

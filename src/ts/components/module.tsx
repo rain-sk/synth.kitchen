@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { IoProps, Io } from './io';
 import { moduleRemove } from '../flux/actions/module';
-import { KitchenContext } from '../flux';
+import { KitchenStore } from '../flux';
+import { useFlux } from 'use-flux';
 
 export interface ModuleProps {
 	name: string;
@@ -19,7 +20,13 @@ export interface ModuleViewProps extends ModuleProps {
 }
 
 export const Module: React.FunctionComponent<ModuleViewProps> = (props) => {
-	const { dispatch } = React.useContext(KitchenContext);
+	const removeModule = React.useCallback(() => {
+		return moduleRemove(props.trackIndex, props.index);
+	}, [props.trackIndex, props.index]);
+
+	const remove = useFlux(KitchenStore, ({ dispatch }) => () => {
+		dispatch(removeModule());
+	});
 
 	return (
 		<li className="module" tabIndex={0}>
@@ -46,7 +53,7 @@ export const Module: React.FunctionComponent<ModuleViewProps> = (props) => {
 					</Io>
 				))}
 			</ul>
-			<button onClick={() => dispatch(moduleRemove(props.trackIndex, props.index))} aria-label="delete">X</button>
+			<button onClick={remove} aria-label="delete">X</button>
 		</li>
 	)
 }

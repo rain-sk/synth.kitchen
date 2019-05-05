@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { KitchenContext } from '../flux';
+import { KitchenStore } from '../flux';
 import { ioRegister } from '../flux/actions/io';
 import { mouseClick, mouseDown, mouseUp } from '../flux/actions';
+import { useFlux } from 'use-flux';
 
 export interface IoProps {
 	name: string;
@@ -14,7 +15,7 @@ export interface IoProps {
 }
 
 export const Io: React.FunctionComponent<IoProps> = (props) => {
-	const { dispatch } = React.useContext(KitchenContext);
+	const dispatch = useFlux(KitchenStore, ({ dispatch }) => dispatch);
 	React.useEffect(() => {
 		dispatch(ioRegister(props.guid, !!props.accessor ? props.target[props.accessor] : props.target));
 	});

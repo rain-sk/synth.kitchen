@@ -4,10 +4,11 @@ import { ModuleProps } from './module';
 import { GlobalOutput } from './global-output';
 import { TextContext } from '../contexts/text';
 import { AddTrack } from './add-track';
-import { KitchenContext } from '../flux';
+import { KitchenStore } from '../flux';
+import { useFlux } from 'use-flux';
 
 export const KitchenGridComponent: React.FunctionComponent = () => {
-	const { state } = React.useContext(KitchenContext);
+	const { state } = useFlux(KitchenStore);
 	const text = React.useContext(TextContext);
 	const moduleMatrix: (ModuleProps | undefined)[][] = state.modules.map(modules => modules.map(guid => state.moduleMap.get(guid)));
 	return (
