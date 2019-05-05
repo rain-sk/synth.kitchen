@@ -1,13 +1,11 @@
 import * as React from 'react';
-import { ModuleContext } from '../flux/module';
-import { ModuleType } from '../flux/module/module-factories';
+import { KitchenContext } from '../flux';
+import { ModuleType } from '../flux/state/module-factories';
+import { moduleAdd, moduleRemoveTrack } from '../flux/actions/module';
 
-export const AddModule: React.FunctionComponent<{ trackIndex: number }> = props => {
+export const AddModule: React.FunctionComponent<{ trackIndex: number, index: number }> = props => {
 	const [type, setType] = React.useState(ModuleType.OSCILLATOR);
-	const { dispatch } = React.useContext(ModuleContext);
-	const addModule = () => {
-		dispatch({ type: 'ADD_MODULE', payload: { track: props.trackIndex, type } });
-	}
+	const { dispatch } = React.useContext(KitchenContext);
 	const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setType(e.target.value as ModuleType);
 	}
@@ -30,7 +28,11 @@ export const AddModule: React.FunctionComponent<{ trackIndex: number }> = props 
 						))}
 					</select>
 				</label>
-				<button type="button" onClick={addModule}>ADD GAIN</button>
+				<button type="button" onClick={() => dispatch(moduleAdd(props.trackIndex, type))}>ADD GAIN</button>
+				{props.index === 0
+					? <button onClick={() => dispatch(moduleRemoveTrack(props.trackIndex))} aria-label="delete">X</button>
+					: null
+				}
 			</fieldset>
 		</li>
 	)

@@ -15,10 +15,10 @@ export const Track: React.FunctionComponent<TrackProps> = (props) => {
 				<h2>{props.modules.filter(module => module !== undefined).map(module => module ? module.name : null).join(',')}</h2>
 				{props.modules.map((module, index) => (
 					module
-						? <Module key={index} {...module} />
+						? <Module key={index} trackIndex={props.index} index={index} {...module} />
 						: null
 				))}
-				<AddModule trackIndex={props.index} />
+				<AddModule trackIndex={props.index} index={props.modules.length} />
 			</ul>
 		</li>
 	)

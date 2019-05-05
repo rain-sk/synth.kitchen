@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { IoProps, Io } from './io';
+import { moduleRemove } from '../flux/actions/module';
+import { KitchenContext } from '../flux';
 
 export interface ModuleProps {
 	name: string;
-	guid: string;
+	id: string;
 	node: any;
 	params: IoProps[];
 	inputs: IoProps[];
@@ -11,7 +13,14 @@ export interface ModuleProps {
 	outputs: IoProps[];
 }
 
-export const Module: React.FunctionComponent<ModuleProps> = (props) => {
+export interface ModuleViewProps extends ModuleProps {
+	trackIndex: number;
+	index: number;
+}
+
+export const Module: React.FunctionComponent<ModuleViewProps> = (props) => {
+	const { dispatch } = React.useContext(KitchenContext);
+
 	return (
 		<li className="module" tabIndex={0}>
 			<h3>{props.name}</h3>
@@ -37,6 +46,7 @@ export const Module: React.FunctionComponent<ModuleProps> = (props) => {
 					</Io>
 				))}
 			</ul>
+			<button onClick={() => dispatch(moduleRemove(props.trackIndex, props.index))} aria-label="delete">X</button>
 		</li>
 	)
 }

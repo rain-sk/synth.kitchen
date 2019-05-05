@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { ModuleContext } from '../flux/module';
+import { KitchenContext } from '../flux';
+import { moduleAddTrack } from '../flux/actions/module';
 
 export const AddTrack: React.FunctionComponent = () => {
-	const { dispatch } = React.useContext(ModuleContext);
-	const addTrack = () => {
-		dispatch({ type: 'ADD_TRACK' });
-	}
+	const { dispatch } = React.useContext(KitchenContext);
+
 	return (
 		<li>
-			<button type="button" onClick={addTrack}>ADD TRACK</button>
+			<button type="button" onClick={() => dispatch(moduleAddTrack())}>ADD TRACK</button>
 		</li>
 	)
 }
