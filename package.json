@@ -1,33 +1,41 @@
 {
-    "name": "synth-kitchen",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "flux-fluent": "1.0.3",
-        "music-fns": "^0.1.3",
-        "react": "16.7.0-alpha.2",
-        "react-dom": "16.7.0-alpha.2",
-        "react-scripts-ts": "^4.0.8",
-        "use-flux": "^2.0.3",
-        "webmidi": "^2.3.1"
-    },
-    "scripts": {
-        "start": "react-scripts-ts start",
-        "build": "react-scripts-ts build",
-        "test": "react-scripts-ts test --env=jsdom",
-        "eject": "react-scripts-ts eject"
-    },
-    "devDependencies": {
-        "@types/jest": "23.3.9",
-        "@types/node": "10.12.5",
-        "@types/react": "16.7.3",
-        "@types/react-dom": "16.0.9",
-        "typescript": "^3.2.2"
-    },
-    "browserslist": [
-        ">0.2%",
-        "not dead",
-        "not ie <= 11",
-        "not op_mini all"
+  "name": "synth.kitchen",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@types/jest": "24.0.13",
+    "@types/node": "12.0.2",
+    "@types/react": "16.8.17",
+    "@types/react-dom": "16.8.4",
+    "music-fns": "latest",
+    "rc-knob-accessible": "^1.0.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1",
+    "typescript": "^3.4.5",
+    "use-flux": "^2.0.3",
+    "uuid": "^3.3.2",
+    "webmidi": "^2.3.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
     ]
+  }
 }

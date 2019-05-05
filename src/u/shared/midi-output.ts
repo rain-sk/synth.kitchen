@@ -1,0 +1,31 @@
+import { MidiInput } from "./midi-input";
+import webmidi from "webmidi";
+
+export class MidiOutput {
+	private _connections: Map<string, MidiInput> = new Map<string, MidiInput>();
+	constructor() {
+		this._handleNoteOn = this._handleNoteOn.bind(this);
+		this._handleNoteOff = this._handleNoteOff.bind(this);
+		const input = webmidi.inputs[0];
+		if (input) {
+			input.addListener('noteon', 'all', this._handleNoteOn);
+			input.addListener('noteoff', 'all', this._handleNoteOff);
+		}
+	}
+	public connect(to: MidiInput) {
+		this._connections.set(to.id, to);
+	}
+	public disconnect(from: MidiInput) {
+		this._connections.delete(from.id);
+	}
+	private _handleNoteOn(e: any) {
+		Array.from(this._connections).forEach(([, connection]) => {
+			connection.noteOnCallback(e.note.number)
+		})
+	}
+	private _handleNoteOff(e: any) {
+		Array.from(this._connections).forEach(([, connection]) => {
+			connection.noteOffCallback(e.note.number)
+		})
+	}
+}
