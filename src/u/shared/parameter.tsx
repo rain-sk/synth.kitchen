@@ -12,7 +12,6 @@ export interface IParameterProps {
 	scale: (normalizedValue: number) => number;
 	onChange: (newValue: number) => void;
 	display: (currentValue: number) => number;
-	end?: IEnd;
 	type?: ConnectorType;
 }
 

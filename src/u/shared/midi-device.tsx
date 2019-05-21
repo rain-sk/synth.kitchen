@@ -29,6 +29,7 @@ export const MidiDevice: React.FunctionComponent<IModuleProps> = props => {
 	}
 
 	const handleChangeInputDevice = React.useCallback((newDevice: string) => {
+		module && module.node.switchInputDevice(newDevice);
 		setInputDevice(newDevice);
 	}, [module]);
 
