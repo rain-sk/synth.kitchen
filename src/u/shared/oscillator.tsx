@@ -101,11 +101,7 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 				scale={scaleFrequency}
 				display={displayFrequency}
 				onChange={handleChangeFrequency}
-				type={'CV_IN'}
-				end={{
-					moduleKey: props.moduleKey,
-					connectorId: frequencyId
-				}} />
+				type={'CV_IN'} />
 			<Parameter
 				name="detune"
 				moduleKey={props.moduleKey}
@@ -114,11 +110,7 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 				scale={scaleDetune}
 				display={displayDetune}
 				onChange={handleChangeDetune}
-				type={'CV_IN'}
-				end={{
-					moduleKey: props.moduleKey,
-					connectorId: detuneId
-				}} />
+				type={'CV_IN'} />
 			<Setting
 				name="type"
 				value={type}

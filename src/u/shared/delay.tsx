@@ -7,24 +7,24 @@ import { Connector } from './connector';
 
 const { v4 } = require('uuid');
 
-const scaleGain = (normalizedValue: number): number => {
-	return Math.min(1, Math.max(0, normalizedValue));
+const scaleDelay = (normalizedValue: number): number => {
+	return Math.min(100, Math.max(0, normalizedValue * 100));
 }
 
-const displayGain = (currentValue: number) => {
-	return Math.round(currentValue * 1000) / 1000;
+const displayDelay = (currentValue: number) => {
+	return Math.round(currentValue * 100) / 100;
 }
 
-export const Gain: React.FunctionComponent<IModuleProps> = props => {
+export const Delay: React.FunctionComponent<IModuleProps> = props => {
 	const [inputId] = React.useState(v4() as any);
 	const [outputId] = React.useState(v4() as any);
-	const [gainId] = React.useState(v4() as any);
-	const [gain, setGain] = React.useState(0.5);
+	const [delayId] = React.useState(v4() as any);
+	const [delay, setDelay] = React.useState(0.5);
 
 	const module = modules.get(props.moduleKey);
 
 	if (module && !module.initialized) {
-		module.node = audioContext.createGain();
+		module.node = audioContext.createDelay();
 		module.initialized = true;
 		module.connectors = [
 			{
@@ -38,36 +38,36 @@ export const Gain: React.FunctionComponent<IModuleProps> = props => {
 				type: 'SIGNAL_OUT',
 				getter: () => module.node
 			}, {
-				id: gainId,
-				name: 'gain',
+				id: delayId,
+				name: 'delay',
 				type: 'CV_IN',
-				getter: () => module.node.gain
+				getter: () => module.node.delayTime
 			}
 		]
-		setGain(module.node.gain.value);
+		setDelay(module.node.delayTime.value);
 	}
 
-	const handleChangeGain = React.useCallback((newGain: number) => {
-		(module as any).node.gain.value = newGain;
-		setGain(newGain);
+	const handleChangeDelay = React.useCallback((newDelay: number) => {
+		(module as any).node.delayTime.value = newDelay;
+		setDelay(newDelay);
 	}, [module]);
 
 	return (
 		<article>
-			<h2>gain</h2>
+			<h2>delay</h2>
 			<Connector
 				type="SIGNAL_IN"
 				name="input"
 				moduleKey={props.moduleKey}
 				connectorId={inputId} />
 			<Parameter
-				name="gain"
+				name="delay"
 				moduleKey={props.moduleKey}
-				id={gainId}
-				value={gain}
-				scale={scaleGain}
-				display={displayGain}
-				onChange={handleChangeGain}
+				id={delayId}
+				value={delay}
+				scale={scaleDelay}
+				display={displayDelay}
+				onChange={handleChangeDelay}
 				type={'CV_IN'} />
 			<Connector
 				type="SIGNAL_OUT"

@@ -45,7 +45,7 @@ export const Connection: React.FunctionComponent<IConnectionProps> = ({
 				context.beginPath();
 				context.moveTo(sourceX, sourceY);
 				context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, destinationX, destinationY);
-				context.strokeStyle = 'rgba(203,93,255,0.5)';
+				context.strokeStyle = type === 'SIGNAL' ? 'rgba(203,93,255,0.5)' : 'rgba(145,255,93,0.5)';
 				context.lineWidth = 3;
 				context.stroke();
 				context.beginPath();

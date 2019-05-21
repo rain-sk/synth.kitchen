@@ -58,6 +58,15 @@ legend {
 	width: 10rem;
 }
 
+.rack > ul > li.double-wide {
+	width: 20rem;
+}
+
+li.double-wide > article {
+	display: flex;
+	flex-wrap: wrap;
+}
+
 .remove-module {
 	position: absolute;
 	top: -.75rem;
@@ -111,7 +120,7 @@ legend {
     border-radius: 1rem;
 }
 
-.SIGNAL_IN {
+.SIGNAL_IN, .MIDI_IN {
     position: absolute;
     top: -.75rem;
     left: 50%;
@@ -123,6 +132,10 @@ legend {
     bottom: -.75rem;
     left: 50%;
     transform: translateX(-50%);
+}
+
+.MIDI_IN, .MIDI_OUT {
+	background-color: #fc5a96;
 }
 
 .connections, .connection {

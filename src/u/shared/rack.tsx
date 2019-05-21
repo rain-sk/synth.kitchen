@@ -32,16 +32,17 @@ export const Rack: React.FunctionComponent<IRackProps> = props => {
 		<div className="rack">
 			<ul>
 				{props.moduleKeys.map((key, index) => (
-					<li key={index}>
-						<button className="remove-module" type="button" onClick={handleRemoveModuleClick(key)}>x</button>
+					<React.Fragment key={index}>
 						<Module moduleKey={key} removeModule={props.removeModule} />
-					</li>
+					</React.Fragment>
 				))}
 			</ul>
 			<fieldset>
 				<legend>Add Module</legend>
 				<select onChange={handleNewModuleTypeChange}>
 					<option value={'GAIN'}>gain</option>
+					<option value={'DELAY'}>delay</option>
+					<option value={'FILTER'}>filter</option>
 					<option value={'OSCILLATOR'}>oscillator</option>
 					{webmidi.inputs.length > 0 ?
 						(

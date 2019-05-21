@@ -3,14 +3,22 @@ import webmidi from "webmidi";
 
 export class MidiOutput {
 	private _connections: Map<string, MidiInput> = new Map<string, MidiInput>();
+	private _input: any;
 	constructor() {
 		this._handleNoteOn = this._handleNoteOn.bind(this);
 		this._handleNoteOff = this._handleNoteOff.bind(this);
-		const input = webmidi.inputs[0];
-		if (input) {
-			input.addListener('noteon', 'all', this._handleNoteOn);
-			input.addListener('noteoff', 'all', this._handleNoteOff);
+		this._input = webmidi.inputs[0];
+		if (this._input) {
+			this._input.addListener('noteon', 'all', this._handleNoteOn);
+			this._input.addListener('noteoff', 'all', this._handleNoteOff);
 		}
+	}
+	public switchInputDevice(to: string) {
+		this._input.removeListener('noteon', 'all', this._handleNoteOn);
+		this._input.removeListener('noteoff', 'all', this._handleNoteOff);
+		this._input = webmidi.inputs.find((input: any) => input.name === to);
+		this._input.addListener('noteon', 'all', this._handleNoteOn);
+		this._input.addListener('noteoff', 'all', this._handleNoteOff);
 	}
 	public connect(to: MidiInput) {
 		this._connections.set(to.id, to);
