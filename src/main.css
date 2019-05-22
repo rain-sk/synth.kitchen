@@ -1,0 +1,173 @@
+body {
+	background: #fff;
+}
+
+body, #root {
+	margin: 0;
+	padding: 0;
+	width: auto;
+	height: auto;
+	position: absolute;
+	box-sizing: border-box;
+	font-family: monospace;
+	min-height: 100vh;
+    min-width: 100vw;
+}
+
+h1,h2,h3,h4,.visually-hidden {
+	position: absolute;
+	top: -3000px;
+	left: -3000px;;
+}
+
+ul {
+	display: grid;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.kitchen-grid {
+	margin: 1.5rem 1.5rem 0 1.5rem;
+	padding-bottom: 1.5rem;
+	grid-auto-flow: column;
+	grid-gap: 3rem;
+}
+
+legend {
+	text-align: center;
+}
+
+.rack {
+	display: flex;
+}
+
+.rack > ul {
+	display: flex;
+	align-items: flex-start;
+}
+
+.rack > ul > li {
+	display: flex;
+	border: 1px solid #000;
+	border-radius: 3px;
+	background: #eee;
+	position: relative;
+	margin: 2rem;
+	padding: 1.5rem;
+	width: 10rem;
+}
+
+.rack > ul > li.double-wide {
+	width: 20rem;
+}
+
+li.double-wide > article {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.remove-module {
+	position: absolute;
+	top: -.75rem;
+	left: -.75rem;
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 1rem;
+}
+
+.styledKnob circle,
+.styledKnob path {
+    fill: #fc5a96;
+    opacity: 0.4;
+    transition: 
+      opacity 100ms, 
+      color 100ms 
+      ease-in-out;
+}
+
+.styledKnob:hover circle,
+.styledKnob:hover path,
+.styledKnob:focus circle,
+.styledKnob:focus path {
+    fill: #180094;
+    opacity: 1;
+    transition: 
+      opacity 450ms, 
+      color 450ms 
+      ease-in-out;
+}
+
+.setting {
+	display: flex;
+}
+
+.control {
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#GLOBAL_CONTEXT {
+	top: 0;
+}
+
+.connector {
+	width: 1.5rem;
+	height: 1.5rem;
+	border: 2px solid #aaa;
+    border-radius: 1rem;
+}
+
+.SIGNAL_IN, .MIDI_IN {
+    position: absolute;
+    top: -.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.SIGNAL_OUT, .MIDI_OUT {
+    position: absolute;
+    bottom: -.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.MIDI_IN, .MIDI_OUT {
+	background-color: #fc5a96;
+}
+
+.connections, .connection {
+	pointer-events: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+@keyframes pulse {
+	0% {
+		background-color: #fff;
+	}
+	50% {
+		background-color: rgb(203,93,255);
+	}
+	100% {
+		background-color: #fff;
+	}
+}
+
+.active {
+	animation: pulse 0.75s linear infinite both;
+	-webkit-animation: pulse 0.75s linear infinite both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.active {
+		animation: none;
+		-webkit-animation: none;
+	}
+  }
