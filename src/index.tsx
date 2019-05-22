@@ -4,7 +4,8 @@ import * as webmidi from 'webmidi';
 
 import './main.css';
 
-import { App } from './u/app';
+import { App } from './synth-ui/app';
+import { AuthenticationProvider } from './user-ui/flux/authentication';
 
 const appRoot = document.getElementById('root') as HTMLElement;
 
@@ -15,7 +16,9 @@ webmidi.enable(function (err: string) {
     }
     else {
         ReactDOM.render(
-            <App />,
+            <AuthenticationProvider>
+                <App />
+            </AuthenticationProvider>,
             appRoot
         );
     }

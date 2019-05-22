@@ -1,5 +1,5 @@
 import { IModule } from '../shared/module';
-import { audioContext } from '../../a/utils/audio-context';
+import { audioContext } from '../audio/audio-context';
 
 export const modules = new Map<string, IModule>();
 

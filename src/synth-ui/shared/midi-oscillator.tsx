@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { IModuleProps } from './module';
 import { modules } from '../unique/module-map';
-import { audioContext } from '../../a/utils/audio-context';
+import { audioContext } from '../audio/audio-context';
 import { Setting } from './setting';
 import { Connector } from './connector';
 import { MidiInput } from './midi-input';
-import { midiToFrequency } from '../../a/utils/midi-to-frequency';
+import { midiToFrequency } from '../audio/midi-to-frequency';
 import { Parameter } from './parameter';
 
 const { v4 } = require('uuid');

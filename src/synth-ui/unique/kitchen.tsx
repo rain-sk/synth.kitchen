@@ -7,6 +7,7 @@ import { useFlux } from 'use-flux';
 import { ConnectionStore } from '../flux/connections';
 import { Connector } from '../shared/connector';
 import { Connections } from './connections';
+import { Login } from '../../user-ui/login';
 
 const { v4 } = require('uuid');
 
@@ -79,6 +80,7 @@ export const Kitchen: React.FunctionComponent = () => {
 			))}
 			<button type="button" onClick={addRack}>Add Rack</button>
 			<Connections moduleCount={modules.size} />
+			<Login />
 		</>
 	);
 };
