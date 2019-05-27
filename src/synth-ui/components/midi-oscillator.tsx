@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IModuleProps } from './module';
-import { modules } from '../unique/module-map';
+import { modules } from './module-map';
 import { audioContext } from '../audio/audio-context';
 import { Setting } from './setting';
 import { Connector } from './connector';

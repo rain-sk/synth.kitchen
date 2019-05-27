@@ -1,13 +1,16 @@
 import * as React from 'react';
 
-import { Rack, IRack } from '../shared/rack';
-import { ModuleType, IModule } from '../shared/module';
+import { Rack, IRack } from './rack';
+import { ModuleType, IModule } from './module';
 import { modules } from './module-map';
 import { useFlux } from 'use-flux';
 import { ConnectionStore } from '../flux/connections';
-import { Connector } from '../shared/connector';
+import { Connector } from './connector';
 import { Connections } from './connections';
-import { Login } from '../../user-ui/login';
+import { Login } from './login';
+import { Serializer } from './serializer';
+import { Sidebar } from './sidebar';
+import { AuthenticationStore } from '../flux/authentication';
 
 const { v4 } = require('uuid');
 
@@ -15,6 +18,7 @@ export const Kitchen: React.FunctionComponent = () => {
 	const clear = useFlux(ConnectionStore, ({ dispatch }) => (moduleKey: string) => {
 		dispatch({ type: 'CLEAR', payload: { moduleKey } })
 	});
+	const isLoggingIn = useFlux(AuthenticationStore, ({ state }) => state.isLoggingIn);
 
 	const [racks, setRacks] = React.useState([{
 		index: 0,
@@ -69,8 +73,13 @@ export const Kitchen: React.FunctionComponent = () => {
 		clear(moduleKey);
 	}, [clear, racks]);
 
+	const onDragEnd = (e: any) => {
+		console.log(e);
+	}
+
 	return (
 		<>
+			<Sidebar />
 			<Connector type="SIGNAL_IN" name={'speakers'} connectorId={'GLOBAL_CONTEXT'} moduleKey={'GLOBAL_CONTEXT'} />
 			{racks.map(rack => (
 				<React.Fragment key={rack.index}>
@@ -80,7 +89,8 @@ export const Kitchen: React.FunctionComponent = () => {
 			))}
 			<button type="button" onClick={addRack}>Add Rack</button>
 			<Connections moduleCount={modules.size} />
-			<Login />
+			<Serializer racks={racks} />
+			{isLoggingIn ? <Login /> : null}
 		</>
 	);
 };

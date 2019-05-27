@@ -1,6 +1,6 @@
 import { createFlux, BaseState } from 'use-flux';
-import { modules } from '../unique/module-map';
-import { IModule, IConnector } from '../shared/module';
+import { modules } from '../components/module-map';
+import { IModule, IConnector } from '../components/module';
 
 export type ConnectionAction = 'ACTIVATE' | 'DEACTIVATE' | 'CLICK' | 'CLEAR' | 'CONNECT' | 'DISCONNECT';
 

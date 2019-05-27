@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useFlux } from 'use-flux';
-import { AuthenticationStore, IAuthenticationResponse } from './flux/authentication';
+import { AuthenticationStore, IAuthenticationResponse } from '../flux/authentication';
 
 enum LoginStatus {
 	NoError,

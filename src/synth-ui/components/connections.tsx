@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useFlux } from 'use-flux';
 import { ConnectionStore, IConnection, ConnectionType } from '../flux/connections';
-import { Connection } from '../shared/connection';
+import { Connection } from './connection';
 
 function getConnectionCurves(connections: IConnection[]) {
 	const curves: ICurve[] = [];

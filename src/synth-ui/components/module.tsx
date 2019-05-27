@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { modules } from '../unique/module-map';
+import { modules } from './module-map';
 import { Gain } from './gain';
 import { Delay } from './delay';
 import { Filter } from './filter';

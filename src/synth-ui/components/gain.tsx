@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { audioContext } from '../audio/audio-context';
 import { IModuleProps } from './module';
-import { modules } from '../unique/module-map';
+import { modules } from './module-map';
 import { Parameter } from './parameter';
 import { Connector } from './connector';
 

@@ -1,4 +1,4 @@
-import { IModule } from '../shared/module';
+import { IModule } from './module';
 import { audioContext } from '../audio/audio-context';
 
 export const modules = new Map<string, IModule>();
