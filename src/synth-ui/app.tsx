@@ -1,12 +1,15 @@
 import * as React from 'react';
 
-import { Kitchen } from './unique/kitchen';
+import { Kitchen } from './components/kitchen';
 import { ConnectionProvider } from './flux/connections';
+import { AuthenticationProvider } from './flux/authentication';
 
 export const App: React.FunctionComponent = () => {
 	return (
-		<ConnectionProvider>
-			<Kitchen />
-		</ConnectionProvider>
+		<AuthenticationProvider>
+			<ConnectionProvider>
+				<Kitchen />
+			</ConnectionProvider>
+		</AuthenticationProvider>
 	);
 };
