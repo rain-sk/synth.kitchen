@@ -11,6 +11,7 @@ import { Login } from './login';
 import { Serializer } from './serializer';
 import { Sidebar } from './sidebar';
 import { AuthenticationStore } from '../flux/authentication';
+import { UserUi } from './user-ui';
 
 const { v4 } = require('uuid');
 
@@ -18,7 +19,6 @@ export const Kitchen: React.FunctionComponent = () => {
 	const clear = useFlux(ConnectionStore, ({ dispatch }) => (moduleKey: string) => {
 		dispatch({ type: 'CLEAR', payload: { moduleKey } })
 	});
-	const isLoggingIn = useFlux(AuthenticationStore, ({ state }) => state.isLoggingIn);
 
 	const [racks, setRacks] = React.useState([{
 		index: 0,
@@ -90,7 +90,7 @@ export const Kitchen: React.FunctionComponent = () => {
 			<button type="button" onClick={addRack}>Add Rack</button>
 			<Connections moduleCount={modules.size} />
 			<Serializer racks={racks} />
-			{isLoggingIn ? <Login /> : null}
+			<UserUi />
 		</>
 	);
 };

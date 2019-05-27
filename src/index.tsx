@@ -8,15 +8,20 @@ import { App } from './synth-ui/app';
 
 const appRoot = document.getElementById('root') as HTMLElement;
 
+let _debugMode = window.location.hash === '#sk_debug';
+let _webmidiEnabled = true;
+
 webmidi.enable(function (err: string) {
     if (!!err) {
-        appRoot.innerText = 'Web MIDI is not supported in this browser.';
-        console.error(err);
+        _webmidiEnabled = false;
     }
-    else {
-        ReactDOM.render(
-            <App />,
-            appRoot
-        );
-    }
+    ReactDOM.render(
+        <App />,
+        appRoot
+    );
 });
+
+export const debugMode = () => _debugMode;
+export const webmidiEnabled = () => _webmidiEnabled;
+
+console.log(debugMode());

@@ -14,7 +14,12 @@ export const Login: React.FunctionComponent = () => {
 	const [loginStatus, setLoginStatus] = React.useState(LoginStatus.NoError);
 	const [username, setUsername] = React.useState('');
 	const [password, setPassword] = React.useState('');
+	const [submitting, setSubmitting] = React.useState(false);
+	React.useEffect(() => {
+		setSubmitting(false);
+	}, [])
 	const submitLogin = React.useCallback(() => {
+		setSubmitting(true);
 		fetch('https://synth.kitchen/api/wp-json/jwt-auth/v1/token', {
 			headers: {
 				'Accept': 'application/json',
@@ -32,6 +37,7 @@ export const Login: React.FunctionComponent = () => {
 				});
 			} else {
 				setLoginStatus(LoginStatus.Error);
+				setSubmitting(false);
 			}
 		});
 	}, [username, password]);
@@ -50,11 +56,21 @@ export const Login: React.FunctionComponent = () => {
 			{loginStatus !== LoginStatus.Error ? null : (
 				<span className="form-error" aria-live="polite">There was an error processing your information. Please try again.</span>
 			)}
-			<label htmlFor="username">username</label>
-			<input id="username" type="text" value={username} onChange={onChangeUsername} />
-			<label htmlFor="password">password</label>
-			<input id="password" type="text" value={password} onChange={onChangePassword} />
-			<button type="button" onClick={submitLogin}>login</button>
-		</fieldset>
+			{submitting ?
+				(
+					<p>...</p>
+				)
+				:
+				(
+					<>
+						<label htmlFor="username">username</label>
+						<input id="username" type="text" value={username} onChange={onChangeUsername} />
+						<label htmlFor="password">password</label>
+						<input id="password" type="text" value={password} onChange={onChangePassword} />
+						<button type="button" onClick={submitLogin}>login</button>
+					</>
+				)
+			}
+		</fieldset >
 	)
 }
