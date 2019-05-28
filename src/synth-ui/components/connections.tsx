@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useFlux } from 'use-flux';
 import { ConnectionStore, IConnection, ConnectionType } from '../flux/connections';
-import { Connection } from './connection';
 
 function getConnectionCurves(connections: IConnection[]) {
 	const curves: ICurve[] = [];
@@ -53,8 +52,19 @@ export const Connections: React.FunctionComponent<IConnectionsProps> = ({ module
 	const [curves, setCurves] = React.useState(getConnectionCurves(connections));
 
 	const [parentRef] = React.useState(React.createRef<HTMLSpanElement>());
+	const [canvasRef] = React.useState(React.createRef<HTMLCanvasElement>());
+	const [context2D, setContext2D] = React.useState<CanvasRenderingContext2D>(undefined as any as CanvasRenderingContext2D);
 	const [width, setWidth] = React.useState(window.innerWidth);
 	const [height, setHeight] = React.useState(window.innerWidth);
+
+	React.useEffect(() => {
+		if (canvasRef.current) {
+			const context = canvasRef.current.getContext('2d');
+			if (context) {
+				setContext2D(context);
+			}
+		}
+	}, [canvasRef.current]);
 
 	React.useEffect(() => {
 		const resizeHandler = () => {
@@ -68,22 +78,55 @@ export const Connections: React.FunctionComponent<IConnectionsProps> = ({ module
 		return () => {
 			document.removeEventListener('resize', resizeHandler, false);
 		};
-	}, [parentRef]);
+	}, []);
 
 	React.useEffect(() => {
 		setCurves(getConnectionCurves(connections));
 	}, [connections, width, height]);
 
+	React.useEffect(() => {
+		const canvas = canvasRef.current;
+		if (canvas) {
+			const parent = canvas.parentElement as HTMLSpanElement;
+			if (context2D) {
+				context2D.clearRect(0, 0, canvas.width, canvas.height);
+				context2D.clearRect(0, 0, canvas.width, canvas.height);
+				canvas.width = parent.offsetWidth;
+				canvas.height = parent.offsetHeight;
+				curves.forEach((curve) => {
+					context2D.beginPath();
+					context2D.moveTo(curve.sourceX, curve.sourceY);
+					context2D.bezierCurveTo(curve.cp1x, curve.cp1y, curve.cp2x, curve.cp2y, curve.destinationX, curve.destinationY);
+					context2D.strokeStyle = curve.type === 'SIGNAL' ? 'rgba(203,93,255,0.5)' : 'rgba(145,255,93,0.5)';
+					context2D.lineWidth = 3;
+					context2D.stroke();
+					context2D.beginPath();
+					context2D.arc(curve.sourceX, curve.sourceY, 4, 0, 2 * Math.PI, false);
+					context2D.fillStyle = 'rgb(203,93,255)';
+					context2D.fill();
+					context2D.lineWidth = 2;
+					context2D.strokeStyle = '#003300';
+					context2D.stroke();
+					context2D.beginPath();
+					context2D.arc(curve.destinationX, curve.destinationY, 4, 0, 2 * Math.PI, false);
+					context2D.fillStyle = 'rgb(203,93,255)';
+					context2D.fill();
+					context2D.lineWidth = 2;
+					context2D.strokeStyle = '#003300';
+					context2D.stroke();
+				});
+
+			}
+		}
+	}, [context2D, curves, connections, width, height]);
+
+	// return (
+	// 	<canvas ref={canvasRef} className={`connection ${type}`} />
+	// );
+
 	return (
 		<span ref={parentRef} className="connections">
-			{curves.map((curve, index) =>
-				<Connection
-					key={index}
-					moduleCount={moduleCount}
-					height={height}
-					width={width}
-					{...curve} />
-			)}
+			<canvas ref={canvasRef} />
 		</span>
 	)
 }
