@@ -127,7 +127,38 @@ export const Connections: React.FunctionComponent<IConnectionsProps> = ({ module
 				canvas.width = parent.offsetWidth;
 				canvas.height = parent.offsetHeight;
 				curves.forEach((curve) => {
-					drawCurve(context2D, curve);
+					const {
+						sourceX,
+						sourceY,
+						cp1x,
+						cp1y,
+						cp2x,
+						cp2y,
+						destinationX,
+						destinationY,
+						type
+					} = curve;
+					context2D.beginPath();
+					context2D.moveTo(sourceX, sourceY);
+					context2D.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, destinationX, destinationY);
+					context2D.strokeStyle = type === 'SIGNAL' ? 'rgba(203,93,255,0.5)' : 'rgba(145,255,93,0.5)';
+					context2D.lineWidth = 3;
+					context2D.stroke();
+					context2D.beginPath();
+					context2D.arc(sourceX, sourceY, 4, 0, 2 * Math.PI, false);
+					context2D.fillStyle = 'rgb(203,93,255)';
+					context2D.fill();
+					context2D.lineWidth = 2;
+					context2D.strokeStyle = '#003300';
+					context2D.stroke();
+					context2D.beginPath();
+					context2D.arc(destinationX, destinationY, 4, 0, 2 * Math.PI, false);
+					context2D.fillStyle = 'rgb(203,93,255)';
+					context2D.fill();
+					context2D.lineWidth = 2;
+					context2D.strokeStyle = '#003300';
+					context2D.stroke();
+
 				});
 			}
 		}
