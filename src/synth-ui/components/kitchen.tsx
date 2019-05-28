@@ -21,10 +21,11 @@ export const Kitchen: React.FunctionComponent = () => {
 	const [racks, setRacks] = React.useState<IRack[]>([]);
 
 	const addRack = React.useCallback(() => {
-		setRacks([...racks, {
+		racks.push({
 			index: racks.length,
 			moduleKeys: []
-		}]);
+		});
+		setRacks([...racks]);
 	}, [racks]);
 
 	const removeRack = React.useCallback((rackIndex: number) => () => {
@@ -60,6 +61,7 @@ export const Kitchen: React.FunctionComponent = () => {
 	const removeModule = React.useCallback((moduleKey: string) => {
 		const module = modules.get(moduleKey);
 		module && module.node && module.node.stop && module.node.stop();
+		//console.log(racks);
 		const newRacks = racks.map(rack => ({
 			index: rack.index,
 			moduleKeys: rack.moduleKeys.filter(key => key !== moduleKey)
@@ -68,10 +70,6 @@ export const Kitchen: React.FunctionComponent = () => {
 
 		clear(moduleKey);
 	}, [racks]);
-
-	// const onDragEnd = (e: any) => {
-	// 	console.log(e);
-	// }
 
 	return (
 		<>
