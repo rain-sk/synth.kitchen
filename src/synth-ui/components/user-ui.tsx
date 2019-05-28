@@ -20,8 +20,6 @@ export const UserUi: React.FunctionComponent = () => {
 		checkLocalstorage();
 	}, []);
 
-	console.log(isRegistering);
-
 	if (isLoggingIn) {
 		return <Login />;
 	}

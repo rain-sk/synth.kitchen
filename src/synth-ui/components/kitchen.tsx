@@ -71,9 +71,9 @@ export const Kitchen: React.FunctionComponent = () => {
 		clear(moduleKey);
 	}, [clear, racks]);
 
-	const onDragEnd = (e: any) => {
-		console.log(e);
-	}
+	// const onDragEnd = (e: any) => {
+	// 	console.log(e);
+	// }
 
 	return (
 		<>

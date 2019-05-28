@@ -90,7 +90,6 @@ reducers.set('OPEN_LOGIN', (state) => ({
 }));
 
 reducers.set('OPEN_REGISTER', (state) => {
-	console.log('reg');
 	return {
 		...state,
 		isLoggingIn: false,

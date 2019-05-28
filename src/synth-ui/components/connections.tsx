@@ -69,7 +69,6 @@ export const Connections: React.FunctionComponent<IConnectionsProps> = ({ module
 
 
 	const updateCurves = React.useCallback(() => {
-		console.log('updating curves');
 		setCurves(getConnectionCurves(connections));
 	}, [context2d, connections, moduleCount, rackCount]);
 
