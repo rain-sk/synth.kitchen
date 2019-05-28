@@ -24,4 +24,4 @@ webmidi.enable(function (err: string) {
 export const debugMode = () => _debugMode;
 export const webmidiEnabled = () => _webmidiEnabled;
 
-console.log(debugMode());
+if (debugMode()) console.log('debug mode');

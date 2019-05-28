@@ -6,7 +6,7 @@ function getConnectionCurves(connections: IConnection[]) {
 	const curves: ICurve[] = [];
 	connections.forEach(connection => {
 		const source = document.getElementById(connection.source.connectorId) as HTMLButtonElement;
-		const destination = document.getElementById(connection.destination.connectorId) as HTMLButtonElement;
+		const destination = document.getElementById(connection.source.connectorId) as HTMLButtonElement;
 		if (source && destination) {
 			const sourceBoundingClientRect = source.getBoundingClientRect();
 			const destinationBoundingClientRect = destination.getBoundingClientRect();
@@ -14,7 +14,7 @@ function getConnectionCurves(connections: IConnection[]) {
 			const sourceY = sourceBoundingClientRect.top + sourceBoundingClientRect.height / 2 + window.pageYOffset;
 			const destinationX = destinationBoundingClientRect.left + destinationBoundingClientRect.width / 2 + window.pageXOffset;
 			const destinationY = destinationBoundingClientRect.top + destinationBoundingClientRect.height / 2 + window.pageYOffset;
-
+			console.log('what');
 			curves.push({
 				sourceX,
 				sourceY,
@@ -43,11 +43,44 @@ export interface ICurve {
 	type: ConnectionType;
 }
 
-export interface IConnectionsProps {
-	moduleCount: number;
+function applyTo(context: CanvasRenderingContext2D, change: (context: CanvasRenderingContext2D) => void) {
+	context.beginPath();
+	change(context);
+	context.stroke();
 }
 
-export const Connections: React.FunctionComponent<IConnectionsProps> = ({ moduleCount }) => {
+function drawCurve(context2D: CanvasRenderingContext2D, curve: ICurve) {
+	applyTo(context2D, (context: CanvasRenderingContext2D) => {
+		console.log('1');
+		context.moveTo(curve.sourceX, curve.sourceY);
+		context.bezierCurveTo(curve.cp1x, curve.cp1y, curve.cp2x, curve.cp2y, curve.destinationX, curve.destinationY);
+		context.strokeStyle = curve.type === 'SIGNAL' ? 'rgba(203,93,255,0.25)' : 'rgba(145,255,93,0.25)';
+		context.lineWidth = 3;
+	});
+	applyTo(context2D, (context: CanvasRenderingContext2D) => {
+		console.log('2');
+		context.arc(curve.sourceX, curve.sourceY, 4, 0, 2 * Math.PI, false);
+		context.fillStyle = 'rgb(203,93,255)';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = '#003300';
+	});
+	applyTo(context2D, (context: CanvasRenderingContext2D) => {
+		console.log('3');
+		context.arc(curve.destinationX, curve.destinationY, 4, 0, 2 * Math.PI, false);
+		context.fillStyle = 'rgb(203,93,255)';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = '#003300';
+	});
+}
+
+export interface IConnectionsProps {
+	moduleCount: number;
+	rackCount: number;
+}
+
+export const Connections: React.FunctionComponent<IConnectionsProps> = ({ moduleCount, rackCount }) => {
 	const connections = useFlux(ConnectionStore, ({ state }) => state.connections);
 	const [curves, setCurves] = React.useState(getConnectionCurves(connections));
 
@@ -94,35 +127,11 @@ export const Connections: React.FunctionComponent<IConnectionsProps> = ({ module
 				canvas.width = parent.offsetWidth;
 				canvas.height = parent.offsetHeight;
 				curves.forEach((curve) => {
-					context2D.beginPath();
-					context2D.moveTo(curve.sourceX, curve.sourceY);
-					context2D.bezierCurveTo(curve.cp1x, curve.cp1y, curve.cp2x, curve.cp2y, curve.destinationX, curve.destinationY);
-					context2D.strokeStyle = curve.type === 'SIGNAL' ? 'rgba(203,93,255,0.5)' : 'rgba(145,255,93,0.5)';
-					context2D.lineWidth = 3;
-					context2D.stroke();
-					context2D.beginPath();
-					context2D.arc(curve.sourceX, curve.sourceY, 4, 0, 2 * Math.PI, false);
-					context2D.fillStyle = 'rgb(203,93,255)';
-					context2D.fill();
-					context2D.lineWidth = 2;
-					context2D.strokeStyle = '#003300';
-					context2D.stroke();
-					context2D.beginPath();
-					context2D.arc(curve.destinationX, curve.destinationY, 4, 0, 2 * Math.PI, false);
-					context2D.fillStyle = 'rgb(203,93,255)';
-					context2D.fill();
-					context2D.lineWidth = 2;
-					context2D.strokeStyle = '#003300';
-					context2D.stroke();
+					drawCurve(context2D, curve);
 				});
-
 			}
 		}
 	}, [context2D, curves, connections, width, height]);
-
-	// return (
-	// 	<canvas ref={canvasRef} className={`connection ${type}`} />
-	// );
 
 	return (
 		<span ref={parentRef} className="connections">
