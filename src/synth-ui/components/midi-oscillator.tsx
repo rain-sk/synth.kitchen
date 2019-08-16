@@ -2,7 +2,7 @@ import * as React from 'react';
 import { IModuleProps } from './module';
 import { modules } from './module-map';
 import { audioContext } from '../audio/audio-context';
-import { Setting } from './setting';
+import { SettingRadio, SettingSelect } from './setting';
 import { Connector } from './connector';
 import { MidiInput } from './midi-input';
 import { midiToFrequency } from '../audio/midi-to-frequency';
@@ -146,7 +146,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 					name="midi input"
 					moduleKey={this.props.moduleKey}
 					connectorId={this.state.midiInputId} />
-				<Setting
+				<SettingSelect
 					name="type"
 					value={this.state.type}
 					options={oscillatorTypeOptions}
