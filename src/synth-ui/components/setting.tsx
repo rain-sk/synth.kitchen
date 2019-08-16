@@ -41,7 +41,7 @@ export const SettingSelect: React.FunctionComponent<ISettingProps> = props => {
 			<legend>{props.name}</legend>
 			<select value={props.value} onChange={handleChange}>
 				{props.options.map((option, index) => (
-					<option value={option[0]}>{option[1]}</option>
+					<option key={index} value={option[0]}>{option[1]}</option>
 				))}
 			</select>
 		</fieldset>
