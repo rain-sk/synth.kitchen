@@ -2,7 +2,7 @@ import * as React from 'react';
 import { IModuleProps } from './module';
 import { modules } from './module-map';
 import { audioContext } from '../audio/audio-context';
-import { Setting } from './setting';
+import { SettingRadio } from './setting';
 import { Parameter } from './parameter';
 import { Connector } from './connector';
 
@@ -111,7 +111,7 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 				display={displayDetune}
 				onChange={handleChangeDetune}
 				type={'CV_IN'} />
-			<Setting
+			<SettingRadio
 				name="type"
 				value={type}
 				options={oscillatorTypeOptions}

@@ -9,7 +9,7 @@ export interface ISettingProps {
 	onChange: (newValue: string) => void;
 }
 
-export const Setting: React.FunctionComponent<ISettingProps> = props => {
+export const SettingRadio: React.FunctionComponent<ISettingProps> = props => {
 	const [id] = React.useState(v4() as string);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +25,25 @@ export const Setting: React.FunctionComponent<ISettingProps> = props => {
 					<label htmlFor={`${id}_${option[0]}`}>{option[1]}</label>
 				</span>
 			))}
+		</fieldset>
+	);
+};
+
+export const SettingSelect: React.FunctionComponent<ISettingProps> = props => {
+	const [id] = React.useState(v4() as string);
+
+	const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		props.onChange(e.target.value);
+	};
+
+	return (
+		<fieldset className="setting">
+			<legend>{props.name}</legend>
+			<select value={props.value} onChange={handleChange}>
+				{props.options.map((option, index) => (
+					<option value={option[0]}>{option[1]}</option>
+				))}
+			</select>
 		</fieldset>
 	);
 };

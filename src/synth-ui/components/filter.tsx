@@ -4,7 +4,7 @@ import { IModuleProps } from './module';
 import { modules } from './module-map';
 import { Parameter } from './parameter';
 import { Connector } from './connector';
-import { Setting } from './setting';
+import { SettingRadio } from './setting';
 
 const { v4 } = require('uuid');
 
@@ -184,7 +184,7 @@ export const Filter: React.FunctionComponent<IModuleProps> = props => {
 				display={displayGain}
 				onChange={handleChangeGain}
 				type={'CV_IN'} />
-			<Setting
+			<SettingRadio
 				name="type"
 				value={type}
 				options={filterTypeOptions}
