@@ -8,7 +8,7 @@ import { ConnectionStore } from '../flux/connections';
 import { Connector } from './connector';
 import { Connections } from './connections';
 import { Serializer } from './serializer';
-import { Sidebar } from './sidebar';
+import { Account } from './account';
 import { UserUi } from './user-ui';
 
 const { v4 } = require('uuid');
@@ -70,7 +70,7 @@ export const Kitchen: React.FunctionComponent = () => {
 
 	return (
 		<>
-			<Sidebar />
+			{/* <Account /> */}
 			<Connector type="SIGNAL_IN" name={'speakers'} connectorId={'GLOBAL_CONTEXT'} moduleKey={'GLOBAL_CONTEXT'} />
 			{racks.map(rack => (
 				<React.Fragment key={rack.index}>

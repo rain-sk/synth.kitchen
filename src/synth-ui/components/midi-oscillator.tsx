@@ -25,109 +25,148 @@ const oscillatorTypeOptions: [string, string][] = [
 	['sawtooth', 'saw']
 ];
 
-export const MidiOscillator: React.FunctionComponent<IModuleProps> = props => {
-	const module = modules.get(props.moduleKey);
+interface IMidiOscillatorState {
+	midiInputId: string;
+	detuneId: string;
+	outputId: string;
+	type: OscillatorType;
+	detune: number;
+	output: GainNode;
+	activeOscillators: Map<number, OscillatorNode>;
+	detuneInput: GainNode;
+}
 
-	const [midiInputId] = React.useState(v4() as any);
-	const [detuneId] = React.useState(v4() as any);
-	const [outputId] = React.useState(v4() as any);
-	const [oscillatorType, setOscillatorType] = React.useState({ type: 'sine' as OscillatorType });
-	const [detune, setDetune] = React.useState(0);
+export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillatorState> {
+	module = modules.get(this.props.moduleKey);
+	constructor(props: IModuleProps) {
+		super(props);
+		this.state = {
+			midiInputId: v4(),
+			detuneId: v4(),
+			outputId: v4(),
+			type: 'sine',
+			detune: 0,
+			output: audioContext.createGain(),
+			activeOscillators: new Map<number, OscillatorNode>(),
+			detuneInput: audioContext.createGain()
+		};
+		this.createOscillator = this.createOscillator.bind(this);
+		this.destroyOscillator = this.destroyOscillator.bind(this);
+		this.handleChangeType = this.handleChangeType.bind(this);
+		this.handleChangeDetune = this.handleChangeDetune.bind(this);
+		this.getDetuneInput = this.getDetuneInput.bind(this);
+		this.getOutput = this.getOutput.bind(this);
+	}
 
-	const [output] = React.useState(audioContext.createGain());
-	const [activeModules] = React.useState(new Map<number, OscillatorNode>());
-
-	const [detuneInput] = React.useState(audioContext.createGain());
-
-	const createOscillator = React.useCallback((note: number) => {
+	createOscillator(note: number) {
+		this.destroyOscillator(note);
 		const osc = audioContext.createOscillator();
 		osc.frequency.value = midiToFrequency(note);
-		osc.detune.value = detune;
-		osc.type = 'sawtooth';//oscillatorType.type;
+		osc.detune.value = this.state.detune;
+		osc.type = this.state.type;
 		osc.start();
-		detuneInput.connect(osc.detune);
-		osc.connect(output);
-		activeModules.set(note, osc);
-	}, [detune, oscillatorType, detuneInput]);
+		this.state.detuneInput.connect(osc.detune);
+		osc.connect(this.state.output);
+		this.state.activeOscillators.set(note, osc);
+	}
 
-	const destroyOscillator = React.useCallback((note: number) => {
-		const osc = activeModules.get(note);
+	destroyOscillator(note: number) {
+		const osc = this.state.activeOscillators.get(note);
 		if (osc) {
 			try {
 				osc.stop();
-				osc.disconnect(output);
+				osc.disconnect(this.state.output);
 			} catch { }
 		}
-	}, []);
-
-	const [midiInput] = React.useState(new MidiInput(midiInputId, props.moduleKey, createOscillator, destroyOscillator));
-
-	if (module && !module.initialized) {
-		const detuneInput = audioContext.createGain();
-		detuneInput.gain.value = 1;
-		module.node = midiInput;
-		module.initialized = true;
-		module.connectors = [
-			{
-				id: outputId,
-				name: 'output',
-				type: 'SIGNAL_OUT',
-				getter: () => output
-			}, {
-				id: midiInputId,
-				name: 'midi input',
-				type: 'MIDI_IN',
-				getter: () => module.node
-			}, {
-				id: detuneId,
-				name: 'detune',
-				type: 'SIGNAL_IN',
-				getter: () => detuneInput
-			}
-		];
 	}
 
-	const handleChangeType = React.useCallback((newType: string) => {
-		activeModules.forEach((module) => {
-			module.type = newType as OscillatorType;
+	handleChangeType(newType: string) {
+		this.state.activeOscillators.forEach((oscillator) => {
+			oscillator.type = newType as OscillatorType;
 		});
-		setOscillatorType({ type: newType as OscillatorType });
-	}, [module]);
-
-	const handleChangeDetune = React.useCallback((newDetune: number) => {
-		activeModules.forEach((module) => {
-			module.detune.value = newDetune;
+		this.setState({
+			type: newType as OscillatorType
 		});
-		setDetune(newDetune);
-	}, [module]);
+	}
 
-	return (
-		<article>
-			<h2>oscillator</h2>
-			<Connector
-				type="MIDI_IN"
-				name="midi input"
-				moduleKey={props.moduleKey}
-				connectorId={midiInputId} />
-			<Setting
-				name="type"
-				value={oscillatorType.type}
-				options={oscillatorTypeOptions}
-				onChange={handleChangeType} />
-			<Parameter
-				name="detune"
-				moduleKey={props.moduleKey}
-				id={detuneId}
-				value={detune}
-				display={displayDetune}
-				scale={scaleDetune}
-				onChange={handleChangeDetune}
-				type={'CV_IN'} />
-			<Connector
-				type="SIGNAL_OUT"
-				name="output"
-				moduleKey={props.moduleKey}
-				connectorId={outputId} />
-		</article>
-	);
-};
+	handleChangeDetune(newDetune: number) {
+		this.state.activeOscillators.forEach((oscillator) => {
+			oscillator.detune.value = newDetune;
+		});
+		this.setState({
+			detune: newDetune
+		});
+	}
+
+	getOutput() {
+		return this.state.output;
+	}
+
+	getDetuneInput() {
+		return this.state.detuneInput;
+	}
+
+	componentDidMount() {
+		if (this.module && !this.module.initialized) {
+			const midiInput = new MidiInput(this.state.midiInputId, this.props.moduleKey, this.createOscillator, this.destroyOscillator)
+			const detuneInput = audioContext.createGain();
+			detuneInput.gain.value = 1;
+			this.module.node = midiInput;
+			this.module.initialized = true;
+			this.module.connectors = [
+				{
+					id: this.state.outputId,
+					name: 'output',
+					type: 'SIGNAL_OUT',
+					getter: this.getOutput
+				}, {
+					id: this.state.midiInputId,
+					name: 'midi input',
+					type: 'MIDI_IN',
+					getter: () => (this.module as any).node
+				}, {
+					id: this.state.detuneId,
+					name: 'detune',
+					type: 'SIGNAL_IN',
+					getter: this.getDetuneInput
+				}
+			];
+		} else {
+			this.module = modules.get(this.props.moduleKey);
+			setTimeout(this.componentDidMount, 10);
+		}
+	}
+
+	render() {
+		return (
+			<article>
+				<h2>oscillator</h2>
+				<Connector
+					type="MIDI_IN"
+					name="midi input"
+					moduleKey={this.props.moduleKey}
+					connectorId={this.state.midiInputId} />
+				<Setting
+					name="type"
+					value={this.state.type}
+					options={oscillatorTypeOptions}
+					onChange={this.handleChangeType} />
+				<Parameter
+					name="detune"
+					moduleKey={this.props.moduleKey}
+					id={this.state.detuneId}
+					value={this.state.detune}
+					display={displayDetune}
+					scale={scaleDetune}
+					onChange={this.handleChangeDetune}
+					type={'CV_IN'} />
+				<Connector
+					type="SIGNAL_OUT"
+					name="output"
+					moduleKey={this.props.moduleKey}
+					connectorId={this.state.outputId} />
+			</article>
+		);
+	}
+}
+
