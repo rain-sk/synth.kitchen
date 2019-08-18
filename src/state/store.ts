@@ -1,15 +1,13 @@
 import { createStore, combineReducers } from "redux";
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-function reducer(old: any, action: any) {
-    return old
-}
+import { rootReducer } from "./ducks"
 
-export default function configureStore(initialState = {}) {
+
+export default function configureStore() {
 
     return createStore(
-        reducer,
-        initialState,
+        rootReducer,
         composeWithDevTools()
     );
 }
