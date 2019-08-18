@@ -62,7 +62,6 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
     dispatch(action.action);
     click({ ...props });
   }, [click, props]);
-  console.log(props);
 
   // check if a connector is currently activated for connection, and if this instance is the active one
   const isActive =
@@ -87,7 +86,6 @@ function determineClickAction(
   state: IConnectionState,
   payload: IEnd
 ) {
-  console.log({ modules, state, payload });
   const active = state.active;
   // if no connector is active yet, activate this one
   if (!active) {
@@ -99,7 +97,6 @@ function determineClickAction(
     // get the activated module, and the module in which this connector lives (might be the same)
     const activeModule = modules.get(active.moduleKey);
     const thisModule = modules.get(payload.moduleKey);
-    console.log({ activeModule, thisModule });
 
     // only proceed if an active module and this module exist.
     // TODO: Is this check neccessary?
