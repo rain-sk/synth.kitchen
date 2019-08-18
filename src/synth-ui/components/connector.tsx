@@ -5,7 +5,12 @@ import { useFlux } from "use-flux";
 import { ConnectionStore, IEnd } from "../flux/connections";
 import { ConnectorType } from "./module";
 import { modules } from "../components/module-map";
-import { activate } from "../../state/ducks/connections";
+import {
+  activate,
+  deactivate,
+  connect,
+  disconnect
+} from "../../state/ducks/connections";
 import { IModule, IConnector } from "../components/module";
 
 export interface IConnectorProps extends IEnd {
@@ -51,12 +56,13 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
     };
   });
 
+  const action = determineClickAction(modules, state, props);
+
   const handleClick = React.useCallback(() => {
-    dispatch(activate());
+    dispatch(action.action);
     click({ ...props });
   }, [click, props]);
   console.log(props);
-  const action = determineClickAction(modules, state, props);
 
   // check if a connector is currently activated for connection, and if this instance is the active one
   const isActive =
@@ -80,16 +86,15 @@ function determineClickAction(
   modules: Map<string, IModule>,
   state: IConnectionState,
   payload: IEnd
-): {
-  type: ConnectionAction;
-  disconnectPayload?: IConnectPayload;
-  connectPayload?: IConnectPayload;
-} {
+) {
   console.log({ modules, state, payload });
   const active = state.active;
   // if no connector is active yet, activate this one
   if (!active) {
-    return { type: "ACTIVATE" };
+    return {
+      type: "ACTIVATE",
+      action: activate(payload)
+    };
   } else {
     // get the activated module, and the module in which this connector lives (might be the same)
     const activeModule = modules.get(active.moduleKey);
@@ -101,7 +106,8 @@ function determineClickAction(
     if (activeModule && thisModule) {
       if (activeModule.moduleKey === thisModule.moduleKey) {
         return {
-          type: "DEACTIVATE"
+          type: "DEACTIVATE",
+          action: deactivate(payload)
         };
       }
       const sourceEnd = state.connections
@@ -151,7 +157,7 @@ function determineClickAction(
           };
           return {
             type: "DISCONNECT",
-            disconnectPayload
+            action: disconnect(disconnectPayload)
           };
         }
       } else if (active.connectorId !== payload.connectorId) {
@@ -189,7 +195,8 @@ function determineClickAction(
             destinationConnector.type !== "MIDI_IN"
           ) {
             return {
-              type: "DEACTIVATE"
+              type: "DEACTIVATE",
+              action: deactivate(payload)
             };
           }
           const source: IEnd =
@@ -198,7 +205,7 @@ function determineClickAction(
             destinationConnector.id === active.connectorId ? active : payload;
           return {
             type: "CONNECT",
-            connectPayload: {
+            action: connect({
               connection: {
                 type,
                 source,
@@ -206,7 +213,7 @@ function determineClickAction(
               },
               sourceConnector,
               destinationConnector
-            }
+            })
           };
         }
       }
