@@ -61,68 +61,42 @@ export const connectionReducer = createReducer<IConnectionState>({
     return { ...state, active: payload };
   })
   .handleAction(deactivate, state => ({ ...state, active: undefined }))
-  .handleAction(
-    clear,
-    (state, { payload }: { payload: string  }) => {
-      const module = modules.get(payload);
-      if (module) {
-        const connections = state.connections.filter(
-          connection =>
-            connection.source.moduleKey === module.moduleKey ||
-            connection.destination.moduleKey === module.moduleKey
-        );
-        const remove: IConnection[] = [];
-        connections.forEach(connection => {
-          const sourceModule = modules.get(connection.source.moduleKey);
-          const destinationModule = modules.get(
-            connection.destination.moduleKey
-          );
-          if (
-            sourceModule &&
-            destinationModule &&
-            sourceModule.connectors &&
-            destinationModule.connectors
-          ) {
-            const sourceConnector = sourceModule.connectors.find(
-              connector => connector.id === connection.source.connectorId
-            );
-            const destinationConnector = destinationModule.connectors.find(
-              connector => connector.id === connection.destination.connectorId
-            );
-            if (sourceConnector && destinationConnector) {
-              sourceConnector
-                .getter()
-                .disconnect(destinationConnector.getter());
-            }
-          }
-          remove.push(connection);
-        });
-        modules.delete(payload);
-        return {
-          ...state,
-          connections: state.connections.filter(
-            connection =>
-              !remove.some(
-                toBeRemoved =>
-                  toBeRemoved.source.connectorId ===
-                    connection.source.connectorId &&
-                  toBeRemoved.destination.connectorId ===
-                    connection.destination.connectorId
-              )
-          ),
-          active: undefined
-        };
-      }
-
+  .handleAction(clear, (state, { payload }: { payload: string }) => {
+    const module = modules.get(payload);
+    if (module) {
+      const connections = state.connections.filter(
+        connection =>
+          connection.source.moduleKey === module.moduleKey ||
+          connection.destination.moduleKey === module.moduleKey
+      );
+      const remove: IConnection[] = [];
+      connections.forEach(connection => {
+        remove.push(connection);
+      });
+      modules.delete(payload);
       return {
         ...state,
+        connections: state.connections.filter(
+          connection =>
+            !remove.some(
+              toBeRemoved =>
+                toBeRemoved.source.connectorId ===
+                  connection.source.connectorId &&
+                toBeRemoved.destination.connectorId ===
+                  connection.destination.connectorId
+            )
+        ),
         active: undefined
       };
     }
-  )
+
+    return {
+      ...state,
+      active: undefined
+    };
+  })
   .handleAction(connect, (state, { payload }: { payload: IConnectPayload }) => {
-    const { connection, sourceConnector, destinationConnector } = payload;
-    sourceConnector.getter().connect(destinationConnector.getter());
+    const { connection } = payload;
     return {
       ...state,
       connections: [...state.connections, connection],
@@ -132,8 +106,7 @@ export const connectionReducer = createReducer<IConnectionState>({
   .handleAction(
     disconnect,
     (state, { payload }: { payload: IConnectPayload }) => {
-      const { connection, sourceConnector, destinationConnector } = payload;
-      sourceConnector.getter().disconnect(destinationConnector.getter());
+      const { connection } = payload;
       return {
         ...state,
         connections: state.connections.filter(

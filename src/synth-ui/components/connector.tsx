@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { IModule, ConnectorType } from "./module";
@@ -19,7 +20,67 @@ export interface IConnectorProps extends IEnd {
 
 export const Connector: React.FunctionComponent<IConnectorProps> = props => {
   const state = useSelector((state: RootState) => state.connections);
+
   const dispatch = useDispatch();
+
+  // regenerate all connections when connection state changes. remove on unmount
+  useEffect(() => {
+    console.log("Connector says hello!");
+
+    // Find all connections in which this connector is participating
+    const isInput = isInputHelper(props.type);
+    const thisConnectorsConnections = state.connections
+      .filter(
+        connection =>
+          isInput && connection.destination.moduleKey === props.moduleKey // if this is an input, find all connections pointing here
+      )
+      .map(connection => {
+        const sourceModule = modules.get(connection.source.moduleKey);
+        const destinationModule = modules.get(connection.destination.moduleKey);
+        // TODO: If there is a connection, is it really needed to check if it's in a module?
+        if (
+          sourceModule &&
+          destinationModule &&
+          sourceModule.connectors &&
+          destinationModule.connectors
+        ) {
+          const sourceConnector = sourceModule.connectors.find(
+            connector => connector.id === connection.source.connectorId
+          );
+          const destinationConnector = destinationModule.connectors.find(
+            connector => connector.id === connection.destination.connectorId
+          );
+          return { sourceConnector, destinationConnector };
+        }
+      });
+    // connect the connections
+    thisConnectorsConnections.forEach(connection => {
+      if (
+        connection &&
+        connection.sourceConnector &&
+        connection.destinationConnector
+      ) {
+        connection.sourceConnector
+          .getter()
+          .connect(connection.destinationConnector.getter());
+      }
+    });
+    return () => {
+      console.log("Connector says goodbye!");
+      // do stuff to disconnect
+      thisConnectorsConnections.forEach(connection => {
+        if (
+          connection &&
+          connection.sourceConnector &&
+          connection.destinationConnector
+        ) {
+          connection.sourceConnector
+            .getter()
+            .disconnect(connection.destinationConnector.getter());
+        }
+      });
+    };
+  }, [state.connections]);
 
   const clickAction = determineClickAction(modules, state, props);
 
@@ -30,18 +91,22 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
   // Check if a connector is currently activated for connection, and if this instance is the active one
   const isActive =
     state.active && state.active.connectorId === props.connectorId;
-  
-  const canBeTargeted = clickAction.type === "CONNECT" || clickAction.type === "DISCONNECT"
+
+  const canBeTargeted =
+    clickAction.type === "CONNECT" || clickAction.type === "DISCONNECT";
 
   return (
     <button
       id={props.connectorId}
       type="button"
-      className={`connector ${props.type} ${isActive && "active"} ${canBeTargeted && "can-target" }`}
+      className={`connector ${props.type} ${isActive &&
+        "active"} ${canBeTargeted && "can-target"}`}
       onClick={handleClick}
     >
       <span className="visually-hidden">{props.name}</span>
-      <span style={{left: '20px', position: 'relative'}}>{clickAction.type}</span>
+      <span style={{ left: "20px", position: "relative" }}>
+        {clickAction.type}
+      </span>
     </button>
   );
 };
@@ -187,5 +252,18 @@ function determineClickAction(
       type: "DEACTIVATE",
       action: actionCreators.deactivate(payload)
     };
+  }
+}
+
+function isInputHelper(connectorType: ConnectorType) {
+  switch (connectorType) {
+    case "MIDI_IN":
+      return true;
+    case "SIGNAL_IN":
+      return true;
+    case "CV_IN":
+      return true;
+    default:
+      return false;
   }
 }
