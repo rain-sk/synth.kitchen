@@ -8,7 +8,7 @@ import { actionCreators } from "../../store/ducks/patch";
 import { Connector } from "./connector";
 import { Connections } from "./connections";
 import { Serializer } from "./serializer";
-import { Sidebar } from "./sidebar";
+import { Account } from "./account";
 import { UserUi } from "./user-ui";
 
 const { v4 } = require("uuid");
@@ -70,14 +70,14 @@ export const Kitchen: React.FunctionComponent = () => {
         moduleKeys: rack.moduleKeys.filter(key => key !== moduleKey)
       }));
       setRacks(newRacks);
-      dispatch(clear(moduleKey));
+      clear(moduleKey);
     },
     [racks]
   );
 
   return (
     <>
-      <Sidebar />
+      {/* <Account /> */}
       <Connector
         type="SIGNAL_IN"
         name={"speakers"}
