@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { useFlux } from 'use-flux';
-import { ConnectionStore, IConnection, ConnectionType } from '../flux/connections';
+import { useSelector } from 'react-redux'
+
+import { RootState } from '../../state/ducks';
+import { IConnection, ConnectionType } from '../../state/ducks/patch';
 import { Connection } from './connection';
 
 function getConnectionCurves(connections: IConnection[]) {
@@ -50,7 +52,7 @@ export interface IConnectionsProps {
 }
 
 export const Connections: React.FunctionComponent<IConnectionsProps> = ({ moduleCount, rackCount }) => {
-	const { active, connections } = useFlux(ConnectionStore, ({ state }) => state);
+	const {active, connections} = useSelector((state: RootState)=>(state.connections))
 
 	const [parentRef] = React.useState(React.createRef<HTMLSpanElement>());
 	const [canvasRef] = React.useState(React.createRef<HTMLCanvasElement>());

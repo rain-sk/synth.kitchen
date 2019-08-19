@@ -3,8 +3,8 @@ import * as React from 'react';
 import { Rack, IRack } from './rack';
 import { ModuleType, IModule } from './module';
 import { modules } from './module-map';
-import { useFlux } from 'use-flux';
-import { ConnectionStore } from '../flux/connections';
+import { useDispatch } from 'react-redux';
+import {actionCreators} from '../../state/ducks/patch';
 import { Connector } from './connector';
 import { Connections } from './connections';
 import { Serializer } from './serializer';
@@ -14,10 +14,8 @@ import { UserUi } from './user-ui';
 const { v4 } = require('uuid');
 
 export const Kitchen: React.FunctionComponent = () => {
-	const clear = useFlux(ConnectionStore, ({ dispatch }) => (moduleKey: string) => {
-		dispatch({ type: 'CLEAR', payload: { moduleKey } })
-	});
-
+	const clear = actionCreators.clear;
+	const dispatch = useDispatch();
 	const [racks, setRacks] = React.useState<IRack[]>([]);
 
 	const addRack = React.useCallback(() => {
@@ -41,7 +39,7 @@ export const Kitchen: React.FunctionComponent = () => {
 
 		setRacks(newRacks);
 
-		remove.forEach(key => clear(key));
+		remove.forEach(key => dispatch(clear(key)));
 	}, [clear, racks]);
 
 	const addModule = React.useCallback((rackIndex: number, moduleType: ModuleType) => {
@@ -65,7 +63,7 @@ export const Kitchen: React.FunctionComponent = () => {
 			moduleKeys: rack.moduleKeys.filter(key => key !== moduleKey)
 		}));
 		setRacks(newRacks);
-		clear(moduleKey);
+		dispatch(clear(moduleKey));
 	}, [racks]);
 
 	return (

@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { useFlux } from 'use-flux';
-import { ConnectionStore } from '../flux/connections';
+import { useSelector } from 'react-redux';
 import { modules } from './module-map';
 import { debugMode } from '../..';
+import { RootState } from '../../state/ducks';
+
 
 interface ISerializerProps {
 	racks: {
@@ -12,7 +13,8 @@ interface ISerializerProps {
 }
 
 export const Serializer: React.FunctionComponent<ISerializerProps> = props => {
-	const connections = useFlux(ConnectionStore, ({ state }) => state.connections);
+	const {connections} = useSelector((state: RootState)=>(state.connections))
+
 	React.useEffect(() => {
 		if (debugMode()) {
 			console.log(JSON.stringify({

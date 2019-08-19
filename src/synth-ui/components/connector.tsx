@@ -1,69 +1,33 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
-import { useFlux } from "use-flux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { ConnectionStore, IEnd } from "../flux/connections";
-import { ConnectorType } from "./module";
-import { modules } from "../components/module-map";
+import { IModule, ConnectorType } from "./module";
+import { modules } from "./module-map";
+
+import { RootState } from "../../state/ducks";
 import {
-  activate,
-  deactivate,
-  connect,
-  disconnect
-} from "../../state/ducks/connections";
-import { IModule, IConnector } from "../components/module";
+  IEnd,
+  actionCreators,
+  ConnectionType,
+  IConnectPayload
+} from "../../state/ducks/patch";
 
 export interface IConnectorProps extends IEnd {
   name: string;
   type: ConnectorType;
 }
 
-// TODO: Should the types live here? maybe needs own file for types/model?
-export type ConnectionAction =
-  | "ACTIVATE"
-  | "DEACTIVATE"
-  | "CONNECT"
-  | "DISCONNECT";
-
-export interface IConnectionState {
-  connections: IConnection[];
-  active: IEnd | undefined;
-}
-
-export type ConnectionType = "MIDI" | "SIGNAL";
-
-export interface IConnection {
-  type: ConnectionType;
-  source: IEnd;
-  destination: IEnd;
-}
-
-export interface IConnectPayload {
-  connection: IConnection;
-  sourceConnector: IConnector;
-  destinationConnector: IConnector;
-}
-
 export const Connector: React.FunctionComponent<IConnectorProps> = props => {
+  const state = useSelector((state: RootState) => state.connections);
   const dispatch = useDispatch();
 
-  const { click, state } = useFlux(ConnectionStore, ({ state, dispatch }) => {
-    return {
-      click: (payload: IEnd) => {
-        dispatch({ type: "CLICK", payload });
-      },
-      state
-    };
-  });
-
-  const action = determineClickAction(modules, state, props);
+  const clickAction = determineClickAction(modules, state, props);
 
   const handleClick = React.useCallback(() => {
-    dispatch(action.action);
-    click({ ...props });
-  }, [click, props]);
+    dispatch(clickAction.action);
+  }, [clickAction, props]);
 
-  // check if a connector is currently activated for connection, and if this instance is the active one
+  // Check if a connector is currently activated for connection, and if this instance is the active one
   const isActive =
     state.active && state.active.connectorId === props.connectorId;
 
@@ -75,7 +39,7 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
       onClick={handleClick}
     >
       <span className="visually-hidden">{props.name}</span>
-      <span>{action.type}</span>
+      <span>{clickAction.type}</span>
     </button>
   );
 };
@@ -83,28 +47,28 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
 // Determine which action should be executed when the connector is clicked
 function determineClickAction(
   modules: Map<string, IModule>,
-  state: IConnectionState,
+  state: RootState["connections"],
   payload: IEnd
 ) {
   const active = state.active;
-  // if no connector is active yet, activate this one
+  // If no connector is active yet, activate this one
   if (!active) {
     return {
       type: "ACTIVATE",
-      action: activate(payload)
+      action: actionCreators.activate(payload)
     };
   } else {
-    // get the activated module, and the module in which this connector lives (might be the same)
+    // Get the activated module, and the module in which this connector lives (might be the same)
     const activeModule = modules.get(active.moduleKey);
     const thisModule = modules.get(payload.moduleKey);
 
-    // only proceed if an active module and this module exist.
+    // Only proceed if an active module and this module exist.
     // TODO: Is this check neccessary?
     if (activeModule && thisModule) {
       if (activeModule.moduleKey === thisModule.moduleKey) {
         return {
           type: "DEACTIVATE",
-          action: deactivate(payload)
+          action: actionCreators.deactivate(payload)
         };
       }
       const sourceEnd = state.connections
@@ -154,7 +118,7 @@ function determineClickAction(
           };
           return {
             type: "DISCONNECT",
-            action: disconnect(disconnectPayload)
+            action: actionCreators.disconnect(disconnectPayload)
           };
         }
       } else if (active.connectorId !== payload.connectorId) {
@@ -193,7 +157,7 @@ function determineClickAction(
           ) {
             return {
               type: "DEACTIVATE",
-              action: deactivate(payload)
+              action: actionCreators.deactivate(payload)
             };
           }
           const source: IEnd =
@@ -202,7 +166,7 @@ function determineClickAction(
             destinationConnector.id === active.connectorId ? active : payload;
           return {
             type: "CONNECT",
-            action: connect({
+            action: actionCreators.connect({
               connection: {
                 type,
                 source,
@@ -217,6 +181,9 @@ function determineClickAction(
     }
 
     // If all else fails
-    return { type: "DEACTIVATE" };
+    return {
+      type: "DEACTIVATE",
+      action: actionCreators.deactivate(payload)
+    };
   }
 }

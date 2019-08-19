@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Knob, Arc, Pointer } from 'rc-knob-accessible';
 import { ConnectorType } from './module';
-import { IEnd } from '../flux/connections';
 import { Connector } from './connector';
 
 export interface IParameterProps {

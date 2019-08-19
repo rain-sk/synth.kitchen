@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ConnectionType } from '../flux/connections';
+import { ConnectionType } from '../../state/ducks/patch';
 import { ConnectorCable } from './connector-cable';
 import { ConnectorCircle } from './connector-circle';
 
