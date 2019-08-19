@@ -52,20 +52,91 @@ export const connectionReducer = createReducer<IConnectionState>({
   active: undefined,
   connections: []
 })
-  .handleAction(activate, (state, action) => {
-    return { ...state };
+  .handleAction(activate, (state, { payload }: { payload: IEnd }) => {
+    return { ...state, active: payload };
   })
-  .handleAction(deactivate, state => deactivateHelper(state))
-  .handleAction(clear, (state, action) => {
-    return { ...state };
-  })
-  .handleAction(connect, (state, action) => {
-    return { ...state };
-  })
-  .handleAction(disconnect, (state, action) => {
-    return { ...state };
-  });
+  .handleAction(deactivate, state => ({ ...state, active: undefined }))
+  .handleAction(
+    clear,
+    (state, { payload }: { payload: { moduleKey: string } }) => {
+      const module = modules.get(payload.moduleKey);
+      if (module) {
+        const connections = state.connections.filter(
+          connection =>
+            connection.source.moduleKey === module.moduleKey ||
+            connection.destination.moduleKey === module.moduleKey
+        );
+        const remove: IConnection[] = [];
+        connections.forEach(connection => {
+          const sourceModule = modules.get(connection.source.moduleKey);
+          const destinationModule = modules.get(
+            connection.destination.moduleKey
+          );
+          if (
+            sourceModule &&
+            destinationModule &&
+            sourceModule.connectors &&
+            destinationModule.connectors
+          ) {
+            const sourceConnector = sourceModule.connectors.find(
+              connector => connector.id === connection.source.connectorId
+            );
+            const destinationConnector = destinationModule.connectors.find(
+              connector => connector.id === connection.destination.connectorId
+            );
+            if (sourceConnector && destinationConnector) {
+              sourceConnector
+                .getter()
+                .disconnect(destinationConnector.getter());
+            }
+          }
+          remove.push(connection);
+        });
+        modules.delete(payload.moduleKey);
+        return {
+          ...state,
+          connections: state.connections.filter(
+            connection =>
+              !remove.some(
+                toBeRemoved =>
+                  toBeRemoved.source.connectorId ===
+                    connection.source.connectorId &&
+                  toBeRemoved.destination.connectorId ===
+                    connection.destination.connectorId
+              )
+          ),
+          active: undefined
+        };
+      }
 
-function deactivateHelper(state: IConnectionState) {
-  return { ...state, active: undefined };
-}
+      return {
+        ...state,
+        active: undefined
+      };
+    }
+  )
+  .handleAction(connect, (state, { payload }: { payload: IConnectPayload }) => {
+    const { connection, sourceConnector, destinationConnector } = payload;
+    sourceConnector.getter().connect(destinationConnector.getter());
+    return {
+      ...state,
+      connections: [...state.connections, connection],
+      active: undefined
+    };
+  })
+  .handleAction(
+    disconnect,
+    (state, { payload }: { payload: IConnectPayload }) => {
+      const { connection, sourceConnector, destinationConnector } = payload;
+      sourceConnector.getter().disconnect(destinationConnector.getter());
+      return {
+        ...state,
+        connections: state.connections.filter(
+          con =>
+            con.source.connectorId !== connection.source.connectorId ||
+            con.destination.connectorId !== connection.destination.connectorId
+        ),
+        active: undefined
+      };
+    }
+  );
