@@ -138,6 +138,10 @@ li.double-wide > article {
 	background-color: #fc5a96;
 }
 
+.connector.can-target{
+	background-color: #2699e6
+}
+
 .connections, .connection {
 	pointer-events: none;
 	position: absolute;

@@ -30,16 +30,18 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
   // Check if a connector is currently activated for connection, and if this instance is the active one
   const isActive =
     state.active && state.active.connectorId === props.connectorId;
+  
+  const canBeTargeted = clickAction.type === "CONNECT" || clickAction.type === "DISCONNECT"
 
   return (
     <button
       id={props.connectorId}
       type="button"
-      className={`connector ${props.type} ${isActive && "active"}`}
+      className={`connector ${props.type} ${isActive && "active"} ${canBeTargeted && "can-target" }`}
       onClick={handleClick}
     >
       <span className="visually-hidden">{props.name}</span>
-      <span>{clickAction.type}</span>
+      <span style={{left: '20px', position: 'relative'}}>{clickAction.type}</span>
     </button>
   );
 };
