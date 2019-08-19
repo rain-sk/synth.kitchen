@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { IModule, ConnectorType } from "./module";
 import { modules } from "./module-map";
 
-import { RootState } from "../../state/ducks";
+import { RootState } from "../../store/ducks";
 import {
   IEnd,
   actionCreators,
   ConnectionType,
   IConnectPayload
-} from "../../state/ducks/patch";
+} from "../../store/ducks/patch";
 
 export interface IConnectorProps extends IEnd {
   name: string;
