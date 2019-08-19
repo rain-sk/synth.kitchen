@@ -50,7 +50,10 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
           const destinationConnector = destinationModule.connectors.find(
             connector => connector.id === connection.destination.connectorId
           );
-          return { sourceConnector, destinationConnector };
+          return {
+            sourceConnector,
+            destinationConnector
+          };
         }
       });
     // connect the connections
@@ -74,9 +77,19 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
           connection.sourceConnector &&
           connection.destinationConnector
         ) {
-          connection.sourceConnector
-            .getter()
-            .disconnect(connection.destinationConnector.getter());
+          try {
+            connection.sourceConnector
+              .getter()
+              .disconnect(connection.destinationConnector.getter());
+          } catch (e) {
+            if (e.name === "InvalidAccessError") {
+              console.log(
+                "Tried to disconnect something that wasn't connected"
+              );
+            } else {
+              throw e;
+            }
+          }
         }
       });
     };
