@@ -25,8 +25,6 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
 
   // regenerate all connections when connection state changes. remove on unmount
   useEffect(() => {
-    console.log("Connector says hello!");
-
     // Find all connections in which this connector is participating
     const isInput = isInputHelper(props.type);
     const thisConnectorsConnections = state.connections
@@ -69,7 +67,6 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
       }
     });
     return () => {
-      console.log("Connector says goodbye!");
       // do stuff to disconnect
       thisConnectorsConnections.forEach(connection => {
         if (
@@ -77,15 +74,13 @@ export const Connector: React.FunctionComponent<IConnectorProps> = props => {
           connection.sourceConnector &&
           connection.destinationConnector
         ) {
+          // TODO: Find a why to avoid this error entirely
           try {
             connection.sourceConnector
               .getter()
               .disconnect(connection.destinationConnector.getter());
           } catch (e) {
             if (e.name === "InvalidAccessError") {
-              console.log(
-                "Tried to disconnect something that wasn't connected"
-              );
             } else {
               throw e;
             }
