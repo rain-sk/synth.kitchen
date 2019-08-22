@@ -53,7 +53,6 @@ export const Kitchen: React.FunctionComponent = () => {
         type: moduleType
       };
       modules.set(key, newModule);
-
       racks[rackIndex].moduleKeys.push(key);
       const newRacks = [...racks];
       setRacks(newRacks);
@@ -70,7 +69,7 @@ export const Kitchen: React.FunctionComponent = () => {
         moduleKeys: rack.moduleKeys.filter(key => key !== moduleKey)
       }));
       setRacks(newRacks);
-      clear(moduleKey);
+      dispatch(clear(moduleKey));
     },
     [racks]
   );
