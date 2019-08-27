@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import { modules } from './module-map';
-import { Gain } from './gain';
-import { Delay } from './delay';
-import { Filter } from './filter';
-import { MidiDevice } from './midi-device';
-import { Oscillator } from './oscillator';
-import { MidiOscillator } from './midi-oscillator';
+import { modules } from '../state/module-map';
+import { Gain } from './patch-module-gain';
+import { Delay } from './patch-module-delay';
+import { Filter } from './patch-module-filter';
+import { MidiDevice } from './patch-module-midi-device';
+import { Oscillator } from './patch-module-oscillator';
+import { MidiOscillator } from './patch-module-midi-oscillator';
 
 export type ModuleType = 'GLOBAL_CONTEXT' | 'GAIN' | 'DELAY' | 'FILTER' | 'MIDI_DEVICE' | 'OSCILLATOR' | 'MIDI_OSCILLATOR';
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import webmidi from 'webmidi';
 
-import { Module, ModuleType } from './module';
+import { Module, ModuleType } from './patch-module';
 
 export interface IRack {
 	index: number;
@@ -9,7 +9,7 @@ export interface IRack {
 }
 
 export interface IRackProps extends IRack {
-	addModule: (rackIndex: number, moduleType: ModuleType) => void;
+	addModule: (moduleType: ModuleType, rackIndex: number, moduleIndex: number) => void;
 	removeModule: (moduleKey: string) => void;
 }
 
@@ -21,7 +21,7 @@ export const Rack: React.FunctionComponent<IRackProps> = props => {
 	}
 
 	const handleAddModuleClick = React.useCallback(() => {
-		props.addModule(props.index, newModuleType);
+		props.addModule(newModuleType, props.index, props.moduleKeys.length);
 	}, [props, newModuleType]);
 
 	const handleRemoveModuleClick = React.useCallback((moduleKey: string) => () => {
@@ -31,8 +31,8 @@ export const Rack: React.FunctionComponent<IRackProps> = props => {
 	return (
 		<div className="rack">
 			<ul>
-				{props.moduleKeys.map((key, index) => (
-					<React.Fragment key={index}>
+				{props.moduleKeys.map((key) => (
+					<React.Fragment key={key}>
 						<Module moduleKey={key} removeModule={props.removeModule} />
 					</React.Fragment>
 				))}

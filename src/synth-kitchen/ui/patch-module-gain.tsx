@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { audioContext } from '../audio/audio-context';
-import { IModuleProps } from './module';
-import { modules } from './module-map';
-import { Parameter } from './parameter';
-import { Connector } from './connector';
+import { audioContext } from '../io-audio/audio-context';
+import { IModuleProps } from './patch-module';
+import { modules } from '../state/module-map';
+import { Parameter } from './patch-module-parameter';
+import { Connector } from './patch-connector';
 
 const { v4 } = require('uuid');
 

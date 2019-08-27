@@ -4,7 +4,7 @@ import * as webmidi from 'webmidi';
 
 import './main.css';
 
-import { App } from './synth-ui/app';
+import { Kitchen } from './synth-kitchen/kitchen';
 
 const appRoot = document.getElementById('root') as HTMLElement;
 
@@ -16,7 +16,7 @@ webmidi.enable(function (err: string) {
         _webmidiEnabled = false;
     }
     ReactDOM.render(
-        <App />,
+        <Kitchen />,
         appRoot
     );
 });

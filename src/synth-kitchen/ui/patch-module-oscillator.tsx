@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { IModuleProps } from './module';
-import { modules } from './module-map';
-import { audioContext } from '../audio/audio-context';
-import { SettingRadio } from './setting';
-import { Parameter } from './parameter';
-import { Connector } from './connector';
+import { IModuleProps } from './patch-module';
+import { modules } from '../state/module-map';
+import { audioContext } from '../io-audio/audio-context';
+import { SettingRadio } from './patch-module-setting';
+import { Parameter } from './patch-module-parameter';
+import { Connector } from './patch-connector';
 
 const { v4 } = require('uuid');
 
