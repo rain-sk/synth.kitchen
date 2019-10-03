@@ -17,8 +17,14 @@ export const ConnectorCable: React.FunctionComponent<IConnectorCableProps> = ({ 
 	context.beginPath();
 	context.moveTo(sourceX, sourceY);
 	context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, destinationX, destinationY);
-	context.strokeStyle = type === 'SIGNAL' ? 'rgba(203,93,255,0.5)' : 'rgba(145,255,93,0.5)';
-	context.lineWidth = 3;
+	context.strokeStyle = '#fff';
+	context.lineWidth = 8;
+	context.stroke();
+	context.beginPath();
+	context.moveTo(sourceX, sourceY);
+	context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, destinationX, destinationY);
+	context.strokeStyle = type === 'SIGNAL' ? 'rgba(0,0,0,1)' : 'rgba(145,255,93,0.5)';
+	context.lineWidth = 4;
 	context.stroke();
 	return null;
 }

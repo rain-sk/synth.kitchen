@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { MidiOutput } from './midi-output';
-import { IModuleProps } from './module';
-import { modules } from './module-map';
-import { Connector } from './connector';
-import { SettingSelect } from './setting';
+import { MidiOutput } from '../io-midi/midi-output';
+import { IModuleProps } from './patch-module';
+import { modules } from '../state/module-map';
+import { Connector } from './patch-connector';
+import { SettingSelect } from './patch-module-setting';
 import webmidi from 'webmidi';
 
 const channelOptions: [string, string][] = [

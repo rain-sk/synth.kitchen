@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { IModuleProps } from './module';
-import { modules } from './module-map';
-import { audioContext } from '../audio/audio-context';
-import { SettingRadio, SettingSelect } from './setting';
-import { Connector } from './connector';
-import { MidiInput } from './midi-input';
-import { midiToFrequency } from '../audio/midi-to-frequency';
-import { Parameter } from './parameter';
+import { IModuleProps } from './patch-module';
+import { modules } from '../state/module-map';
+import { audioContext } from '../io-audio/audio-context';
+import { SettingRadio, SettingSelect } from './patch-module-setting';
+import { Connector } from './patch-connector';
+import { MidiInput } from '../io-midi/midi-input';
+import { midiToFrequency } from '../io-audio/midi-to-frequency';
+import { Parameter } from './patch-module-parameter';
 
 const { v4 } = require('uuid');
 

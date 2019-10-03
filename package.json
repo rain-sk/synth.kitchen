@@ -15,7 +15,6 @@
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
     "typescript": "^3.4.5",
-    "use-flux": "^2.0.3",
     "uuid": "^3.3.2",
     "webmidi": "^2.3.1"
   },
