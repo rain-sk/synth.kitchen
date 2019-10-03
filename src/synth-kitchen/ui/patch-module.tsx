@@ -42,7 +42,7 @@ export const Module: React.FunctionComponent<IModuleProps> = props => {
 	if (module) {
 		return (
 			<li className={module.type === 'FILTER' ? 'double-wide' : ''}>
-				<button className="remove-module" type="button" onClick={handleRemove}>x</button>
+				<button className="remove-module" type="button" onClick={handleRemove}></button>
 				{
 					module && (() => {
 						switch (module.type) {
