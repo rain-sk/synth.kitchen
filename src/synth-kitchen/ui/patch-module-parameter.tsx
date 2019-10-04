@@ -55,7 +55,7 @@ export const Parameter: React.FunctionComponent<IParameterProps> = props => {
 					<Connector type={props.type} name={props.name} moduleKey={props.moduleKey} connectorId={props.id} />
 				) : null}
 				<Knob
-					size={100}
+					size={50}
 					angleOffset={180}
 					angleRange={360}
 					min={0}
@@ -67,7 +67,7 @@ export const Parameter: React.FunctionComponent<IParameterProps> = props => {
 					<Arc
 						arcWidth={1.5}
 					/>
-					<circle r="40" cx="50" cy="50" />
+					<circle r="20" cx="25" cy="25" />
 					<Pointer
 						width={2}
 						height={35}

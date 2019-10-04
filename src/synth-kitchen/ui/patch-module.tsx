@@ -43,27 +43,29 @@ export const Module: React.FunctionComponent<IModuleProps> = props => {
 		return (
 			<li className={module.type === 'FILTER' ? 'double-wide' : ''}>
 				<button className="remove-module" type="button" onClick={handleRemove}></button>
-				{
-					module && (() => {
-						switch (module.type) {
-							case 'GAIN':
-								return <Gain {...props} />;
-							case 'DELAY':
-								return <Delay {...props} />;
-							case 'FILTER':
-								return <Filter {...props} />;
-							case 'OSCILLATOR':
-								return <Oscillator {...props} />;
-							case 'MIDI_DEVICE':
-								return <MidiDevice {...props} />;
-							case 'MIDI_OSCILLATOR':
-								return <MidiOscillator {...props} />;
-							default:
-								props.removeModule(props.moduleKey);
-								return null;
-						}
-					})()
-				}
+				<article className="module">
+					{
+						module && (() => {
+							switch (module.type) {
+								case 'GAIN':
+									return <Gain {...props} />;
+								case 'DELAY':
+									return <Delay {...props} />;
+								case 'FILTER':
+									return <Filter {...props} />;
+								case 'OSCILLATOR':
+									return <Oscillator {...props} />;
+								case 'MIDI_DEVICE':
+									return <MidiDevice {...props} />;
+								case 'MIDI_OSCILLATOR':
+									return <MidiOscillator {...props} />;
+								default:
+									props.removeModule(props.moduleKey);
+									return null;
+							}
+						})()
+					}
+				</article>
 			</li>
 		)
 	} else {

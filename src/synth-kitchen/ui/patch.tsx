@@ -58,6 +58,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 		this.moduleRackAdd = this.moduleRackAdd.bind(this);
 		this.moduleRackRemove = this.moduleRackRemove.bind(this);
 		this.moduleRemove = this.moduleRemove.bind(this);
+		this.handleKeyDown = this.handleKeyDown.bind(this);
 
 		this.getContextValue = this.getContextValue.bind(this);
 
@@ -65,6 +66,25 @@ export class Patch extends React.Component<{}, IPatchState> {
 			connections: [],
 			racks: [{ index: 0, moduleKeys: [] }]
 		};
+	}
+
+	componentDidMount() {
+		document.addEventListener('keydown', this.handleKeyDown, false);
+	}
+
+	componentWillUnmount() {
+		document.removeEventListener('keydown', this.handleKeyDown, false);
+	}
+
+	handleKeyDown(event: KeyboardEvent) {
+		switch (event.which || event.keyCode) {
+			case 27:
+				if (this.state.active) {
+					this.setState({
+						active: undefined
+					});
+				}
+		}
 	}
 
 	getContextValue() {
@@ -86,11 +106,10 @@ export class Patch extends React.Component<{}, IPatchState> {
 				<Connector type="SIGNAL_IN" name={'speakers'} connectorId={'GLOBAL_CONTEXT'} moduleKey={'GLOBAL_CONTEXT'} />
 				{this.state.racks.map(rack => (
 					<React.Fragment key={rack.index}>
-						<button type="button" onClick={this.moduleRackRemove(rack.index)}>Remove Rack</button>
-						<Rack {...rack} addModule={this.moduleAdd} removeModule={this.moduleRemove} />
+						<Rack {...rack} removeRack={this.moduleRackRemove(rack.index)} addModule={this.moduleAdd} removeModule={this.moduleRemove} />
 					</React.Fragment>
 				))}
-				<button type="button" onClick={this.moduleRackAdd}>Add Rack</button>
+				<button className="add-rack" type="button" onClick={this.moduleRackAdd}>Add Rack</button>
 				<Connections moduleCount={modules.size} rackCount={this.state.racks.length} active={this.state.active} connections={this.state.connections} />
 			</PatchContext.Provider>
 		)
@@ -208,7 +227,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 			});
 
 			/* clean up the modules in the removed rack */
-			this.setState({ racks }, () => {
+			this.setState({ racks: racks.length > 0 ? racks : [{ index: 0, moduleKeys: [] }] }, () => {
 				remove.forEach(key => this.moduleRemove(key));
 			});
 

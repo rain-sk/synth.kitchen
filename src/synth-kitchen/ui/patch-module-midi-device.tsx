@@ -59,7 +59,7 @@ export const MidiDevice: React.FunctionComponent<IModuleProps> = props => {
 	}, [module, inputChannel]);
 
 	return (
-		<article>
+		<>
 			<h2>midi device</h2>
 			<SettingSelect
 				name="device"
@@ -76,6 +76,6 @@ export const MidiDevice: React.FunctionComponent<IModuleProps> = props => {
 				name="output"
 				moduleKey={props.moduleKey}
 				connectorId={outputId} />
-		</article>
+		</>
 	);
 };

@@ -16,9 +16,15 @@ export interface IConnectionProps {
 	cp2x: number;
 	cp2y: number;
 	type: ConnectionType;
+	singleton?: boolean;
+	width?: number;
+	height?: number;
 }
 
 export const Connection: React.FunctionComponent<IConnectionProps> = (props) => {
+	if (props.singleton && props.width && props.height) {
+		props.context.clearRect(0, 0, props.width, props.height);
+	}
 	return (
 		<>
 			<ConnectorCable {...props} />
@@ -30,7 +36,7 @@ export const Connection: React.FunctionComponent<IConnectionProps> = (props) => 
 
 
 /** Connections */
-export interface ICurve {
+export interface ICable {
 	sourceX: number;
 	sourceY: number;
 	destinationX: number;
@@ -50,104 +56,197 @@ export interface IConnectionsProps {
 }
 
 export interface IConnectionsState {
-	curves: ICurve[];
+	cables: ICable[];
+	mouseCable?: ICable;
 	context2d?: CanvasRenderingContext2D;
+	mouseContext2d?: CanvasRenderingContext2D;
 }
 
 export class Connections extends React.Component<IConnectionsProps, IConnectionsState> {
 	spanRef = React.createRef<HTMLSpanElement>();
 	canvasRef = React.createRef<HTMLCanvasElement>();
+	mouseRef = React.createRef<HTMLCanvasElement>();
 
 	constructor(props: IConnectionsProps) {
 		super(props);
 		this.state = {
-			curves: []
+			cables: []
 		}
 
 		this.updateCanvasSize = this.updateCanvasSize.bind(this);
-		this.updateCurves = this.updateCurves.bind(this);
+		this.updateCables = this.updateCables.bind(this);
+		this.handleMouseMove = this.handleMouseMove.bind(this);
 
-		window.addEventListener('resize', this.updateCurves, false);
+		window.addEventListener('resize', this.updateCables, false);
+		document.addEventListener('mousemove', this.handleMouseMove, false);
 	}
 
 	componentDidMount() {
-		this.initContext2d();
+		this.initContexts();
 	}
 
-	// shouldComponentUpdate(nextProps: IConnectionsProps, nextState: IConnectionsState) {
-	// 	return (nextProps.moduleCount !== this.props.moduleCount) ||
-	// 		(nextProps.rackCount !== this.props.rackCount) ||
-	// 		(nextProps.connections.length !== this.props.connections.length) ||
-	// 		(nextState.curves.length !== this.state.curves.length) ||
-	// 		(nextState.context2d !== this.state.context2d);
-	// }
-
-	componentDidUpdate(prevProps: IConnectionsProps) {
+	componentDidUpdate(prevProps: IConnectionsProps, prevState: IConnectionsState) {
 		if ((prevProps.moduleCount !== this.props.moduleCount) ||
 			(prevProps.rackCount !== this.props.rackCount) ||
 			(prevProps.connections.length !== this.props.connections.length)) {
-			this.updateCurves();
+			this.updateCables();
+		}
+		if ((prevProps.moduleCount !== this.props.moduleCount) ||
+			(prevState.mouseCable && !this.state.mouseCable) ||
+			(prevProps.active && !this.props.active)) {
+			this.clearMouseCanvas();
 		}
 	}
 
 	updateCanvasSize() {
-		const width = this.spanRef.current ? this.spanRef.current.offsetWidth : 0;
-		const height = this.spanRef.current ? this.spanRef.current.offsetHeight : 0;
-		if (this.canvasRef.current && this.state.context2d) {
+		const { width, height } = this.getWidthAndHeight();
+		if (this.canvasRef.current && this.state.context2d && this.mouseRef.current && this.state.mouseContext2d) {
 			this.state.context2d.clearRect(0, 0, width, height);
-			this.state.context2d.clearRect(0, 0, width, height);
+			this.state.mouseContext2d.clearRect(0, 0, width, height);
 			this.canvasRef.current.width = width;
 			this.canvasRef.current.height = height;
+			this.mouseRef.current.width = width;
+			this.mouseRef.current.height = height;
 		}
 	}
 
-	updateCurves() {
+	clearMouseCanvas() {
+		const { width, height } = this.getWidthAndHeight();
+		this.state.mouseContext2d && this.state.mouseContext2d.clearRect(0, 0, width, height);
+	}
+
+	handleMouseMove(event: MouseEvent) {
+		if (this.props.active) {
+			const width = this.spanRef.current ? this.spanRef.current.offsetWidth : 0;
+			const height = this.spanRef.current ? this.spanRef.current.offsetHeight : 0;
+			const { mouseContext2d } = this.state;
+			if (mouseContext2d && this.mouseRef.current) {
+				this.mouseRef.current.width = width;
+				this.mouseRef.current.height = height;
+				this.setState({
+					mouseCable: getMouseCable(event, this.props.active.connectorId)
+				});
+			} else {
+				this.setState({
+					mouseCable: undefined
+				}, () => {
+					this.clearMouseCanvas();
+				});
+			}
+		} else if (this.state.mouseCable) {
+			this.setState({
+				mouseCable: undefined
+			}, () => {
+				this.clearMouseCanvas();
+			});
+		}
+	}
+
+	updateCables() {
 		this.updateCanvasSize();
 		this.setState({
-			curves: getConnectionCurves(this.props.connections)
+			cables: getConnectionCables(this.props.connections)
 		});
 	}
 
-	initContext2d() {
-		const init = setInterval(() => {
+	initContexts() {
+		const initConnections = setInterval(() => {
 			if (this.canvasRef.current) {
 				const context2d = this.canvasRef.current.getContext('2d');
 				if (context2d) {
 					this.setState({
 						context2d
 					}, () => {
-						clearInterval(init);
-						this.updateCurves();
+						clearInterval(initConnections);
+						this.updateCables();
+					});
+				}
+			}
+		}, 5);
+		const initMouse = setInterval(() => {
+			if (this.mouseRef.current) {
+				const mouseContext2d = this.mouseRef.current.getContext('2d');
+				if (mouseContext2d) {
+					this.setState({
+						mouseContext2d
+					}, () => {
+						clearInterval(initMouse);
 					});
 				}
 			}
 		}, 5);
 	}
 
+	getWidthAndHeight() {
+		if (this.spanRef.current) {
+			const rect = this.spanRef.current.getBoundingClientRect();
+			return {
+				width: rect.width,
+				height: rect.height
+			};
+		}
+		throw {};
+	}
+
 	componentWillUnmount() {
-		window.removeEventListener('resize', this.updateCurves, false);
+		window.removeEventListener('resize', this.updateCables, false);
+		document.removeEventListener('mousemove', this.handleMouseMove, false);
 	}
 
 	render() {
-		console.log(this.props.connections);
 		return (
 			<span ref={this.spanRef} className="connections">
 				<canvas ref={this.canvasRef} />
-				{this.state.curves.map((curve, index) =>
+				<canvas ref={this.mouseRef} />
+				{this.state.cables.map((cable, index) =>
 					this.state.context2d ?
 						<Connection
 							context={this.state.context2d}
 							key={index}
-							{...curve} />
-						: null
+							{...cable}
+						/> : null
 				)}
+
+				{(({ mouseContext2d, mouseCable }) => {
+					return mouseContext2d && mouseCable ?
+						<Connection
+							context={mouseContext2d}
+							key={'mouse'}
+							{...mouseCable}
+							singleton={true}
+
+						/> : null;
+				})(this.state)}
+
 			</span>
 		);
 	}
 }
 
-function getConnectionCurves(connections: IConnection[]) {
-	const curves: ICurve[] = [];
+function getMouseCable(event: MouseEvent, activeId: string): ICable | undefined {
+	const active = document.getElementById(activeId);
+	if (active) {
+		const activeBoundingClientRect = active.getBoundingClientRect();
+		const sourceX = activeBoundingClientRect.left + activeBoundingClientRect.width / 2 + window.pageXOffset;
+		const sourceY = activeBoundingClientRect.top + activeBoundingClientRect.height / 2 + window.pageYOffset;
+		const destinationX = event.pageX;
+		const destinationY = event.pageY;
+		return {
+			sourceX,
+			sourceY,
+			destinationX,
+			destinationY,
+			cp1x: (destinationX + sourceX) / 2 - ((destinationX - sourceX) * 0.3),
+			cp1y: (destinationY + sourceY) / 2 + ((destinationY - sourceY) * 0.3) + Math.abs(sourceX - destinationX),
+			cp2x: (destinationX + sourceX) / 2 + ((destinationX - sourceX) * 0.3),
+			cp2y: ((destinationY + sourceY) / 2 + ((destinationY - sourceY) * 0.3)) + Math.abs(sourceX - destinationX),
+			type: 'MOUSE'
+		};
+	}
+}
+
+function getConnectionCables(connections: IConnection[]) {
+	const cables: ICable[] = [];
 	connections.forEach(connection => {
 		const source = document.getElementById(connection.source.connectorId) as HTMLButtonElement;
 		const destination = document.getElementById(connection.destination.connectorId) as HTMLButtonElement;
@@ -159,18 +258,18 @@ function getConnectionCurves(connections: IConnection[]) {
 			const destinationX = destinationBoundingClientRect.left + destinationBoundingClientRect.width / 2 + window.pageXOffset;
 			const destinationY = destinationBoundingClientRect.top + destinationBoundingClientRect.height / 2 + window.pageYOffset;
 
-			curves.push({
+			cables.push({
 				sourceX,
 				sourceY,
 				destinationX,
 				destinationY,
-				cp1x: (destinationX + sourceX) / 2 - ((destinationX - sourceX) * 0.1),
-				cp1y: (destinationY + sourceY) / 2 + ((destinationY - sourceY) * 0.2) + Math.abs(sourceX - destinationX) * .2,
-				cp2x: (destinationX + sourceX) / 2 + ((destinationX - sourceX) * 0.1),
-				cp2y: ((destinationY + sourceY) / 2 + ((destinationY - sourceY) * 0.2)) + Math.abs(sourceX - destinationX) * .2,
+				cp1x: (destinationX + sourceX) / 2 - ((destinationX - sourceX) * 0.3),
+				cp1y: (destinationY + sourceY) / 2 + ((destinationY - sourceY) * 0.3) + Math.abs(sourceX - destinationX),
+				cp2x: (destinationX + sourceX) / 2 + ((destinationX - sourceX) * 0.3),
+				cp2y: ((destinationY + sourceY) / 2 + ((destinationY - sourceY) * 0.3)) + Math.abs(sourceX - destinationX),
 				type: connection.type
 			});
 		}
 	});
-	return curves;
+	return cables;
 }

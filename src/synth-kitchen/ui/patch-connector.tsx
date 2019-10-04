@@ -61,8 +61,6 @@ export class ConnectorInternal extends React.PureComponent<IConnectorInternalPro
 						});
 					}
 				} else {
-					console.log('connection doesn`t exist');
-
 					// connection doesn't exist
 					const sourceConnector = [...(activeModule.connectors || []), ...(clickedModule.connectors || [])].find(connector => (
 						(connector.type === 'MIDI_OUT' || connector.type === 'SIGNAL_OUT') &&

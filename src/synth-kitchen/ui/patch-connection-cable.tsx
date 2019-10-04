@@ -23,6 +23,9 @@ export const ConnectorCable: React.FunctionComponent<IConnectorCableProps> = ({ 
 	context.beginPath();
 	context.moveTo(sourceX, sourceY);
 	context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, destinationX, destinationY);
+	if (type === 'MOUSE') {
+		context.setLineDash([5, 3]);
+	}
 	context.strokeStyle = '#000';
 	context.lineWidth = 3;
 	context.stroke();

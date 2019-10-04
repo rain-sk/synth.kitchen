@@ -139,7 +139,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 
 	render() {
 		return (
-			<article>
+			<>
 				<h2>oscillator</h2>
 				<Connector
 					type="MIDI_IN"
@@ -165,7 +165,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 					name="output"
 					moduleKey={this.props.moduleKey}
 					connectorId={this.state.outputId} />
-			</article>
+			</>
 		);
 	}
 }

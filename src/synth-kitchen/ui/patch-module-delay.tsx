@@ -53,7 +53,7 @@ export const Delay: React.FunctionComponent<IModuleProps> = props => {
 	}, [module]);
 
 	return (
-		<article>
+		<>
 			<h2>delay</h2>
 			<Connector
 				type="SIGNAL_IN"
@@ -74,6 +74,6 @@ export const Delay: React.FunctionComponent<IModuleProps> = props => {
 				name="output"
 				moduleKey={props.moduleKey}
 				connectorId={outputId} />
-		</article>
+		</>
 	);
 };
