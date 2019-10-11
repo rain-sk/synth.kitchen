@@ -181,7 +181,7 @@ export class Connections extends React.Component<IConnectionsProps, IConnections
 				height: rect.height
 			};
 		}
-		throw {};
+		throw new Error("no spanref, this shouldn't happen");
 	}
 
 	componentWillUnmount = () => {

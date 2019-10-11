@@ -49,21 +49,36 @@ export class SettingRadio extends React.Component<ISettingProps, ISettingState> 
 	}
 }
 
-export const SettingSelect: React.FunctionComponent<ISettingProps> = props => {
-	const [id] = React.useState(v4() as string);
+export class SettingSelect extends React.Component<ISettingProps, ISettingState> {
+	constructor(props: ISettingProps) {
+		super(props);
+		this.state = {
+			id: props.id ? props.id : v4() as string
+		};
+	}
 
-	const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		props.onChange(e.target.value);
+	handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		this.props.onChange(e.target.value);
 	};
 
-	return (
-		<fieldset className="setting">
-			<legend>{props.name}</legend>
-			<select value={props.value} onChange={handleChange}>
-				{props.options.map((option, index) => (
-					<option key={index} value={option[0]}>{option[1]}</option>
-				))}
-			</select>
-		</fieldset>
-	);
-};
+	componentDidUpdate = (oldProps: ISettingProps) => {
+		if (oldProps.id !== this.props.id && this.props.id) {
+			this.setState({
+				id: this.props.id
+			});
+		}
+	}
+
+	render() {
+		return (
+			<fieldset className="setting">
+				<legend>{this.props.name}</legend>
+				<select value={this.props.value} onChange={this.handleChange}>
+					{this.props.options.map((option, index) => (
+						<option key={index} value={option[0]}>{option[1]}</option>
+					))}
+				</select>
+			</fieldset>
+		);
+	}
+}

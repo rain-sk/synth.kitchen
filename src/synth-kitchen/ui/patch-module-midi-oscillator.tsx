@@ -2,7 +2,7 @@ import * as React from 'react';
 import { IModuleProps } from './patch-module';
 import { modules } from '../state/module-map';
 import { audioContext } from '../io-audio/audio-context';
-import { SettingRadio, SettingSelect } from './patch-module-setting';
+import { SettingSelect } from './patch-module-setting';
 import { Connector } from './patch-connector';
 import { MidiInput } from '../io-midi/midi-input';
 import { midiToFrequency } from '../io-audio/midi-to-frequency';
