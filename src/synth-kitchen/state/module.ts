@@ -1,4 +1,8 @@
 import { EventEmitter } from "events";
+import { IAudioContext, IAudioNode } from "standardized-audio-context";
+import { IConnector } from "../ui/patch-module";
+
+const { v4 } = require("uuid");
 
 export enum ModuleType {
     OSCILLATOR = 'OSCILLATOR',
@@ -8,20 +12,23 @@ export enum ModuleType {
 }
 
 export interface IModuleDefinition {
+    moduleKey: string;
     type: ModuleType;
-    serializedState?: any;
+    connectors: IConnector[];
+    // parameters: IParameter[] ???
 }
 
-export class Module extends EventEmitter {
-    constructor(private type: ModuleType, serializedState?: any) {
-        super();
+export class Module implements IModuleDefinition {
+    moduleKey = v4() as string;
+    connectors = [];
+    constructor(public type: ModuleType, serializedState?: IModuleDefinition) {
+        this.init(serializedState);
+    }
+
+    init(serializedState?: IModuleDefinition) {
         if (serializedState) {
             console.log(serializedState);
         }
-        this.init();
-    }
-
-    init() {
         switch (this.type) {
             case ModuleType.DELAY:
                 break;
