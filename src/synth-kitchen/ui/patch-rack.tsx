@@ -15,34 +15,43 @@ export interface IRackProps extends IRack {
 	removeRack: () => void;
 }
 
-export const Rack: React.FunctionComponent<IRackProps> = props => {
-	const [newModuleType, setNewModuleType] = React.useState('GAIN' as ModuleType);
-
-	const handleNewModuleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		setNewModuleType(e.target.value as ModuleType);
+export class Rack extends React.Component<IRackProps, { newModuleType: ModuleType }>{
+	constructor(props: IRackProps) {
+		super(props);
+		this.state = {
+			newModuleType: 'GAIN'
+		};
 	}
 
-	const handleAddModuleClick = React.useCallback(() => {
-		props.addModule(newModuleType, props.index, props.moduleKeys.length);
-	}, [props, newModuleType]);
+	handleNewModuleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		this.setState({
+			newModuleType: e.target.value as ModuleType
+		});
+	}
 
-	return (
-		<div className="rack">
-			<button className="remove-rack" type="button" onClick={props.removeRack}>
-				<span className="visually-hidden">Remove Rack</span>
-			</button>
-			<ul>
-				{props.moduleKeys.map((key) => (
-					<React.Fragment key={key}>
-						<Module moduleKey={key} removeModule={props.removeModule} />
-					</React.Fragment>
-				))}
-			</ul>
-			<AddModule
-				handleNewModuleTypeChange={handleNewModuleTypeChange}
-				handleAddModuleClick={handleAddModuleClick}
-				webmidi={webmidi}
-			/>
-		</div>
-	);
+	handleAddModuleClick = () => {
+		this.props.addModule(this.state.newModuleType, this.props.index, this.props.moduleKeys.length);
+	}
+
+	render() {
+		return (
+			<div className="rack" >
+				<button className="remove-rack" type="button" onClick={this.props.removeRack}>
+					<span className="visually-hidden">Remove Rack</span>
+				</button>
+				<ul>
+					{this.props.moduleKeys.map((key) => (
+						<React.Fragment key={key}>
+							<Module moduleKey={key} removeModule={this.props.removeModule} />
+						</React.Fragment>
+					))}
+				</ul>
+				<AddModule
+					handleNewModuleTypeChange={this.handleNewModuleTypeChange}
+					handleAddModuleClick={this.handleAddModuleClick}
+					webmidi={webmidi}
+				/>
+			</div>
+		);
+	}
 };

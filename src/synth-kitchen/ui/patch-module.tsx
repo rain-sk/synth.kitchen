@@ -32,44 +32,62 @@ export interface IModule {
 	connectors?: IConnector[];
 }
 
-export const Module: React.FunctionComponent<IModuleProps> = props => {
-	const module = modules.get(props.moduleKey);
+export interface IModuleState {
+	module?: IModule;
+}
 
-	const handleRemove = React.useCallback(() => {
-		props.removeModule(props.moduleKey);
-	}, [props.moduleKey]);
+export class Module extends React.Component<IModuleProps, IModuleState> {
+	constructor(props: IModuleProps) {
+		super(props);
+		this.state = {
+			module: modules.get(this.props.moduleKey)
+		};
+	}
 
-	if (module) {
-		return (
-			<li className={module.type === 'FILTER' ? 'double-wide' : ''}>
-				<button className="remove-module" type="button" onClick={handleRemove}></button>
-				<article className="module">
-					{
-						module && (() => {
-							switch (module.type) {
+	handleRemove = () => {
+		this.props.removeModule(this.props.moduleKey);
+	}
+
+	componentDidUpdate = (oldProps: IModuleProps) => {
+		if (oldProps.moduleKey !== this.props.moduleKey) {
+			this.setState({
+				module: modules.get(this.props.moduleKey)
+			});
+		}
+	}
+
+	render() {
+		if (this.state.module) {
+			return (
+				<li className={this.state.module.type === 'FILTER' ? 'double-wide' : ''}>
+					<button className="remove-module" type="button" onClick={this.handleRemove}></button>
+					<article className="module">
+						{this.state.module && (() => {
+							switch (this.state.module.type) {
 								case 'GAIN':
-									return <Gain {...props} />;
+									return <Gain {...this.props} />;
 								case 'DELAY':
-									return <Delay {...props} />;
+									return <Delay {...this.props} />;
 								case 'FILTER':
-									return <Filter {...props} />;
+									return <Filter {...this.props} />;
 								case 'OSCILLATOR':
-									return <Oscillator {...props} />;
+									return <Oscillator {...this.props} />;
 								case 'MIDI_DEVICE':
-									return <MidiDevice {...props} />;
+									return <MidiDevice {...this.props} />;
 								case 'MIDI_OSCILLATOR':
-									return <MidiOscillator {...props} />;
+									return <MidiOscillator {...this.props} />;
 								default:
-									props.removeModule(props.moduleKey);
+									this.props.removeModule(this.props.moduleKey);
 									return null;
 							}
-						})()
-					}
-				</article>
-			</li>
-		)
-	} else {
-		props.removeModule(props.moduleKey);
-		return null;
+						})()}
+					</article>
+				</li>
+			)
+		} else {
+			this.props.removeModule(this.props.moduleKey);
+			return null;
+		}
 	}
-};
+}
+

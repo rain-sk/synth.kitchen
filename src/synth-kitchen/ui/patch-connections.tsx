@@ -73,19 +73,15 @@ export class Connections extends React.Component<IConnectionsProps, IConnections
 			cables: []
 		}
 
-		this.updateCanvasSize = this.updateCanvasSize.bind(this);
-		this.updateCables = this.updateCables.bind(this);
-		this.handleMouseMove = this.handleMouseMove.bind(this);
-
 		window.addEventListener('resize', this.updateCables, false);
 		document.addEventListener('mousemove', this.handleMouseMove, false);
 	}
 
-	componentDidMount() {
+	componentDidMount = () => {
 		this.initContexts();
 	}
 
-	componentDidUpdate(prevProps: IConnectionsProps, prevState: IConnectionsState) {
+	componentDidUpdate = (prevProps: IConnectionsProps, prevState: IConnectionsState) => {
 		if ((prevProps.moduleCount !== this.props.moduleCount) ||
 			(prevProps.rackCount !== this.props.rackCount) ||
 			(prevProps.connections.length !== this.props.connections.length)) {
@@ -98,7 +94,7 @@ export class Connections extends React.Component<IConnectionsProps, IConnections
 		}
 	}
 
-	updateCanvasSize() {
+	updateCanvasSize = () => {
 		const { width, height } = this.getWidthAndHeight();
 		if (this.canvasRef.current && this.state.context2d && this.mouseRef.current && this.state.mouseContext2d) {
 			this.state.context2d.clearRect(0, 0, width, height);
@@ -110,12 +106,12 @@ export class Connections extends React.Component<IConnectionsProps, IConnections
 		}
 	}
 
-	clearMouseCanvas() {
+	clearMouseCanvas = () => {
 		const { width, height } = this.getWidthAndHeight();
 		this.state.mouseContext2d && this.state.mouseContext2d.clearRect(0, 0, width, height);
 	}
 
-	handleMouseMove(event: MouseEvent) {
+	handleMouseMove = (event: MouseEvent) => {
 		if (this.props.active) {
 			const width = this.spanRef.current ? this.spanRef.current.offsetWidth : 0;
 			const height = this.spanRef.current ? this.spanRef.current.offsetHeight : 0;
@@ -142,14 +138,14 @@ export class Connections extends React.Component<IConnectionsProps, IConnections
 		}
 	}
 
-	updateCables() {
+	updateCables = () => {
 		this.updateCanvasSize();
 		this.setState({
 			cables: getConnectionCables(this.props.connections)
 		});
 	}
 
-	initContexts() {
+	initContexts = () => {
 		const initConnections = setInterval(() => {
 			if (this.canvasRef.current) {
 				const context2d = this.canvasRef.current.getContext('2d');
@@ -177,7 +173,7 @@ export class Connections extends React.Component<IConnectionsProps, IConnections
 		}, 5);
 	}
 
-	getWidthAndHeight() {
+	getWidthAndHeight = () => {
 		if (this.spanRef.current) {
 			const rect = this.spanRef.current.getBoundingClientRect();
 			return {
@@ -188,7 +184,7 @@ export class Connections extends React.Component<IConnectionsProps, IConnections
 		throw {};
 	}
 
-	componentWillUnmount() {
+	componentWillUnmount = () => {
 		window.removeEventListener('resize', this.updateCables, false);
 		document.removeEventListener('mousemove', this.handleMouseMove, false);
 	}

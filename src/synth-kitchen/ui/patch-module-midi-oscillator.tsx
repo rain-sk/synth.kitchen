@@ -51,15 +51,9 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 			activeOscillators: new Map<number, IOscillatorNode<IAudioContext>>(),
 			detuneInput: audioContext.createGain()
 		};
-		this.createOscillator = this.createOscillator.bind(this);
-		this.destroyOscillator = this.destroyOscillator.bind(this);
-		this.handleChangeType = this.handleChangeType.bind(this);
-		this.handleChangeDetune = this.handleChangeDetune.bind(this);
-		this.getDetuneInput = this.getDetuneInput.bind(this);
-		this.getOutput = this.getOutput.bind(this);
 	}
 
-	createOscillator(note: number) {
+	createOscillator = (note: number) => {
 		this.destroyOscillator(note);
 		const osc = audioContext.createOscillator();
 		osc.frequency.value = midiToFrequency(note);
@@ -71,7 +65,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 		this.state.activeOscillators.set(note, osc);
 	}
 
-	destroyOscillator(note: number) {
+	destroyOscillator = (note: number) => {
 		const osc = this.state.activeOscillators.get(note);
 		if (osc) {
 			try {
@@ -81,7 +75,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 		}
 	}
 
-	handleChangeType(newType: string) {
+	handleChangeType = (newType: string) => {
 		this.state.activeOscillators.forEach((oscillator) => {
 			oscillator.type = newType as OscillatorType;
 		});
@@ -90,7 +84,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 		});
 	}
 
-	handleChangeDetune(newDetune: number) {
+	handleChangeDetune = (newDetune: number) => {
 		this.state.activeOscillators.forEach((oscillator) => {
 			oscillator.detune.value = newDetune;
 		});
@@ -99,15 +93,15 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 		});
 	}
 
-	getOutput() {
+	getOutput = () => {
 		return this.state.output;
 	}
 
-	getDetuneInput() {
+	getDetuneInput = () => {
 		return this.state.detuneInput;
 	}
 
-	componentDidMount() {
+	componentDidMount = () => {
 		if (this.module && !this.module.initialized) {
 			const midiInput = new MidiInput(this.state.midiInputId, this.props.moduleKey, this.createOscillator, this.destroyOscillator)
 			const detuneInput = audioContext.createGain();

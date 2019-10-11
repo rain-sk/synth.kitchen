@@ -19,12 +19,9 @@ export class AddModule extends React.Component<IAddModuleProps, IAddModuleState>
         this.state = {
             active: false
         };
-        this.handleBlur = this.handleBlur.bind(this);
-        this.handleFocus = this.handleFocus.bind(this);
-        this.handleAddClick = this.handleAddClick.bind(this);
     }
 
-    handleBlur(e: any) {
+    handleBlur = (e: any) => {
         if (this.fieldsetRef.current) {
             if (e.target.parentElement !== this.fieldsetRef.current) {
                 this.setState({
@@ -34,13 +31,13 @@ export class AddModule extends React.Component<IAddModuleProps, IAddModuleState>
         }
     }
 
-    handleFocus() {
+    handleFocus = () => {
         this.setState({
             active: true
         });
     }
 
-    handleAddClick(e: React.MouseEvent<HTMLButtonElement>) {
+    handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         this.setState({
             active: false
         });

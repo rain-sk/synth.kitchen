@@ -49,19 +49,6 @@ export class Patch extends React.Component<{}, IPatchState> {
 	constructor(props: any) {
 		super(props);
 
-		this.connectorActivate = this.connectorActivate.bind(this);
-		this.connectorDeactivate = this.connectorDeactivate.bind(this);
-		this.connectorConnect = this.connectorConnect.bind(this);
-		this.connectorDisconnect = this.connectorDisconnect.bind(this);
-		this.moduleClear = this.moduleClear.bind(this);
-		this.moduleAdd = this.moduleAdd.bind(this);
-		this.moduleRackAdd = this.moduleRackAdd.bind(this);
-		this.moduleRackRemove = this.moduleRackRemove.bind(this);
-		this.moduleRemove = this.moduleRemove.bind(this);
-		this.handleKeyDown = this.handleKeyDown.bind(this);
-
-		this.getContextValue = this.getContextValue.bind(this);
-
 		this.state = {
 			connections: [],
 			racks: [{ index: 0, moduleKeys: [] }]
@@ -76,7 +63,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 		document.removeEventListener('keydown', this.handleKeyDown, false);
 	}
 
-	handleKeyDown(event: KeyboardEvent) {
+	handleKeyDown = (event: KeyboardEvent) => {
 		switch (event.which || event.keyCode) {
 			case 27:
 				if (this.state.active) {
@@ -87,7 +74,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 		}
 	}
 
-	getContextValue() {
+	getContextValue = () => {
 		return {
 			connectorActivate: this.connectorActivate,
 			connectorDeactivate: this.connectorDeactivate,
@@ -115,15 +102,15 @@ export class Patch extends React.Component<{}, IPatchState> {
 		)
 	}
 
-	connectorActivate(active: IEnd) {
+	connectorActivate = (active: IEnd) => {
 		this.setState({ active });
 	}
 
-	connectorDeactivate() {
+	connectorDeactivate = () => {
 		this.setState({ active: undefined });
 	}
 
-	connectorConnect(payload: IConnectPayload) {
+	connectorConnect = (payload: IConnectPayload) => {
 		const { connection, sourceConnector, destinationConnector } = payload;
 		sourceConnector.getter().connect(destinationConnector.getter());
 		this.setState({
@@ -132,7 +119,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 		});
 	}
 
-	connectorDisconnect(payload: IConnectPayload) {
+	connectorDisconnect = (payload: IConnectPayload) => {
 		const { connection, sourceConnector, destinationConnector } = payload;
 		sourceConnector.getter().disconnect(destinationConnector.getter());
 		const connections = this.state.connections.filter(con => (
@@ -145,7 +132,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 		});
 	}
 
-	moduleAdd(moduleType: ModuleType, rackIndex: number, slotIndex: number) {
+	moduleAdd = (moduleType: ModuleType, rackIndex: number, slotIndex: number) => {
 
 		/* create a record of the module */
 		const moduleKey = v4();
@@ -171,7 +158,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 
 	}
 
-	moduleClear(module: IModule) {
+	moduleClear = (module: IModule) => {
 		this.state.connections.forEach(connection => {
 			if (connection.source.moduleKey === module.moduleKey || connection.destination.moduleKey === module.moduleKey) {
 				const sourceModule = modules.get(connection.source.moduleKey);
@@ -195,7 +182,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 		});
 	}
 
-	moduleRackAdd() {
+	moduleRackAdd = () => {
 		let { racks } = this.state;
 
 		racks.push({
@@ -208,7 +195,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 		});
 	}
 
-	moduleRackRemove(rackIndex: number) {
+	moduleRackRemove = (rackIndex: number) => {
 		return () => {
 
 			let { racks } = this.state;
@@ -234,7 +221,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 		}
 	}
 
-	moduleRemove(moduleKey: string) {
+	moduleRemove = (moduleKey: string) => {
 		const module = modules.get(moduleKey);
 		if (module) {
 

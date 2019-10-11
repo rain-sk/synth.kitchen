@@ -173,6 +173,7 @@ fieldset.parameter input {
 	color: #fff;
 	font-size: 12pt;
 	width: 10rem;
+	z-index: 10;
 }
 
 fieldset.setting > span {
