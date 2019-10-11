@@ -24,7 +24,7 @@ export class AddModule extends React.Component<IAddModuleProps, IAddModuleState>
         this.handleAddClick = this.handleAddClick.bind(this);
     }
 
-    handleBlur(e: React.FocusEvent) {
+    handleBlur(e: any) {
         if (this.fieldsetRef.current) {
             if (e.target.parentElement !== this.fieldsetRef.current) {
                 this.setState({
@@ -49,9 +49,9 @@ export class AddModule extends React.Component<IAddModuleProps, IAddModuleState>
 
     render() {
         return (
-            <fieldset ref={this.fieldsetRef} onFocus={this.handleFocus} onBlur={this.handleBlur} onClick={this.handleFocus} className="add-module">
+            <fieldset ref={this.fieldsetRef} onFocus={this.handleFocus} onBlur={this.handleBlur} onMouseLeave={this.handleBlur} onMouseEnter={this.handleFocus} className="add-module">
                 <legend className="visually-hidden">Add Module</legend>
-                <select onFocus={this.handleFocus} className={this.state.active ? "" : "visually-hidden"} onChange={this.props.handleNewModuleTypeChange} tabIndex={0}>
+                <select className={this.state.active ? "" : "visually-hidden"} onChange={this.props.handleNewModuleTypeChange} tabIndex={0}>
                     <option value={'GAIN'}>gain</option>
                     <option value={'DELAY'}>delay</option>
                     <option value={'FILTER'}>filter</option>
@@ -64,7 +64,7 @@ export class AddModule extends React.Component<IAddModuleProps, IAddModuleState>
                             </>
                         ) : null}
                 </select>
-                <button onFocus={this.handleFocus} className={this.state.active ? "" : "visually-hidden"} onClick={this.handleAddClick} tabIndex={0}>Add Module</button>
+                <button className={this.state.active ? "" : "visually-hidden"} onClick={this.handleAddClick} tabIndex={0}>Add Module</button>
                 {this.state.active ? null : <i className="add-module"></i>}
             </fieldset>
         );

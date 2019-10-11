@@ -88,7 +88,6 @@ article.module {
 	display: grid;
 	grid-auto-flow: column;
 	grid-template-rows: 10rem 10rem;
-	grid-template-columns: repeat();
 	grid-gap: 1.5rem;
 }
 
@@ -262,6 +261,23 @@ article.module > fieldset:only-of-type {
       ease-in-out;
 }
 
+.styledKnob {
+	position: relative;
+}
+
+.styledKnob::after {
+    content: '';
+	display: block;
+	position: absolute;
+	width: 1.5rem;
+	height: 1rem;
+	background: transparent;
+	top: 25px;
+	left: -18px;
+	border-top: 2px solid#000;
+	border-left: 2px solid#000;
+}
+
 .setting {
 	display: flex;
 }
@@ -280,7 +296,19 @@ article.module > fieldset:only-of-type {
 	width: 1.5rem;
 	height: 1.5rem;
 	border: 2px solid #000;
-    border-radius: 1rem;
+	border-radius: 1rem;
+	position: relative;
+}
+
+.parameter .connector::after {
+	position: absolute;
+	content: '';
+	display: block;
+	width: 1.5rem;
+	height: .5rem;
+	border: 2px solid #000;
+	border-top: none;
+	top: 1.5rem;
 }
 
 .SIGNAL_IN, .MIDI_IN {
