@@ -1,6 +1,6 @@
 {
   "name": "synth.kitchen",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@types/jest": "24.0.13",
@@ -8,7 +8,7 @@
     "@types/react": "16.8.17",
     "@types/react-beautiful-dnd": "^11.0.2",
     "@types/react-dom": "16.8.4",
-    "music-fns": "latest",
+    "music-fns": "0.1.3",
     "rc-knob-accessible": "^1.0.0",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^11.0.3",
