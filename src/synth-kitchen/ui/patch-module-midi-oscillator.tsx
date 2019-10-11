@@ -7,6 +7,7 @@ import { Connector } from './patch-connector';
 import { MidiInput } from '../io-midi/midi-input';
 import { midiToFrequency } from '../io-audio/midi-to-frequency';
 import { Parameter } from './patch-module-parameter';
+import { IGainNode, IAudioContext, IOscillatorNode } from 'standardized-audio-context';
 
 const { v4 } = require('uuid');
 
@@ -31,9 +32,9 @@ interface IMidiOscillatorState {
 	outputId: string;
 	type: OscillatorType;
 	detune: number;
-	output: GainNode;
-	activeOscillators: Map<number, OscillatorNode>;
-	detuneInput: GainNode;
+	output: IGainNode<IAudioContext>;
+	activeOscillators: Map<number, IOscillatorNode<IAudioContext>>;
+	detuneInput: IGainNode<IAudioContext>;
 }
 
 export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillatorState> {
@@ -47,7 +48,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 			type: 'sine',
 			detune: 0,
 			output: audioContext.createGain(),
-			activeOscillators: new Map<number, OscillatorNode>(),
+			activeOscillators: new Map<number, IOscillatorNode<IAudioContext>>(),
 			detuneInput: audioContext.createGain()
 		};
 		this.createOscillator = this.createOscillator.bind(this);
@@ -65,7 +66,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 		osc.detune.value = this.state.detune;
 		osc.type = this.state.type;
 		osc.start();
-		this.state.detuneInput.connect(osc.detune);
+		this.state.detuneInput.connect(osc.detune as any);
 		osc.connect(this.state.output);
 		this.state.activeOscillators.set(note, osc);
 	}
