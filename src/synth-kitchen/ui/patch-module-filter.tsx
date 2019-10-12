@@ -142,7 +142,7 @@ export const Filter: React.FunctionComponent<IModuleProps> = props => {
 
 	return (
 		<>
-			<h2>delay</h2>
+			<h2 className="visually-hidden">delay</h2>
 			<Connector
 				type="SIGNAL_IN"
 				name="input"

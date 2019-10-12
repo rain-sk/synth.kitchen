@@ -61,6 +61,11 @@ export class Patch extends React.Component<{}, IPatchState> {
 
 	componentWillUnmount() {
 		document.removeEventListener('keydown', this.handleKeyDown, false);
+		this.state.racks.forEach(rack => {
+			rack.moduleKeys.forEach(key => {
+				this.moduleRemove(key);
+			});
+		});
 	}
 
 	handleKeyDown = (event: KeyboardEvent) => {

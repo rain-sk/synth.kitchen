@@ -60,7 +60,7 @@ export const MidiDevice: React.FunctionComponent<IModuleProps> = props => {
 
 	return (
 		<>
-			<h2>midi device</h2>
+			<h2 className="visually-hidden">midi device</h2>
 			<SettingSelect
 				name="device"
 				value={inputDevice}

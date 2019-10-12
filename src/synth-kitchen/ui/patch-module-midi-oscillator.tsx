@@ -135,7 +135,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 	render() {
 		return (
 			<>
-				<h2>oscillator</h2>
+				<h2 className="visually-hidden">oscillator</h2>
 				<Connector
 					type="MIDI_IN"
 					name="midi input"
