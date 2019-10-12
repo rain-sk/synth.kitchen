@@ -92,7 +92,7 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 
 	return (
 		<>
-			<h2>oscillator</h2>
+			<h2 className="visually-hidden">oscillator</h2>
 			<Parameter
 				name="frequency"
 				moduleKey={props.moduleKey}

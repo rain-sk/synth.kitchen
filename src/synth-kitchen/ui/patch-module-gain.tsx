@@ -54,7 +54,7 @@ export const Gain: React.FunctionComponent<IModuleProps> = props => {
 
 	return (
 		<>
-			<h2>gain</h2>
+			<h2 className="visually-hidden">gain</h2>
 			<Connector
 				type="SIGNAL_IN"
 				name="input"
