@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MidiOutput } from '../io-midi/midi-output';
+import { MidiOutput } from '../io/midi/midi-output';
 import { IModuleProps } from './patch-module';
 import { modules } from '../state/module-map';
 import { Connector } from './patch-connector';

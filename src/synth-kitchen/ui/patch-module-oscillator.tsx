@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IModuleProps } from './patch-module';
 import { modules } from '../state/module-map';
-import { audioContext } from '../io-audio/audio-context';
+import { audioContext } from '../io/utils/audio-context';
 import { SettingRadio } from './patch-module-setting';
 import { Parameter } from './patch-module-parameter';
 import { Connector } from './patch-connector';

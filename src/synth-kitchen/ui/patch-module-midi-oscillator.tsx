@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { IModuleProps } from './patch-module';
 import { modules } from '../state/module-map';
-import { audioContext } from '../io-audio/audio-context';
+import { audioContext } from '../io/utils/audio-context';
 import { SettingSelect } from './patch-module-setting';
 import { Connector } from './patch-connector';
-import { MidiInput } from '../io-midi/midi-input';
-import { midiToFrequency } from '../io-audio/midi-to-frequency';
+import { MidiInput } from '../io/midi/midi-input';
+import { midiToFrequency } from '../io/utils/midi-to-frequency';
 import { Parameter } from './patch-module-parameter';
 import { IGainNode, IAudioContext, IOscillatorNode } from 'standardized-audio-context';
 

@@ -1,5 +1,5 @@
 import { IModule } from '../ui/patch-module';
-import { audioContext } from '../io-audio/audio-context';
+import { audioContext } from '../io/utils/audio-context';
 
 export const modules = new Map<string, IModule>();
 

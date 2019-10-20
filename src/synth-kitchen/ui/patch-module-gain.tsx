@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { audioContext } from '../io-audio/audio-context';
+import { audioContext } from '../io/utils/audio-context';
 import { IModuleProps } from './patch-module';
 import { modules } from '../state/module-map';
 import { Parameter } from './patch-module-parameter';
