@@ -192,6 +192,7 @@ fieldset.setting input {
 	width: 1.5rem;
 	height: 1.5rem;
 	left: .5rem;
+	z-index: 10;
 }
 
 article.module > fieldset:only-of-type {
@@ -207,6 +208,7 @@ article.module > fieldset:only-of-type {
 	height: 1.5rem;
 	border: 2px solid #000;
 	border-radius: 1rem;
+	z-index: 10;
 }
 
 .remove-module::before{
@@ -314,16 +316,20 @@ article.module > fieldset:only-of-type {
 	top: 1.5rem;
 }
 
+.CV_IN {
+	z-index: 10;
+}
+
 .SIGNAL_IN, .MIDI_IN {
     position: absolute;
-    top: -.75rem;
+    top: 2px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .SIGNAL_OUT, .MIDI_OUT {
     position: absolute;
-    bottom: -.75rem;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
 }
