@@ -1,5 +1,5 @@
 import { IModule } from '../ui/patch-module-old';
-import { audioContext } from '../io/utils/audio-context';
+import { masterBuss } from '../io/utils/audio-context';
 
 const map = new Map<string, IModule>();
 
@@ -26,13 +26,13 @@ modules.set('GLOBAL_CONTEXT', {
 	moduleKey: 'GLOBAL_CONTEXT',
 	type: 'GLOBAL_CONTEXT',
 	initialized: true,
-	node: audioContext,
+	node: masterBuss,
 	connectors: [
 		{
 			id: 'GLOBAL_CONTEXT',
 			name: 'speakers',
 			type: 'SIGNAL_IN',
-			getter: () => audioContext.destination
+			getter: () => masterBuss
 		}
 	]
 });
