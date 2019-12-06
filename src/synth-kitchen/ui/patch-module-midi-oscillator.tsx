@@ -34,7 +34,7 @@ interface IMidiOscillatorState {
 	type: OscillatorType;
 	detune: number;
 	output: IGainNode<IAudioContext>;
-	activeOscillators: Map<number, IOscillatorNode<IAudioContext>>;
+	activeOscillators: Map<number, [IOscillatorNode<IAudioContext>, IGainNode<IAudioContext>]>;
 	detuneInput: IGainNode<IAudioContext>;
 	frequencyInput: IGainNode<IAudioContext>;
 }
@@ -51,7 +51,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 			type: 'sine',
 			detune: 0,
 			output: audioContext.createGain(),
-			activeOscillators: new Map<number, IOscillatorNode<IAudioContext>>(),
+			activeOscillators: new Map<number, [IOscillatorNode<IAudioContext>, IGainNode<IAudioContext>]>(),
 			detuneInput: audioContext.createGain(),
 			frequencyInput: audioContext.createGain(),
 		};
@@ -63,26 +63,32 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 		osc.frequency.value = midiToFrequency(note);
 		osc.detune.value = this.state.detune;
 		osc.type = this.state.type;
+		const gain = audioContext.createGain();
+		gain.gain.value = 0;
+		gain.gain.setTargetAtTime(1, 0, 0.03);
 		osc.start();
 		this.state.detuneInput.connect(osc.detune as any);
 		this.state.frequencyInput.connect(osc.frequency as any);
-		osc.connect(this.state.output);
-		this.state.activeOscillators.set(note, osc);
+		osc.connect(gain);
+		gain.connect(this.state.output);
+		this.state.activeOscillators.set(note, [osc, gain]);
 	}
 
 	destroyOscillator = (note: number) => {
-		const osc = this.state.activeOscillators.get(note);
-		if (osc) {
+		const oscGainPair = this.state.activeOscillators.get(note);
+		if (oscGainPair) {
 			try {
+				const [osc, gain] = oscGainPair;
 				osc.stop();
-				osc.disconnect(this.state.output);
+				osc.disconnect(gain);
+				gain.disconnect(this.state.output);
 			} catch { }
 		}
 	}
 
 	handleChangeType = (newType: string) => {
-		this.state.activeOscillators.forEach((oscillator) => {
-			oscillator.type = newType as OscillatorType;
+		this.state.activeOscillators.forEach((oscillatorGainPair) => {
+			oscillatorGainPair[0].type = newType as OscillatorType;
 		});
 		this.setState({
 			type: newType as OscillatorType
@@ -90,8 +96,8 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 	}
 
 	handleChangeDetune = (newDetune: number) => {
-		this.state.activeOscillators.forEach((oscillator) => {
-			oscillator.detune.value = newDetune;
+		this.state.activeOscillators.forEach((oscillatorGainPair) => {
+			oscillatorGainPair[0].detune.value = newDetune;
 		});
 		this.setState({
 			detune: newDetune
