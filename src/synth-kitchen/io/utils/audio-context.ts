@@ -1,6 +1,8 @@
 import { AudioContext } from 'standardized-audio-context';
 
-export const audioContext = new AudioContext();
+export const audioContext = new AudioContext({
+	latencyHint: 'playback'
+});
 
 let resumed = false;
 function resume() {
