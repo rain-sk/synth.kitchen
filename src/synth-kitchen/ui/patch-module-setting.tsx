@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const { v4 } = require('uuid');
+import { uniqueId } from '../io/utils/unique-id';
 
 export interface ISettingProps {
 	id?: string;
@@ -8,17 +8,24 @@ export interface ISettingProps {
 	value: string;
 	options: [string, string][];
 	onChange: (newValue: string) => void;
+	type: 'radio' | 'select';
 }
 
 export interface ISettingState {
 	id: string;
 }
 
-export class SettingRadio extends React.Component<ISettingProps, ISettingState> {
+export const Setting: React.FunctionComponent<ISettingProps> = props => (
+	props.type === 'radio' ? (
+		<SettingRadio {...props} />
+	) : <SettingSelect {...props} />
+);
+
+class SettingRadio extends React.Component<ISettingProps, ISettingState> {
 	constructor(props: ISettingProps) {
 		super(props);
 		this.state = {
-			id: props.id ? props.id : v4() as string
+			id: props.id ? props.id : uniqueId()
 		};
 	}
 
@@ -49,11 +56,11 @@ export class SettingRadio extends React.Component<ISettingProps, ISettingState> 
 	}
 }
 
-export class SettingSelect extends React.Component<ISettingProps, ISettingState> {
+class SettingSelect extends React.Component<ISettingProps, ISettingState> {
 	constructor(props: ISettingProps) {
 		super(props);
 		this.state = {
-			id: props.id ? props.id : v4() as string
+			id: props.id ? props.id : uniqueId() as string
 		};
 	}
 

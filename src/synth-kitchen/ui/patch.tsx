@@ -2,12 +2,12 @@ import * as React from 'react';
 
 import { Connections } from './patch-connections';
 import { Connector } from './patch-connector';
-import { ModuleType, IModule, IConnector } from './patch-module';
+import { ModuleType, IModule, IConnector } from '../state/patch';
 import { modules } from '../state/module-map';
 import { Rack, IRack } from './patch-rack';
 import { IEnd, IConnection } from '../state/patch';
-
-const { v4 } = require('uuid');
+import { uniqueId } from '../io/utils/unique-id';
+import { DelayModule } from '../state/module-delay';
 
 export interface IConnectPayload {
 	connection: IConnection;
@@ -102,7 +102,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 					</React.Fragment>
 				))}
 				<button className="add-rack" type="button" onClick={this.moduleRackAdd}>Add Rack</button>
-				<Connections moduleCount={modules.size} rackCount={this.state.racks.length} active={this.state.active} connections={this.state.connections} />
+				<Connections moduleCount={modules.size()} rackCount={this.state.racks.length} active={this.state.active} connections={this.state.connections} />
 			</PatchContext.Provider>
 		)
 	}
@@ -139,27 +139,35 @@ export class Patch extends React.Component<{}, IPatchState> {
 
 	moduleAdd = (moduleType: ModuleType, rackIndex: number, slotIndex: number) => {
 
-		/* create a record of the module */
-		const moduleKey = v4();
-		const newModule: IModule = {
-			moduleKey: moduleKey,
-			type: moduleType
-		};
-		modules.set(moduleKey, newModule);
+		let moduleKey = '';
 
-		/* add the new module to the UI */ {
-			const { racks } = this.state;
-			if (rackIndex === this.state.racks.length) {
-				const newRack: IRack = {
-					index: rackIndex,
-					moduleKeys: [moduleKey]
-				};
-				this.state.racks.push(newRack);
-			} else {
-				this.state.racks[rackIndex].moduleKeys.splice(slotIndex, 0, moduleKey);
-			}
-			this.setState({ racks: [...racks] });
+		/* create a record of the module */
+		if (moduleType === 'DELAY') {
+			const delay = new DelayModule(moduleType);
+			modules.set(delay.moduleKey, delay);
+			moduleKey = delay.moduleKey;
+		} else {
+			const _moduleKey = uniqueId();
+			const newModule: IModule = {
+				moduleKey: _moduleKey,
+				type: moduleType
+			};
+			moduleKey = _moduleKey;
+			modules.set(_moduleKey, newModule);
 		}
+
+		/* add the new module to the UI */
+		const { racks } = this.state;
+		if (rackIndex === this.state.racks.length) {
+			const newRack: IRack = {
+				index: rackIndex,
+				moduleKeys: [moduleKey]
+			};
+			this.state.racks.push(newRack);
+		} else {
+			this.state.racks[rackIndex].moduleKeys.splice(slotIndex, 0, moduleKey);
+		}
+		this.setState({ racks: [...racks] });
 
 	}
 

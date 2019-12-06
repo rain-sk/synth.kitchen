@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { audioContext } from '../io/utils/audio-context';
-import { IModuleProps } from './patch-module';
+import { IModuleProps } from './patch-module-old';
 import { modules } from '../state/module-map';
 import { Parameter } from './patch-module-parameter';
 import { Connector } from './patch-connector';
-
-const { v4 } = require('uuid');
+import { uniqueId } from '../io/utils/unique-id';
 
 const scaleDelay = (normalizedValue: number): number => {
 	return Math.min(100, Math.max(0, normalizedValue * 100));
@@ -16,9 +15,9 @@ const displayDelay = (currentValue: number) => {
 }
 
 export const Delay: React.FunctionComponent<IModuleProps> = props => {
-	const [inputId] = React.useState(v4() as any);
-	const [outputId] = React.useState(v4() as any);
-	const [delayId] = React.useState(v4() as any);
+	const [inputId] = React.useState(uniqueId() as any);
+	const [outputId] = React.useState(uniqueId() as any);
+	const [delayId] = React.useState(uniqueId() as any);
 	const [delay, setDelay] = React.useState(0.5);
 
 	const module = modules.get(props.moduleKey);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IEnd, ConnectionType } from '../state/patch';
-import { ConnectorType } from './patch-module';
+import { ConnectorType } from './patch-module-old';
 import { PatchContext, IPatchCallbacks, IPatchState } from './patch';
 import { modules } from '../state/module-map';
 

@@ -1,10 +1,12 @@
 import * as React from 'react';
+import webmidi from 'webmidi';
+
 import { MidiOutput } from '../io/midi/midi-output';
-import { IModuleProps } from './patch-module';
+import { IModuleProps } from './patch-module-old';
 import { modules } from '../state/module-map';
 import { Connector } from './patch-connector';
-import { SettingSelect } from './patch-module-setting';
-import webmidi from 'webmidi';
+import { Setting } from './patch-module-setting';
+import { uniqueId } from '../io/utils/unique-id';
 
 const channelOptions: [string, string][] = [
 	['all', 'all'],
@@ -26,10 +28,8 @@ const channelOptions: [string, string][] = [
 	['16', '16']
 ];
 
-const { v4 } = require('uuid');
-
 export const MidiDevice: React.FunctionComponent<IModuleProps> = props => {
-	const [outputId] = React.useState(v4() as any);
+	const [outputId] = React.useState(uniqueId() as any);
 	const [inputDevices] = React.useState(webmidi.inputs);
 	const [inputDevice, setInputDevice] = React.useState('');
 	const [inputChannel, setInputChannel] = React.useState('all');
@@ -61,12 +61,14 @@ export const MidiDevice: React.FunctionComponent<IModuleProps> = props => {
 	return (
 		<>
 			<h2 className="visually-hidden">midi device</h2>
-			<SettingSelect
+			<Setting
+				type="select"
 				name="device"
 				value={inputDevice}
 				options={inputDevices.map((device: any) => [device.name as string, device.name as string])}
 				onChange={handleChangeInputDevice} />
-			<SettingSelect
+			<Setting
+				type="select"
 				name="channel"
 				value={inputChannel}
 				options={channelOptions}

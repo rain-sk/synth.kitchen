@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { IModuleProps } from './patch-module';
+import { IModuleProps } from './patch-module-old';
 import { modules } from '../state/module-map';
 import { audioContext } from '../io/utils/audio-context';
-import { SettingRadio } from './patch-module-setting';
+import { Setting } from './patch-module-setting';
 import { Parameter } from './patch-module-parameter';
 import { Connector } from './patch-connector';
-
-const { v4 } = require('uuid');
+import { uniqueId } from '../io/utils/unique-id';
 
 const scaleFrequency = (normalizedValue: number) => {
 	return Math.min(22000, Math.max(0, normalizedValue * 22000));
@@ -38,9 +37,9 @@ const oscillatorTypeOptions: [string, string][] = [
 ];
 
 export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
-	const [outputId] = React.useState(v4() as any);
-	const [frequencyId] = React.useState(v4() as any);
-	const [detuneId] = React.useState(v4() as any);
+	const [outputId] = React.useState(uniqueId() as any);
+	const [frequencyId] = React.useState(uniqueId() as any);
+	const [detuneId] = React.useState(uniqueId() as any);
 	const [type, setType] = React.useState('sine');
 	const [frequency, setFrequency] = React.useState(440);
 	const [detune, setDetune] = React.useState(0);
@@ -111,7 +110,8 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 				display={displayDetune}
 				onChange={handleChangeDetune}
 				type={'CV_IN'} />
-			<SettingRadio
+			<Setting
+				type="select"
 				name="type"
 				value={type}
 				options={oscillatorTypeOptions}

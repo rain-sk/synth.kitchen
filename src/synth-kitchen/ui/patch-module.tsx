@@ -1,93 +1,52 @@
 import * as React from 'react';
-
 import { modules } from '../state/module-map';
-import { Gain } from './patch-module-gain';
-import { Delay } from './patch-module-delay';
-import { Filter } from './patch-module-filter';
-import { MidiDevice } from './patch-module-midi-device';
-import { Oscillator } from './patch-module-oscillator';
-import { MidiOscillator } from './patch-module-midi-oscillator';
-
-export type ModuleType = 'GLOBAL_CONTEXT' | 'GAIN' | 'DELAY' | 'FILTER' | 'MIDI_DEVICE' | 'OSCILLATOR' | 'MIDI_OSCILLATOR';
-
-export type ConnectorType = 'CV_IN' | 'SIGNAL_IN' | 'SIGNAL_OUT' | 'MIDI_IN' | 'MIDI_OUT';
+import { Connector } from './patch-connector';
+import { Module as ModuleState } from '../state/module-base';
+import { Parameter } from './patch-module-parameter';
+import { Setting } from './patch-module-setting';
 
 export interface IModuleProps {
-	moduleKey: string;
-	removeModule: (moduleKey: string) => void;
+    moduleKey: string;
+    removeModule: (moduleKey: string) => void;
 }
 
-export interface IConnector {
-	id: string;
-	name: string;
-	type: ConnectorType;
-	getter: () => any;
+export const Module: React.FunctionComponent<IModuleProps> = ({ moduleKey, removeModule }) => {
+    const [mod] = React.useState(modules.get(moduleKey)) as any as [ModuleState];
+
+    const handleRemove = React.useCallback(() => {
+        removeModule(moduleKey);
+    }, [moduleKey]);
+
+    return (
+        <li className={mod.type === 'FILTER' ? 'double-wide' : ''}>
+            <button className="remove-module" type="button" onClick={handleRemove} aria-label="remove this module"></button>
+            <article className="module">
+                <h2 className="visually-hidden">{mod.name}</h2>
+                {mod.input.id ? (
+                    <Connector
+                        type="SIGNAL_IN"
+                        name="input"
+                        moduleKey={moduleKey}
+                        connectorId={mod.input.id} />
+                ) : null}
+                {mod.controls.map((column, keyOuter) => (
+                    <span className="module-control-column" key={keyOuter}>
+                        {column.map((control, keyInner) => (
+                            control.parameter ? (
+                                <Parameter {...control.parameter} key={keyInner} />
+                            ) : control.setting ? (
+                                <Setting {...control.setting} key={keyInner} />
+                            ) : null
+                        ))}
+                    </span>
+                ))}
+                {mod.output.id ? (
+                    <Connector
+                        {...mod.output}
+                        moduleKey={moduleKey}
+                        connectorId={mod.output.id} />
+                ) : null}
+            </article>
+        </li>
+    );
 }
-
-export interface IModule {
-	moduleKey: string;
-	type: ModuleType;
-	initialized?: boolean;
-	node?: any;
-	connectors?: IConnector[];
-}
-
-export interface IModuleState {
-	module?: IModule;
-}
-
-export class Module extends React.Component<IModuleProps, IModuleState> {
-	constructor(props: IModuleProps) {
-		super(props);
-		this.state = {
-			module: modules.get(this.props.moduleKey)
-		};
-	}
-
-	handleRemove = () => {
-		this.props.removeModule(this.props.moduleKey);
-	}
-
-	componentDidUpdate = (oldProps: IModuleProps) => {
-		if (oldProps.moduleKey !== this.props.moduleKey) {
-			this.setState({
-				module: modules.get(this.props.moduleKey)
-			});
-		}
-	}
-
-	render() {
-		if (this.state.module) {
-			return (
-				<li className={this.state.module.type === 'FILTER' ? 'double-wide' : ''}>
-					<button className="remove-module" type="button" onClick={this.handleRemove}></button>
-					<article className="module">
-						{this.state.module && (() => {
-							switch (this.state.module.type) {
-								case 'GAIN':
-									return <Gain {...this.props} />;
-								case 'DELAY':
-									return <Delay {...this.props} />;
-								case 'FILTER':
-									return <Filter {...this.props} />;
-								case 'OSCILLATOR':
-									return <Oscillator {...this.props} />;
-								case 'MIDI_DEVICE':
-									return <MidiDevice {...this.props} />;
-								case 'MIDI_OSCILLATOR':
-									return <MidiOscillator {...this.props} />;
-								default:
-									this.props.removeModule(this.props.moduleKey);
-									return null;
-							}
-						})()}
-					</article>
-				</li>
-			)
-		} else {
-			this.props.removeModule(this.props.moduleKey);
-			return null;
-		}
-	}
-}
-

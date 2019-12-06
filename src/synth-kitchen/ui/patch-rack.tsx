@@ -1,8 +1,10 @@
 import * as React from 'react';
 import webmidi from 'webmidi';
 
-import { Module, ModuleType } from './patch-module';
+import { ModuleOld, ModuleType } from './patch-module-old';
 import { AddModule } from './patch-rack-add-module';
+import { Module } from './patch-module';
+import { modules } from '../state/module-map';
 
 export interface IRack {
 	index: number;
@@ -41,9 +43,15 @@ export class Rack extends React.Component<IRackProps, { newModuleType: ModuleTyp
 				</button>
 				<ul>
 					{this.props.moduleKeys.map((key) => (
-						<React.Fragment key={key}>
-							<Module moduleKey={key} removeModule={this.props.removeModule} />
-						</React.Fragment>
+						// ((moduleKey) => {
+						// 	const m = modules.get(moduleKey);
+						// 	if (m && m.type === 'DELAY') {
+						// 		return false;
+						// 	}
+						// 	return true;
+						// })(key) ?
+						<ModuleOld key={key} moduleKey={key} removeModule={this.props.removeModule} />
+						// : <Module key={key} moduleKey={key} removeModule={this.props.removeModule} />
 					))}
 				</ul>
 				<AddModule

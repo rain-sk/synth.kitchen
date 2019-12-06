@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { IModuleProps } from './patch-module';
+
+import { IModuleProps } from './patch-module-old';
 import { modules } from '../state/module-map';
 import { audioContext } from '../io/utils/audio-context';
-import { SettingSelect } from './patch-module-setting';
+import { Setting } from './patch-module-setting';
 import { Connector } from './patch-connector';
 import { MidiInput } from '../io/midi/midi-input';
 import { midiToFrequency } from '../io/utils/midi-to-frequency';
 import { Parameter } from './patch-module-parameter';
 import { IGainNode, IAudioContext, IOscillatorNode } from 'standardized-audio-context';
-
-const { v4 } = require('uuid');
+import { uniqueId } from '../io/utils/unique-id';
 
 const scaleDetune = (normalizedValue: number) => {
 	return Math.min(100, Math.max(-100, (normalizedValue * 200) - 100));
@@ -29,12 +29,14 @@ const oscillatorTypeOptions: [string, string][] = [
 interface IMidiOscillatorState {
 	midiInputId: string;
 	detuneId: string;
+	frequencyId: string;
 	outputId: string;
 	type: OscillatorType;
 	detune: number;
 	output: IGainNode<IAudioContext>;
 	activeOscillators: Map<number, IOscillatorNode<IAudioContext>>;
 	detuneInput: IGainNode<IAudioContext>;
+	frequencyInput: IGainNode<IAudioContext>;
 }
 
 export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillatorState> {
@@ -42,14 +44,16 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 	constructor(props: IModuleProps) {
 		super(props);
 		this.state = {
-			midiInputId: v4(),
-			detuneId: v4(),
-			outputId: v4(),
+			midiInputId: uniqueId(),
+			detuneId: uniqueId(),
+			frequencyId: uniqueId(),
+			outputId: uniqueId(),
 			type: 'sine',
 			detune: 0,
 			output: audioContext.createGain(),
 			activeOscillators: new Map<number, IOscillatorNode<IAudioContext>>(),
-			detuneInput: audioContext.createGain()
+			detuneInput: audioContext.createGain(),
+			frequencyInput: audioContext.createGain(),
 		};
 	}
 
@@ -61,6 +65,7 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 		osc.type = this.state.type;
 		osc.start();
 		this.state.detuneInput.connect(osc.detune as any);
+		this.state.frequencyInput.connect(osc.frequency as any);
 		osc.connect(this.state.output);
 		this.state.activeOscillators.set(note, osc);
 	}
@@ -101,11 +106,17 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 		return this.state.detuneInput;
 	}
 
+	getFrequencyInput = () => {
+		return this.state.frequencyInput;
+	}
+
 	componentDidMount = () => {
 		if (this.module && !this.module.initialized) {
 			const midiInput = new MidiInput(this.state.midiInputId, this.props.moduleKey, this.createOscillator, this.destroyOscillator)
-			const detuneInput = audioContext.createGain();
+			const detuneInput = this.getDetuneInput();
 			detuneInput.gain.value = 1;
+			const frequencyInput = this.getFrequencyInput();
+			frequencyInput.gain.value = 1;
 			this.module.node = midiInput;
 			this.module.initialized = true;
 			this.module.connectors = [
@@ -124,6 +135,11 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 					name: 'detune',
 					type: 'SIGNAL_IN',
 					getter: this.getDetuneInput
+				}, {
+					id: this.state.frequencyId,
+					name: 'frequency',
+					type: 'SIGNAL_IN',
+					getter: this.getFrequencyInput
 				}
 			];
 		} else {
@@ -141,7 +157,8 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 					name="midi input"
 					moduleKey={this.props.moduleKey}
 					connectorId={this.state.midiInputId} />
-				<SettingSelect
+				<Setting
+					type="select"
 					name="type"
 					value={this.state.type}
 					options={oscillatorTypeOptions}
@@ -154,6 +171,11 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 					display={displayDetune}
 					scale={scaleDetune}
 					onChange={this.handleChangeDetune}
+					type={'CV_IN'} />
+				<Parameter
+					name="frequency"
+					moduleKey={this.props.moduleKey}
+					id={this.state.frequencyId}
 					type={'CV_IN'} />
 				<Connector
 					type="SIGNAL_OUT"

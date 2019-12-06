@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { audioContext } from '../io/utils/audio-context';
-import { IModuleProps } from './patch-module';
+import { IModuleProps } from './patch-module-old';
 import { modules } from '../state/module-map';
 import { Parameter } from './patch-module-parameter';
 import { Connector } from './patch-connector';
-import { SettingRadio } from './patch-module-setting';
-
-const { v4 } = require('uuid');
+import { Setting } from './patch-module-setting';
+import { uniqueId } from '../io/utils/unique-id';
 
 const scaleFrequency = (normalizedValue: number) => {
 	return Math.min(22000, Math.max(0, normalizedValue * 22000));
@@ -58,12 +57,12 @@ const filterTypeOptions: [string, string][] = [
 ];
 
 export const Filter: React.FunctionComponent<IModuleProps> = props => {
-	const [inputId] = React.useState(v4() as any);
-	const [outputId] = React.useState(v4() as any);
-	const [frequencyId] = React.useState(v4() as any);
-	const [detuneId] = React.useState(v4() as any);
-	const [qId] = React.useState(v4() as any);
-	const [gainId] = React.useState(v4() as any);
+	const [inputId] = React.useState(uniqueId() as any);
+	const [outputId] = React.useState(uniqueId() as any);
+	const [frequencyId] = React.useState(uniqueId() as any);
+	const [detuneId] = React.useState(uniqueId() as any);
+	const [qId] = React.useState(uniqueId() as any);
+	const [gainId] = React.useState(uniqueId() as any);
 	const [frequency, setFrequency] = React.useState(1000);
 	const [detune, setDetune] = React.useState(0);
 	const [q, setQ] = React.useState(100);
@@ -184,7 +183,8 @@ export const Filter: React.FunctionComponent<IModuleProps> = props => {
 				display={displayGain}
 				onChange={handleChangeGain}
 				type={'CV_IN'} />
-			<SettingRadio
+			<Setting
+				type="radio"
 				name="type"
 				value={type}
 				options={filterTypeOptions}
