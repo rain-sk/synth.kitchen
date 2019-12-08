@@ -8,7 +8,6 @@ import { Kitchen } from './synth-kitchen/kitchen';
 
 const appRoot = document.getElementById('root') as HTMLElement;
 
-let _debugMode = window.location.hash === '#sk_debug';
 let _webmidiEnabled = true;
 
 webmidi.enable(function (err: string) {
@@ -21,7 +20,6 @@ webmidi.enable(function (err: string) {
     );
 });
 
-export const debugMode = () => _debugMode;
 export const webmidiEnabled = () => _webmidiEnabled;
 
-if (debugMode()) console.log('debug mode');
+console.log('hi!');
