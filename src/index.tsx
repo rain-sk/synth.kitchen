@@ -4,6 +4,8 @@ import * as webmidi from 'webmidi';
 
 import './main.css';
 
+console.warn = () => { };
+
 import { Kitchen } from './synth-kitchen/kitchen';
 
 const appRoot = document.getElementById('root') as HTMLElement;
