@@ -21,5 +21,3 @@ webmidi.enable(function (err: string) {
 });
 
 export const webmidiEnabled = () => _webmidiEnabled;
-
-console.log('hi!');

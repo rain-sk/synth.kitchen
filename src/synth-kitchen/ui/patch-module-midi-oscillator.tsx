@@ -65,8 +65,8 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 		osc.type = this.state.type;
 		const gain = audioContext.createGain();
 		gain.gain.value = 0;
-		gain.gain.setTargetAtTime(1, 0, 0.03);
-		osc.start();
+		gain.gain.setTargetAtTime(1, audioContext.currentTime, 0.03);
+		osc.start(audioContext.currentTime + 0.01);
 		this.state.detuneInput.connect(osc.detune as any);
 		this.state.frequencyInput.connect(osc.frequency as any);
 		osc.connect(gain);
