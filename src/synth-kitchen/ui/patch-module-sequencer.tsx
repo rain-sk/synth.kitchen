@@ -6,16 +6,19 @@ import { Parameter } from './patch-module-parameter';
 import { Connector } from './patch-connector';
 import { uniqueId } from '../io/utils/unique-id';
 
-export interface ISequencerState {
+export interface ISequencerSliders {
     slider1Value: number;
-    slider1Duration: number;
     slider2Value: number;
-    slider2Duration: number;
     slider3Value: number;
-    slider3Duration: number;
     slider4Value: number;
-    slider4Duration: number;
     slider5Value: number;
+}
+
+export interface ISequencerState extends ISequencerSliders {
+    slider1Duration: number;
+    slider2Duration: number;
+    slider3Duration: number;
+    slider4Duration: number;
     slider5Duration: number;
     outputId: string;
     slider1Id: string;
@@ -35,15 +38,15 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
 
             this.state = {
                 slider1Value: 0.0,
-                slider1Duration: 1,
+                slider1Duration: 0.2,
                 slider2Value: 2.0,
-                slider2Duration: 1,
+                slider2Duration: 0.2,
                 slider3Value: 4.0,
-                slider3Duration: 1,
+                slider3Duration: 0.2,
                 slider4Value: 5.0,
-                slider4Duration: 1,
+                slider4Duration: 0.2,
                 slider5Value: 7.0,
-                slider5Duration: 1,
+                slider5Duration: 0.2,
                 outputId: uniqueId(),
                 slider1Id: uniqueId(),
                 slider2Id: uniqueId(),
@@ -67,24 +70,19 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
                     getter: () => output
                 }
             ];
-            buffer.loop = true;
-            buffer.connect(output);
             this.updateSequence();
-            buffer.start();
         }
     }
 
-    handleSliderChange = (sliderNumber: number) => {
-        return (e: React.ChangeEvent<HTMLInputElement>) => {
-            const value = parseInt(e.target.value);
-            if (value !== NaN) {
-                const { state } = this;
-                (state as any)[`slider${sliderNumber}Value`] = value;
-                this.setState(state, () => {
-                    this.updateSequence();
-                });
+    handleSliderChange = (slider: keyof ISequencerSliders) => (newValue: number) => {
+        this.setState({
+            [slider]: newValue
+        } as any, () => {
+            if (newValue !== NaN) {
+                console.log(newValue);
+                this.updateSequence();
             }
-        }
+        });
     }
 
     totalDuration = () => {
@@ -131,14 +129,17 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
     updateSequence = () => {
         const module = modules.get(this.props.moduleKey);
         if (module) {
-            module.node.buffer.buffer = (() => {
-                const buffer = new AudioBuffer({
-                    length: audioContext.sampleRate * this.totalDuration(),
-                    sampleRate: audioContext.sampleRate
-                });
-                buffer.copyToChannel(this.fillBufferArray(buffer.length), 0);
-                return buffer;
-            })();
+            module.node.buffer.loop = false;
+            module.node.buffer = audioContext.createBufferSource();
+            module.node.buffer.loop = true;
+            const buffer = new AudioBuffer({
+                length: audioContext.sampleRate * this.totalDuration(),
+                sampleRate: audioContext.sampleRate
+            });
+            buffer.copyToChannel(this.fillBufferArray(buffer.length), 0);
+            module.node.buffer.buffer = buffer;
+            module.node.buffer.connect(module.node.output);
+            module.node.buffer.start();
         }
     }
 
@@ -146,7 +147,51 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
         return this.state ? (
             <>
                 <h2 className="visually-hidden">sequencer</h2>
-                <input id={`input_${this.state.slider1Id}`} type="number" value={this.state.slider1Value} onChange={this.handleSliderChange(1)} onBlur={this.handleSliderChange(1)} />
+                <Parameter
+                    name="slider 1"
+                    moduleKey={this.props.moduleKey}
+                    id={'slider1'}
+                    value={this.state.slider1Value}
+                    scale={n => n}
+                    display={s => s}
+                    onChange={this.handleSliderChange('slider1Value')}
+                    type={'uninitialized'} />
+                <Parameter
+                    name="slider 2"
+                    moduleKey={this.props.moduleKey}
+                    id={'slider2'}
+                    value={this.state.slider2Value}
+                    scale={n => n}
+                    display={s => s}
+                    onChange={this.handleSliderChange('slider2Value')}
+                    type={'uninitialized'} />
+                <Parameter
+                    name="slider 3"
+                    moduleKey={this.props.moduleKey}
+                    id={'slider3'}
+                    value={this.state.slider3Value}
+                    scale={n => n}
+                    display={s => s}
+                    onChange={this.handleSliderChange('slider3Value')}
+                    type={'uninitialized'} />
+                <Parameter
+                    name="slider 4"
+                    moduleKey={this.props.moduleKey}
+                    id={'slider4'}
+                    value={this.state.slider4Value}
+                    scale={n => n}
+                    display={s => s}
+                    onChange={this.handleSliderChange('slider4Value')}
+                    type={'uninitialized'} />
+                <Parameter
+                    name="slider 5"
+                    moduleKey={this.props.moduleKey}
+                    id={'slider5'}
+                    value={this.state.slider5Value}
+                    scale={n => n}
+                    display={s => s}
+                    onChange={this.handleSliderChange('slider5Value')}
+                    type={'uninitialized'} />
                 <Connector
                     type="SIGNAL_OUT"
                     name="output"

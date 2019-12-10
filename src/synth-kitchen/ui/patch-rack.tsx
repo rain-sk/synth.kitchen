@@ -1,10 +1,11 @@
 import * as React from 'react';
 import webmidi from 'webmidi';
 
-import { ModuleOld, ModuleType } from './patch-module-old';
+import { ModuleOld } from './patch-module-old';
 import { AddModule } from './patch-rack-add-module';
 import { Module } from './patch-module';
 import { modules } from '../state/module-map';
+import { ModuleType } from '../state/patch';
 
 export interface IRack {
 	index: number;

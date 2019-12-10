@@ -6,9 +6,9 @@ import { Delay } from './patch-module-delay';
 import { Filter } from './patch-module-filter';
 import { MidiDevice } from './patch-module-midi-device';
 import { Oscillator } from './patch-module-oscillator';
+import { Sequencer } from './patch-module-sequencer';
 import { MidiOscillator } from './patch-module-midi-oscillator';
-
-export type ModuleType = 'GLOBAL_CONTEXT' | 'GAIN' | 'DELAY' | 'FILTER' | 'MIDI_DEVICE' | 'OSCILLATOR' | 'MIDI_OSCILLATOR';
+import { ModuleType } from '../state/patch';
 
 export type ConnectorType = 'CV_IN' | 'SIGNAL_IN' | 'SIGNAL_OUT' | 'MIDI_IN' | 'MIDI_OUT' | 'uninitialized';
 
@@ -72,6 +72,8 @@ export class ModuleOld extends React.Component<IModuleProps, IModuleState> {
 									return <Filter {...this.props} />;
 								case 'OSCILLATOR':
 									return <Oscillator {...this.props} />;
+								case 'SEQUENCER':
+									return <Sequencer {...this.props} />;
 								case 'MIDI_DEVICE':
 									return <MidiDevice {...this.props} />;
 								case 'MIDI_OSCILLATOR':

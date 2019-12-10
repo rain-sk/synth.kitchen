@@ -53,6 +53,7 @@ export class AddModule extends React.Component<IAddModuleProps, IAddModuleState>
                     <option value={'DELAY'}>delay</option>
                     <option value={'FILTER'}>filter</option>
                     <option value={'OSCILLATOR'}>oscillator</option>
+                    <option value={'SEQUENCER'}>sequencer</option>
                     {this.props.webmidi.inputs.length > 0 ?
                         (
                             <>
