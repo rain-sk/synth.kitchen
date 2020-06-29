@@ -3,7 +3,6 @@ import { uniqueId } from "../io/utils/unique-id";
 import { audioContext } from "../io/utils/audio-context";
 import { IParameterProps } from "../ui/patch-module-parameter";
 import { ISettingProps } from "../ui/patch-module-setting";
-import { delay } from "q";
 
 export interface IModuleDefinition {
     moduleKey: string;
