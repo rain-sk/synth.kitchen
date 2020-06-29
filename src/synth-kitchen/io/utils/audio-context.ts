@@ -13,6 +13,7 @@ masterBuss.release.setValueAtTime(0.25, audioContext.currentTime);
 masterBuss.connect(audioContext.destination);
 
 let resumed = false;
+
 function resume() {
 	document.removeEventListener('mousemove', resume, false);
 	document.removeEventListener('touchmove', resume, false);
@@ -20,16 +21,6 @@ function resume() {
 	if (!resumed) {
 		resumed = true;
 		audioContext.resume();
-
-		// const osc = audioContext.createOscillator();
-		// const amp = audioContext.createGain();
-
-		// osc.type = 'sawtooth';
-		// osc.connect(amp);
-		// amp.gain.value = 0;
-		// amp.gain.setTargetAtTime(1, audioContext.currentTime, 0.03);
-		// amp.connect(audioContext.destination);
-		// osc.start();
 	}
 }
 
