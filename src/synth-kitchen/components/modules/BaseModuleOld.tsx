@@ -1,14 +1,14 @@
 import * as React from 'react';
 
-import { modules } from '../state/module-map';
-import { Gain } from './patch-module-gain';
-import { Delay } from './patch-module-delay';
-import { Filter } from './patch-module-filter';
-import { MidiDevice } from './patch-module-midi-device';
-import { Oscillator } from './patch-module-oscillator';
-import { Sequencer } from './patch-module-sequencer';
-import { MidiOscillator } from './patch-module-midi-oscillator';
-import { ModuleType } from '../state/patch';
+import { modules } from '../../state/module-map';
+import { Gain } from './Gain';
+import { Delay } from './Delay';
+import { Filter } from './Filter';
+import { MidiInput } from './MidiInput';
+import { Oscillator } from './Oscillator';
+import { Sequencer } from './Sequencer';
+import { MidiOscillator } from './MidiOscillator';
+import { ModuleType } from '../../state/patch';
 
 export type ConnectorType = 'CV_IN' | 'SIGNAL_IN' | 'SIGNAL_OUT' | 'MIDI_IN' | 'MIDI_OUT' | 'uninitialized';
 
@@ -36,7 +36,7 @@ export interface IModuleState {
 	module?: IModule;
 }
 
-export class ModuleOld extends React.Component<IModuleProps, IModuleState> {
+export class BaseModuleOld extends React.Component<IModuleProps, IModuleState> {
 	constructor(props: IModuleProps) {
 		super(props);
 		this.state = {
@@ -75,7 +75,7 @@ export class ModuleOld extends React.Component<IModuleProps, IModuleState> {
 								case 'SEQUENCER':
 									return <Sequencer {...this.props} />;
 								case 'MIDI_DEVICE':
-									return <MidiDevice {...this.props} />;
+									return <MidiInput {...this.props} />;
 								case 'MIDI_OSCILLATOR':
 									return <MidiOscillator {...this.props} />;
 								default:

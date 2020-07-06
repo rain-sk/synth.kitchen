@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-import { Connections } from './patch-connections';
-import { Connector } from './patch-connector';
+import { Connections } from './connections/Connection';
+import { Connector } from './modules/shared/Connector';
 import { ModuleType, IModule, IConnector } from '../state/patch';
 import { modules } from '../state/module-map';
-import { Rack, IRack } from './patch-rack';
+import { Rack, IRack } from './Rack';
 import { IEnd, IConnection } from '../state/patch';
 import { uniqueId } from '../io/utils/unique-id';
-import { DelayModule } from '../state/module-delay';
+import { Serializer } from './Serializer';
 
 export interface IConnectPayload {
 	connection: IConnection;
@@ -103,6 +103,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 				))}
 				<button className="add-rack" type="button" onClick={this.moduleRackAdd}>Add Rack</button>
 				<Connections moduleCount={modules.size()} rackCount={this.state.racks.length} active={this.state.active} connections={this.state.connections} />
+				<Serializer />
 			</PatchContext.Provider>
 		)
 	}
@@ -142,19 +143,19 @@ export class Patch extends React.Component<{}, IPatchState> {
 		let moduleKey = '';
 
 		/* create a record of the module */
-		if (moduleType === 'DELAY') {
-			const delay = new DelayModule(moduleType);
-			modules.set(delay.moduleKey, delay);
-			moduleKey = delay.moduleKey;
-		} else {
-			const _moduleKey = uniqueId();
-			const newModule: IModule = {
-				moduleKey: _moduleKey,
-				type: moduleType
-			};
-			moduleKey = _moduleKey;
-			modules.set(_moduleKey, newModule);
-		}
+		// if (moduleType === 'DELAY') {
+		// 	const delay = new DelayModule(moduleType);
+		// 	modules.set(delay.moduleKey, delay);
+		// 	moduleKey = delay.moduleKey;
+		// } else {
+		const _moduleKey = uniqueId();
+		const newModule: IModule = {
+			moduleKey: _moduleKey,
+			type: moduleType
+		};
+		moduleKey = _moduleKey;
+		modules.set(_moduleKey, newModule);
+		// }
 
 		/* add the new module to the UI */
 		const { racks } = this.state;

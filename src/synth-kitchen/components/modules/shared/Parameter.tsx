@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Knob, Arc, Pointer } from 'rc-knob-accessible';
-import { ConnectorType } from './patch-module-old';
-import { Connector } from './patch-connector';
+import { ConnectorType } from '../BaseModuleOld';
+import { Connector } from './Connector';
 
 export interface IParameterProps {
 	moduleKey: string;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { uniqueId } from '../io/utils/unique-id';
+import { uniqueId } from '../../../io/utils/unique-id';
 
 export interface ISettingProps {
 	id?: string;

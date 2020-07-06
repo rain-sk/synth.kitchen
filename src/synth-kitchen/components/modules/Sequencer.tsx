@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { IModuleProps } from './patch-module-old';
-import { modules } from '../state/module-map';
-import { audioContext } from '../io/utils/audio-context';
-import { Parameter } from './patch-module-parameter';
-import { Connector } from './patch-connector';
-import { uniqueId } from '../io/utils/unique-id';
+import { IModuleProps } from './BaseModuleOld';
+import { modules } from '../../state/module-map';
+import { audioContext } from '../../io/utils/audio-context';
+import { Parameter } from './shared/Parameter';
+import { Connector } from './shared/Connector';
+import { uniqueId } from '../../io/utils/unique-id';
 
 export interface ISequencerSliders {
     slider1Value: number;
@@ -78,7 +78,7 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
         this.setState({
             [slider]: newValue
         } as any, () => {
-            if (newValue !== NaN) {
+            if (!isNaN(newValue)) {
                 console.log(newValue);
                 this.updateSequence();
             }

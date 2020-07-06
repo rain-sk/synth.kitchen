@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { IEnd, ConnectionType } from '../state/patch';
-import { ConnectorType } from './patch-module-old';
-import { PatchContext, IPatchCallbacks, IPatchState } from './patch';
-import { modules } from '../state/module-map';
+import { IEnd, ConnectionType } from '../../../state/patch';
+import { ConnectorType } from '../BaseModuleOld';
+import { PatchContext, IPatchCallbacks, IPatchState } from '../../Patch';
+import { modules } from '../../../state/module-map';
 
 export interface IConnectorProps extends IEnd {
 	name: string;

@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { audioContext } from '../io/utils/audio-context';
-import { IModuleProps } from './patch-module-old';
-import { modules } from '../state/module-map';
-import { Parameter } from './patch-module-parameter';
-import { Connector } from './patch-connector';
-import { uniqueId } from '../io/utils/unique-id';
+import { audioContext } from '../../io/utils/audio-context';
+import { IModuleProps } from './BaseModuleOld';
+import { modules } from '../../state/module-map';
+import { Parameter } from './shared/Parameter';
+import { Connector } from './shared/Connector';
+import { uniqueId } from '../../io/utils/unique-id';
 
 const scaleGain = (normalizedValue: number): number => {
 	return Math.min(1, Math.max(0, normalizedValue));

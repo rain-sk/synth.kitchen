@@ -1,9 +1,8 @@
 import * as React from 'react';
 import webmidi from 'webmidi';
 
-import { ModuleOld } from './patch-module-old';
-import { AddModule } from './patch-rack-add-module';
-import { Module } from './patch-module';
+import { BaseModuleOld } from './modules/BaseModuleOld';
+import { AddModule } from './modules/AddModule';
 import { modules } from '../state/module-map';
 import { ModuleType } from '../state/patch';
 
@@ -44,15 +43,7 @@ export class Rack extends React.Component<IRackProps, { newModuleType: ModuleTyp
 				</button>
 				<ul>
 					{this.props.moduleKeys.map((key) => (
-						// ((moduleKey) => {
-						// 	const m = modules.get(moduleKey);
-						// 	if (m && m.type === 'DELAY') {
-						// 		return false;
-						// 	}
-						// 	return true;
-						// })(key) ?
-						<ModuleOld key={key} moduleKey={key} removeModule={this.props.removeModule} />
-						// : <Module key={key} moduleKey={key} removeModule={this.props.removeModule} />
+						<BaseModuleOld key={key} moduleKey={key} removeModule={this.props.removeModule} />
 					))}
 				</ul>
 				<AddModule

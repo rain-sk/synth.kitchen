@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { IConnection, ConnectionType, IEnd } from '../state/patch';
-import { ConnectorCable } from './patch-connection-cable';
-import { ConnectorCircle } from './patch-connection-circle';
+import { IConnection, ConnectionType, IEnd } from '../../state/patch';
+import { ConnectionCable } from './ConnectionCable';
+import { ConnectionCircle } from './ConnectionCircle';
 
 
 /** Connection */
@@ -27,9 +27,9 @@ export const Connection: React.FunctionComponent<IConnectionProps> = (props) => 
 	}
 	return (
 		<>
-			<ConnectorCable {...props} />
-			<ConnectorCircle {...props} x={props.sourceX} y={props.sourceY} />
-			<ConnectorCircle {...props} x={props.destinationX} y={props.destinationY} />
+			<ConnectionCable {...props} />
+			<ConnectionCircle {...props} x={props.sourceX} y={props.sourceY} />
+			<ConnectionCircle {...props} x={props.destinationX} y={props.destinationY} />
 		</>
 	);
 }

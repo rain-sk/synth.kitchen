@@ -1,9 +1,12 @@
-import { IModule } from '../ui/patch-module-old';
+import { IModule } from '../components/modules/BaseModuleOld';
 import { masterBuss } from '../io/utils/audio-context';
 
 const map = new Map<string, IModule>();
 
 export const modules = {
+	all: () => {
+		return Array.from(map).filter(([, { moduleKey }]) => moduleKey !== 'GLOBAL_CONTEXT');
+	},
 	get: (key: string): IModule => {
 		const module = map.get(key);
 		if (module !== undefined) {

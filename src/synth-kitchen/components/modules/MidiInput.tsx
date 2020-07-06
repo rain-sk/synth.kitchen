@@ -1,12 +1,12 @@
 import * as React from 'react';
 import webmidi from 'webmidi';
 
-import { MidiOutput } from '../io/midi/midi-output';
-import { IModuleProps } from './patch-module-old';
-import { modules } from '../state/module-map';
-import { Connector } from './patch-connector';
-import { Setting } from './patch-module-setting';
-import { uniqueId } from '../io/utils/unique-id';
+import { MidiOutput } from '../../io/midi/midi-output';
+import { IModuleProps } from './BaseModuleOld';
+import { modules } from '../../state/module-map';
+import { Connector } from './shared/Connector';
+import { Setting } from './shared/Setting';
+import { uniqueId } from '../../io/utils/unique-id';
 
 const channelOptions: [string, string][] = [
 	['all', 'all'],
@@ -28,7 +28,7 @@ const channelOptions: [string, string][] = [
 	['16', '16']
 ];
 
-export const MidiDevice: React.FunctionComponent<IModuleProps> = props => {
+export const MidiInput: React.FunctionComponent<IModuleProps> = props => {
 	const [outputId] = React.useState(uniqueId() as any);
 	const [inputDevices] = React.useState(webmidi.inputs);
 	const [inputDevice, setInputDevice] = React.useState('');

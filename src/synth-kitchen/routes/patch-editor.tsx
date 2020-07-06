@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Patch } from '../ui/patch';
+import { Patch } from '../components/Patch';
 
 export class PatchEditor extends React.Component {
     render() {
