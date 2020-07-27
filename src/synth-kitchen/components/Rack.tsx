@@ -1,9 +1,7 @@
 import * as React from 'react';
-import webmidi from 'webmidi';
 
 import { BaseModuleOld } from './modules/BaseModuleOld';
 import { AddModule } from './modules/AddModule';
-import { modules } from '../state/module-map';
 import { ModuleType } from '../state/patch';
 
 export interface IRack {
@@ -49,7 +47,6 @@ export class Rack extends React.Component<IRackProps, { newModuleType: ModuleTyp
 				<AddModule
 					handleNewModuleTypeChange={this.handleNewModuleTypeChange}
 					handleAddModuleClick={this.handleAddModuleClick}
-					webmidi={webmidi}
 				/>
 			</div>
 		);

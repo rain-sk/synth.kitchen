@@ -1,10 +1,9 @@
 import * as React from 'react';
+import webmidi from '../../io/utils/webmidi';
 
 export interface IAddModuleProps {
     handleNewModuleTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     handleAddModuleClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    webmidi: any;
-
 }
 
 interface IAddModuleState {
@@ -54,7 +53,7 @@ export class AddModule extends React.Component<IAddModuleProps, IAddModuleState>
                     <option value={'FILTER'}>filter</option>
                     <option value={'OSCILLATOR'}>oscillator</option>
                     <option value={'SEQUENCER'}>sequencer</option>
-                    {this.props.webmidi.inputs.length > 0 ?
+                    {webmidi.inputs.length > 0 ?
                         (
                             <>
                                 <option value={'MIDI_DEVICE'}>midi device</option>
