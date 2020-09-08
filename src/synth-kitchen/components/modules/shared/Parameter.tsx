@@ -53,7 +53,7 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 	};
 
 	onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (this.state.editing && event.target.value) {
+		if (this.state.editing) {
 			this.setState({
 				inputValue: parseFloat(event.target.value)
 			});
