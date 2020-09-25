@@ -17,11 +17,13 @@ masterBuss.connect(audioContext.destination);
 let resumed = false;
 
 function resume() {
-	document.removeEventListener('mousemove', resume, false);
-	document.removeEventListener('touchmove', resume, false);
-	document.removeEventListener('touchstart', resume, false);
 	if (!resumed) {
 		resumed = true;
+
+		document.removeEventListener('mousemove', resume, false);
+		document.removeEventListener('touchmove', resume, false);
+		document.removeEventListener('touchstart', resume, false);
+
 		audioContext.resume();
 	}
 }
