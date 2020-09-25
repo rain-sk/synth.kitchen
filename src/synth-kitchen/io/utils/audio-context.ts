@@ -4,12 +4,14 @@ export const audioContext = new AudioContext({
 	latencyHint: 'playback'
 });
 
+// from: https://codepen.io/andremichelle/pen/WbqrYN/
 export const masterBuss = audioContext.createDynamicsCompressor();
-masterBuss.threshold.setValueAtTime(-20, audioContext.currentTime);
-masterBuss.knee.setValueAtTime(40, audioContext.currentTime);
-masterBuss.ratio.setValueAtTime(12, audioContext.currentTime);
-masterBuss.attack.setValueAtTime(0, audioContext.currentTime);
-masterBuss.release.setValueAtTime(0.25, audioContext.currentTime);
+masterBuss.threshold.setValueAtTime(-6, audioContext.currentTime); // this is the pitfall, leave some headroom
+masterBuss.knee.setValueAtTime(5, audioContext.currentTime); // brute force
+masterBuss.ratio.setValueAtTime(3, audioContext.currentTime); // max compression
+masterBuss.attack.setValueAtTime(0, audioContext.currentTime); // 5ms attack
+masterBuss.release.setValueAtTime(0.25, audioContext.currentTime); // 50ms release
+
 masterBuss.connect(audioContext.destination);
 
 let resumed = false;
