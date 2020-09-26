@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
-import { audioContext } from '../../io/utils/audio-context';
+import { audioContext } from '../../state/aud-io/audio-context';
 import { Setting } from './shared/Setting';
 import { Parameter } from './shared/Parameter';
 import { Connector } from './shared/Connector';

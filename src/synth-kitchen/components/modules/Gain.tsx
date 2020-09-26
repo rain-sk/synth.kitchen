@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { audioContext } from '../../io/utils/audio-context';
+import { audioContext } from '../../state/aud-io/audio-context';
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
 import { Parameter } from './shared/Parameter';
