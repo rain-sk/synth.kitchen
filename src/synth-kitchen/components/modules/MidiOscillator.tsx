@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
-import { audioContext } from '../../state/aud-io/audio-context';
+import { audioContext } from '../../io/utils/audio-context';
 import { Setting } from './shared/Setting';
 import { Connector } from './shared/Connector';
 import { MidiInput } from '../../io/midi/midi-input';

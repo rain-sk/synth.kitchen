@@ -1,5 +1,5 @@
 import { IModule } from '../components/modules/BaseModuleOld';
-import { masterBuss } from './aud-io/audio-context';
+import { masterBuss } from '../io/utils/audio-context';
 
 const map = new Map<string, IModule>();
 
