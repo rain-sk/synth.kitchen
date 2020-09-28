@@ -6,7 +6,7 @@ import { ModuleType, IModule, IConnector } from '../state/patch';
 import { modules } from '../state/module-map';
 import { Rack, IRack } from './Rack';
 import { IEnd, IConnection } from '../state/patch';
-import { uniqueId } from '../io/utils/unique-id';
+import { uniqueId } from '../io/unique-id';
 import { Serializer } from './Serializer';
 
 export interface IConnectPayload {

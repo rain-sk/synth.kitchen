@@ -2,14 +2,14 @@ import * as React from 'react';
 
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
-import { audioContext } from '../../io/utils/audio-context';
+import { audioContext } from '../../io/audio-context';
 import { Setting } from './shared/Setting';
 import { Connector } from './shared/Connector';
-import { MidiInput } from '../../io/midi/midi-input';
-import { midiToFrequency } from '../../io/utils/midi-to-frequency';
+import { MidiInput } from '../../io/midi-input';
+import { midiToFrequency } from '../../io/midi-to-frequency';
 import { Parameter } from './shared/Parameter';
 import { IGainNode, IAudioContext, IOscillatorNode } from 'standardized-audio-context';
-import { uniqueId } from '../../io/utils/unique-id';
+import { uniqueId } from '../../io/unique-id';
 
 const scaleDetune = (normalizedValue: number) => {
 	return Math.min(100, Math.max(-100, (normalizedValue * 200) - 100));

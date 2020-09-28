@@ -1,6 +1,6 @@
 // import { Module, IModuleDefinition } from "./module-base";
 // import { ModuleType, IConnector } from "./patch";
-// import { audioContext } from "../io/utils/audio-context";
+// import { audioContext } from "../io/audio-context";
 
 // const scaleDelay = (normalizedValue: number): number => {
 //     return Math.min(100, Math.max(0, normalizedValue * 100));

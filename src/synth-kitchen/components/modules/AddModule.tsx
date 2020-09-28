@@ -1,5 +1,5 @@
 import * as React from 'react';
-import webmidi from '../../io/utils/webmidi';
+import webmidi from '../../io/webmidi';
 
 export interface IAddModuleProps {
     handleNewModuleTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;

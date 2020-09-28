@@ -1,6 +1,6 @@
 // import { ModuleType, IConnector, IModule } from "./patch";
-// import { uniqueId } from "../io/utils/unique-id";
-// import { audioContext } from "../io/utils/audio-context";
+// import { uniqueId } from "../io/unique-id";
+// import { audioContext } from "../io/audio-context";
 // import { IParameterProps } from "../components/modules/shared/Parameter";
 // import { Setting } from '../components/modules/shared/Setting'
 

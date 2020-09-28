@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
-import { audioContext } from '../../io/utils/audio-context';
+import { audioContext } from '../../io/audio-context';
 import { Parameter } from './shared/Parameter';
 import { Connector } from './shared/Connector';
-import { uniqueId } from '../../io/utils/unique-id';
+import { uniqueId } from '../../io/unique-id';
 
 export interface ISequencerSliders {
     slider1Value: number;

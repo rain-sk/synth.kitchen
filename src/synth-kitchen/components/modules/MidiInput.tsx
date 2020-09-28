@@ -6,7 +6,7 @@ import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
 import { Connector } from './shared/Connector';
 import { Setting } from './shared/Setting';
-import { uniqueId } from '../../io/utils/unique-id';
+import { uniqueId } from '../../io/unique-id';
 
 const channelOptions: [string, string][] = [
 	['all', 'all'],

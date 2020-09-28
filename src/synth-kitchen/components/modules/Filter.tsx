@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { audioContext } from '../../io/utils/audio-context';
+import { audioContext } from '../../io/audio-context';
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
 import { Parameter } from './shared/Parameter';
 import { Connector } from './shared/Connector';
 import { Setting } from './shared/Setting';
-import { uniqueId } from '../../io/utils/unique-id';
+import { uniqueId } from '../../io/unique-id';
 
 const scaleFrequency = (normalizedValue: number) => {
 	return Math.min(22000, Math.max(0, normalizedValue * 22000));
