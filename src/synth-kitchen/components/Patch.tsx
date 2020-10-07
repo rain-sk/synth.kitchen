@@ -97,9 +97,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 			<PatchContext.Provider value={this.getContextValue()}>
 				<Connector type="SIGNAL_IN" name={'speakers'} connectorId={'GLOBAL_CONTEXT'} moduleKey={'GLOBAL_CONTEXT'} />
 				{this.state.racks.map(rack => (
-					<React.Fragment key={rack.index}>
-						<Rack {...rack} removeRack={this.moduleRackRemove(rack.index)} addModule={this.moduleAdd} removeModule={this.moduleRemove} />
-					</React.Fragment>
+					<Rack key={rack.index} {...rack} removeRack={this.moduleRackRemove(rack.index)} addModule={this.moduleAdd} removeModule={this.moduleRemove} />
 				))}
 				<button className="add-rack" type="button" onClick={this.moduleRackAdd}>Add Rack</button>
 				<Connections moduleCount={modules.size()} rackCount={this.state.racks.length} active={this.state.active} connections={this.state.connections} />
