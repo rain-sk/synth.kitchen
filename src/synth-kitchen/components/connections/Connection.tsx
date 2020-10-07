@@ -232,10 +232,10 @@ function getMouseCable(event: MouseEvent, activeId: string): ICable | undefined 
 			sourceY,
 			destinationX,
 			destinationY,
-			cp1x: (destinationX + sourceX) / 2 - ((destinationX - sourceX) * 0.3),
-			cp1y: (destinationY + sourceY) / 2 + ((destinationY - sourceY) * 0.3) + Math.abs(sourceX - destinationX),
-			cp2x: (destinationX + sourceX) / 2 + ((destinationX - sourceX) * 0.3),
-			cp2y: ((destinationY + sourceY) / 2 + ((destinationY - sourceY) * 0.3)) + Math.abs(sourceX - destinationX),
+			cp1x: sourceX + (destinationX - sourceX) / 2,
+			cp1y: sourceY + (destinationY - sourceY) / 2 - (destinationY - sourceY) / 3,
+			cp2x: destinationX + (sourceX - destinationX) / 2,
+			cp2y: destinationY + (sourceY - destinationY) / 2 - (sourceY - destinationY) / 3,
 			type: 'MOUSE'
 		};
 	}
@@ -259,10 +259,10 @@ function getConnectionCables(connections: IConnection[]) {
 				sourceY,
 				destinationX,
 				destinationY,
-				cp1x: (destinationX + sourceX) / 2 - ((destinationX - sourceX) * 0.3),
-				cp1y: (destinationY + sourceY) / 2 + ((destinationY - sourceY) * 0.3) + Math.abs(sourceX - destinationX),
-				cp2x: (destinationX + sourceX) / 2 + ((destinationX - sourceX) * 0.3),
-				cp2y: ((destinationY + sourceY) / 2 + ((destinationY - sourceY) * 0.3)) + Math.abs(sourceX - destinationX),
+				cp1x: sourceX + (destinationX - sourceX) / 2,
+				cp1y: sourceY + (destinationY - sourceY) / 2 - (destinationY - sourceY) / 5,
+				cp2x: destinationX + (sourceX - destinationX) / 2,
+				cp2y: destinationY + (sourceY - destinationY) / 2 - (sourceY - destinationY) / 5,
 				type: connection.type
 			});
 		}
