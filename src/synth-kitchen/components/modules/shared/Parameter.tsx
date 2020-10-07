@@ -47,7 +47,7 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 		this.setState({
 			editing: false
 		});
-		if (this.props.onChange && this.state.inputValue) {
+		if (this.props.onChange && (this.state.inputValue || this.state.inputValue === 0)) {
 			this.props.onChange(this.state.inputValue);
 		}
 	};
@@ -62,7 +62,7 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 
 	onEnterKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (this.state.editing && event.which === 13) {
-			if (this.props.onChange && this.state.inputValue) {
+			if (this.props.onChange && (this.state.inputValue || this.state.inputValue === 0)) {
 				this.props.onChange(this.state.inputValue);
 			}
 		}
@@ -75,6 +75,7 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 	}
 
 	render() {
+
 		return (
 			<fieldset className="parameter" >
 				<legend>{this.props.name}</legend>
