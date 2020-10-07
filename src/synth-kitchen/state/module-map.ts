@@ -7,12 +7,13 @@ export const modules = {
 	all: () => {
 		return Array.from(map).filter(([, { moduleKey }]) => moduleKey !== 'GLOBAL_CONTEXT');
 	},
-	get: (key: string): IModule => {
+	get: (key: string): IModule | undefined => {
 		const module = map.get(key);
 		if (module !== undefined) {
 			return module;
 		}
-		throw 'no module';
+		console.error(new ReferenceError('no module'));
+		return undefined;
 	},
 	set: (key: string, module: IModule) => {
 		map.set(key, module);
