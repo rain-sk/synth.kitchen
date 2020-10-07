@@ -7,25 +7,25 @@ import { Connector } from './shared/Connector';
 import { uniqueId } from '../../io/unique-id';
 
 export interface ISequencerSliders {
-    slider1Value: number;
-    slider2Value: number;
-    slider3Value: number;
-    slider4Value: number;
-    slider5Value: number;
+    offset1Value: number;
+    offset2Value: number;
+    offset3Value: number;
+    offset4Value: number;
+    offset5Value: number;
 }
 
 export interface ISequencerState extends ISequencerSliders {
-    slider1Duration: number;
-    slider2Duration: number;
-    slider3Duration: number;
-    slider4Duration: number;
-    slider5Duration: number;
+    offset1Duration: number;
+    offset2Duration: number;
+    offset3Duration: number;
+    offset4Duration: number;
+    offset5Duration: number;
     outputId: string;
-    slider1Id: string;
-    slider2Id: string;
-    slider3Id: string;
-    slider4Id: string;
-    slider5Id: string;
+    offset1Id: string;
+    offset2Id: string;
+    offset3Id: string;
+    offset4Id: string;
+    offset5Id: string;
 }
 
 export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
@@ -37,22 +37,23 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
             module.initialized = true;
 
             this.state = {
-                slider1Value: 0.0,
-                slider1Duration: 0.2,
-                slider2Value: 2.0,
-                slider2Duration: 0.2,
-                slider3Value: 4.0,
-                slider3Duration: 0.2,
-                slider4Value: 5.0,
-                slider4Duration: 0.2,
-                slider5Value: 7.0,
-                slider5Duration: 0.2,
+                offset1Value: 0.0,
+                offset1Duration: 0.2,
+                offset2Value: 2.0,
+                offset2Duration: 0.2,
+                offset3Value: 4.0,
+                offset3Duration: 0.2,
+                offset4Value: 5.0,
+                offset4Duration: 0.2,
+                offset5Value: 7.0,
+                offset5Duration: 0.2,
                 outputId: uniqueId(),
-                slider1Id: uniqueId(),
-                slider2Id: uniqueId(),
-                slider3Id: uniqueId(),
-                slider4Id: uniqueId(),
-                slider5Id: uniqueId(),
+                offset1Id: uniqueId(),
+                offset2Id: uniqueId(),
+                offset3Id: uniqueId(),
+                offset4Id: uniqueId(),
+                offset5Id: uniqueId(),
+
             };
 
             const buffer = audioContext.createBufferSource();
@@ -74,9 +75,10 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
         }
     }
 
-    handleSliderChange = (slider: keyof ISequencerSliders) => (newValue: number) => {
+    handleSliderChange = (offset: keyof ISequencerSliders) => (newValue: number) => {
+        console.log(newValue);
         this.setState({
-            [slider]: newValue
+            [offset]: newValue
         } as any, () => {
             if (!isNaN(newValue)) {
                 console.log(newValue);
@@ -86,41 +88,41 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
     }
 
     totalDuration = () => {
-        const { slider1Duration, slider2Duration, slider3Duration, slider4Duration, slider5Duration } = this.state;
-        return slider1Duration + slider2Duration + slider3Duration + slider4Duration + slider5Duration;
+        const { offset1Duration, offset2Duration, offset3Duration, offset4Duration, offset5Duration } = this.state;
+        return offset1Duration + offset2Duration + offset3Duration + offset4Duration + offset5Duration;
     }
 
     fillBufferArray = (bufferLength: number) => {
         const data = new Float32Array(bufferLength);
         const {
-            slider1Value,
-            slider1Duration,
-            slider2Value,
-            slider2Duration,
-            slider3Value,
-            slider3Duration,
-            slider4Value,
-            slider4Duration,
-            slider5Value,
-            slider5Duration
+            offset1Value,
+            offset1Duration,
+            offset2Value,
+            offset2Duration,
+            offset3Value,
+            offset3Duration,
+            offset4Value,
+            offset4Duration,
+            offset5Value,
+            offset5Duration
         } = this.state;
         const sampleRate = audioContext.sampleRate;
-        const one = slider1Duration * sampleRate;
-        const two = one + slider2Duration * sampleRate;
-        const three = two + slider3Duration * sampleRate;
-        const four = three + slider4Duration * sampleRate;
-        const five = four + slider5Duration * sampleRate;
+        const one = offset1Duration * sampleRate;
+        const two = one + offset2Duration * sampleRate;
+        const three = two + offset3Duration * sampleRate;
+        const four = three + offset4Duration * sampleRate;
+        const five = four + offset5Duration * sampleRate;
         for (let i = 0; i < bufferLength; i++) {
             if (i < one) {
-                data[i] = slider1Value;
+                data[i] = offset1Value;
             } else if (i < two) {
-                data[i] = slider2Value;
+                data[i] = offset2Value;
             } else if (i < three) {
-                data[i] = slider3Value;
+                data[i] = offset3Value;
             } else if (i < four) {
-                data[i] = slider4Value;
+                data[i] = offset4Value;
             } else if (i < five) {
-                data[i] = slider5Value;
+                data[i] = offset5Value;
             }
         }
         return data;
@@ -148,49 +150,49 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
             <>
                 <h2 className="visually-hidden">sequencer</h2>
                 <Parameter
-                    name="slider 1"
+                    name="offset 1"
                     moduleKey={this.props.moduleKey}
-                    id={'slider1'}
-                    value={this.state.slider1Value}
+                    id={'offset1'}
+                    value={this.state.offset1Value}
                     scale={n => n}
                     display={s => s}
-                    onChange={this.handleSliderChange('slider1Value')}
+                    onChange={this.handleSliderChange('offset1Value')}
                     type={'uninitialized'} />
                 <Parameter
-                    name="slider 2"
+                    name="offset 2"
                     moduleKey={this.props.moduleKey}
-                    id={'slider2'}
-                    value={this.state.slider2Value}
+                    id={'offset2'}
+                    value={this.state.offset2Value}
                     scale={n => n}
                     display={s => s}
-                    onChange={this.handleSliderChange('slider2Value')}
+                    onChange={this.handleSliderChange('offset2Value')}
                     type={'uninitialized'} />
                 <Parameter
-                    name="slider 3"
+                    name="offset 3"
                     moduleKey={this.props.moduleKey}
-                    id={'slider3'}
-                    value={this.state.slider3Value}
+                    id={'offset3'}
+                    value={this.state.offset3Value}
                     scale={n => n}
                     display={s => s}
-                    onChange={this.handleSliderChange('slider3Value')}
+                    onChange={this.handleSliderChange('offset3Value')}
                     type={'uninitialized'} />
                 <Parameter
-                    name="slider 4"
+                    name="offset 4"
                     moduleKey={this.props.moduleKey}
-                    id={'slider4'}
-                    value={this.state.slider4Value}
+                    id={'offset4'}
+                    value={this.state.offset4Value}
                     scale={n => n}
                     display={s => s}
-                    onChange={this.handleSliderChange('slider4Value')}
+                    onChange={this.handleSliderChange('offset4Value')}
                     type={'uninitialized'} />
                 <Parameter
-                    name="slider 5"
+                    name="offset 5"
                     moduleKey={this.props.moduleKey}
-                    id={'slider5'}
-                    value={this.state.slider5Value}
+                    id={'offset5'}
+                    value={this.state.offset5Value}
                     scale={n => n}
                     display={s => s}
-                    onChange={this.handleSliderChange('slider5Value')}
+                    onChange={this.handleSliderChange('offset5Value')}
                     type={'uninitialized'} />
                 <Connector
                     type="SIGNAL_OUT"
