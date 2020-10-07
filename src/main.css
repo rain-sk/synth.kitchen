@@ -1,5 +1,5 @@
 body {
-	background: #000;
+	background: #021222;
 }
 
 body, #root {
@@ -16,7 +16,7 @@ body, #root {
 }
 
 #root {
-	padding-top: 2rem;
+	padding-top: 1rem;
 }
 
 fieldset.add-module {
@@ -26,34 +26,9 @@ fieldset.add-module {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-evenly;
-	margin: 2rem;
+	margin: 1.5rem;
 	padding: 1.5rem;
 	background: #eee;
-}
-
-i.add-module {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
-	width: 8rem;
-	height: 8rem;
-}
-
-i.add-module::before,
-i.add-module::after {
-	display: block;
-	content: '';
-	width: 2rem;
-	height: 8rem;
-	background: #000;
-	border-radius: 1rem;
-	position: absolute;
-	left: 3rem;
-}
-
-i.add-module::after {
-	transform: rotate(90deg);
 }
 
 .rack:only-of-type button.remove-rack {
@@ -73,11 +48,11 @@ button.remove-rack {
 }
 
 button.remove-rack::before {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 10px;
-    background: #fff;
+	content: '';
+	display: block;
+	width: 40px;
+	height: 10px;
+	background: #fff;
 	border: 1px solid #000;
 	border-radius: 5px;
 	transform: translateX(-50%);
@@ -119,7 +94,7 @@ legend {
 
 button.add-rack {
 	position: absolute;
-    left: 50%;
+	left: 50%;
 	transform: translate(-50%, -2rem);
 	width: 100%;
 }
@@ -141,9 +116,9 @@ button.add-rack {
 	display: flex;
 	border: 1px solid #000;
 	border-radius: 3px;
-	background: #eee;
+	background: #e9f4fe;
 	position: relative;
-	margin: 2rem;
+	margin: 1rem;
 	padding: 1.5rem;
 	border-top-left-radius: .75rem;
 }
@@ -203,7 +178,7 @@ article.module > fieldset:only-of-type {
 	position: absolute;
 	top: -1px;
 	left: -1px;
-    display: block;
+	display: block;
 	width: 1.5rem;
 	height: 1.5rem;
 	border: 2px solid #000;
@@ -246,24 +221,24 @@ article.module > fieldset:only-of-type {
 
 .styledKnob circle,
 .styledKnob path {
-    fill: #000;
-    opacity: 1;
-    transition: 
-      opacity 100ms, 
-      color 100ms 
-      ease-in-out;
+	fill: #000;
+	opacity: 1;
+	transition: 
+		opacity 100ms, 
+		color 100ms
+		ease-in-out;
 }
 
 .styledKnob:hover circle,
 .styledKnob:hover path,
 .styledKnob:focus circle,
 .styledKnob:focus path {
-    fill: #180094;
-    opacity: 1;
-    transition: 
-      opacity 450ms, 
-      color 450ms 
-      ease-in-out;
+	fill: #180094;
+	opacity: 1;
+	transition: 
+		opacity 450ms, 
+		color 450ms 
+		ease-in-out;
 }
 
 .styledKnob {
@@ -271,7 +246,7 @@ article.module > fieldset:only-of-type {
 }
 
 .styledKnob::after {
-    content: '';
+	content: '';
 	display: block;
 	position: absolute;
 	width: 1.5rem;
