@@ -1,7 +1,7 @@
 import * as React from 'react';
 import webmidi from 'webmidi';
 
-import { MidiOutput } from '../../io/midi/midi-output';
+import { MidiOutput } from '../../io/midi-output';
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
 import { Connector } from './shared/Connector';
