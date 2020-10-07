@@ -12,20 +12,17 @@ export interface ISequencerSliders {
     offset3Value: number;
     offset4Value: number;
     offset5Value: number;
+    beatDurationValue: number;
 }
 
 export interface ISequencerState extends ISequencerSliders {
-    offset1Duration: number;
-    offset2Duration: number;
-    offset3Duration: number;
-    offset4Duration: number;
-    offset5Duration: number;
     outputId: string;
     offset1Id: string;
     offset2Id: string;
     offset3Id: string;
     offset4Id: string;
     offset5Id: string;
+    beatDurationId: string;
 }
 
 export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
@@ -38,22 +35,18 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
 
             this.state = {
                 offset1Value: 0.0,
-                offset1Duration: 0.2,
                 offset2Value: 2.0,
-                offset2Duration: 0.2,
                 offset3Value: 4.0,
-                offset3Duration: 0.2,
                 offset4Value: 5.0,
-                offset4Duration: 0.2,
                 offset5Value: 7.0,
-                offset5Duration: 0.2,
+                beatDurationValue: 0.2,
                 outputId: uniqueId(),
                 offset1Id: uniqueId(),
                 offset2Id: uniqueId(),
                 offset3Id: uniqueId(),
                 offset4Id: uniqueId(),
                 offset5Id: uniqueId(),
-
+                beatDurationId: uniqueId()
             };
 
             const buffer = audioContext.createBufferSource();
@@ -87,31 +80,24 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
         });
     }
 
-    totalDuration = () => {
-        const { offset1Duration, offset2Duration, offset3Duration, offset4Duration, offset5Duration } = this.state;
-        return offset1Duration + offset2Duration + offset3Duration + offset4Duration + offset5Duration;
-    }
+    totalDuration = () => this.state.beatDurationValue * 5;
 
     fillBufferArray = (bufferLength: number) => {
         const data = new Float32Array(bufferLength);
         const {
             offset1Value,
-            offset1Duration,
             offset2Value,
-            offset2Duration,
             offset3Value,
-            offset3Duration,
             offset4Value,
-            offset4Duration,
             offset5Value,
-            offset5Duration
+            beatDurationValue
         } = this.state;
         const sampleRate = audioContext.sampleRate;
-        const one = offset1Duration * sampleRate;
-        const two = one + offset2Duration * sampleRate;
-        const three = two + offset3Duration * sampleRate;
-        const four = three + offset4Duration * sampleRate;
-        const five = four + offset5Duration * sampleRate;
+        const one = beatDurationValue * sampleRate;
+        const two = one + beatDurationValue * sampleRate;
+        const three = two + beatDurationValue * sampleRate;
+        const four = three + beatDurationValue * sampleRate;
+        const five = four + beatDurationValue * sampleRate;
         for (let i = 0; i < bufferLength; i++) {
             if (i < one) {
                 data[i] = offset1Value;
@@ -193,6 +179,15 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
                     scale={n => n}
                     display={s => s}
                     onChange={this.handleSliderChange('offset5Value')}
+                    type={'uninitialized'} />
+                <Parameter
+                    name="beat duration"
+                    moduleKey={this.props.moduleKey}
+                    id={'beatDuration'}
+                    value={this.state.beatDurationValue}
+                    scale={n => n}
+                    display={s => s}
+                    onChange={this.handleSliderChange('beatDurationValue')}
                     type={'uninitialized'} />
                 <Connector
                     type="SIGNAL_OUT"

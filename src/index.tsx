@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import './main.css';
+import './index.css';
 
 import { Kitchen } from './synth-kitchen/kitchen';
 
