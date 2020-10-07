@@ -65,7 +65,7 @@ export class Home extends React.Component {
                                 <img src={example2}
                                     alt="A MIDI Device module passes MIDI note data coming from an external device to a MIDI Oscillator module." />
                                 <figcaption>
-                                    Connect to your MIDI hardware/software (requires Chrome/Edge)
+                                    <i>Connect to your MIDI hardware/software (requires Chrome/Edge)</i>
                                 </figcaption>
                             </figure>
                         </article>

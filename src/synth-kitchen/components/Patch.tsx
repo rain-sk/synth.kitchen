@@ -167,10 +167,9 @@ export class Patch extends React.Component<{}, IPatchState> {
 			this.state.racks[rackIndex].moduleKeys.splice(slotIndex, 0, moduleKey);
 		}
 		this.setState({ racks: [...racks] });
-
 	}
 
-	moduleClear = (module: IModule) => {
+	moduleRelease = (module: IModule) => {
 		this.state.connections.forEach(connection => {
 			if (connection.source.moduleKey === module.moduleKey || connection.destination.moduleKey === module.moduleKey) {
 				const sourceModule = modules.get(connection.source.moduleKey);
@@ -250,7 +249,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 
 			/* clear the module */
 			this.setState({ racks }, () => {
-				this.moduleClear(module);
+				this.moduleRelease(module);
 			});
 
 		}
