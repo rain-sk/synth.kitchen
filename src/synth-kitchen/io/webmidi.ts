@@ -1,4 +1,4 @@
-import * as webmidi from 'webmidi';
+import webmidi from 'webmidi';
 
 webmidi.enable(function (err: string) {
     if (!err) {

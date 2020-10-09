@@ -6,8 +6,11 @@
 # testing
 /coverage
 
-# production
-/build
+# building
+.build
+build
+web_modules
+node_modules
 
 # misc
 .DS_Store
