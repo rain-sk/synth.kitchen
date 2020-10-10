@@ -1,5 +1,5 @@
 import { IModule } from '../components/modules/BaseModuleOld';
-import { masterBuss } from '../io/audio-context';
+import { mainBuss } from '../io/audio-context';
 
 const map = new Map<string, IModule>();
 
@@ -30,13 +30,13 @@ modules.set('GLOBAL_CONTEXT', {
 	moduleKey: 'GLOBAL_CONTEXT',
 	type: 'GLOBAL_CONTEXT',
 	initialized: true,
-	node: masterBuss,
+	node: mainBuss,
 	connectors: [
 		{
 			id: 'GLOBAL_CONTEXT',
 			name: 'speakers',
 			type: 'SIGNAL_IN',
-			getter: () => masterBuss
+			getter: () => mainBuss
 		}
 	]
 });

@@ -5,14 +5,14 @@ export const audioContext = new AudioContext({
 });
 
 // from: https://codepen.io/andremichelle/pen/WbqrYN/
-export const masterBuss = audioContext.createDynamicsCompressor();
-masterBuss.threshold.setValueAtTime(-6, audioContext.currentTime); // this is the pitfall, leave some headroom
-masterBuss.knee.setValueAtTime(5, audioContext.currentTime); // brute force
-masterBuss.ratio.setValueAtTime(3, audioContext.currentTime); // max compression
-masterBuss.attack.setValueAtTime(0, audioContext.currentTime); // 5ms attack
-masterBuss.release.setValueAtTime(0.25, audioContext.currentTime); // 50ms release
+export const mainBuss = audioContext.createDynamicsCompressor();
+mainBuss.threshold.setValueAtTime(-6, audioContext.currentTime); // this is the pitfall, leave some headroom
+mainBuss.knee.setValueAtTime(5, audioContext.currentTime); // brute force
+mainBuss.ratio.setValueAtTime(3, audioContext.currentTime); // max compression
+mainBuss.attack.setValueAtTime(0, audioContext.currentTime); // 5ms attack
+mainBuss.release.setValueAtTime(0.25, audioContext.currentTime); // 50ms release
 
-masterBuss.connect(audioContext.destination);
+mainBuss.connect(audioContext.destination);
 
 let resumed = false;
 
