@@ -23,6 +23,7 @@ export interface ISequencerState extends ISequencerSliders {
     offset4Id: string;
     offset5Id: string;
     beatDurationId: string;
+    startTime: number;
 }
 
 export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
@@ -32,6 +33,8 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
 
         if (module && !module.initialized) {
             module.initialized = true;
+
+            const now = audioContext.currentTime;
 
             this.state = {
                 offset1Value: 0.0,
@@ -46,7 +49,8 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
                 offset3Id: uniqueId(),
                 offset4Id: uniqueId(),
                 offset5Id: uniqueId(),
-                beatDurationId: uniqueId()
+                beatDurationId: uniqueId(),
+                startTime: now
             };
 
             const buffer = audioContext.createBufferSource();
@@ -117,6 +121,11 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
     updateSequence = () => {
         const module = modules.get(this.props.moduleKey);
         if (module) {
+            const now = audioContext.currentTime;
+            const totalDuration = this.totalDuration();
+            const remainingTimeForCurrentSequence = totalDuration - (now - this.state.startTime) % totalDuration;
+            const nextStartTime = now + remainingTimeForCurrentSequence;
+
             module.node.buffer.loop = false;
             module.node.buffer = audioContext.createBufferSource();
             module.node.buffer.loop = true;
@@ -127,7 +136,13 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
             buffer.copyToChannel(this.fillBufferArray(buffer.length), 0);
             module.node.buffer.buffer = buffer;
             module.node.buffer.connect(module.node.output);
-            module.node.buffer.start();
+            module.node.buffer.start(nextStartTime);
+
+            setTimeout(() => {
+                this.setState({
+                    startTime: nextStartTime
+                });
+            });
         }
     }
 
