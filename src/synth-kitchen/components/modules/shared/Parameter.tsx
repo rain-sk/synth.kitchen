@@ -37,31 +37,34 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 		}
 	}
 
-	onInputFocus = () => {
-		this.setState({
-			editing: true
-		});
-	}
-
 	onInputBlur = () => {
-		this.setState({
-			editing: false
-		});
-		if (this.props.onChange && (this.state.inputValue || this.state.inputValue === 0)) {
-			this.props.onChange(this.state.inputValue);
+		if (this.state.editing) {
+			this.setState({
+				editing: false
+			});
+			if (this.props.onChange && (this.state.inputValue || this.state.inputValue === 0)) {
+				this.props.onChange(this.state.inputValue);
+			}
 		}
 	};
 
 	onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (this.state.editing) {
+		if (!this.state.editing) {
 			this.setState({
-				inputValue: parseFloat(event.target.value)
+				editing: true
 			});
 		}
+		this.setState({
+			inputValue: parseFloat(event.target.value)
+		});
+
 	};
 
 	onEnterKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (this.state.editing && event.which === 13) {
+			this.setState({
+				editing: false
+			});
 			if (this.props.onChange && (this.state.inputValue || this.state.inputValue === 0)) {
 				this.props.onChange(this.state.inputValue);
 			}
@@ -109,7 +112,7 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 					) : null}
 				</span>
 				{this.props.display && this.state.inputValue !== undefined ? (
-					<input id={`input_${this.props.id}`} type="number" value={this.props.display(this.state.inputValue)} onChange={this.onInputChange} onFocus={this.onInputFocus} onBlur={this.onInputBlur} onKeyDown={this.onEnterKeyDown} />
+					<input id={`input_${this.props.id}`} type="number" value={this.props.display(this.state.inputValue)} onChange={this.onInputChange} onBlur={this.onInputBlur} onKeyDown={this.onEnterKeyDown} />
 				) : null}
 			</fieldset>
 		);
