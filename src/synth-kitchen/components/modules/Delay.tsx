@@ -6,14 +6,6 @@ import { Parameter } from './shared/Parameter';
 import { Connector } from './shared/Connector';
 import { uniqueId } from '../../io/unique-id';
 
-const scaleDelay = (normalizedValue: number): number => {
-	return Math.min(100, Math.max(0, normalizedValue * 100));
-}
-
-const displayDelay = (currentValue: number) => {
-	return Math.round(currentValue * 100) / 100;
-}
-
 export const Delay: React.FunctionComponent<IModuleProps> = props => {
 	const [inputId] = React.useState(uniqueId() as any);
 	const [outputId] = React.useState(uniqueId() as any);
@@ -64,10 +56,12 @@ export const Delay: React.FunctionComponent<IModuleProps> = props => {
 				moduleKey={props.moduleKey}
 				id={delayId}
 				value={delay}
-				scale={scaleDelay}
-				display={displayDelay}
+				scale={s => s}
+				display={d => d}
 				onChange={handleChangeDelay}
-				type={'CV_IN'} />
+				type={'CV_IN'}
+				min={0}
+				max={100} />
 			<Connector
 				type="SIGNAL_OUT"
 				name="output"

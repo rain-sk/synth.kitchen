@@ -7,44 +7,6 @@ import { Connector } from './shared/Connector';
 import { Setting } from './shared/Setting';
 import { uniqueId } from '../../io/unique-id';
 
-const scaleFrequency = (normalizedValue: number) => {
-	return Math.min(22000, Math.max(0, normalizedValue * 22000));
-}
-
-const displayFrequency = (currentValue: number) => {
-	if (currentValue < 100) {
-		return Math.round(currentValue * 10000) / 10000;
-	} else if (currentValue < 1000) {
-		return Math.round(currentValue * 1000) / 1000;
-	} else {
-		return Math.round(currentValue * 100) / 100;
-	}
-}
-
-const scaleDetune = (normalizedValue: number) => {
-	return Math.min(100, Math.max(-100, (normalizedValue * 200) - 100));
-}
-
-const displayDetune = (currentValue: number) => {
-	return Math.round(currentValue * 100) / 100;
-}
-
-const scaleQ = (normalizedValue: number) => {
-	return Math.min(100, Math.max(0, (normalizedValue * 100)));
-}
-
-const displayQ = (currentValue: number) => {
-	return Math.round(currentValue * 100) / 100;
-}
-
-const scaleGain = (normalizedValue: number) => {
-	return Math.min(1, Math.max(0, (normalizedValue)));
-}
-
-const displayGain = (currentValue: number) => {
-	return Math.round(currentValue * 100) / 100;
-}
-
 const filterTypeOptions: [string, string][] = [
 	['lowpass', 'low-pass'],
 	['highpass', 'high-pass'],
@@ -152,37 +114,45 @@ export const Filter: React.FunctionComponent<IModuleProps> = props => {
 				moduleKey={props.moduleKey}
 				id={frequencyId}
 				value={frequency}
-				scale={scaleFrequency}
-				display={displayFrequency}
+				scale={s => s}
+				display={d => d}
 				onChange={handleChangeFrequency}
-				type={'CV_IN'} />
+				type={'CV_IN'}
+				min={20}
+				max={20000} />
 			<Parameter
 				name="detune"
 				moduleKey={props.moduleKey}
 				id={detuneId}
 				value={detune}
-				scale={scaleDetune}
-				display={displayDetune}
+				scale={s => s}
+				display={d => d}
 				onChange={handleChangeDetune}
-				type={'CV_IN'} />
+				type={'CV_IN'}
+				min={-100}
+				max={100} />
 			<Parameter
 				name="Q"
 				moduleKey={props.moduleKey}
 				id={qId}
 				value={q}
-				scale={scaleQ}
-				display={displayQ}
+				scale={s => s}
+				display={d => d}
 				onChange={handleChangeQ}
-				type={'CV_IN'} />
+				type={'CV_IN'}
+				min={0}
+				max={100} />
 			<Parameter
 				name="gain"
 				moduleKey={props.moduleKey}
 				id={gainId}
 				value={gain}
-				scale={scaleGain}
-				display={displayGain}
+				scale={s => s}
+				display={d => d}
 				onChange={handleChangeGain}
-				type={'CV_IN'} />
+				type={'CV_IN'}
+				min={0}
+				max={2} />
 			<Setting
 				type="radio"
 				name="type"

@@ -55,14 +55,12 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
 
             const bufferSourceKey = audio.createBufferSource();
             const buffer = audio.node(bufferSourceKey);
-            console.log(buffer);
             const outputKey = audio.createGain();
             audio.node(outputKey).gain.value = 100;
             module.node = {
                 buffer: buffer,
                 output: audio.node(outputKey)
             }
-            console.log(module.node);
             module.connectors = [
                 {
                     id: this.state.outputId,
@@ -76,12 +74,10 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
     }
 
     handleSliderChange = (offset: keyof ISequencerSliders) => (newValue: number) => {
-        console.log(newValue);
         this.setState({
             [offset]: newValue
         } as any, () => {
             if (!isNaN(newValue)) {
-                console.log(newValue);
                 this.updateSequence();
             }
         });
@@ -161,7 +157,9 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
                     scale={n => n}
                     display={s => s}
                     onChange={this.handleSliderChange('offset1Value')}
-                    type={'uninitialized'} />
+                    type={'uninitialized'}
+                    min={-100}
+                    max={100} />
                 <Parameter
                     name="offset 2"
                     moduleKey={this.props.moduleKey}
@@ -170,7 +168,9 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
                     scale={n => n}
                     display={s => s}
                     onChange={this.handleSliderChange('offset2Value')}
-                    type={'uninitialized'} />
+                    type={'uninitialized'}
+                    min={-100}
+                    max={100} />
                 <Parameter
                     name="offset 3"
                     moduleKey={this.props.moduleKey}
@@ -179,7 +179,9 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
                     scale={n => n}
                     display={s => s}
                     onChange={this.handleSliderChange('offset3Value')}
-                    type={'uninitialized'} />
+                    type={'uninitialized'}
+                    min={-100}
+                    max={100} />
                 <Parameter
                     name="offset 4"
                     moduleKey={this.props.moduleKey}
@@ -188,7 +190,9 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
                     scale={n => n}
                     display={s => s}
                     onChange={this.handleSliderChange('offset4Value')}
-                    type={'uninitialized'} />
+                    type={'uninitialized'}
+                    min={-100}
+                    max={100} />
                 <Parameter
                     name="offset 5"
                     moduleKey={this.props.moduleKey}
@@ -197,7 +201,9 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
                     scale={n => n}
                     display={s => s}
                     onChange={this.handleSliderChange('offset5Value')}
-                    type={'uninitialized'} />
+                    type={'uninitialized'}
+                    min={-100}
+                    max={100} />
                 <Parameter
                     name="beat duration"
                     moduleKey={this.props.moduleKey}
@@ -206,7 +212,9 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
                     scale={n => n}
                     display={s => s}
                     onChange={this.handleSliderChange('beatDurationValue')}
-                    type={'uninitialized'} />
+                    type={'uninitialized'}
+                    min={-100}
+                    max={100} />
                 <Connector
                     type="SIGNAL_OUT"
                     name="output"

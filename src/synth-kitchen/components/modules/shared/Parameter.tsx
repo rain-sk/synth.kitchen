@@ -7,6 +7,8 @@ export interface IParameterProps {
 	moduleKey: string;
 	id: string;
 	name: string;
+	min?: number;
+	max?: number;
 	value?: number;
 	scale?: (normalizedValue: number) => number;
 	onChange?: (newValue: number) => void;
@@ -91,8 +93,8 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 							size={50}
 							angleOffset={180}
 							angleRange={360}
-							min={0}
-							max={1}
+							min={this.props.min !== undefined ? this.props.min : 0}
+							max={this.props.max !== undefined ? this.props.max : 1}
 							className="styledKnob"
 							htmlFor={`input_${this.props.id}`}
 							onChange={this.onKnobChange}

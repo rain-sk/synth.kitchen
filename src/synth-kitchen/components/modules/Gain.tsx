@@ -6,14 +6,6 @@ import { Parameter } from './shared/Parameter';
 import { Connector } from './shared/Connector';
 import { uniqueId } from '../../io/unique-id';
 
-const scaleGain = (normalizedValue: number): number => {
-	return Math.min(1, Math.max(0, normalizedValue));
-}
-
-const displayGain = (currentValue: number) => {
-	return Math.round(currentValue * 1000) / 1000;
-}
-
 export const Gain: React.FunctionComponent<IModuleProps> = props => {
 	const [inputId] = React.useState(uniqueId() as any);
 	const [outputId] = React.useState(uniqueId() as any);
@@ -64,8 +56,8 @@ export const Gain: React.FunctionComponent<IModuleProps> = props => {
 				moduleKey={props.moduleKey}
 				id={gainId}
 				value={gain}
-				scale={scaleGain}
-				display={displayGain}
+				scale={s => s}
+				display={d => d}
 				onChange={handleChangeGain}
 				type={'CV_IN'} />
 			<Connector

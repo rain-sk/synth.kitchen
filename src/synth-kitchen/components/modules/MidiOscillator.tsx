@@ -174,8 +174,8 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 					moduleKey={this.props.moduleKey}
 					id={this.state.detuneId}
 					value={this.state.detune}
-					display={displayDetune}
-					scale={scaleDetune}
+					scale={s => s}
+					display={d => d}
 					onChange={this.handleChangeDetune}
 					type={'CV_IN'} />
 				<Parameter

@@ -7,28 +7,6 @@ import { Parameter } from './shared/Parameter';
 import { Connector } from './shared/Connector';
 import { uniqueId } from '../../io/unique-id';
 
-const scaleFrequency = (normalizedValue: number) => {
-	return Math.min(22000, Math.max(0, normalizedValue * 22000));
-}
-
-const displayFrequency = (currentValue: number) => {
-	if (currentValue < 100) {
-		return Math.round(currentValue * 10000) / 10000;
-	} else if (currentValue < 1000) {
-		return Math.round(currentValue * 1000) / 1000;
-	} else {
-		return Math.round(currentValue * 100) / 100;
-	}
-}
-
-const scaleDetune = (normalizedValue: number) => {
-	return Math.min(100, Math.max(-100, (normalizedValue * 200) - 100));
-}
-
-const displayDetune = (currentValue: number) => {
-	return Math.round(currentValue * 100) / 100;
-}
-
 const oscillatorTypeOptions: [string, string][] = [
 	['sine', 'sin'],
 	['triangle', 'tri'],
@@ -97,8 +75,10 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 				moduleKey={props.moduleKey}
 				id={frequencyId}
 				value={frequency}
-				scale={scaleFrequency}
-				display={displayFrequency}
+				scale={s => s}
+				display={d => d}
+				min={0}
+				max={20000}
 				onChange={handleChangeFrequency}
 				type={'CV_IN'} />
 			<Parameter
@@ -106,8 +86,10 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 				moduleKey={props.moduleKey}
 				id={detuneId}
 				value={detune}
-				scale={scaleDetune}
-				display={displayDetune}
+				scale={s => s}
+				display={d => d}
+				min={-100}
+				max={100}
 				onChange={handleChangeDetune}
 				type={'CV_IN'} />
 			<Setting
