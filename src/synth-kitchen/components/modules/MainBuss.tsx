@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { mainBuss } from '../../io/audio-context';
+import { audio, mainBussKey } from '../../io/audio-context';
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
 import { Parameter } from './shared/Parameter';
@@ -25,7 +25,7 @@ export const MainBuss: React.FunctionComponent<IModuleProps> = props => {
           id: inputId,
           name: 'input',
           type: 'CV_IN',
-          getter: () => mainBuss
+          getter: () => audio.node(mainBussKey)
         }
       ]
     })

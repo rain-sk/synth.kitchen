@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
-import { audioContext } from '../../io/audio-context';
+import { audio } from '../../io/audio-context';
 import { Parameter } from './shared/Parameter';
 import { Connector } from './shared/Connector';
 import { uniqueId } from '../../io/unique-id';
@@ -34,7 +34,7 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
         if (module && !module.initialized) {
             module.initialized = true;
 
-            const now = audioContext.currentTime;
+            const now = audio.context.currentTime;
 
             this.state = {
                 offset1Value: 0.0,
@@ -53,19 +53,22 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
                 startTime: now
             };
 
-            const buffer = audioContext.createBufferSource();
-            const output = audioContext.createGain();
-            output.gain.value = 100;
+            const bufferSourceKey = audio.createBufferSource();
+            const buffer = audio.node(bufferSourceKey);
+            console.log(buffer);
+            const outputKey = audio.createGain();
+            audio.node(outputKey).gain.value = 100;
             module.node = {
-                buffer,
-                output
+                buffer: buffer,
+                output: audio.node(outputKey)
             }
+            console.log(module.node);
             module.connectors = [
                 {
                     id: this.state.outputId,
                     name: 'output',
                     type: 'SIGNAL_OUT',
-                    getter: () => output
+                    getter: () => audio.node(outputKey)
                 }
             ];
             this.updateSequence();
@@ -96,7 +99,7 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
             offset5Value,
             beatDurationValue
         } = this.state;
-        const sampleRate = audioContext.sampleRate;
+        const sampleRate = audio.context.sampleRate;
         const one = beatDurationValue * sampleRate;
         const two = one + beatDurationValue * sampleRate;
         const three = two + beatDurationValue * sampleRate;
@@ -121,17 +124,17 @@ export class Sequencer extends React.Component<IModuleProps, ISequencerState> {
     updateSequence = () => {
         const module = modules.get(this.props.moduleKey);
         if (module) {
-            const now = audioContext.currentTime;
+            const now = audio.context.currentTime;
             const totalDuration = this.totalDuration();
             const remainingTimeForCurrentSequence = totalDuration - (now - this.state.startTime) % totalDuration;
             const nextStartTime = now + remainingTimeForCurrentSequence;
 
             module.node.buffer.loop = false;
-            module.node.buffer = audioContext.createBufferSource();
+            module.node.buffer = audio.node(audio.createBufferSource());
             module.node.buffer.loop = true;
             const buffer = new AudioBuffer({
-                length: audioContext.sampleRate * this.totalDuration(),
-                sampleRate: audioContext.sampleRate
+                length: audio.context.sampleRate * this.totalDuration(),
+                sampleRate: audio.context.sampleRate
             });
             buffer.copyToChannel(this.fillBufferArray(buffer.length), 0);
             module.node.buffer.buffer = buffer;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
-import { audioContext } from '../../io/audio-context';
+import { audio } from '../../io/audio-context';
 import { Setting } from './shared/Setting';
 import { Parameter } from './shared/Parameter';
 import { Connector } from './shared/Connector';
@@ -47,7 +47,7 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 	const module = modules.get(props.moduleKey);
 
 	if (module && !module.initialized) {
-		module.node = audioContext.createOscillator();
+		module.node = audio.node(audio.createOscillator());
 		module.node.start();
 		module.initialized = true;
 		module.connectors = [

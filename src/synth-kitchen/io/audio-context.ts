@@ -1,18 +1,16 @@
-import { AudioContext } from 'standardized-audio-context';
+import { Audio } from 'audio-om';
 
-export const audioContext = new AudioContext({
-	latencyHint: 'playback'
-});
+export const audio = new Audio();
 
 // from: https://codepen.io/andremichelle/pen/WbqrYN/
-export const mainBuss = audioContext.createDynamicsCompressor();
-mainBuss.threshold.setValueAtTime(-6, audioContext.currentTime); // this is the pitfall, leave some headroom
-mainBuss.knee.setValueAtTime(5, audioContext.currentTime); // brute force
-mainBuss.ratio.setValueAtTime(3, audioContext.currentTime); // max compression
-mainBuss.attack.setValueAtTime(0, audioContext.currentTime); // 5ms attack
-mainBuss.release.setValueAtTime(0.25, audioContext.currentTime); // 50ms release
+export const mainBussKey = audio.createDynamicsCompressor();
+audio.node(mainBussKey).threshold.setValueAtTime(-6, audio.context.currentTime); // this is the pitfall, leave some headroom
+audio.node(mainBussKey).knee.setValueAtTime(5, audio.context.currentTime); // brute force
+audio.node(mainBussKey).ratio.setValueAtTime(3, audio.context.currentTime); // max compression
+audio.node(mainBussKey).attack.setValueAtTime(0, audio.context.currentTime); // 5ms attack
+audio.node(mainBussKey).release.setValueAtTime(0.25, audio.context.currentTime); // 50ms release
 
-mainBuss.connect(audioContext.destination);
+audio.node(mainBussKey).connect(audio.context.destination);
 
 let resumed = false;
 
@@ -24,7 +22,9 @@ function resume() {
 		document.removeEventListener('touchmove', resume, false);
 		document.removeEventListener('touchstart', resume, false);
 
-		audioContext.resume();
+		if ('resume' in audio.context) {
+			audio.context.resume();
+		};
 	}
 }
 

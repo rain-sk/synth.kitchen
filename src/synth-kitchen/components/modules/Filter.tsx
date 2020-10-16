@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { audioContext } from '../../io/audio-context';
+import { audio } from '../../io/audio-context';
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
 import { Parameter } from './shared/Parameter';
@@ -72,7 +72,7 @@ export const Filter: React.FunctionComponent<IModuleProps> = props => {
 	const module = modules.get(props.moduleKey);
 
 	if (module && !module.initialized) {
-		module.node = audioContext.createBiquadFilter();
+		module.node = audio.node(audio.createBiquadFilter());
 		module.initialized = true;
 		module.connectors = [
 			{

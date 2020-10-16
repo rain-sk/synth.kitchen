@@ -3,11 +3,11 @@
   "version": "0.2.1",
   "private": true,
   "dependencies": {
+    "audio-om": "0.0.2-alpha",
     "rc-knob-accessible": "^1.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
-    "standardized-audio-context": "^24.1.20",
     "uuid": "^3.3.3",
     "webmidi": "^2.5.1"
   },

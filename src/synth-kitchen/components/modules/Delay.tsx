@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { audioContext } from '../../io/audio-context';
+import { audio } from '../../io/audio-context';
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
 import { Parameter } from './shared/Parameter';
@@ -23,7 +23,7 @@ export const Delay: React.FunctionComponent<IModuleProps> = props => {
 	const module = modules.get(props.moduleKey);
 
 	if (module && !module.initialized) {
-		module.node = audioContext.createDelay();
+		module.node = audio.node(audio.createDelay());
 		module.initialized = true;
 		module.connectors = [
 			{

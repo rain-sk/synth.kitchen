@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { IModuleProps } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
-import { audioContext } from '../../io/audio-context';
+import { audio } from '../../io/audio-context';
 import { Setting } from './shared/Setting';
 import { Connector } from './shared/Connector';
 import { MidiInput } from '../../io/midi-input';
@@ -50,23 +50,23 @@ export class MidiOscillator extends React.Component<IModuleProps, IMidiOscillato
 			outputId: uniqueId(),
 			type: 'sine',
 			detune: 0,
-			output: audioContext.createGain(),
+			output: audio.node(audio.createGain()),
 			activeOscillators: new Map<number, [IOscillatorNode<IAudioContext>, IGainNode<IAudioContext>]>(),
-			detuneInput: audioContext.createGain(),
-			frequencyInput: audioContext.createGain(),
+			detuneInput: audio.node(audio.createGain()),
+			frequencyInput: audio.node(audio.createGain()),
 		};
 	}
 
 	createOscillator = (note: number) => {
 		this.destroyOscillator(note);
-		const osc = audioContext.createOscillator();
+		const osc = audio.node(audio.createOscillator());
 		osc.frequency.value = midiToFrequency(note);
 		osc.detune.value = this.state.detune;
 		osc.type = this.state.type;
-		const gain = audioContext.createGain();
+		const gain = audio.node(audio.createGain());
 		gain.gain.value = 0;
-		gain.gain.setTargetAtTime(1, audioContext.currentTime, 0.03);
-		osc.start(audioContext.currentTime + 0.01);
+		gain.gain.setTargetAtTime(1, audio.context.currentTime, 0.03);
+		osc.start(audio.context.currentTime + 0.01);
 		this.state.detuneInput.connect(osc.detune as any);
 		this.state.frequencyInput.connect(osc.frequency as any);
 		osc.connect(gain);
