@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IModuleProps } from './BaseModuleOld';
+import type { IModuleProps, IModule, IConnector } from './BaseModuleOld';
 import { modules } from '../../state/module-map';
 import { audio } from '../../io/audio-context';
 import { Setting } from './shared/Setting';
@@ -7,102 +7,128 @@ import { Parameter } from './shared/Parameter';
 import { Connector } from './shared/Connector';
 import { uniqueId } from '../../io/unique-id';
 
-const oscillatorTypeOptions: [string, string][] = [
-	['sine', 'sin'],
-	['triangle', 'tri'],
-	['square', 'sqr'],
-	['sawtooth', 'saw']
-];
+// this typically would come from node_modules
+// contributors publish their modules on npm or github
+// and are brought into the platform with npm install
+import OscillatorModule from '../../../modules/oscillator';
 
-export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
-	const [outputId] = React.useState(uniqueId() as any);
-	const [frequencyId] = React.useState(uniqueId() as any);
-	const [detuneId] = React.useState(uniqueId() as any);
-	const [type, setType] = React.useState('sine');
-	const [frequency, setFrequency] = React.useState(440);
-	const [detune, setDetune] = React.useState(0);
+const unity = (d: any) => d;
+// default parameter initialization
+// to allow some optional values
+const defaultParam = {
+	min: 0,
+	max: 1,
+	scale: unity,
+	display: unity,
+	type: 'CV_IN'
+};
 
-	const module = modules.get(props.moduleKey);
+type Params = IConnector[];
 
-	if (module && !module.initialized) {
-		module.node = audio.node(audio.createOscillator());
-		module.node.start();
-		module.initialized = true;
-		module.connectors = [
-			{
-				id: outputId,
-				name: 'output',
-				type: 'SIGNAL_OUT',
-				getter: () => module.node
-			}, {
-				id: frequencyId,
-				name: 'frequency',
-				type: 'CV_IN',
-				getter: () => module.node.frequency
-			}, {
-				id: detuneId,
-				name: 'detune',
-				type: 'CV_IN',
-				getter: () => module.node.detune
-			}
-		];
+type ModuleState = {
+	module: IModule;
+	params: Params;
+	unit: any;
+};
 
-		setType(module.node.type);
-		setFrequency(module.node.frequency.value);
-		setDetune(module.node.detune.value);
-	}
+//  This module loader takes care of dynamically instantiating the modules
+const ModuleLoader: React.FunctionComponent<IModuleProps> = (props) => {
+	// ModuleLoader state
+	const [state, setState] = React.useState({
+		module: {},
+		params: [] as Params,
+		unit: {}
+	} as ModuleState);
 
-	const handleChangeType = React.useCallback((newType: string) => {
-		(module as any).node.type = newType;
-		setType(newType);
-	}, [module]);
+	// UIState
+	const [uiState, setUIState] = React.useState({} as Record<string, any>);
+	// ModuleLoader values
+	const { params, unit } = state;
 
-	const handleChangeFrequency = React.useCallback((newFrequency: number) => {
-		(module as any).node.frequency.value = newFrequency;
-		setFrequency(newFrequency);
-	}, [module]);
+	// Build the module only on first render pass
+	React.useEffect(() => {
+		const module = modules.get(props.moduleKey);
 
-	const handleChangeDetune = React.useCallback((newDetune: number) => {
-		(module as any).node.detune.value = newDetune;
-		setDetune(newDetune);
-	}, [module]);
+		if (module && audio) {
+			const unit = new OscillatorModule();
+			// hydrate static params
+			const params: Params = unit.getParameters().map(
+				(param) =>
+					({
+						...defaultParam,
+						...param,
+						id: uniqueId(),
+						getter: () =>
+							param.type === 'SIGNAL_OUT' ? unit.node : uiState[param.name]
+					} as any)
+			);
 
-	return (
+			// init UI based on default values
+			const initialState = params.reduce(
+				(initial, { name, defaultValue }: any) => {
+					return defaultValue !== undefined
+						? { ...{ ...initial, [name]: defaultValue } }
+						: initial;
+				},
+				{}
+			);
+
+			module.node = unit.setup(audio);
+			module.connectors = params;
+
+			setState({ ...state, module, params, unit });
+			setUIState(initialState);
+		}
+	}, []);
+
+	// update UIstate and pass it to the unit
+	const update = React.useCallback(
+		(key: string) => (value: string | number) => {
+			const newState = { ...uiState, [key]: value };
+			unit.update(newState);
+			setUIState(newState);
+		},
+		[uiState]
+	);
+
+	return unit.render && params ? (
+		unit.render({ params, state: uiState, update, moduleKey: props.moduleKey })
+	) : (
 		<>
-			<h2 className="visually-hidden">oscillator</h2>
-			<Parameter
-				name="frequency"
-				moduleKey={props.moduleKey}
-				id={frequencyId}
-				value={frequency}
-				scale={s => s}
-				display={d => d}
-				min={0}
-				max={20000}
-				onChange={handleChangeFrequency}
-				type={'CV_IN'} />
-			<Parameter
-				name="detune"
-				moduleKey={props.moduleKey}
-				id={detuneId}
-				value={detune}
-				scale={s => s}
-				display={d => d}
-				min={-100}
-				max={100}
-				onChange={handleChangeDetune}
-				type={'CV_IN'} />
-			<Setting
-				type="select"
-				name="type"
-				value={type}
-				options={oscillatorTypeOptions}
-				onChange={handleChangeType} />
-			<Connector
-				type="SIGNAL_OUT"
-				name="output"
-				moduleKey={props.moduleKey}
-				connectorId={outputId} />
+			<h2 className="visually-hidden">{unit.name}</h2>
+			{params.map((param: any) => {
+				//  dynamically render UI based on unit parameter descriptors
+				const componentProps = {
+					id: param.id,
+					connectorId: param.id,
+					key: param.id,
+					name: param.name,
+					scale: param.scale,
+					display: param.display,
+					min: param.min,
+					max: param.max,
+					type: param.type,
+					options: param.options,
+					moduleKey: props.moduleKey,
+					onChange: update(param.name),
+					getter: () => uiState[param.name],
+					value: uiState[param.name]
+				};
+
+				switch (param.type) {
+					case 'CV_IN':
+						return <Parameter {...componentProps} />;
+					case 'SIGNAL_OUT':
+						return <Connector {...componentProps} />;
+					case 'SETTINGS':
+						return <Setting {...{ ...componentProps, type: 'select' }} />;
+					default:
+						return null;
+				}
+			})}
 		</>
 	);
 };
+
+//  keep export name for compat
+export const Oscillator = ModuleLoader;
