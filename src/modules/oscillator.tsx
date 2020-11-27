@@ -1,33 +1,41 @@
-import * as React from 'react';
+// use react when custom render is present
+// import * as React from 'react';
+
+// ParameterTypes should be imported from the platform
+const ParameterTypes = {
+	SIGNAL_OUT: 'SIGNAL_OUT',
+	CV_IN: 'CV_IN',
+	SETTINGS: 'SETTINGS'
+};
 
 class Oscillator {
 	node: any; // reference to the connectable node
 	name: string = 'Oscillator'; //  used for the UI
 
-	// returns parameter descriptors
+	// returns static serializable parameter descriptors
 	getParameters() {
 		return [
 			{
 				name: 'output',
-				type: 'SIGNAL_OUT'
+				type: ParameterTypes.SIGNAL_OUT
 			},
 			{
 				name: 'frequency',
-				type: 'CV_IN',
+				type: ParameterTypes.CV_IN,
 				defaultValue: 440,
 				min: 0,
 				max: 20000
 			},
 			{
 				name: 'detune',
-				type: 'CV_IN',
+				type: ParameterTypes.CV_IN,
 				defaultValue: 0,
 				min: -100,
 				max: 100
 			},
 			{
 				name: 'type',
-				type: 'SETTINGS',
+				type: ParameterTypes.SETTINGS,
 				// why not a simple array here
 				// and use the display() function
 				// for the label in the select?

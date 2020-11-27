@@ -43,7 +43,7 @@ const ModuleLoader: React.FunctionComponent<IModuleProps> = (props) => {
 	// UIState
 	const [uiState, setUIState] = React.useState({} as Record<string, any>);
 	// ModuleLoader values
-	const { params, unit } = state;
+	const { module, params, unit } = state;
 
 	// Build the module only on first render pass
 	React.useEffect(() => {
@@ -51,6 +51,7 @@ const ModuleLoader: React.FunctionComponent<IModuleProps> = (props) => {
 
 		if (module && audio) {
 			const unit = new OscillatorModule();
+			const node = unit.setup(audio);
 			// hydrate static params
 			const params: Params = unit.getParameters().map(
 				(param) =>
@@ -59,7 +60,7 @@ const ModuleLoader: React.FunctionComponent<IModuleProps> = (props) => {
 						...param,
 						id: uniqueId(),
 						getter: () =>
-							param.type === 'SIGNAL_OUT' ? unit.node : uiState[param.name]
+							param.type === 'SIGNAL_OUT' ? node : uiState[param.name]
 					} as any)
 			);
 
@@ -73,7 +74,7 @@ const ModuleLoader: React.FunctionComponent<IModuleProps> = (props) => {
 				{}
 			);
 
-			module.node = unit.setup(audio);
+			module.node = node;
 			module.connectors = params;
 
 			setState({ ...state, module, params, unit });
