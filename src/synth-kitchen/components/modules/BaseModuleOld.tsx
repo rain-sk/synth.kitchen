@@ -6,11 +6,18 @@ import { Delay } from './Delay';
 import { Filter } from './Filter';
 import { MidiInput } from './MidiInput';
 import { Oscillator } from './Oscillator';
+import { WeavesOscillator } from './WeavesOscillator';
 import { Sequencer } from './Sequencer';
 import { MidiOscillator } from './MidiOscillator';
 import { ModuleType } from '../../state/patch';
 
-export type ConnectorType = 'CV_IN' | 'SIGNAL_IN' | 'SIGNAL_OUT' | 'MIDI_IN' | 'MIDI_OUT' | 'uninitialized';
+export type ConnectorType =
+	| 'CV_IN'
+	| 'SIGNAL_IN'
+	| 'SIGNAL_OUT'
+	| 'MIDI_IN'
+	| 'MIDI_OUT'
+	| 'uninitialized';
 
 export interface IModuleProps {
 	moduleKey: string;
@@ -46,7 +53,7 @@ export class BaseModuleOld extends React.Component<IModuleProps, IModuleState> {
 
 	handleRemove = () => {
 		this.props.removeModule(this.props.moduleKey);
-	}
+	};
 
 	componentDidUpdate = (oldProps: IModuleProps) => {
 		if (oldProps.moduleKey !== this.props.moduleKey) {
@@ -54,42 +61,51 @@ export class BaseModuleOld extends React.Component<IModuleProps, IModuleState> {
 				module: modules.get(this.props.moduleKey)
 			});
 		}
-	}
+	};
 
 	render() {
 		if (this.state.module) {
 			return (
-				<li className={this.state.module.type === 'FILTER' ? 'double-wide' : ''}>
-					<button className="remove-module" type="button" onClick={this.handleRemove} aria-label="remove this module"></button>
+				<li
+					className={this.state.module.type === 'FILTER' ? 'double-wide' : ''}
+				>
+					<button
+						className="remove-module"
+						type="button"
+						onClick={this.handleRemove}
+						aria-label="remove this module"
+					></button>
 					<article className="module">
-						{this.state.module && (() => {
-							switch (this.state.module.type) {
-								case 'GAIN':
-									return <Gain {...this.props} />;
-								case 'DELAY':
-									return <Delay {...this.props} />;
-								case 'FILTER':
-									return <Filter {...this.props} />;
-								case 'OSCILLATOR':
-									return <Oscillator {...this.props} />;
-								case 'SEQUENCER':
-									return <Sequencer {...this.props} />;
-								case 'MIDI_DEVICE':
-									return <MidiInput {...this.props} />;
-								case 'MIDI_OSCILLATOR':
-									return <MidiOscillator {...this.props} />;
-								default:
-									this.props.removeModule(this.props.moduleKey);
-									return null;
-							}
-						})()}
+						{this.state.module &&
+							(() => {
+								switch (this.state.module.type) {
+									case 'GAIN':
+										return <Gain {...this.props} />;
+									case 'DELAY':
+										return <Delay {...this.props} />;
+									case 'FILTER':
+										return <Filter {...this.props} />;
+									case 'OSCILLATOR':
+										return <Oscillator {...this.props} />;
+									case 'WEAVES_OSCILLATOR':
+										return <WeavesOscillator {...this.props} />;
+									case 'SEQUENCER':
+										return <Sequencer {...this.props} />;
+									case 'MIDI_DEVICE':
+										return <MidiInput {...this.props} />;
+									case 'MIDI_OSCILLATOR':
+										return <MidiOscillator {...this.props} />;
+									default:
+										this.props.removeModule(this.props.moduleKey);
+										return null;
+								}
+							})()}
 					</article>
 				</li>
-			)
+			);
 		} else {
 			this.props.removeModule(this.props.moduleKey);
 			return null;
 		}
 	}
 }
-

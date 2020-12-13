@@ -1,4 +1,3 @@
-
 export type ConnectionType = 'MIDI' | 'MOUSE' | 'SIGNAL';
 
 export interface IEnd {
@@ -38,9 +37,24 @@ export interface IConnectionState {
 	active: IEnd | undefined;
 }
 
-export type ModuleType = 'GLOBAL_CONTEXT' | 'GAIN' | 'DELAY' | 'FILTER' | 'MIDI_DEVICE' | 'OSCILLATOR' | 'SEQUENCER' | 'MIDI_OSCILLATOR';
+export type ModuleType =
+	| 'GLOBAL_CONTEXT'
+	| 'GAIN'
+	| 'DELAY'
+	| 'FILTER'
+	| 'MIDI_DEVICE'
+	| 'OSCILLATOR'
+	| 'WEAVES_OSCILLATOR'
+	| 'SEQUENCER'
+	| 'MIDI_OSCILLATOR';
 
-export type ConnectorType = 'CV_IN' | 'SIGNAL_IN' | 'SIGNAL_OUT' | 'MIDI_IN' | 'MIDI_OUT' | 'uninitialized';
+export type ConnectorType =
+	| 'CV_IN'
+	| 'SIGNAL_IN'
+	| 'SIGNAL_OUT'
+	| 'MIDI_IN'
+	| 'MIDI_OUT'
+	| 'uninitialized';
 
 export interface IModuleProps {
 	moduleKey: string;
