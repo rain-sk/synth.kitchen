@@ -1,6 +1,11 @@
 import { Audio } from 'audio-om';
 
-export const audio = new Audio();
+const ctx: any = new AudioContext();
+
+ctx.createMediaStreamTrackSource = () =>
+	console.error('createMediaStreamTrackSource is not defined');
+
+export const audio = new Audio(ctx);
 
 // from: https://codepen.io/andremichelle/pen/WbqrYN/
 export const mainBussKey = audio.createDynamicsCompressor();
