@@ -2,8 +2,11 @@ import { Audio } from 'audio-om';
 
 const ctx: any = new AudioContext();
 
-ctx.createMediaStreamTrackSource = () =>
-	console.error('createMediaStreamTrackSource is not defined');
+// provide createMediaStreamTrackSource when not present
+if (!ctx.createMediaStreamTrackSource) {
+	ctx.createMediaStreamTrackSource = () =>
+		console.error('createMediaStreamTrackSource is not defined');
+}
 
 export const audio = new Audio(ctx);
 
@@ -29,7 +32,7 @@ function resume() {
 
 		if ('resume' in audio.context) {
 			audio.context.resume();
-		};
+		}
 	}
 }
 
