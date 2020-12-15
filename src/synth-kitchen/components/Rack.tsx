@@ -10,12 +10,19 @@ export interface IRack {
 }
 
 export interface IRackProps extends IRack {
-	addModule: (moduleType: ModuleType, rackIndex: number, moduleIndex: number) => void;
+	addModule: (
+		moduleType: ModuleType,
+		rackIndex: number,
+		moduleIndex: number
+	) => void;
 	removeModule: (moduleKey: string) => void;
 	removeRack: () => void;
 }
 
-export class Rack extends React.Component<IRackProps, { newModuleType: ModuleType }>{
+export class Rack extends React.Component<
+	IRackProps,
+	{ newModuleType: ModuleType }
+> {
 	constructor(props: IRackProps) {
 		super(props);
 		this.state = {
@@ -27,21 +34,33 @@ export class Rack extends React.Component<IRackProps, { newModuleType: ModuleTyp
 		this.setState({
 			newModuleType: e.target.value as ModuleType
 		});
-	}
+	};
 
 	handleAddModuleClick = () => {
-		this.props.addModule(this.state.newModuleType, this.props.index, this.props.moduleKeys.length);
-	}
+		this.props.addModule(
+			this.state.newModuleType,
+			this.props.index,
+			this.props.moduleKeys.length
+		);
+	};
 
 	render() {
 		return (
-			<div className="rack" >
-				<button className="remove-rack" type="button" onClick={this.props.removeRack}>
+			<div className="rack">
+				<button
+					className="remove-rack"
+					type="button"
+					onClick={this.props.removeRack}
+				>
 					<span className="visually-hidden">Remove Rack</span>
 				</button>
 				<ul>
 					{this.props.moduleKeys.map((key) => (
-						<BaseModuleOld key={key} moduleKey={key} removeModule={this.props.removeModule} />
+						<BaseModuleOld
+							key={key}
+							moduleKey={key}
+							removeModule={this.props.removeModule}
+						/>
 					))}
 				</ul>
 				<AddModule
@@ -51,4 +70,4 @@ export class Rack extends React.Component<IRackProps, { newModuleType: ModuleTyp
 			</div>
 		);
 	}
-};
+}

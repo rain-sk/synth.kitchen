@@ -28,7 +28,7 @@ const channelOptions: [string, string][] = [
 	['16', '16']
 ];
 
-export const MidiInput: React.FunctionComponent<IModuleProps> = props => {
+export const MidiInput: React.FunctionComponent<IModuleProps> = (props) => {
 	const [outputId] = React.useState(uniqueId() as any);
 	const [inputDevices] = React.useState(webmidi.inputs);
 	const [inputDevice, setInputDevice] = React.useState('');
@@ -45,18 +45,24 @@ export const MidiInput: React.FunctionComponent<IModuleProps> = props => {
 				type: 'MIDI_OUT',
 				getter: () => module.node
 			}
-		]
+		];
 	}
 
-	const handleChangeInputDevice = React.useCallback((newDevice: string) => {
-		module && module.node.switchInputDevice(newDevice);
-		setInputDevice(newDevice);
-	}, [module]);
+	const handleChangeInputDevice = React.useCallback(
+		(newDevice: string) => {
+			module && module.node.switchInputDevice(newDevice);
+			setInputDevice(newDevice);
+		},
+		[module]
+	);
 
-	const handleChangeInputChannel = React.useCallback((newChannel: string) => {
-		module && module.node.switchInputChannel(newChannel);
-		setInputChannel(newChannel);
-	}, [module]);
+	const handleChangeInputChannel = React.useCallback(
+		(newChannel: string) => {
+			module && module.node.switchInputChannel(newChannel);
+			setInputChannel(newChannel);
+		},
+		[module]
+	);
 
 	return (
 		<>
@@ -65,19 +71,25 @@ export const MidiInput: React.FunctionComponent<IModuleProps> = props => {
 				type="select"
 				name="device"
 				value={inputDevice}
-				options={inputDevices.map((device: any) => [device.name as string, device.name as string])}
-				onChange={handleChangeInputDevice} />
+				options={inputDevices.map((device: any) => [
+					device.name as string,
+					device.name as string
+				])}
+				onChange={handleChangeInputDevice}
+			/>
 			<Setting
 				type="select"
 				name="channel"
 				value={inputChannel}
 				options={channelOptions}
-				onChange={handleChangeInputChannel} />
+				onChange={handleChangeInputChannel}
+			/>
 			<Connector
 				type="MIDI_OUT"
 				name="output"
 				moduleKey={props.moduleKey}
-				connectorId={outputId} />
+				connectorId={outputId}
+			/>
 		</>
 	);
 };

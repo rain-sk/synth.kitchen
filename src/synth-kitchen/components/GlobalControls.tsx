@@ -1,15 +1,11 @@
 import * as React from 'react';
 
 export class GlobalControls extends React.Component {
-    constructor(props: any) {
-        super(props);
-    }
+	constructor(props: any) {
+		super(props);
+	}
 
-    render() {
-        return (
-            <nav>
-
-            </nav>
-        )
-    }
+	render() {
+		return <nav></nav>;
+	}
 }

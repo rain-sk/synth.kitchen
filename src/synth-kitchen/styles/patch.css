@@ -1,4 +1,3 @@
-
 fieldset.add-module {
 	width: 10rem;
 	min-height: 10rem;
@@ -51,7 +50,7 @@ article.module {
 .visually-hidden {
 	position: absolute;
 	top: -3000px;
-	left: -3000px;;
+	left: -3000px;
 }
 
 ul {
@@ -96,12 +95,21 @@ button.add-rack {
 	display: flex;
 	border: 1px solid #000;
 	border-radius: 3px;
-	background: rgb(233,244,254);
-	background: linear-gradient(48deg, rgba(233,244,254,1) 0%, rgba(233,244,254,0.88) 15%, rgba(233,244,254,1) 28%, rgba(233,244,254,0.92) 42%, rgba(233,244,254,1) 57%, rgba(233,244,254,0.85) 81%, rgba(233,244,254,1) 100%); 
+	background: rgb(233, 244, 254);
+	background: linear-gradient(
+		48deg,
+		rgba(233, 244, 254, 1) 0%,
+		rgba(233, 244, 254, 0.88) 15%,
+		rgba(233, 244, 254, 1) 28%,
+		rgba(233, 244, 254, 0.92) 42%,
+		rgba(233, 244, 254, 1) 57%,
+		rgba(233, 244, 254, 0.85) 81%,
+		rgba(233, 244, 254, 1) 100%
+	);
 	position: relative;
 	margin: 1rem;
 	padding: 1.5rem;
-	border-top-left-radius: .75rem;
+	border-top-left-radius: 0.75rem;
 }
 
 fieldset.parameter {
@@ -109,7 +117,8 @@ fieldset.parameter {
 	grid-template-rows: 2fr 2rem;
 }
 
-fieldset, legend {
+fieldset,
+legend {
 	text-align: center;
 }
 
@@ -147,7 +156,7 @@ fieldset.setting input {
 	padding: 0;
 	width: 1.5rem;
 	height: 1.5rem;
-	left: .5rem;
+	left: 0.5rem;
 	z-index: 10;
 }
 
@@ -167,10 +176,10 @@ article.module > fieldset:only-of-type {
 	z-index: 10;
 }
 
-.remove-module::before{
-	height: .75rem;
+.remove-module::before {
+	height: 0.75rem;
 	width: 0.1px;
-	content: "";
+	content: '';
 	display: block;
 	position: absolute;
 	top: 0.2rem;
@@ -178,13 +187,12 @@ article.module > fieldset:only-of-type {
 	border-radius: 2px;
 	border: 1px solid #000;
 	transform: rotate(45deg);
-
 }
 
-.remove-module::after{
-	height: .75rem;
+.remove-module::after {
+	height: 0.75rem;
 	width: 0.1px;
-	content: "";
+	content: '';
 	display: block;
 	position: absolute;
 	top: 0.2rem;
@@ -199,15 +207,11 @@ article.module > fieldset:only-of-type {
 	background-color: #fff;
 }
 
-
 .styledKnob circle,
 .styledKnob path {
 	fill: #000;
 	opacity: 1;
-	transition: 
-		opacity 100ms, 
-		color 100ms
-		ease-in-out;
+	transition: opacity 100ms, color 100ms ease-in-out;
 }
 
 .styledKnob:hover circle,
@@ -216,10 +220,7 @@ article.module > fieldset:only-of-type {
 .styledKnob:focus path {
 	fill: #180094;
 	opacity: 1;
-	transition: 
-		opacity 450ms, 
-		color 450ms 
-		ease-in-out;
+	transition: opacity 450ms, color 450ms ease-in-out;
 }
 
 .styledKnob {
@@ -245,7 +246,7 @@ article.module > fieldset:only-of-type {
 
 .control {
 	display: flex;
-    align-items: center;
+	align-items: center;
 	justify-content: space-evenly;
 }
 
@@ -266,7 +267,7 @@ article.module > fieldset:only-of-type {
 	content: '';
 	display: block;
 	width: 1.5rem;
-	height: .5rem;
+	height: 0.5rem;
 	border: 2px solid #000;
 	border-top: none;
 	top: 1.5rem;
@@ -276,25 +277,29 @@ article.module > fieldset:only-of-type {
 	z-index: 10;
 }
 
-.SIGNAL_IN, .MIDI_IN {
-    position: absolute;
-    top: 2px;
-    left: 50%;
-    transform: translateX(-50%);
+.SIGNAL_IN,
+.MIDI_IN {
+	position: absolute;
+	top: 2px;
+	left: 50%;
+	transform: translateX(-50%);
 }
 
-.SIGNAL_OUT, .MIDI_OUT {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+.SIGNAL_OUT,
+.MIDI_OUT {
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
 }
 
-.MIDI_IN, .MIDI_OUT {
+.MIDI_IN,
+.MIDI_OUT {
 	background-color: #fc5a96;
 }
 
-.connections, .connection {
+.connections,
+.connection {
 	pointer-events: none;
 	position: absolute;
 	top: 0;
@@ -304,7 +309,8 @@ article.module > fieldset:only-of-type {
 	height: 100%;
 }
 
-a, a:visited {
+a,
+a:visited {
 	text-transform: uppercase;
 	color: #aaf;
 }
@@ -318,7 +324,7 @@ canvas {
 		background-color: #fff;
 	}
 	50% {
-		background-color: rgb(203,93,255);
+		background-color: rgb(203, 93, 255);
 	}
 	100% {
 		background-color: #fff;
@@ -335,4 +341,4 @@ canvas {
 		animation: none;
 		-webkit-animation: none;
 	}
-  }
+}

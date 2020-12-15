@@ -14,7 +14,7 @@ const oscillatorTypeOptions: [string, string][] = [
 	['sawtooth', 'saw']
 ];
 
-export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
+export const Oscillator: React.FunctionComponent<IModuleProps> = (props) => {
 	const [outputId] = React.useState(uniqueId() as any);
 	const [frequencyId] = React.useState(uniqueId() as any);
 	const [detuneId] = React.useState(uniqueId() as any);
@@ -34,12 +34,14 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 				name: 'output',
 				type: 'SIGNAL_OUT',
 				getter: () => module.node
-			}, {
+			},
+			{
 				id: frequencyId,
 				name: 'frequency',
 				type: 'CV_IN',
 				getter: () => module.node.frequency
-			}, {
+			},
+			{
 				id: detuneId,
 				name: 'detune',
 				type: 'CV_IN',
@@ -52,20 +54,29 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 		setDetune(module.node.detune.value);
 	}
 
-	const handleChangeType = React.useCallback((newType: string) => {
-		(module as any).node.type = newType;
-		setType(newType);
-	}, [module]);
+	const handleChangeType = React.useCallback(
+		(newType: string) => {
+			(module as any).node.type = newType;
+			setType(newType);
+		},
+		[module]
+	);
 
-	const handleChangeFrequency = React.useCallback((newFrequency: number) => {
-		(module as any).node.frequency.value = newFrequency;
-		setFrequency(newFrequency);
-	}, [module]);
+	const handleChangeFrequency = React.useCallback(
+		(newFrequency: number) => {
+			(module as any).node.frequency.value = newFrequency;
+			setFrequency(newFrequency);
+		},
+		[module]
+	);
 
-	const handleChangeDetune = React.useCallback((newDetune: number) => {
-		(module as any).node.detune.value = newDetune;
-		setDetune(newDetune);
-	}, [module]);
+	const handleChangeDetune = React.useCallback(
+		(newDetune: number) => {
+			(module as any).node.detune.value = newDetune;
+			setDetune(newDetune);
+		},
+		[module]
+	);
 
 	return (
 		<>
@@ -75,34 +86,38 @@ export const Oscillator: React.FunctionComponent<IModuleProps> = props => {
 				moduleKey={props.moduleKey}
 				id={frequencyId}
 				value={frequency}
-				scale={s => s}
-				display={d => d}
+				scale={(s) => s}
+				display={(d) => d}
 				min={0}
 				max={20000}
 				onChange={handleChangeFrequency}
-				type={'CV_IN'} />
+				type={'CV_IN'}
+			/>
 			<Parameter
 				name="detune"
 				moduleKey={props.moduleKey}
 				id={detuneId}
 				value={detune}
-				scale={s => s}
-				display={d => d}
+				scale={(s) => s}
+				display={(d) => d}
 				min={-100}
 				max={100}
 				onChange={handleChangeDetune}
-				type={'CV_IN'} />
+				type={'CV_IN'}
+			/>
 			<Setting
 				type="select"
 				name="type"
 				value={type}
 				options={oscillatorTypeOptions}
-				onChange={handleChangeType} />
+				onChange={handleChangeType}
+			/>
 			<Connector
 				type="SIGNAL_OUT"
 				name="output"
 				moduleKey={props.moduleKey}
-				connectorId={outputId} />
+				connectorId={outputId}
+			/>
 		</>
 	);
 };

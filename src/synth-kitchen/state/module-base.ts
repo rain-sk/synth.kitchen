@@ -23,9 +23,7 @@
 
 // type ControlsArray = Array<[IControl] | [IControl, IControl]>;
 
-
 // const uninitializedConnector = (): IConnector => ({ id: '', name: '', type: 'uninitialized', getter: () => { } });
-
 
 // export class Module implements IModuleDefinition {
 //     moduleKey = uniqueId() as string;

@@ -20,7 +20,11 @@ export interface IPatchCallbacks {
 	connectorDeactivate: () => void;
 	connectorConnect: (payload: IConnectPayload) => void;
 	connectorDisconnect: (payload: IConnectPayload) => void;
-	moduleAdd: (moduleType: ModuleType, rackIndex: number, slotIndex: number) => void;
+	moduleAdd: (
+		moduleType: ModuleType,
+		rackIndex: number,
+		slotIndex: number
+	) => void;
 	moduleRackRemove: (rackIndex: number) => void;
 	moduleRemove: (moduleKey: string) => void;
 }
@@ -31,19 +35,17 @@ export interface IPatchState {
 	racks: IRack[];
 }
 
-export const PatchContext = React.createContext<IPatchCallbacks & IPatchState>(
-	{
-		connectorActivate: () => null,
-		connectorDeactivate: () => null,
-		connectorConnect: () => null,
-		connectorDisconnect: () => null,
-		moduleAdd: () => null,
-		moduleRackRemove: () => null,
-		moduleRemove: () => null,
-		connections: [],
-		racks: []
-	}
-)
+export const PatchContext = React.createContext<IPatchCallbacks & IPatchState>({
+	connectorActivate: () => null,
+	connectorDeactivate: () => null,
+	connectorConnect: () => null,
+	connectorDisconnect: () => null,
+	moduleAdd: () => null,
+	moduleRackRemove: () => null,
+	moduleRemove: () => null,
+	connections: [],
+	racks: []
+});
 
 export class Patch extends React.Component<{}, IPatchState> {
 	constructor(props: any) {
@@ -61,8 +63,8 @@ export class Patch extends React.Component<{}, IPatchState> {
 
 	componentWillUnmount() {
 		document.removeEventListener('keydown', this.handleKeyDown, false);
-		this.state.racks.forEach(rack => {
-			rack.moduleKeys.forEach(key => {
+		this.state.racks.forEach((rack) => {
+			rack.moduleKeys.forEach((key) => {
 				this.moduleRemove(key);
 			});
 		});
@@ -77,7 +79,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 					});
 				}
 		}
-	}
+	};
 
 	getContextValue = () => {
 		return {
@@ -90,29 +92,47 @@ export class Patch extends React.Component<{}, IPatchState> {
 			moduleRemove: this.moduleRemove,
 			...this.state
 		};
-	}
+	};
 
 	render() {
 		return (
 			<PatchContext.Provider value={this.getContextValue()}>
-				<Connector type="SIGNAL_IN" name={'speakers'} connectorId={'GLOBAL_CONTEXT'} moduleKey={'GLOBAL_CONTEXT'} />
-				{this.state.racks.map(rack => (
-					<Rack key={rack.index} {...rack} removeRack={this.moduleRackRemove(rack.index)} addModule={this.moduleAdd} removeModule={this.moduleRemove} />
+				<Connector
+					type="SIGNAL_IN"
+					name={'speakers'}
+					connectorId={'GLOBAL_CONTEXT'}
+					moduleKey={'GLOBAL_CONTEXT'}
+				/>
+				{this.state.racks.map((rack) => (
+					<Rack
+						key={rack.index}
+						{...rack}
+						removeRack={this.moduleRackRemove(rack.index)}
+						addModule={this.moduleAdd}
+						removeModule={this.moduleRemove}
+					/>
 				))}
-				<button className="add-rack" type="button" onClick={this.moduleRackAdd}>Add Rack</button>
-				<Connections moduleCount={modules.size()} rackCount={this.state.racks.length} active={this.state.active} connections={this.state.connections} />
+				<button className="add-rack" type="button" onClick={this.moduleRackAdd}>
+					Add Rack
+				</button>
+				<Connections
+					moduleCount={modules.size()}
+					rackCount={this.state.racks.length}
+					active={this.state.active}
+					connections={this.state.connections}
+				/>
 				<Serializer />
 			</PatchContext.Provider>
-		)
+		);
 	}
 
 	connectorActivate = (active: IEnd) => {
 		this.setState({ active });
-	}
+	};
 
 	connectorDeactivate = () => {
 		this.setState({ active: undefined });
-	}
+	};
 
 	connectorConnect = (payload: IConnectPayload) => {
 		const { connection, sourceConnector, destinationConnector } = payload;
@@ -121,23 +141,27 @@ export class Patch extends React.Component<{}, IPatchState> {
 			active: undefined,
 			connections: [...this.state.connections, connection]
 		});
-	}
+	};
 
 	connectorDisconnect = (payload: IConnectPayload) => {
 		const { connection, sourceConnector, destinationConnector } = payload;
 		sourceConnector.getter().disconnect(destinationConnector.getter());
-		const connections = this.state.connections.filter(con => (
-			con.source.connectorId !== connection.source.connectorId ||
-			con.destination.connectorId !== connection.destination.connectorId
-		));
+		const connections = this.state.connections.filter(
+			(con) =>
+				con.source.connectorId !== connection.source.connectorId ||
+				con.destination.connectorId !== connection.destination.connectorId
+		);
 		this.setState({
 			active: undefined,
 			connections
 		});
-	}
+	};
 
-	moduleAdd = (moduleType: ModuleType, rackIndex: number, slotIndex: number) => {
-
+	moduleAdd = (
+		moduleType: ModuleType,
+		rackIndex: number,
+		slotIndex: number
+	) => {
 		let moduleKey = '';
 
 		/* create a record of the module */
@@ -167,16 +191,28 @@ export class Patch extends React.Component<{}, IPatchState> {
 			this.state.racks[rackIndex].moduleKeys.splice(slotIndex, 0, moduleKey);
 		}
 		this.setState({ racks: [...racks] });
-	}
+	};
 
 	moduleRelease = (module: IModule) => {
-		this.state.connections.forEach(connection => {
-			if (connection.source.moduleKey === module.moduleKey || connection.destination.moduleKey === module.moduleKey) {
+		this.state.connections.forEach((connection) => {
+			if (
+				connection.source.moduleKey === module.moduleKey ||
+				connection.destination.moduleKey === module.moduleKey
+			) {
 				const sourceModule = modules.get(connection.source.moduleKey);
 				const destinationModule = modules.get(connection.destination.moduleKey);
-				if (sourceModule && destinationModule && sourceModule.connectors && destinationModule.connectors) {
-					const sourceConnector = sourceModule.connectors.find(connector => connector.id === connection.source.connectorId);
-					const destinationConnector = destinationModule.connectors.find(connector => connector.id === connection.destination.connectorId);
+				if (
+					sourceModule &&
+					destinationModule &&
+					sourceModule.connectors &&
+					destinationModule.connectors
+				) {
+					const sourceConnector = sourceModule.connectors.find(
+						(connector) => connector.id === connection.source.connectorId
+					);
+					const destinationConnector = destinationModule.connectors.find(
+						(connector) => connector.id === connection.destination.connectorId
+					);
 					if (sourceConnector && destinationConnector) {
 						this.connectorDisconnect({
 							connection,
@@ -191,7 +227,7 @@ export class Patch extends React.Component<{}, IPatchState> {
 		this.setState({
 			active: undefined
 		});
-	}
+	};
 
 	moduleRackAdd = () => {
 		let { racks } = this.state;
@@ -204,54 +240,53 @@ export class Patch extends React.Component<{}, IPatchState> {
 		this.setState({
 			racks
 		});
-	}
+	};
 
 	moduleRackRemove = (rackIndex: number) => {
 		return () => {
-
 			let { racks } = this.state;
 
 			const remove: string[] = [];
 
 			/* collect the keys of modules which need to be removed */
-			racks[rackIndex].moduleKeys.forEach(key => {
+			racks[rackIndex].moduleKeys.forEach((key) => {
 				remove.push(key);
 			});
 
 			/* remove the deleted rack and update rack indices */
-			racks = racks.filter(rack => rack.index !== rackIndex);
+			racks = racks.filter((rack) => rack.index !== rackIndex);
 			racks.forEach((rack, index) => {
 				rack.index = index;
 			});
 
 			/* clean up the modules in the removed rack */
-			this.setState({ racks: racks.length > 0 ? racks : [{ index: 0, moduleKeys: [] }] }, () => {
-				remove.forEach(key => this.moduleRemove(key));
-			});
-
-		}
-	}
+			this.setState(
+				{ racks: racks.length > 0 ? racks : [{ index: 0, moduleKeys: [] }] },
+				() => {
+					remove.forEach((key) => this.moduleRemove(key));
+				}
+			);
+		};
+	};
 
 	moduleRemove = (moduleKey: string) => {
 		const module = modules.get(moduleKey);
 		if (module) {
-
 			/* stop the module if it needs to be stopped */
 			if (module.node && module.node.stop) {
 				module.node.stop();
 			}
 
 			/* remove the module from its rack */
-			const racks = this.state.racks.map(rack => ({
+			const racks = this.state.racks.map((rack) => ({
 				index: rack.index,
-				moduleKeys: rack.moduleKeys.filter(key => key !== moduleKey)
+				moduleKeys: rack.moduleKeys.filter((key) => key !== moduleKey)
 			}));
 
 			/* clear the module */
 			this.setState({ racks }, () => {
 				this.moduleRelease(module);
 			});
-
 		}
-	}
+	};
 }

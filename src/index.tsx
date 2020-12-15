@@ -7,8 +7,4 @@ import { Kitchen } from './synth-kitchen/kitchen';
 
 const appRoot = document.getElementById('root') as HTMLElement;
 
-ReactDOM.render(
-    <Kitchen />,
-    appRoot
-);
-
+ReactDOM.render(<Kitchen />, appRoot);

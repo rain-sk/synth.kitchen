@@ -1,75 +1,83 @@
-
 .page-home-wrapper {
-  width: 100vw;
+	width: 100vw;
 }
 
 .page-home-wrapper > header,
 .page-home-wrapper > main {
-  max-width: 1200px;
-  margin: auto;
+	max-width: 1200px;
+	margin: auto;
 }
 
 header.page-home {
-  padding: 0 2rem;
+	padding: 0 2rem;
 }
 
 header.page-home nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
 }
 
 .page-home a,
 .page-home a:visited {
-  color:  #f0f0f0;
+	color: #f0f0f0;
 }
 
 .page-home {
-  width: 100vw;
-  padding: 1rem;
-  overflow-x: hidden;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  font-size: 1rem;
-  color:  #f0f0f0;
+	width: 100vw;
+	padding: 1rem;
+	overflow-x: hidden;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	font-size: 1rem;
+	color: #f0f0f0;
 }
 
 .page-home article {
-  box-sizing: border-box;
-  padding: 1rem 1rem 2rem;
+	box-sizing: border-box;
+	padding: 1rem 1rem 2rem;
 }
 
 .page-home article.light {
-	background: rgb(233,244,254);
-  background: linear-gradient(48deg, rgba(233,244,254,1) 0%, rgba(233,244,254,0.88) 15%, rgba(233,244,254,1) 28%, rgba(233,244,254,0.92) 42%, rgba(233,244,254,1) 57%, rgba(233,244,254,0.85) 81%, rgba(233,244,254,1) 100%); 
-  color: #000;
+	background: rgb(233, 244, 254);
+	background: linear-gradient(
+		48deg,
+		rgba(233, 244, 254, 1) 0%,
+		rgba(233, 244, 254, 0.88) 15%,
+		rgba(233, 244, 254, 1) 28%,
+		rgba(233, 244, 254, 0.92) 42%,
+		rgba(233, 244, 254, 1) 57%,
+		rgba(233, 244, 254, 0.85) 81%,
+		rgba(233, 244, 254, 1) 100%
+	);
+	color: #000;
 }
 
 .page-home figure {
-  margin: 0 0 1.5rem;
-  display: flex;
-  justify-content: space-evenly;
+	margin: 0 0 1.5rem;
+	display: flex;
+	justify-content: space-evenly;
 }
 
 .page-home figure.img-right {
-  flex-direction: row-reverse;
+	flex-direction: row-reverse;
 }
 
 .page-home img {
-  width: 50%;
-  height: 50%;
+	width: 50%;
+	height: 50%;
 }
 
 .page-home figcaption {
-  font-size: calc(0.8rem + 1.6vw);
-  display: flex;
-  align-items: center;
-  text-align: center;
-  padding: 2rem 1rem 3rem;
+	font-size: calc(0.8rem + 1.6vw);
+	display: flex;
+	align-items: center;
+	text-align: center;
+	padding: 2rem 1rem 3rem;
 }
 
 .page-home dt,
 .page-home dd {
-  margin-bottom: 1rem;
+	margin-bottom: 1rem;
 }

@@ -15,11 +15,12 @@ export interface ISettingState {
 	id: string;
 }
 
-export const Setting: React.FunctionComponent<ISettingProps> = props => (
+export const Setting: React.FunctionComponent<ISettingProps> = (props) =>
 	props.type === 'radio' ? (
 		<SettingRadio {...props} />
-	) : <SettingSelect {...props} />
-);
+	) : (
+		<SettingSelect {...props} />
+	);
 
 class SettingRadio extends React.Component<ISettingProps, ISettingState> {
 	constructor(props: ISettingProps) {
@@ -39,19 +40,26 @@ class SettingRadio extends React.Component<ISettingProps, ISettingState> {
 				id: this.props.id
 			});
 		}
-	}
+	};
 
 	render() {
 		return (
-			<fieldset className="setting" >
+			<fieldset className="setting">
 				<legend>{this.props.name}</legend>
 				{this.props.options.map((option, index) => (
 					<span className="option" key={index}>
-						<input type="radio" name={this.state.id} id={`${this.state.id}_${option[0]}`} value={option[0]} checked={option[0] === this.props.value} onChange={this.handleChange} />
+						<input
+							type="radio"
+							name={this.state.id}
+							id={`${this.state.id}_${option[0]}`}
+							value={option[0]}
+							checked={option[0] === this.props.value}
+							onChange={this.handleChange}
+						/>
 						<label htmlFor={`${this.state.id}_${option[0]}`}>{option[1]}</label>
 					</span>
 				))}
-			</fieldset >
+			</fieldset>
 		);
 	}
 }
@@ -60,7 +68,7 @@ class SettingSelect extends React.Component<ISettingProps, ISettingState> {
 	constructor(props: ISettingProps) {
 		super(props);
 		this.state = {
-			id: props.id ? props.id : uniqueId() as string
+			id: props.id ? props.id : (uniqueId() as string)
 		};
 	}
 
@@ -74,7 +82,7 @@ class SettingSelect extends React.Component<ISettingProps, ISettingState> {
 				id: this.props.id
 			});
 		}
-	}
+	};
 
 	render() {
 		return (
@@ -82,7 +90,9 @@ class SettingSelect extends React.Component<ISettingProps, ISettingState> {
 				<legend>{this.props.name}</legend>
 				<select value={this.props.value} onChange={this.handleChange}>
 					{this.props.options.map((option, index) => (
-						<option key={index} value={option[0]}>{option[1]}</option>
+						<option key={index} value={option[0]}>
+							{option[1]}
+						</option>
 					))}
 				</select>
 			</fieldset>

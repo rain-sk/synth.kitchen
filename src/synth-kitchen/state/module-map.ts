@@ -5,7 +5,9 @@ const map = new Map<string, IModule>();
 
 export const modules = {
 	all: () => {
-		return Array.from(map).filter(([, { moduleKey }]) => moduleKey !== 'GLOBAL_CONTEXT');
+		return Array.from(map).filter(
+			([, { moduleKey }]) => moduleKey !== 'GLOBAL_CONTEXT'
+		);
 	},
 	get: (key: string): IModule | undefined => {
 		const module = map.get(key);

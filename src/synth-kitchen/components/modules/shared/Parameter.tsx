@@ -21,7 +21,10 @@ export interface IParameterState {
 	editing: boolean;
 }
 
-export class Parameter extends React.Component<IParameterProps, IParameterState> {
+export class Parameter extends React.Component<
+	IParameterProps,
+	IParameterState
+> {
 	constructor(props: IParameterProps) {
 		super(props);
 
@@ -44,7 +47,10 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 			this.setState({
 				editing: false
 			});
-			if (this.props.onChange && (this.state.inputValue || this.state.inputValue === 0)) {
+			if (
+				this.props.onChange &&
+				(this.state.inputValue || this.state.inputValue === 0)
+			) {
 				this.props.onChange(this.state.inputValue);
 			}
 		}
@@ -59,7 +65,6 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 		this.setState({
 			inputValue: parseFloat(event.target.value)
 		});
-
 	};
 
 	onEnterKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -67,26 +72,33 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 			this.setState({
 				editing: false
 			});
-			if (this.props.onChange && (this.state.inputValue || this.state.inputValue === 0)) {
+			if (
+				this.props.onChange &&
+				(this.state.inputValue || this.state.inputValue === 0)
+			) {
 				this.props.onChange(this.state.inputValue);
 			}
 		}
-	}
+	};
 
 	onKnobChange = (knobValue: number) => {
 		if (this.props.onChange && this.props.scale) {
 			this.props.onChange(this.props.scale(knobValue));
 		}
-	}
+	};
 
 	render() {
-
 		return (
-			<fieldset className="parameter" >
+			<fieldset className="parameter">
 				<legend>{this.props.name}</legend>
 				<span className="control">
 					{this.props.type === 'CV_IN' ? (
-						<Connector type={this.props.type} name={this.props.name} moduleKey={this.props.moduleKey} connectorId={this.props.id} />
+						<Connector
+							type={this.props.type}
+							name={this.props.name}
+							moduleKey={this.props.moduleKey}
+							connectorId={this.props.id}
+						/>
 					) : null}
 					{this.state.inputValue !== undefined ? (
 						<Knob
@@ -99,9 +111,7 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 							htmlFor={`input_${this.props.id}`}
 							onChange={this.onKnobChange}
 						>
-							<Arc
-								arcWidth={1.5}
-							/>
+							<Arc arcWidth={1.5} />
 							<circle r="20" cx="25" cy="25" />
 							<Pointer
 								width={2}
@@ -114,7 +124,14 @@ export class Parameter extends React.Component<IParameterProps, IParameterState>
 					) : null}
 				</span>
 				{this.props.display && this.state.inputValue !== undefined ? (
-					<input id={`input_${this.props.id}`} type="number" value={this.props.display(this.state.inputValue)} onChange={this.onInputChange} onBlur={this.onInputBlur} onKeyDown={this.onEnterKeyDown} />
+					<input
+						id={`input_${this.props.id}`}
+						type="number"
+						value={this.props.display(this.state.inputValue)}
+						onChange={this.onInputChange}
+						onBlur={this.onInputBlur}
+						onKeyDown={this.onEnterKeyDown}
+					/>
 				) : null}
 			</fieldset>
 		);

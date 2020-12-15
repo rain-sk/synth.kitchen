@@ -9,7 +9,9 @@ export interface IConnectorProps extends IEnd {
 	type: ConnectorType;
 }
 
-export type IConnectorInternalProps = IConnectorProps & IPatchCallbacks & IPatchState;
+export type IConnectorInternalProps = IConnectorProps &
+	IPatchCallbacks &
+	IPatchState;
 
 export class ConnectorInternal extends React.PureComponent<IConnectorInternalProps> {
 	constructor(props: IConnectorInternalProps) {
@@ -31,28 +33,42 @@ export class ConnectorInternal extends React.PureComponent<IConnectorInternalPro
 			const activeModule = modules.get(active.moduleKey);
 			const clickedModule = modules.get(moduleKey);
 			if (activeModule && clickedModule) {
-
-				let existingConnection = this.props.connections.find(connection => (
-					(connection.source.connectorId === active.connectorId && connection.destination.connectorId === connectorId) ||
-					(connection.source.connectorId === connectorId && connection.destination.connectorId === active.connectorId)
-				));
+				let existingConnection = this.props.connections.find(
+					(connection) =>
+						(connection.source.connectorId === active.connectorId &&
+							connection.destination.connectorId === connectorId) ||
+						(connection.source.connectorId === connectorId &&
+							connection.destination.connectorId === active.connectorId)
+				);
 
 				if (existingConnection) {
 					const sourceEnd = existingConnection.source;
 					const destinationEnd = existingConnection.destination;
 					// connection exists
-					const connection = this.props.connections.find(connection => (
-						connection.source.connectorId === sourceEnd.connectorId &&
-						connection.destination.connectorId === destinationEnd.connectorId
-					));
-					const sourceConnector = [...(activeModule.connectors || []), ...(clickedModule.connectors || [])].find(connector => (
-						(connector.type === 'MIDI_OUT' || connector.type === 'SIGNAL_OUT') &&
-						(connector.id === sourceEnd.connectorId)
-					));
-					const destinationConnector = [...(activeModule.connectors || []), ...(clickedModule.connectors || [])].find(connector => (
-						(connector.type === 'MIDI_IN' || connector.type === 'SIGNAL_IN' || connector.type === 'CV_IN') &&
-						(connector.id === destinationEnd.connectorId)
-					));
+					const connection = this.props.connections.find(
+						(connection) =>
+							connection.source.connectorId === sourceEnd.connectorId &&
+							connection.destination.connectorId === destinationEnd.connectorId
+					);
+					const sourceConnector = [
+						...(activeModule.connectors || []),
+						...(clickedModule.connectors || [])
+					].find(
+						(connector) =>
+							(connector.type === 'MIDI_OUT' ||
+								connector.type === 'SIGNAL_OUT') &&
+							connector.id === sourceEnd.connectorId
+					);
+					const destinationConnector = [
+						...(activeModule.connectors || []),
+						...(clickedModule.connectors || [])
+					].find(
+						(connector) =>
+							(connector.type === 'MIDI_IN' ||
+								connector.type === 'SIGNAL_IN' ||
+								connector.type === 'CV_IN') &&
+							connector.id === destinationEnd.connectorId
+					);
 					if (connection && sourceConnector && destinationConnector) {
 						this.props.connectorDisconnect({
 							connection,
@@ -62,33 +78,58 @@ export class ConnectorInternal extends React.PureComponent<IConnectorInternalPro
 					}
 				} else {
 					// connection doesn't exist
-					const sourceConnector = [...(activeModule.connectors || []), ...(clickedModule.connectors || [])].find(connector => (
-						(connector.type === 'MIDI_OUT' || connector.type === 'SIGNAL_OUT') &&
-						(connector.id === active.connectorId || connector.id === connectorId)
-					));
-					const destinationConnector = [...(activeModule.connectors || []), ...(clickedModule.connectors || [])].find(connector => (
-						(connector.type === 'MIDI_IN' || connector.type === 'SIGNAL_IN' || connector.type === 'CV_IN') &&
-						(connector.id === active.connectorId || connector.id === connectorId)
-					));
+					const sourceConnector = [
+						...(activeModule.connectors || []),
+						...(clickedModule.connectors || [])
+					].find(
+						(connector) =>
+							(connector.type === 'MIDI_OUT' ||
+								connector.type === 'SIGNAL_OUT') &&
+							(connector.id === active.connectorId ||
+								connector.id === connectorId)
+					);
+					const destinationConnector = [
+						...(activeModule.connectors || []),
+						...(clickedModule.connectors || [])
+					].find(
+						(connector) =>
+							(connector.type === 'MIDI_IN' ||
+								connector.type === 'SIGNAL_IN' ||
+								connector.type === 'CV_IN') &&
+							(connector.id === active.connectorId ||
+								connector.id === connectorId)
+					);
 
 					if (sourceConnector && destinationConnector) {
-
 						let type: ConnectionType = 'MIDI';
-						if (sourceConnector.type === 'SIGNAL_OUT' && (destinationConnector.type === 'SIGNAL_IN' || destinationConnector.type === 'CV_IN')) {
+						if (
+							sourceConnector.type === 'SIGNAL_OUT' &&
+							(destinationConnector.type === 'SIGNAL_IN' ||
+								destinationConnector.type === 'CV_IN')
+						) {
 							type = 'SIGNAL';
-						} else if (sourceConnector.type !== 'MIDI_OUT' || destinationConnector.type !== 'MIDI_IN') {
+						} else if (
+							sourceConnector.type !== 'MIDI_OUT' ||
+							destinationConnector.type !== 'MIDI_IN'
+						) {
 							this.props.connectorDeactivate();
 							return;
 						}
 
-						const source: IEnd = sourceConnector.id === active.connectorId ? active : {
-							connectorId,
-							moduleKey
-						};
-						const destination: IEnd = destinationConnector.id === active.connectorId ? active : {
-							connectorId,
-							moduleKey
-						};
+						const source: IEnd =
+							sourceConnector.id === active.connectorId
+								? active
+								: {
+										connectorId,
+										moduleKey
+								  };
+						const destination: IEnd =
+							destinationConnector.id === active.connectorId
+								? active
+								: {
+										connectorId,
+										moduleKey
+								  };
 						this.props.connectorConnect({
 							connection: {
 								type,
@@ -98,7 +139,6 @@ export class ConnectorInternal extends React.PureComponent<IConnectorInternalPro
 							sourceConnector,
 							destinationConnector
 						});
-
 					}
 				}
 			}
@@ -108,16 +148,21 @@ export class ConnectorInternal extends React.PureComponent<IConnectorInternalPro
 	render() {
 		const { active, connectorId, name, type } = this.props;
 		return (
-			<button id={connectorId} type="button" className={`connector ${type}${active && active.connectorId === connectorId ? ' active' : ''}`} onClick={this.onClick}>
+			<button
+				id={connectorId}
+				type="button"
+				className={`connector ${type}${
+					active && active.connectorId === connectorId ? ' active' : ''
+				}`}
+				onClick={this.onClick}
+			>
 				<span className="visually-hidden">{name}</span>
 			</button>
 		);
 	}
 }
 
-export const Connector: React.FunctionComponent<IConnectorProps> = props => {
+export const Connector: React.FunctionComponent<IConnectorProps> = (props) => {
 	const context = React.useContext(PatchContext);
-	return (
-		<ConnectorInternal {...props} {...context} />
-	);
-}
+	return <ConnectorInternal {...props} {...context} />;
+};

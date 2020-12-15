@@ -24,7 +24,7 @@ function resume() {
 
 		if ('resume' in audio.context) {
 			audio.context.resume();
-		};
+		}
 	}
 }
 

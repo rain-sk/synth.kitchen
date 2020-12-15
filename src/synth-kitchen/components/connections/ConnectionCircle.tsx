@@ -6,7 +6,11 @@ export interface IConnectorCircleProps {
 	y: number;
 }
 
-export const ConnectionCircle: React.FunctionComponent<IConnectorCircleProps> = ({ context, x, y }) => {
+export const ConnectionCircle: React.FunctionComponent<IConnectorCircleProps> = ({
+	context,
+	x,
+	y
+}) => {
 	context.beginPath();
 	context.arc(x, y, 4, 0, 2 * Math.PI, false);
 	context.fillStyle = '#000';
@@ -15,4 +19,4 @@ export const ConnectionCircle: React.FunctionComponent<IConnectorCircleProps> = 
 	context.strokeStyle = '#000';
 	context.stroke();
 	return null;
-}
+};

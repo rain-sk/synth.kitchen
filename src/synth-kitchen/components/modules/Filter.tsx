@@ -18,7 +18,7 @@ const filterTypeOptions: [string, string][] = [
 	['allpass', 'all-pass']
 ];
 
-export const Filter: React.FunctionComponent<IModuleProps> = props => {
+export const Filter: React.FunctionComponent<IModuleProps> = (props) => {
 	const [inputId] = React.useState(uniqueId() as any);
 	const [outputId] = React.useState(uniqueId() as any);
 	const [frequencyId] = React.useState(uniqueId() as any);
@@ -42,27 +42,32 @@ export const Filter: React.FunctionComponent<IModuleProps> = props => {
 				name: 'input',
 				type: 'SIGNAL_IN',
 				getter: () => module.node
-			}, {
+			},
+			{
 				id: outputId,
 				name: 'output',
 				type: 'SIGNAL_OUT',
 				getter: () => module.node
-			}, {
+			},
+			{
 				id: frequencyId,
 				name: 'frequency',
 				type: 'CV_IN',
 				getter: () => module.node.frequency
-			}, {
+			},
+			{
 				id: detuneId,
 				name: 'detune',
 				type: 'CV_IN',
 				getter: () => module.node.detune
-			}, {
+			},
+			{
 				id: qId,
 				name: 'Q',
 				type: 'CV_IN',
 				getter: () => module.node.Q
-			}, {
+			},
+			{
 				id: gainId,
 				name: 'gain',
 				type: 'CV_IN',
@@ -76,30 +81,45 @@ export const Filter: React.FunctionComponent<IModuleProps> = props => {
 		setType(module.node.type);
 	}
 
-	const handleChangeFrequency = React.useCallback((newFrequency: number) => {
-		(module as any).node.frequency.value = newFrequency;
-		setFrequency(newFrequency);
-	}, [module]);
+	const handleChangeFrequency = React.useCallback(
+		(newFrequency: number) => {
+			(module as any).node.frequency.value = newFrequency;
+			setFrequency(newFrequency);
+		},
+		[module]
+	);
 
-	const handleChangeDetune = React.useCallback((newDetune: number) => {
-		(module as any).node.detune.value = newDetune;
-		setDetune(newDetune);
-	}, [module]);
+	const handleChangeDetune = React.useCallback(
+		(newDetune: number) => {
+			(module as any).node.detune.value = newDetune;
+			setDetune(newDetune);
+		},
+		[module]
+	);
 
-	const handleChangeQ = React.useCallback((newQ: number) => {
-		(module as any).node.Q.value = newQ;
-		setQ(newQ);
-	}, [module]);
+	const handleChangeQ = React.useCallback(
+		(newQ: number) => {
+			(module as any).node.Q.value = newQ;
+			setQ(newQ);
+		},
+		[module]
+	);
 
-	const handleChangeGain = React.useCallback((newGain: number) => {
-		(module as any).node.gain.value = newGain;
-		setGain(newGain);
-	}, [module]);
+	const handleChangeGain = React.useCallback(
+		(newGain: number) => {
+			(module as any).node.gain.value = newGain;
+			setGain(newGain);
+		},
+		[module]
+	);
 
-	const handleChangeType = React.useCallback((newType: string) => {
-		(module as any).node.type = newType;
-		setType(newType);
-	}, [module]);
+	const handleChangeType = React.useCallback(
+		(newType: string) => {
+			(module as any).node.type = newType;
+			setType(newType);
+		},
+		[module]
+	);
 
 	return (
 		<>
@@ -108,62 +128,69 @@ export const Filter: React.FunctionComponent<IModuleProps> = props => {
 				type="SIGNAL_IN"
 				name="input"
 				moduleKey={props.moduleKey}
-				connectorId={inputId} />
+				connectorId={inputId}
+			/>
 			<Parameter
 				name="frequency"
 				moduleKey={props.moduleKey}
 				id={frequencyId}
 				value={frequency}
-				scale={s => s}
-				display={d => d}
+				scale={(s) => s}
+				display={(d) => d}
 				onChange={handleChangeFrequency}
 				type={'CV_IN'}
 				min={20}
-				max={20000} />
+				max={20000}
+			/>
 			<Parameter
 				name="detune"
 				moduleKey={props.moduleKey}
 				id={detuneId}
 				value={detune}
-				scale={s => s}
-				display={d => d}
+				scale={(s) => s}
+				display={(d) => d}
 				onChange={handleChangeDetune}
 				type={'CV_IN'}
 				min={-100}
-				max={100} />
+				max={100}
+			/>
 			<Parameter
 				name="Q"
 				moduleKey={props.moduleKey}
 				id={qId}
 				value={q}
-				scale={s => s}
-				display={d => d}
+				scale={(s) => s}
+				display={(d) => d}
 				onChange={handleChangeQ}
 				type={'CV_IN'}
 				min={0}
-				max={100} />
+				max={100}
+			/>
 			<Parameter
 				name="gain"
 				moduleKey={props.moduleKey}
 				id={gainId}
 				value={gain}
-				scale={s => s}
-				display={d => d}
+				scale={(s) => s}
+				display={(d) => d}
 				onChange={handleChangeGain}
 				type={'CV_IN'}
 				min={0}
-				max={2} />
+				max={2}
+			/>
 			<Setting
 				type="radio"
 				name="type"
 				value={type}
 				options={filterTypeOptions}
-				onChange={handleChangeType} />
+				onChange={handleChangeType}
+			/>
 			<Connector
 				type="SIGNAL_OUT"
 				name="output"
 				moduleKey={props.moduleKey}
-				connectorId={outputId} />
+				connectorId={outputId}
+			/>
 		</>
 	);
 };

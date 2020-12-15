@@ -13,7 +13,18 @@ export interface IConnectorCableProps {
 	type: string;
 }
 
-export const ConnectionCable: React.FunctionComponent<IConnectorCableProps> = ({ context, sourceX, sourceY, cp1x, cp1y, cp2x, cp2y, destinationX, destinationY, type }) => {
+export const ConnectionCable: React.FunctionComponent<IConnectorCableProps> = ({
+	context,
+	sourceX,
+	sourceY,
+	cp1x,
+	cp1y,
+	cp2x,
+	cp2y,
+	destinationX,
+	destinationY,
+	type
+}) => {
 	context.beginPath();
 	context.moveTo(sourceX, sourceY);
 	context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, destinationX, destinationY);
@@ -30,4 +41,4 @@ export const ConnectionCable: React.FunctionComponent<IConnectorCableProps> = ({
 	context.lineWidth = 3;
 	context.stroke();
 	return null;
-}
+};
