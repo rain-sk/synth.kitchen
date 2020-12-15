@@ -3,7 +3,7 @@
 	"version": "0.2.1",
 	"private": true,
 	"dependencies": {
-		"@vectorsize/weaves-oscillators": "^1.0.7",
+		"@vectorsize/woscillators": "^1.0.12",
 		"audio-om": "0.0.2-alpha",
 		"change-case": "^4.1.2",
 		"rc-knob-accessible": "^1.0.0",

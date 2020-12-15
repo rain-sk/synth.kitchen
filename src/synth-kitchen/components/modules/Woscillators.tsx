@@ -7,13 +7,8 @@ import { Parameter } from './shared/Parameter';
 import { Connector } from './shared/Connector';
 import { uniqueId } from '../../io/unique-id';
 
-import {
-	weaves,
-	oscillatorTypes,
-	params
-} from '@vectorsize/weaves-oscillators';
-
-import type { Param } from '@vectorsize/weaves-oscillators';
+import { oscillatorTypes, params, wosc } from '@vectorsize/woscillators';
+import type { Param } from '@vectorsize/woscillators';
 
 const oscillatorTypeOptions: [
 	string,
@@ -51,7 +46,7 @@ const initialValues: Record<string, number> = {
 const hideParams = ['engine', 'decay', 'frequencyModulationAmount'];
 const outputId = uniqueId();
 
-export const WeavesOscillator: React.FunctionComponent<IModuleProps> = (
+export const Woscillators: React.FunctionComponent<IModuleProps> = (
 	props: IModuleProps
 ) => {
 	// ModuleLoader state
@@ -72,7 +67,7 @@ export const WeavesOscillator: React.FunctionComponent<IModuleProps> = (
 			const module = modules.get(props.moduleKey);
 
 			if (module && audio) {
-				const unit = await weaves.createOscillator(audio.context as any);
+				const unit = await wosc.createOscillator(audio.context as any);
 
 				// hydrate static params
 				const connectors: Connectors = params

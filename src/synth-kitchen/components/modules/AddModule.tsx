@@ -37,7 +37,7 @@ export class AddModule extends React.Component<
 					<option value={'DELAY'}>delay</option>
 					<option value={'FILTER'}>filter</option>
 					<option value={'OSCILLATOR'}>oscillator</option>
-					<option value={'WEAVES_OSCILLATOR'}>Weaves Oscillator</option>
+					<option value={'WOSCILLATORS'}>woscillators</option>
 					<option value={'SEQUENCER'}>sequencer</option>
 					{webmidi.inputs.length > 0 ? (
 						<>

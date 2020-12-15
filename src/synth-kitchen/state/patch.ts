@@ -44,7 +44,7 @@ export type ModuleType =
 	| 'FILTER'
 	| 'MIDI_DEVICE'
 	| 'OSCILLATOR'
-	| 'WEAVES_OSCILLATOR'
+	| 'WOSCILLATORS'
 	| 'SEQUENCER'
 	| 'MIDI_OSCILLATOR';
 
