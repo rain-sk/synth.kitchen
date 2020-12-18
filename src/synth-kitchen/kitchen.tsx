@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Home } from './routes/home';
 import { FourOhFour } from './routes/four-oh-four';
 import { PatchEditor } from './routes/patch-editor';
+import { NewPatch } from './new-patch';
 
 export const Kitchen: React.FunctionComponent = () => {
 	return (
@@ -17,6 +18,9 @@ export const Kitchen: React.FunctionComponent = () => {
 				</Route>
 				<Route path="/patch/:id">
 					<PatchEditor />
+				</Route>
+				<Route path="/rack">
+					<NewPatch />
 				</Route>
 				<Route path="">
 					<FourOhFour />
