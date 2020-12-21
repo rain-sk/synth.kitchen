@@ -5,9 +5,8 @@
 	"dependencies": {
 		"audio-om": "0.0.2-alpha",
 		"rc-knob-accessible": "^1.0.0",
-		"react": "^16.13.1",
-		"react-dom": "^16.13.1",
-		"react-router-dom": "^5.2.0",
+		"react": "^17.0.1",
+		"react-dom": "^17.0.1",
 		"uuid": "^3.3.3",
 		"webmidi": "^2.5.1"
 	},
@@ -16,6 +15,7 @@
 		"build": "snowpack build"
 	},
 	"devDependencies": {
+		"@babel/core": "^7.12.10",
 		"@babel/preset-react": "^7.10.4",
 		"@babel/preset-typescript": "^7.10.4",
 		"@snowpack/app-scripts-react": "^1.12.2",
@@ -25,13 +25,11 @@
 		"@snowpack/plugin-webpack": "^2.0.15",
 		"@testing-library/react": "^10.0.3",
 		"@types/jest": "^26.0.19",
-		"@types/react": "^16.9.49",
-		"@types/react-dom": "^16.9.8",
-		"@types/react-router-dom": "^5.1.5",
+		"@types/react": "^17.0.0",
+		"@types/react-dom": "^17.0.0",
+		"@types/react-router-dom": "^5.1.6",
 		"@types/snowpack-env": "^2.3.0",
-		"cypress": "^6.1.0",
-		"jest": "^26.6.3",
-		"snowpack": "^2.13.3",
-		"typescript": "^4.0.0"
+		"@types/uuid": "^8.3.0",
+		"babel-loader": "^8.2.2"
 	}
 }
