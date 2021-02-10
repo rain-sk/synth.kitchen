@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Knob, KnobScale } from '../controls/Knob';
+import { Knob, KnobScale } from './components/controls/Knob';
 
 export const NewPatch = () => {
 	const [value, setValue] = React.useState(5);

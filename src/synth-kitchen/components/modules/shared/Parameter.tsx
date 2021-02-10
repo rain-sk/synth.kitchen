@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Knob, Arc, Pointer } from 'rc-knob-accessible';
+import { Knob } from '../../controls/Knob';
 import { ConnectorType } from '../BaseModuleOld';
 import { Connector } from './Connector';
 
@@ -20,6 +20,8 @@ export interface IParameterState {
 	inputValue?: number;
 	editing: boolean;
 }
+
+const noOp = ()=>{};
 
 export class Parameter extends React.Component<
 	IParameterProps,
@@ -102,25 +104,14 @@ export class Parameter extends React.Component<
 					) : null}
 					{this.state.inputValue !== undefined ? (
 						<Knob
-							size={50}
-							angleOffset={180}
-							angleRange={360}
+							id={this.props.id}
+							label={this.props.name}
 							min={this.props.min !== undefined ? this.props.min : 0}
 							max={this.props.max !== undefined ? this.props.max : 1}
-							className="styledKnob"
-							htmlFor={`input_${this.props.id}`}
-							onChange={this.onKnobChange}
-						>
-							<Arc arcWidth={1.5} />
-							<circle r="20" cx="25" cy="25" />
-							<Pointer
-								width={2}
-								height={35}
-								radius={10}
-								type="rect"
-								color="#fff"
-							/>
-						</Knob>
+							value={this.state.inputValue}
+							setValue={this.onKnobChange}
+							dispatchValue={noOp}
+						/>
 					) : null}
 				</span>
 				{this.props.display && this.state.inputValue !== undefined ? (

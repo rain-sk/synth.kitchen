@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { uniqueId } from '../synth-kitchen/io/unique-id';
+import { uniqueId } from '../../io/unique-id';
 
 import knob from './Knob.module.css';
 
@@ -62,6 +62,8 @@ export const Knob: React.FunctionComponent<KnobProps> = (props: KnobProps) => {
 	const [id] = React.useState(uniqueId());
 
 	const [normalizedValue, setNormalizedValue] = React.useState(1);
+	const [dragging, setDragging] = React.useState(false);
+	const pointerState = React.useRef();
 
 	React.useEffect(() => {
 		setNormalizedValue(normalizeValue(props.value, props.min, props.max));
@@ -77,14 +79,9 @@ export const Knob: React.FunctionComponent<KnobProps> = (props: KnobProps) => {
 		props.dispatchValue(scaledValue);
 	};
 
-	const handlePointerDown = (e: React.PointerEvent<HTMLLabelElement>) => {
-		e.preventDefault();
-		console.log(e);
-	};
-
 	return (
 		<div className={knob.wrapper}>
-			<label htmlFor={id} onPointerDown={handlePointerDown}>
+			<label htmlFor={id} data-ratio={Math.round(360 * normalizedValue)}>
 				<span>{props.label}</span>
 			</label>
 			<input
@@ -98,6 +95,7 @@ export const Knob: React.FunctionComponent<KnobProps> = (props: KnobProps) => {
 				aria-valuemin={props.min}
 				aria-valuemax={props.max}
 				aria-valuenow={props.value}
+				aria-valuetext={`${props.value}`}
 			/>
 		</div>
 	);

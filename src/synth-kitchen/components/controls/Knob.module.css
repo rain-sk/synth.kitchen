@@ -1,0 +1,1131 @@
+.wrapper {
+	display: block;
+	position: relative;
+	width: 3rem;
+	height: 4rem;
+}
+
+.wrapper input[type='range'],
+.wrapper label span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 75%;
+	opacity: 0;
+}
+
+.wrapper input[type='text'] {
+	width: 3rem;
+	border: none;
+	background-image: none;
+	background-color: transparent;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	color: khaki;
+}
+
+.wrapper label::before {
+	content: '';
+	width: 100%;
+	height: 75%;
+	display: block;
+	border-radius: 50%;
+	background-color: black;
+}
+
+.wrapper label::after {
+	content: '';
+	position: absolute;
+	top: 20%;
+	left: 50%;
+	height: 33%;
+	width: 1px;
+	display: block;
+	background-color: khaki;
+}
+
+.wrapper label[data-ratio='0']::after {
+	transform: rotate(212deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='1']::after {
+	transform: rotate(212.82deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='2']::after {
+	transform: rotate(213.64deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='3']::after {
+	transform: rotate(214.46deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='4']::after {
+	transform: rotate(215.28deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='5']::after {
+	transform: rotate(216.11deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='6']::after {
+	transform: rotate(216.93deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='7']::after {
+	transform: rotate(217.75deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='8']::after {
+	transform: rotate(218.57deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='9']::after {
+	transform: rotate(219.39deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='10']::after {
+	transform: rotate(220.21deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='11']::after {
+	transform: rotate(221.03deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='12']::after {
+	transform: rotate(221.85deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='13']::after {
+	transform: rotate(222.67deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='14']::after {
+	transform: rotate(223.5deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='15']::after {
+	transform: rotate(224.32deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='16']::after {
+	transform: rotate(225.14deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='17']::after {
+	transform: rotate(225.96deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='18']::after {
+	transform: rotate(226.78deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='19']::after {
+	transform: rotate(227.6deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='20']::after {
+	transform: rotate(228.42deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='21']::after {
+	transform: rotate(229.24deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='22']::after {
+	transform: rotate(230.06deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='23']::after {
+	transform: rotate(230.89deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='24']::after {
+	transform: rotate(231.71deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='25']::after {
+	transform: rotate(232.53deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='26']::after {
+	transform: rotate(233.35deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='27']::after {
+	transform: rotate(234.17deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='28']::after {
+	transform: rotate(234.99deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='29']::after {
+	transform: rotate(235.81deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='30']::after {
+	transform: rotate(236.63deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='31']::after {
+	transform: rotate(237.45deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='32']::after {
+	transform: rotate(238.28deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='33']::after {
+	transform: rotate(239.1deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='34']::after {
+	transform: rotate(239.92deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='35']::after {
+	transform: rotate(240.74deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='36']::after {
+	transform: rotate(241.56deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='37']::after {
+	transform: rotate(242.38deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='38']::after {
+	transform: rotate(243.2deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='39']::after {
+	transform: rotate(244.02deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='40']::after {
+	transform: rotate(244.84deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='41']::after {
+	transform: rotate(245.67deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='42']::after {
+	transform: rotate(246.49deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='43']::after {
+	transform: rotate(247.31deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='44']::after {
+	transform: rotate(248.13deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='45']::after {
+	transform: rotate(248.95deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='46']::after {
+	transform: rotate(249.77deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='47']::after {
+	transform: rotate(250.59deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='48']::after {
+	transform: rotate(251.41deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='49']::after {
+	transform: rotate(252.23deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='50']::after {
+	transform: rotate(253.06deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='51']::after {
+	transform: rotate(253.88deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='52']::after {
+	transform: rotate(254.7deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='53']::after {
+	transform: rotate(255.52deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='54']::after {
+	transform: rotate(256.34deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='55']::after {
+	transform: rotate(257.16deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='56']::after {
+	transform: rotate(257.98deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='57']::after {
+	transform: rotate(258.8deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='58']::after {
+	transform: rotate(259.62deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='59']::after {
+	transform: rotate(260.45deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='60']::after {
+	transform: rotate(261.27deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='61']::after {
+	transform: rotate(262.09deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='62']::after {
+	transform: rotate(262.91deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='63']::after {
+	transform: rotate(263.73deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='64']::after {
+	transform: rotate(264.55deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='65']::after {
+	transform: rotate(265.37deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='66']::after {
+	transform: rotate(266.19deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='67']::after {
+	transform: rotate(267.01deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='68']::after {
+	transform: rotate(267.84deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='69']::after {
+	transform: rotate(268.66deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='70']::after {
+	transform: rotate(269.48deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='71']::after {
+	transform: rotate(270.3deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='72']::after {
+	transform: rotate(271.12deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='73']::after {
+	transform: rotate(271.94deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='74']::after {
+	transform: rotate(272.76deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='75']::after {
+	transform: rotate(273.58deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='76']::after {
+	transform: rotate(274.4deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='77']::after {
+	transform: rotate(275.23deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='78']::after {
+	transform: rotate(276.05deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='79']::after {
+	transform: rotate(276.87deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='80']::after {
+	transform: rotate(277.69deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='81']::after {
+	transform: rotate(278.51deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='82']::after {
+	transform: rotate(279.33deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='83']::after {
+	transform: rotate(280.15deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='84']::after {
+	transform: rotate(280.97deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='85']::after {
+	transform: rotate(281.79deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='86']::after {
+	transform: rotate(282.62deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='87']::after {
+	transform: rotate(283.44deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='88']::after {
+	transform: rotate(284.26deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='89']::after {
+	transform: rotate(285.08deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='90']::after {
+	transform: rotate(285.9deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='91']::after {
+	transform: rotate(286.72deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='92']::after {
+	transform: rotate(287.54deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='93']::after {
+	transform: rotate(288.36deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='94']::after {
+	transform: rotate(289.18deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='95']::after {
+	transform: rotate(290.01deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='96']::after {
+	transform: rotate(290.83deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='97']::after {
+	transform: rotate(291.65deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='98']::after {
+	transform: rotate(292.47deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='99']::after {
+	transform: rotate(293.29deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='100']::after {
+	transform: rotate(294.11deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='101']::after {
+	transform: rotate(294.93deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='102']::after {
+	transform: rotate(295.75deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='103']::after {
+	transform: rotate(296.57deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='104']::after {
+	transform: rotate(297.4deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='105']::after {
+	transform: rotate(298.22deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='106']::after {
+	transform: rotate(299.04deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='107']::after {
+	transform: rotate(299.86deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='108']::after {
+	transform: rotate(300.68deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='109']::after {
+	transform: rotate(301.5deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='110']::after {
+	transform: rotate(302.32deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='111']::after {
+	transform: rotate(303.14deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='112']::after {
+	transform: rotate(303.96deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='113']::after {
+	transform: rotate(304.79deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='114']::after {
+	transform: rotate(305.61deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='115']::after {
+	transform: rotate(306.43deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='116']::after {
+	transform: rotate(307.25deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='117']::after {
+	transform: rotate(308.07deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='118']::after {
+	transform: rotate(308.89deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='119']::after {
+	transform: rotate(309.71deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='120']::after {
+	transform: rotate(310.53deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='121']::after {
+	transform: rotate(311.35deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='122']::after {
+	transform: rotate(312.18deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='123']::after {
+	transform: rotate(313deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='124']::after {
+	transform: rotate(313.82deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='125']::after {
+	transform: rotate(314.64deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='126']::after {
+	transform: rotate(315.46deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='127']::after {
+	transform: rotate(316.28deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='128']::after {
+	transform: rotate(317.1deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='129']::after {
+	transform: rotate(317.92deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='130']::after {
+	transform: rotate(318.74deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='131']::after {
+	transform: rotate(319.57deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='132']::after {
+	transform: rotate(320.39deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='133']::after {
+	transform: rotate(321.21deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='134']::after {
+	transform: rotate(322.03deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='135']::after {
+	transform: rotate(322.85deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='136']::after {
+	transform: rotate(323.67deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='137']::after {
+	transform: rotate(324.49deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='138']::after {
+	transform: rotate(325.31deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='139']::after {
+	transform: rotate(326.13deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='140']::after {
+	transform: rotate(326.96deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='141']::after {
+	transform: rotate(327.78deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='142']::after {
+	transform: rotate(328.6deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='143']::after {
+	transform: rotate(329.42deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='144']::after {
+	transform: rotate(330.24deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='145']::after {
+	transform: rotate(331.06deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='146']::after {
+	transform: rotate(331.88deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='147']::after {
+	transform: rotate(332.7deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='148']::after {
+	transform: rotate(333.52deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='149']::after {
+	transform: rotate(334.35deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='150']::after {
+	transform: rotate(335.17deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='151']::after {
+	transform: rotate(335.99deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='152']::after {
+	transform: rotate(336.81deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='153']::after {
+	transform: rotate(337.63deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='154']::after {
+	transform: rotate(338.45deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='155']::after {
+	transform: rotate(339.27deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='156']::after {
+	transform: rotate(340.09deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='157']::after {
+	transform: rotate(340.91deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='158']::after {
+	transform: rotate(341.74deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='159']::after {
+	transform: rotate(342.56deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='160']::after {
+	transform: rotate(343.38deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='161']::after {
+	transform: rotate(344.2deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='162']::after {
+	transform: rotate(345.02deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='163']::after {
+	transform: rotate(345.84deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='164']::after {
+	transform: rotate(346.66deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='165']::after {
+	transform: rotate(347.48deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='166']::after {
+	transform: rotate(348.3deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='167']::after {
+	transform: rotate(349.13deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='168']::after {
+	transform: rotate(349.95deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='169']::after {
+	transform: rotate(350.77deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='170']::after {
+	transform: rotate(351.59deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='171']::after {
+	transform: rotate(352.41deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='172']::after {
+	transform: rotate(353.23deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='173']::after {
+	transform: rotate(354.05deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='174']::after {
+	transform: rotate(354.87deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='175']::after {
+	transform: rotate(355.69deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='176']::after {
+	transform: rotate(356.52deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='177']::after {
+	transform: rotate(357.34deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='178']::after {
+	transform: rotate(358.16deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='179']::after {
+	transform: rotate(358.98deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='180']::after {
+	transform: rotate(359.8deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='181']::after {
+	transform: rotate(360.62deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='182']::after {
+	transform: rotate(361.44deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='183']::after {
+	transform: rotate(362.26deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='184']::after {
+	transform: rotate(363.08deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='185']::after {
+	transform: rotate(363.91deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='186']::after {
+	transform: rotate(364.73deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='187']::after {
+	transform: rotate(365.55deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='188']::after {
+	transform: rotate(366.37deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='189']::after {
+	transform: rotate(367.19deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='190']::after {
+	transform: rotate(368.01deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='191']::after {
+	transform: rotate(368.83deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='192']::after {
+	transform: rotate(369.65deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='193']::after {
+	transform: rotate(370.47deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='194']::after {
+	transform: rotate(371.3deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='195']::after {
+	transform: rotate(372.12deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='196']::after {
+	transform: rotate(372.94deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='197']::after {
+	transform: rotate(373.76deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='198']::after {
+	transform: rotate(374.58deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='199']::after {
+	transform: rotate(375.4deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='200']::after {
+	transform: rotate(376.22deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='201']::after {
+	transform: rotate(377.04deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='202']::after {
+	transform: rotate(377.86deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='203']::after {
+	transform: rotate(378.69deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='204']::after {
+	transform: rotate(379.51deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='205']::after {
+	transform: rotate(380.33deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='206']::after {
+	transform: rotate(381.15deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='207']::after {
+	transform: rotate(381.97deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='208']::after {
+	transform: rotate(382.79deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='209']::after {
+	transform: rotate(383.61deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='210']::after {
+	transform: rotate(384.43deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='211']::after {
+	transform: rotate(385.25deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='212']::after {
+	transform: rotate(386.08deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='213']::after {
+	transform: rotate(386.9deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='214']::after {
+	transform: rotate(387.72deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='215']::after {
+	transform: rotate(388.54deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='216']::after {
+	transform: rotate(389.36deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='217']::after {
+	transform: rotate(390.18deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='218']::after {
+	transform: rotate(391deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='219']::after {
+	transform: rotate(391.82deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='220']::after {
+	transform: rotate(392.64deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='221']::after {
+	transform: rotate(393.47deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='222']::after {
+	transform: rotate(394.29deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='223']::after {
+	transform: rotate(395.11deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='224']::after {
+	transform: rotate(395.93deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='225']::after {
+	transform: rotate(396.75deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='226']::after {
+	transform: rotate(397.57deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='227']::after {
+	transform: rotate(398.39deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='228']::after {
+	transform: rotate(399.21deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='229']::after {
+	transform: rotate(400.03deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='230']::after {
+	transform: rotate(400.86deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='231']::after {
+	transform: rotate(401.68deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='232']::after {
+	transform: rotate(402.5deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='233']::after {
+	transform: rotate(403.32deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='234']::after {
+	transform: rotate(404.14deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='235']::after {
+	transform: rotate(404.96deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='236']::after {
+	transform: rotate(405.78deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='237']::after {
+	transform: rotate(406.6deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='238']::after {
+	transform: rotate(407.42deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='239']::after {
+	transform: rotate(408.25deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='240']::after {
+	transform: rotate(409.07deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='241']::after {
+	transform: rotate(409.89deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='242']::after {
+	transform: rotate(410.71deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='243']::after {
+	transform: rotate(411.53deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='244']::after {
+	transform: rotate(412.35deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='245']::after {
+	transform: rotate(413.17deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='246']::after {
+	transform: rotate(413.99deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='247']::after {
+	transform: rotate(414.81deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='248']::after {
+	transform: rotate(415.64deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='249']::after {
+	transform: rotate(416.46deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='250']::after {
+	transform: rotate(417.28deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='251']::after {
+	transform: rotate(418.1deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='252']::after {
+	transform: rotate(418.92deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='253']::after {
+	transform: rotate(419.74deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='254']::after {
+	transform: rotate(420.56deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='255']::after {
+	transform: rotate(421.38deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='256']::after {
+	transform: rotate(422.2deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='257']::after {
+	transform: rotate(423.03deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='258']::after {
+	transform: rotate(423.85deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='259']::after {
+	transform: rotate(424.67deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='260']::after {
+	transform: rotate(425.49deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='261']::after {
+	transform: rotate(426.31deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='262']::after {
+	transform: rotate(427.13deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='263']::after {
+	transform: rotate(427.95deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='264']::after {
+	transform: rotate(428.77deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='265']::after {
+	transform: rotate(429.59deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='266']::after {
+	transform: rotate(430.42deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='267']::after {
+	transform: rotate(431.24deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='268']::after {
+	transform: rotate(432.06deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='269']::after {
+	transform: rotate(432.88deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='270']::after {
+	transform: rotate(433.7deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='271']::after {
+	transform: rotate(434.52deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='272']::after {
+	transform: rotate(435.34deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='273']::after {
+	transform: rotate(436.16deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='274']::after {
+	transform: rotate(436.98deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='275']::after {
+	transform: rotate(437.81deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='276']::after {
+	transform: rotate(438.63deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='277']::after {
+	transform: rotate(439.45deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='278']::after {
+	transform: rotate(440.27deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='279']::after {
+	transform: rotate(441.09deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='280']::after {
+	transform: rotate(441.91deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='281']::after {
+	transform: rotate(442.73deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='282']::after {
+	transform: rotate(443.55deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='283']::after {
+	transform: rotate(444.37deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='284']::after {
+	transform: rotate(445.2deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='285']::after {
+	transform: rotate(446.02deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='286']::after {
+	transform: rotate(446.84deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='287']::after {
+	transform: rotate(447.66deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='288']::after {
+	transform: rotate(448.48deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='289']::after {
+	transform: rotate(449.3deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='290']::after {
+	transform: rotate(450.12deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='291']::after {
+	transform: rotate(450.94deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='292']::after {
+	transform: rotate(451.76deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='293']::after {
+	transform: rotate(452.59deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='294']::after {
+	transform: rotate(453.41deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='295']::after {
+	transform: rotate(454.23deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='296']::after {
+	transform: rotate(455.05deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='297']::after {
+	transform: rotate(455.87deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='298']::after {
+	transform: rotate(456.69deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='299']::after {
+	transform: rotate(457.51deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='300']::after {
+	transform: rotate(458.33deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='301']::after {
+	transform: rotate(459.15deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='302']::after {
+	transform: rotate(459.98deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='303']::after {
+	transform: rotate(460.8deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='304']::after {
+	transform: rotate(461.62deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='305']::after {
+	transform: rotate(462.44deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='306']::after {
+	transform: rotate(463.26deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='307']::after {
+	transform: rotate(464.08deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='308']::after {
+	transform: rotate(464.9deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='309']::after {
+	transform: rotate(465.72deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='310']::after {
+	transform: rotate(466.54deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='311']::after {
+	transform: rotate(467.37deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='312']::after {
+	transform: rotate(468.19deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='313']::after {
+	transform: rotate(469.01deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='314']::after {
+	transform: rotate(469.83deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='315']::after {
+	transform: rotate(470.65deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='316']::after {
+	transform: rotate(471.47deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='317']::after {
+	transform: rotate(472.29deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='318']::after {
+	transform: rotate(473.11deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='319']::after {
+	transform: rotate(473.93deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='320']::after {
+	transform: rotate(474.76deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='321']::after {
+	transform: rotate(475.58deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='322']::after {
+	transform: rotate(476.4deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='323']::after {
+	transform: rotate(477.22deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='324']::after {
+	transform: rotate(478.04deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='325']::after {
+	transform: rotate(478.86deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='326']::after {
+	transform: rotate(479.68deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='327']::after {
+	transform: rotate(480.5deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='328']::after {
+	transform: rotate(481.32deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='329']::after {
+	transform: rotate(482.15deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='330']::after {
+	transform: rotate(482.97deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='331']::after {
+	transform: rotate(483.79deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='332']::after {
+	transform: rotate(484.61deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='333']::after {
+	transform: rotate(485.43deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='334']::after {
+	transform: rotate(486.25deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='335']::after {
+	transform: rotate(487.07deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='336']::after {
+	transform: rotate(487.89deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='337']::after {
+	transform: rotate(488.71deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='338']::after {
+	transform: rotate(489.54deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='339']::after {
+	transform: rotate(490.36deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='340']::after {
+	transform: rotate(491.18deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='341']::after {
+	transform: rotate(492deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='342']::after {
+	transform: rotate(492.82deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='343']::after {
+	transform: rotate(493.64deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='344']::after {
+	transform: rotate(494.46deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='345']::after {
+	transform: rotate(495.28deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='346']::after {
+	transform: rotate(496.1deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='347']::after {
+	transform: rotate(496.93deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='348']::after {
+	transform: rotate(497.75deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='349']::after {
+	transform: rotate(498.57deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='350']::after {
+	transform: rotate(499.39deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='351']::after {
+	transform: rotate(500.21deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='352']::after {
+	transform: rotate(501.03deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='353']::after {
+	transform: rotate(501.85deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='354']::after {
+	transform: rotate(502.67deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='355']::after {
+	transform: rotate(503.49deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='356']::after {
+	transform: rotate(504.32deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='357']::after {
+	transform: rotate(505.14deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='358']::after {
+	transform: rotate(505.96deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='359']::after {
+	transform: rotate(506.78deg) translate(-50%, -50%);
+}
+.wrapper label[data-ratio='360']::after {
+	transform: rotate(507.6deg) translate(-50%, -50%);
+}
