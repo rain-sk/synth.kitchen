@@ -1,27 +1,9 @@
-import * as React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import React from 'react'
+import { Module } from './module';
+import { initialState, reducer } from './state';
 
-import { Home } from './routes/home';
-import { FourOhFour } from './routes/four-oh-four';
-import { PatchEditor } from './routes/patch-editor';
+export const Kitchen: React.FC = () => {
+    const [state] = React.useReducer(reducer, initialState);
 
-export const Kitchen: React.FunctionComponent = () => {
-	return (
-		<BrowserRouter>
-			<Switch>
-				<Route path="/" exact>
-					<Home />
-				</Route>
-				<Route path="/patch">
-					<PatchEditor />
-				</Route>
-				<Route path="/patch/:id">
-					<PatchEditor />
-				</Route>
-				<Route path="">
-					<FourOhFour />
-				</Route>
-			</Switch>
-		</BrowserRouter>
-	);
+    return <>{Object.keys(state.modules).map((key) => <Module key={key} moduleKey={key} />)}</>
 };
