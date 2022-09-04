@@ -1,6 +1,8 @@
 
 body {
-	background: #003333;
+	background: #263030;
+	-webkit-user-select: none; /* Safari */
+	user-select: none;
 }
 
 body, #root {
@@ -18,4 +20,16 @@ body, #root {
 
 #root {
 	padding-top: 1rem;
+	position: relative;
+	display: block;
+}
+
+.module {
+	position: absolute;
+	display: flexbox;
+	cursor: move;
+	border: 1px solid white;
+	width: 200px;
+	height: 200px;
+
 }

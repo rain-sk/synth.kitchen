@@ -1,9 +1,15 @@
 import React from 'react'
-import { Module } from './module';
-import { initialState, reducer } from './state';
+import { Module } from './modules/module';
+import { DispatchContext, initialState, reducer } from './state';
 
 export const Kitchen: React.FC = () => {
-    const [state] = React.useReducer(reducer, initialState);
+    const [state, dispatch] = React.useReducer(reducer, initialState);
 
-    return <>{Object.keys(state.modules).map((key) => <Module key={key} moduleKey={key} />)}</>
+    return (
+        <DispatchContext.Provider value={dispatch}>
+            {Object.values(state.modules).map((module) => (
+                <Module key={module.moduleKey} module={module} />
+            ))}
+        </DispatchContext.Provider>
+    )
 };

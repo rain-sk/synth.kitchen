@@ -5,6 +5,7 @@
 	"dependencies": {
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
+		"standardized-audio-context": "^25.3.29",
 		"uuid": "^8.3.2",
 		"webmidi": "^3.0.21"
 	},
