@@ -6,13 +6,19 @@ export type IModuleState = {
     GAIN: {};
     DELAY: {};
     FILTER: {};
-    MIDI_DEVICE: {};
     OSCILLATOR: {
         frequency: number;
         detune: number;
         waveform: 'sine' | 'square' | 'triangle' | 'sawtooth' | 'custom';
     };
-    SEQUENCER: {};
+    SEQUENCER: {
+		mode: 'forward' | 'backward';
+		steps: {
+			offset: number;
+			duration: number;
+		}[];
+	};
+    MIDI_DEVICE: {};
     MIDI_OSCILLATOR: {};
 }
 
