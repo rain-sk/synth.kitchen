@@ -9,9 +9,7 @@ export const INVALID_POSITION: [number, number] = [-1, -1];
 
 export type IState = {
 	heldModifiers: Modifier;
-	modules: {
-		[key: string]: IModule;
-	};
+	modules: Record<string, IModule>;
 	mouseDragStartPosition: [number, number];
 	mouseDragPosition: [number, number];
 	selectedModuleKeys: Set<string>;
