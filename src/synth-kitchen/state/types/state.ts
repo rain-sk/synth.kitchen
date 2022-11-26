@@ -12,14 +12,12 @@ export type IState = {
 
 export const initialState: IState = {
 	modules: {
-		abc: {
-			moduleKey: 'abc',
-			type: 'DELAY',
+		GLOBAL_OUT: {
+			moduleKey: 'GLOBAL_OUT',
+			type: 'OUTPUT',
 			x: Math.round(Math.random() * 800),
 			y: Math.round(Math.random() * 800),
-			width: 200,
-			height: 200,
-			selectionState: ModuleSelectionState.UNSELECTED
+			gain: 1
 		},
 		def: {
 			moduleKey: 'def',

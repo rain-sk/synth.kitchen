@@ -38,21 +38,19 @@ export interface IConnectionState {
 }
 
 export type ModuleType =
-	| 'GLOBAL_CONTEXT'
-	| 'GAIN'
 	| 'DELAY'
 	| 'FILTER'
-	| 'MIDI_DEVICE'
+	| 'GAIN'
 	| 'OSCILLATOR'
-	| 'SEQUENCER'
-	| 'MIDI_OSCILLATOR';
+	| 'OUTPUT'
+	| 'SEQUENCER';
 
 export type ConnectorType =
 	| 'CV_IN'
-	| 'SIGNAL_IN'
-	| 'SIGNAL_OUT'
 	| 'MIDI_IN'
 	| 'MIDI_OUT'
+	| 'SIGNAL_IN'
+	| 'SIGNAL_OUT'
 	| 'uninitialized';
 
 export interface IModuleProps {

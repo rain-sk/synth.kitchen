@@ -18,32 +18,40 @@ const useDragAndDrop = (
 	containerRef: React.MutableRefObject<HTMLElement | null>,
 	onUpdate: (x: number, y: number) => void
 ) => {
-	const [position, setPosition] = useState({ x: initialX, y: initialY });
-	const { x, y } = position;
+	const position = useRef({ x: initialX, y: initialY });
+
+	const { x, y } = position.current;
 
 	useEffect(() => {
-		onUpdate(x, y);
-	}, [x, y]);
-
-	useEffect(
-		useCallback(() => {
+		if (containerRef.current) {
 			requestAnimationFrame(() => {
 				if (containerRef.current) {
-					containerRef.current.style.left = `${x}px`;
-					containerRef.current.style.top = `${y}px`;
+					containerRef.current.style.left = `${initialX}px`;
+					containerRef.current.style.top = `${initialY}px`;
 				}
 			});
-		}, [containerRef.current, x, y]),
-		[x, y]
-	);
+		}
+	}, [containerRef.current]);
 
 	const dragOffset = useRef({ x: 0, y: 0 });
 
 	const onDrag = useRef((e: MouseEvent) => {
-		setPosition({
-			x: e.clientX - dragOffset.current.x,
-			y: e.clientY - dragOffset.current.y
+		const x = e.clientX - dragOffset.current.x;
+		const y = e.clientY - dragOffset.current.y;
+
+		requestAnimationFrame(() => {
+			if (containerRef.current) {
+				containerRef.current.style.left = `${x}px`;
+				containerRef.current.style.top = `${y}px`;
+			}
 		});
+
+		position.current = {
+			x,
+			y
+		};
+
+		onUpdate(x, y);
 	});
 
 	const onMouseDown = (e: ReactMouseEvent<HTMLDivElement>) => {
@@ -89,18 +97,20 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 		(x: number, y: number) => {
 			dispatch(actions.updateModulePositionAction(module.moduleKey, x, y));
 		},
-		[module.moduleKey]
-	);
-
-	const onMouseDown = useDragAndDrop(
-		module.x,
-		module.y,
-		containerRef,
-		onUpdatePosition
+		[dispatch, module.moduleKey]
 	);
 
 	return (
-		<div className="module" onMouseDown={onMouseDown} ref={containerRef}>
+		<div
+			className="module"
+			onMouseDown={useDragAndDrop(
+				module.x,
+				module.y,
+				containerRef,
+				onUpdatePosition
+			)}
+			ref={containerRef}
+		>
 			<ModuleUi module={module} />
 		</div>
 	);

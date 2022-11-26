@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { IAudioContext, IOscillatorNode } from 'standardized-audio-context';
 import { audioContext } from '../audio-context';
@@ -15,24 +15,43 @@ const oscillatorStateFromNode = (
 	waveform: node.type
 });
 
+const initOscillatorState = (
+	oscillator: React.MutableRefObject<
+		IOscillatorNode<IAudioContext> | undefined
+	>,
+	state?: IModuleState['OSCILLATOR']
+) => {
+	oscillator.current = audioContext.createOscillator();
+	oscillator.current.start();
+
+	if (state) {
+		oscillator.current.detune.setTargetAtTime(
+			state.detune,
+			audioContext.currentTime,
+			3
+		);
+		oscillator.current.frequency.setTargetAtTime(
+			state.frequency,
+			audioContext.currentTime,
+			3
+		);
+		oscillator.current.type = state.waveform;
+
+		return state;
+	} else {
+		return oscillatorStateFromNode(oscillator.current);
+	}
+};
+
 export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 	module
 }) => {
-	const [node] = useState(() => {
-		const node = audioContext.createOscillator();
-		node.start();
-		return node;
-	});
-	const [state, setState] = useState<IModuleState['OSCILLATOR'] | undefined>(
-		module.state
+	const oscillator = useRef<IOscillatorNode<IAudioContext>>();
+	const [state /*setState*/] = useState<IModuleState['OSCILLATOR'] | undefined>(
+		initOscillatorState(oscillator, module.state)
 	);
-	const dispatch = useDispatch();
 
-	useEffect(() => {
-		if (node) {
-			setState(oscillatorStateFromNode(node));
-		}
-	}, [node]);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (state) {
