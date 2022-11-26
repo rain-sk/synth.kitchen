@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 
 import { actions } from '../state/actions';
-import { IModule } from '../state/types/module';
+import { IModule, ModuleSelectionState } from '../state/types/module';
 import { useDispatch } from '../state';
 
 import { OscillatorModule } from './oscillator';
@@ -59,18 +59,22 @@ const useDragAndDrop = (
 	});
 
 	const onMouseDown = (e: ReactMouseEvent<HTMLDivElement>) => {
-		dragOffset.current.x = e.clientX - x;
-		dragOffset.current.y = e.clientY - y;
+		// Prevent drawing a selection rectangle on the canvas
+		e.stopPropagation();
+		if (e.nativeEvent.button == 0) {
+			dragOffset.current.x = e.clientX - x;
+			dragOffset.current.y = e.clientY - y;
 
-		const onMouseUp = (e: MouseEvent) => {
-			dragOffset.current.x = 0;
-			dragOffset.current.y = 0;
-			document.body.removeEventListener('mouseup', onMouseUp);
-			document.body.removeEventListener('mousemove', onDrag.current);
-		};
+			const onMouseUp = (e: MouseEvent) => {
+				dragOffset.current.x = 0;
+				dragOffset.current.y = 0;
+				document.body.removeEventListener('mouseup', onMouseUp);
+				document.body.removeEventListener('mousemove', onDrag.current);
+			};
 
-		document.body.addEventListener('mouseup', onMouseUp);
-		document.body.addEventListener('mousemove', onDrag.current);
+			document.body.addEventListener('mouseup', onMouseUp);
+			document.body.addEventListener('mousemove', onDrag.current);
+		}
 	};
 
 	return onMouseDown;
@@ -112,9 +116,20 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 		[dispatch, module.moduleKey]
 	);
 
+	const selectionState = () => {
+		switch (module.selectionState) {
+			case ModuleSelectionState.SELECTED:
+				return 'selected';
+			case ModuleSelectionState.POTENTIALLY_SELECTED:
+				return 'potentially_selected';
+			case ModuleSelectionState.UNSELECTED:
+				return 'unselected';
+		}
+	};
+
 	return (
 		<div
-			className="module"
+			className={`module ${selectionState()}`}
 			onMouseDown={useDragAndDrop(
 				module.x,
 				module.y,

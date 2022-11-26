@@ -35,6 +35,14 @@ main {
 	position: absolute;
 	display: flexbox;
 	cursor: move;
-	border: 1px solid rgba(255, 255, 255, 0.5);
+	border: 1px solid rgba(255, 255, 255, 0.25);
 	border-radius: 3px;
+}
+
+.module.selected {
+	border: 1px solid rgba(255, 255, 255, 1);
+}
+
+.module.potentially_selected {
+	border: 1px dashed rgba(255, 255, 255, 0.75);
 }

@@ -6,14 +6,12 @@ import { Kitchen } from './synth-kitchen/kitchen';
 
 import './index.css';
 
-console.log('ok');
-
-WebMidi.enable().catch((err: string) => alert(err)).finally(() => {
-  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
-      <Kitchen />
-    </React.StrictMode>
-  );
-});
-
-
+WebMidi.enable()
+	.catch((err: string) => alert(err))
+	.finally(() => {
+		ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+			<React.StrictMode>
+				<Kitchen />
+			</React.StrictMode>
+		);
+	});

@@ -22,6 +22,9 @@ export const Canvas: React.FC<{
 
 	const [initialized, setInitialized] = useState(false);
 
+	const selectionStart = useRef(INVALID_POSITION);
+	const selectionEnd = useRef(INVALID_POSITION);
+
 	const { current: drawSelection } = useRef(() => {
 		if (containerRef.current && canvasRef.current) {
 			canvasRef.current.context2d.clearRect(
@@ -30,6 +33,8 @@ export const Canvas: React.FC<{
 				containerRef.current.clientWidth,
 				containerRef.current.offsetHeight
 			);
+
+			canvasRef.current.context2d.strokeStyle = 'rgba(255, 255, 255, 0.75)';
 
 			canvasRef.current.context2d.beginPath();
 			const x = selectionStart.current[0];
@@ -67,6 +72,8 @@ export const Canvas: React.FC<{
 
 	useEffect(() => {
 		if (containerRef.current && canvasRef.current) {
+			onResize();
+
 			window.addEventListener('resize', onResize, false);
 			document.addEventListener('resize', onResize, false);
 			window.addEventListener('mouseout', onMouseout, false);
@@ -78,9 +85,6 @@ export const Canvas: React.FC<{
 			};
 		}
 	}, [initialized, containerRef.current, canvasRef.current]);
-
-	const selectionStart = useRef(INVALID_POSITION);
-	const selectionEnd = useRef(INVALID_POSITION);
 
 	const { current: onDrag } = useRef((e: MouseEvent) => {
 		selectionEnd.current = [e.clientX, e.clientY];
@@ -102,6 +106,8 @@ export const Canvas: React.FC<{
 	const { current: onMouseDown } = useRef(
 		(e: ReactMouseEvent<HTMLDivElement>) => {
 			selectionStart.current = [e.clientX, e.clientY];
+			selectionEnd.current = [e.clientX, e.clientY];
+
 			dispatch(actions.selectionDragStartAction(selectionStart.current));
 
 			document.body.addEventListener('mouseup', onMouseUp);
