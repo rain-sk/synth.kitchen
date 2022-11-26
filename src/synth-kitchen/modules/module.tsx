@@ -187,8 +187,16 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 		]
 	);
 
+	const onFocus = useCallback(() => {
+		dispatch(actions.selectSingleModuleAction(module.moduleKey));
+	}, [dispatch, module.moduleKey]);
+
 	return (
 		<div
+			role="treeitem"
+			aria-selected={currentlySelected}
+			tabIndex={0}
+			onFocus={onFocus}
 			className={`module ${selectionStateString} ${draggingStateString}`}
 			onMouseDown={onMouseDown}
 			style={{

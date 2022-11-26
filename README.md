@@ -18,7 +18,8 @@ MVP:
 
 ### Keyboard Nav
 
-Some way to move selection from module to module using only the keyboard...
+- [x] Some way to move selection from module to module using only the keyboard
+- [ ] Some way to go in-to/out-of a module's controls
 
 ### Module UIs
 
@@ -65,3 +66,10 @@ Stretch Goals:
 MVP:
 
 - [ ] some way™️ to sync sequencers, envelopes, etc.
+
+Stretch Goals:
+
+- [ ] sync with external MIDI clocks
+- [ ] Ableton Link support
+
+###
