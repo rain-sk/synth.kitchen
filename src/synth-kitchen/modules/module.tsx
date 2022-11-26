@@ -16,6 +16,7 @@ import { GainModule } from './gain';
 import { DelayModule } from './delay';
 import { FilterModule } from './filter';
 import { OutputModule } from './output';
+import { Modifier } from '../state/types/state';
 
 const moveContainerRef = (
 	containerRef: React.MutableRefObject<HTMLElement | null>,
@@ -126,7 +127,8 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 	module
 }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const { selectedModuleKeys, selectionPending } = useStateContext();
+	const { selectedModuleKeys, selectionPending, heldModifiers } =
+		useStateContext();
 	const dispatch = useDispatchContext();
 
 	const onUpdatePosition = useCallback(
@@ -162,7 +164,7 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 
 	const onMouseDown = useCallback(
 		(e: React.MouseEvent<HTMLDivElement>) => {
-			const shiftClick = e.shiftKey;
+			const shiftClick = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
 			if (shiftClick && currentlySelected) {
 				dispatch(actions.deselectModuleAction(module.moduleKey));

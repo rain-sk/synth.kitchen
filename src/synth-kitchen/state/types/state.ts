@@ -1,8 +1,14 @@
 import { IModule } from './module';
 
+export enum Modifier {
+	NONE = 0,
+	SHIFT = 1 << 0
+}
+
 export const INVALID_POSITION: [number, number] = [-1, -1];
 
 export type IState = {
+	heldModifiers: Modifier;
 	modules: {
 		[key: string]: IModule;
 	};
@@ -13,6 +19,7 @@ export type IState = {
 };
 
 export const initialState: IState = {
+	heldModifiers: Modifier.NONE,
 	modules: {
 		GLOBAL_OUT: {
 			moduleKey: 'GLOBAL_OUT',
