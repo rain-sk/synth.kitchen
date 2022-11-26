@@ -121,6 +121,10 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 				containerRef,
 				onUpdatePosition
 			)}
+			style={{
+				width: module.width,
+				height: module.height
+			}}
 			ref={containerRef}
 		>
 			<ModuleUi module={module} />

@@ -31,10 +31,10 @@ main {
 }
 
 .module {
+	background: #4f4658;
 	position: absolute;
 	display: flexbox;
 	cursor: move;
-	border: 1px solid white;
-	width: 200px;
-	height: 200px;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	border-radius: 3px;
 }
