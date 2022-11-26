@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { IAudioContext, IOscillatorNode } from 'standardized-audio-context';
-import { audioContext } from '../audio-context';
+import { audioContext } from '../audio';
 
 import { actions } from '../state/actions';
 import { IModule, IModuleState } from '../state/types/module';
