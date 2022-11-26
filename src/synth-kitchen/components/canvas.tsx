@@ -57,8 +57,6 @@ export const Canvas: React.FC<{
 	const { current: onResize } = useRef(() => {
 		requestAnimationFrame(() => {
 			if (containerRef.current && canvasRef.current) {
-				document.body.getBoundingClientRect();
-
 				const { width, height } = containerRef.current.getBoundingClientRect();
 
 				canvasRef.current.context2d.clearRect(0, 0, width, height);
