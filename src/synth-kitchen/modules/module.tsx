@@ -168,7 +168,7 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 				dispatch(actions.deselectModuleAction(module.moduleKey));
 			} else if (shiftClick) {
 				dispatch(actions.selectModuleAction(module.moduleKey));
-			} else if (!currentlySelected) {
+			} else {
 				dispatch(actions.selectSingleModuleAction(module.moduleKey));
 			}
 
