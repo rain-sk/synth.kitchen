@@ -1,6 +1,6 @@
 import { INVALID_POSITION, IState } from '../types/state';
 import { ISelectionDrag, SelectionDragType } from '../actions/selection-drag';
-import { IModule, ModuleSelectionState } from '../types/module';
+import { IModule } from '../types/module';
 
 type IRectangle = {
 	x: number;
@@ -65,67 +65,36 @@ export const selectionDrag: React.Reducer<IState, ISelectionDrag> = (
 				...state,
 				mouseDragStartPosition: position,
 				mouseDragPosition: position,
-				modules: Object.fromEntries(
-					Object.entries(state.modules).map(([moduleKey, module]) => [
-						moduleKey,
-						{
-							...module,
-							selectionState: ModuleSelectionState.UNSELECTED
-						}
-					])
-				)
+				selectedModuleKeys: new Set(),
+				selectionPending: true
 			};
 		}
 		case SelectionDragType.DRAG_CONTINUE: {
 			const { mouseDragStartPosition, modules } = state;
 
-			const potentiallySelectedModules = modulesInRange(
-				mouseDragStartPosition,
-				position,
-				Object.values(modules)
-			);
-
 			return {
 				...state,
 				mouseDragPosition: position,
-				modules: Object.fromEntries(
-					Object.entries(modules).map(([moduleKey, module]) => [
-						moduleKey,
-						{
-							...module,
-							selectionState: potentiallySelectedModules.has(moduleKey)
-								? ModuleSelectionState.POTENTIALLY_SELECTED
-								: ModuleSelectionState.UNSELECTED
-						}
-					])
+				selectedModuleKeys: modulesInRange(
+					mouseDragStartPosition,
+					position,
+					Object.values(modules)
 				)
 			};
 		}
-		case SelectionDragType.DRAG_END:
-		default: {
+		case SelectionDragType.DRAG_END: {
 			const { mouseDragStartPosition, modules } = state;
-
-			const selectedModules = modulesInRange(
-				mouseDragStartPosition,
-				position,
-				Object.values(modules)
-			);
 
 			return {
 				...state,
 				mouseDragStartPosition: INVALID_POSITION,
 				mouseDragPosition: INVALID_POSITION,
-				modules: Object.fromEntries(
-					Object.entries(modules).map(([moduleKey, module]) => [
-						moduleKey,
-						{
-							...module,
-							selectionState: selectedModules.has(moduleKey)
-								? ModuleSelectionState.SELECTED
-								: ModuleSelectionState.UNSELECTED
-						}
-					])
-				)
+				selectedModuleKeys: modulesInRange(
+					mouseDragStartPosition,
+					position,
+					Object.values(modules)
+				),
+				selectionPending: false
 			};
 		}
 	}

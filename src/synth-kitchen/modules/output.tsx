@@ -5,7 +5,7 @@ import { audioContext } from '../audio-context';
 
 import { actions } from '../state/actions';
 import { IModule, IModuleState } from '../state/types/module';
-import { useDispatch } from '../state';
+import { useDispatchContext } from '../state';
 
 const outputStateFromNode = (
 	node: IGainNode<IAudioContext>
@@ -35,7 +35,7 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 		initOutputState(gain, module.state)
 	);
 
-	const dispatch = useDispatch();
+	const dispatch = useDispatchContext();
 
 	useEffect(() => {
 		if (state) {

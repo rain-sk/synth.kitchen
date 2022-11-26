@@ -8,8 +8,8 @@ import React, {
 } from 'react';
 
 import { actions } from '../state/actions';
-import { IModule, ModuleSelectionState } from '../state/types/module';
-import { useDispatch } from '../state';
+import { IModule } from '../state/types/module';
+import { useDispatchContext, useStateContext } from '../state';
 
 import { OscillatorModule } from './oscillator';
 import { GainModule } from './gain';
@@ -17,25 +17,36 @@ import { DelayModule } from './delay';
 import { FilterModule } from './filter';
 import { OutputModule } from './output';
 
+const moveContainerRef = (
+	containerRef: React.MutableRefObject<HTMLElement | null>,
+	x: number,
+	y: number
+) => {
+	requestAnimationFrame(() => {
+		if (containerRef.current) {
+			containerRef.current.style.left = `${x}px`;
+			containerRef.current.style.top = `${y}px`;
+		}
+	});
+};
+
 const useDragAndDrop = (
 	initialX: number,
 	initialY: number,
 	containerRef: React.MutableRefObject<HTMLElement | null>,
 	onUpdate: (x: number, y: number) => void
-) => {
+): [
+	React.MutableRefObject<boolean>,
+	(e: ReactMouseEvent<HTMLDivElement>) => void,
+	(x: number, y: number) => void
+] => {
 	const position = useRef({ x: initialX, y: initialY });
+	const isDraggingRef = useRef(false);
 
 	const { x, y } = position.current;
 
 	useEffect(() => {
-		if (containerRef.current) {
-			requestAnimationFrame(() => {
-				if (containerRef.current) {
-					containerRef.current.style.left = `${initialX}px`;
-					containerRef.current.style.top = `${initialY}px`;
-				}
-			});
-		}
+		moveContainerRef(containerRef, initialX, initialY);
 	}, [containerRef.current]);
 
 	const dragOffset = useRef({ x: 0, y: 0 });
@@ -44,12 +55,7 @@ const useDragAndDrop = (
 		const x = e.clientX - dragOffset.current.x;
 		const y = e.clientY - dragOffset.current.y;
 
-		requestAnimationFrame(() => {
-			if (containerRef.current) {
-				containerRef.current.style.left = `${x}px`;
-				containerRef.current.style.top = `${y}px`;
-			}
-		});
+		moveContainerRef(containerRef, x, y);
 
 		position.current = {
 			x,
@@ -62,11 +68,15 @@ const useDragAndDrop = (
 	const onMouseDown = (e: ReactMouseEvent<HTMLDivElement>) => {
 		// Prevent drawing a selection rectangle on the canvas
 		e.stopPropagation();
+
 		if (e.nativeEvent.button == 0) {
+			isDraggingRef.current = true;
+
 			dragOffset.current.x = e.clientX - x;
 			dragOffset.current.y = e.clientY - y;
 
 			const onMouseUp = (e: MouseEvent) => {
+				isDraggingRef.current = false;
 				dragOffset.current.x = 0;
 				dragOffset.current.y = 0;
 				document.body.removeEventListener('mouseup', onMouseUp);
@@ -78,7 +88,15 @@ const useDragAndDrop = (
 		}
 	};
 
-	return onMouseDown;
+	const { current: setPosition } = useRef((x: number, y: number) => {
+		position.current = {
+			x,
+			y
+		};
+		moveContainerRef(containerRef, x, y);
+	});
+
+	return [isDraggingRef, onMouseDown, setPosition];
 };
 
 const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
@@ -108,7 +126,8 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 	module
 }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const dispatch = useDispatch();
+	const { selectedModuleKeys, selectionPending } = useStateContext();
+	const dispatch = useDispatchContext();
 
 	const onUpdatePosition = useCallback(
 		(x: number, y: number) => {
@@ -117,26 +136,50 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 		[dispatch, module.moduleKey]
 	);
 
-	const selectionState = useMemo(() => {
-		switch (module.selectionState) {
-			case ModuleSelectionState.SELECTED:
-				return 'selected';
-			case ModuleSelectionState.POTENTIALLY_SELECTED:
-				return 'potentially_selected';
-			case ModuleSelectionState.UNSELECTED:
-				return 'unselected';
+	const [isDraggingRef, onMouseDown, setPosition] = useDragAndDrop(
+		module.x,
+		module.y,
+		containerRef,
+		onUpdatePosition
+	);
+
+	useEffect(() => {
+		if (!isDraggingRef.current) {
+			setPosition(module.x, module.y);
 		}
-	}, [module.selectionState]);
+	}, [isDraggingRef.current, module.x, module.y]);
+
+	const currentlySelected = useMemo(
+		() => selectedModuleKeys.has(module.moduleKey),
+		[selectedModuleKeys, module.moduleKey]
+	);
+
+	const selectionStateString = currentlySelected
+		? selectionPending
+			? 'selection_pending'
+			: 'selected'
+		: 'unselected';
+
+	const onClick = useCallback(
+		(e: React.MouseEvent<HTMLDivElement>) => {
+			const shiftClick = e.shiftKey;
+
+			if (shiftClick && currentlySelected) {
+				dispatch(actions.deselectModuleAction(module.moduleKey));
+			} else if (shiftClick) {
+				dispatch(actions.selectModuleAction(module.moduleKey));
+			} else if (!currentlySelected) {
+				dispatch(actions.selectSingleModuleAction(module.moduleKey));
+			}
+		},
+		[currentlySelected, dispatch, module.moduleKey, selectedModuleKeys]
+	);
 
 	return (
 		<div
-			className={`module ${selectionState}`}
-			onMouseDown={useDragAndDrop(
-				module.x,
-				module.y,
-				containerRef,
-				onUpdatePosition
-			)}
+			className={`module ${selectionStateString}`}
+			onMouseDown={onMouseDown}
+			onClick={onClick}
 			style={{
 				width: module.width,
 				height: module.height

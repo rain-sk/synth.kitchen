@@ -34,12 +34,6 @@ export interface IModuleState extends Record<ModuleType, any> {
 	};
 }
 
-export enum ModuleSelectionState {
-	POTENTIALLY_SELECTED,
-	SELECTED,
-	UNSELECTED
-}
-
 export type IModule<T extends ModuleType = ModuleType> = {
 	moduleKey: string;
 	type: T;
@@ -47,7 +41,6 @@ export type IModule<T extends ModuleType = ModuleType> = {
 	y: number;
 	width: number;
 	height: number;
-	selectionState: ModuleSelectionState;
 	state?: IModuleState[T];
 };
 

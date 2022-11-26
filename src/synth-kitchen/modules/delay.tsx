@@ -5,7 +5,7 @@ import { audioContext } from '../audio-context';
 
 import { actions } from '../state/actions';
 import { IModule, IModuleState } from '../state/types/module';
-import { useDispatch } from '../state';
+import { useDispatchContext } from '../state';
 
 const delayStateFromNode = (
 	node: IDelayNode<IAudioContext>
@@ -38,7 +38,7 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 		initDelayState(delay, module.state)
 	);
 
-	const dispatch = useDispatch();
+	const dispatch = useDispatchContext();
 
 	useEffect(() => {
 		if (state) {

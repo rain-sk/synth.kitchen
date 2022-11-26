@@ -5,15 +5,17 @@ import React, {
 	useRef,
 	useState
 } from 'react';
+import { useDispatchContext } from '../state';
 
-import { actions, IAction } from './state/actions';
-import { SelectionDragType } from './state/actions/selection-drag';
-import { INVALID_POSITION } from './state/types/state';
+import { actions, IAction } from '../state/actions';
+import { SelectionDragType } from '../state/actions/selection-drag';
+import { INVALID_POSITION } from '../state/types/state';
 
 export const Canvas: React.FC<{
 	children: React.ReactNode;
-	dispatch: React.Dispatch<IAction>;
-}> = ({ children, dispatch }) => {
+}> = ({ children }) => {
+	const dispatch = useDispatchContext();
+
 	const containerRef = useRef<HTMLElement | null>(null);
 	const canvasRef = useRef<{
 		canvas: HTMLCanvasElement;

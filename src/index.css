@@ -43,6 +43,11 @@ main {
 	border: 1px solid rgba(255, 255, 255, 1);
 }
 
-.module.potentially_selected {
+.module.selection_pending {
 	border: 1px dashed rgba(255, 255, 255, 0.75);
+}
+
+.module.selected,
+.module.selection_pending {
+	z-index: 10;
 }
