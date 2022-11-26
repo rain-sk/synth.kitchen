@@ -2,6 +2,7 @@ import React, {
 	MouseEvent as ReactMouseEvent,
 	useCallback,
 	useEffect,
+	useMemo,
 	useRef,
 	useState
 } from 'react';
@@ -116,7 +117,7 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 		[dispatch, module.moduleKey]
 	);
 
-	const selectionState = () => {
+	const selectionState = useMemo(() => {
 		switch (module.selectionState) {
 			case ModuleSelectionState.SELECTED:
 				return 'selected';
@@ -125,11 +126,11 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 			case ModuleSelectionState.UNSELECTED:
 				return 'unselected';
 		}
-	};
+	}, [module.selectionState]);
 
 	return (
 		<div
-			className={`module ${selectionState()}`}
+			className={`module ${selectionState}`}
 			onMouseDown={useDragAndDrop(
 				module.x,
 				module.y,
