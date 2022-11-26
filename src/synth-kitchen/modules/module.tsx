@@ -65,7 +65,7 @@ const useDragAndDrop = (
 		onUpdate(x, y);
 	});
 
-	const onMouseDown = (e: ReactMouseEvent<HTMLDivElement>) => {
+	const startDragging = (e: ReactMouseEvent<HTMLDivElement>) => {
 		// Prevent drawing a selection rectangle on the canvas
 		e.stopPropagation();
 
@@ -96,7 +96,7 @@ const useDragAndDrop = (
 		moveContainerRef(containerRef, x, y);
 	});
 
-	return [isDraggingRef, onMouseDown, setPosition];
+	return [isDraggingRef, startDragging, setPosition];
 };
 
 const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
@@ -136,7 +136,7 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 		[dispatch, module.moduleKey]
 	);
 
-	const [isDraggingRef, onMouseDown, setPosition] = useDragAndDrop(
+	const [isDraggingRef, startDragging, setPosition] = useDragAndDrop(
 		module.x,
 		module.y,
 		containerRef,
@@ -160,7 +160,7 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 			: 'selected'
 		: 'unselected';
 
-	const onClick = useCallback(
+	const onMouseDown = useCallback(
 		(e: React.MouseEvent<HTMLDivElement>) => {
 			const shiftClick = e.shiftKey;
 
@@ -171,15 +171,22 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 			} else if (!currentlySelected) {
 				dispatch(actions.selectSingleModuleAction(module.moduleKey));
 			}
+
+			startDragging(e);
 		},
-		[currentlySelected, dispatch, module.moduleKey, selectedModuleKeys]
+		[
+			currentlySelected,
+			dispatch,
+			module.moduleKey,
+			startDragging,
+			selectedModuleKeys
+		]
 	);
 
 	return (
 		<div
 			className={`module ${selectionStateString}`}
 			onMouseDown={onMouseDown}
-			onClick={onClick}
 			style={{
 				width: module.width,
 				height: module.height
