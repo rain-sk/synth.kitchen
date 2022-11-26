@@ -10,8 +10,7 @@
 		"webmidi": "^3.0.22"
 	},
 	"scripts": {
-		"start": "vite",
-		"build": "npx snowpack build"
+		"start": "vite"
 	},
 	"devDependencies": {
 		"@types/react": "^18.0.25",
