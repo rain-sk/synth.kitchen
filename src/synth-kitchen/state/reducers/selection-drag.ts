@@ -1,4 +1,4 @@
-import { INVALID_POSITION, IState } from '../types/state';
+import { INVALID_POSITION, IState, Modifier } from '../types/state';
 import { ISelectionDrag, SelectionDragType } from '../actions/selection-drag';
 import { IModule } from '../types/module';
 
@@ -59,27 +59,37 @@ export const selectionDrag: React.Reducer<IState, ISelectionDrag> = (
 	action
 ) => {
 	const { position } = action.payload;
+
+	const shift = (state.heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
+
 	switch (action.payload.type) {
 		case SelectionDragType.DRAG_START: {
 			return {
 				...state,
 				mouseDragStartPosition: position,
 				mouseDragPosition: position,
-				selectedModuleKeys: new Set(),
+				selectedModuleKeys: shift ? state.selectedModuleKeys : new Set(),
 				selectionPending: true
 			};
 		}
 		case SelectionDragType.DRAG_CONTINUE: {
 			const { mouseDragStartPosition, modules } = state;
 
+			const modulesInDrag = modulesInRange(
+				mouseDragStartPosition,
+				position,
+				Object.values(modules)
+			);
+
+			const selectedModuleKeys =
+				(state.heldModifiers & Modifier.SHIFT) == Modifier.SHIFT
+					? new Set([...modulesInDrag, ...state.selectedModuleKeys])
+					: modulesInDrag;
+
 			return {
 				...state,
 				mouseDragPosition: position,
-				selectedModuleKeys: modulesInRange(
-					mouseDragStartPosition,
-					position,
-					Object.values(modules)
-				)
+				selectedModuleKeys
 			};
 		}
 		case SelectionDragType.DRAG_END: {
