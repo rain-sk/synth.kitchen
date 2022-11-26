@@ -162,6 +162,8 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 			: 'selected'
 		: 'unselected';
 
+	const draggingStateString = isDraggingRef.current ? 'dragging' : '';
+
 	const onMouseDown = useCallback(
 		(e: React.MouseEvent<HTMLDivElement>) => {
 			const shiftClick = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
@@ -187,7 +189,7 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 
 	return (
 		<div
-			className={`module ${selectionStateString}`}
+			className={`module ${selectionStateString} ${draggingStateString}`}
 			onMouseDown={onMouseDown}
 			style={{
 				width: module.width,
