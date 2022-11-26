@@ -11,6 +11,11 @@ import { actions, IAction } from '../state/actions';
 import { SelectionDragType } from '../state/actions/selection-drag';
 import { INVALID_POSITION } from '../state/types/state';
 
+const positionFromMouseEvent = (e: MouseEvent): [number, number] => [
+	e.clientX + document.documentElement.scrollLeft,
+	e.clientY + document.documentElement.scrollTop
+];
+
 export const Canvas: React.FC<{
 	children: React.ReactNode;
 }> = ({ children }) => {
@@ -87,15 +92,15 @@ export const Canvas: React.FC<{
 	}, [initialized, containerRef.current, canvasRef.current]);
 
 	const { current: onDrag } = useRef((e: MouseEvent) => {
-		selectionEnd.current = [e.clientX, e.clientY];
+		selectionEnd.current = positionFromMouseEvent(e);
 
 		requestAnimationFrame(drawSelection);
 
-		dispatch(actions.selectionDragContinueAction([e.clientX, e.clientY]));
+		dispatch(actions.selectionDragContinueAction(selectionEnd.current));
 	});
 
 	const { current: onMouseUp } = useRef((e: MouseEvent) => {
-		dispatch(actions.selectionDragEndAction([e.clientX, e.clientY]));
+		dispatch(actions.selectionDragEndAction(positionFromMouseEvent(e)));
 
 		clearSelection();
 
@@ -105,10 +110,11 @@ export const Canvas: React.FC<{
 
 	const { current: onMouseDown } = useRef(
 		(e: ReactMouseEvent<HTMLDivElement>) => {
-			selectionStart.current = [e.clientX, e.clientY];
-			selectionEnd.current = [e.clientX, e.clientY];
+			const position = positionFromMouseEvent(e.nativeEvent);
+			selectionStart.current = position;
+			selectionEnd.current = position;
 
-			dispatch(actions.selectionDragStartAction(selectionStart.current));
+			dispatch(actions.selectionDragStartAction(position));
 
 			document.body.addEventListener('mouseup', onMouseUp);
 			document.body.addEventListener('mousemove', onDrag);
