@@ -1,18 +1,19 @@
-import { AudioContext } from "standardized-audio-context";
+import { AudioContext } from 'standardized-audio-context';
 
 export const audioContext = new AudioContext();
 
 let resume: any = () => {
-	document.removeEventListener('mousemove', resume, false);
-	document.removeEventListener('touchmove', resume, false);
-	document.removeEventListener('touchstart', resume, false);
-
 	if ('resume' in audioContext) {
-        audioContext.resume();
-        console.log(audioContext);
-	}
+		document.removeEventListener('mousemove', resume, false);
+		document.removeEventListener('touchmove', resume, false);
+		document.removeEventListener('touchstart', resume, false);
 
-	resume = undefined;
+		audioContext.resume();
+
+		resume = undefined;
+	} else {
+		console.error('Unable to resume AudioContext');
+	}
 };
 
 document.addEventListener('mousemove', resume, false);
