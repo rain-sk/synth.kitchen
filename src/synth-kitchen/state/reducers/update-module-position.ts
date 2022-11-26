@@ -11,10 +11,10 @@ export const updateModulePosition: React.Reducer<
 		? state.selectedModuleKeys
 		: new Set([moduleKey]);
 
-	const deltaX = state.modules[moduleKey].x - x;
-	const deltaY = state.modules[moduleKey].y - y;
+	const deltaX = x - state.modules[moduleKey].x;
+	const deltaY = y - state.modules[moduleKey].y;
 
-	const newState = {
+	return {
 		...state,
 		modules: Object.fromEntries(
 			Object.entries(state.modules).map(([moduleKey, module]) => [
@@ -22,14 +22,12 @@ export const updateModulePosition: React.Reducer<
 				selectedModuleKeys.has(moduleKey)
 					? {
 							...module,
-							x: module.x - deltaX,
-							y: module.y - deltaY
+							x: module.x + deltaX,
+							y: module.y + deltaY
 					  }
 					: module
 			])
 		),
 		selectedModuleKeys
 	};
-
-	return newState;
 };
