@@ -1,11 +1,16 @@
 import React, { useEffect, useRef } from 'react';
-import { useDispatchContext } from '../state';
+import { keyCodeMovementMap } from '../constants/key';
+import { useDispatchContext, useStateContext } from '../state';
 import { actions } from '../state/actions';
 
 export const KeyHandler: React.FC = () => {
+	const { selectedModuleKeys } = useStateContext();
 	const dispatch = useDispatchContext();
 
 	const { current: onKeyDown } = useRef((e: KeyboardEvent) => {
+		if (e.keyCode in keyCodeMovementMap && selectedModuleKeys.size > 0) {
+			e.preventDefault();
+		}
 		dispatch(actions.keyDownAction(e.keyCode));
 	});
 
