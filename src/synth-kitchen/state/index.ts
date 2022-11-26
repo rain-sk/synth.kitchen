@@ -21,7 +21,6 @@ export const reducer = (state: IState, action: IAction) => {
 			}
 		}
 	})();
-	console.log(newState);
 	return newState;
 };
 
