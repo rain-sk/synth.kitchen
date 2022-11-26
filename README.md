@@ -18,8 +18,15 @@ MVP:
 
 ### Keyboard Nav
 
+MVP:
+
 - [x] Some way to move selection from module to module using only the keyboard
 - [ ] Some way to go in-to/out-of a module's controls
+
+Stretch goal:
+
+- [ ] A way to navigate structurally, based on existing connections
+- [ ] A way to navigate independent of structure/tab-order (search?)
 
 ### Module UIs
 
