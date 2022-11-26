@@ -79,4 +79,8 @@ Stretch Goals:
 - [ ] sync with external MIDI clocks
 - [ ] Ableton Link support
 
-###
+### Saving/Loading
+
+MVP:
+
+- [ ] export/import files containing base64-encoded JSON-stringified IState.modules
