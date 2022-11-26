@@ -3,19 +3,18 @@ import React, {
 	useCallback,
 	useEffect,
 	useMemo,
-	useRef,
-	useState
+	useRef
 } from 'react';
 
+import { useDispatchContext, useStateContext } from '../state';
 import { actions } from '../state/actions';
 import { IModule } from '../state/types/module';
-import { useDispatchContext, useStateContext } from '../state';
 
-import { OscillatorModule } from './oscillator';
-import { GainModule } from './gain';
-import { DelayModule } from './delay';
-import { FilterModule } from './filter';
-import { OutputModule } from './output';
+import { OscillatorModule } from '../modules/oscillator';
+import { GainModule } from '../modules/gain';
+import { DelayModule } from '../modules/delay';
+import { FilterModule } from '../modules/filter';
+import { OutputModule } from '../modules/output';
 import { Modifier } from '../state/types/state';
 
 const moveContainerRef = (
@@ -113,12 +112,7 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 		case 'OUTPUT':
 			return <OutputModule module={module as IModule<'OUTPUT'>} />;
 		default: {
-			return (
-				<>
-					<p>{JSON.stringify(module)}</p>
-					<p>{module.moduleKey}</p>
-				</>
-			);
+			return <p>{module.moduleKey}</p>;
 		}
 	}
 };
@@ -164,6 +158,10 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 
 	const draggingStateString = isDraggingRef.current ? 'dragging' : '';
 
+	const onFocus = useCallback(() => {
+		dispatch(actions.selectSingleModuleAction(module.moduleKey));
+	}, [dispatch, module.moduleKey]);
+
 	const onMouseDown = useCallback(
 		(e: React.MouseEvent<HTMLDivElement>) => {
 			const shiftClick = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
@@ -173,7 +171,7 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 			} else if (shiftClick) {
 				dispatch(actions.selectModuleAction(module.moduleKey));
 			} else {
-				dispatch(actions.selectSingleModuleAction(module.moduleKey));
+				containerRef.current?.focus();
 			}
 
 			startDragging(e);
@@ -186,10 +184,6 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 			selectedModuleKeys
 		]
 	);
-
-	const onFocus = useCallback(() => {
-		dispatch(actions.selectSingleModuleAction(module.moduleKey));
-	}, [dispatch, module.moduleKey]);
 
 	return (
 		<div

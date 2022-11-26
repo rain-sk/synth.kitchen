@@ -10,6 +10,9 @@ export const reducer = (state: IState, action: IAction) => {
 			case 'KeyboardEvent': {
 				return reducers.keyboardEvent(state, action);
 			}
+			case 'LoadPatch': {
+				return reducers.loadPatch(state, action);
+			}
 			case 'SelectionDrag': {
 				return reducers.selectionDrag(state, action);
 			}
@@ -27,6 +30,7 @@ export const reducer = (state: IState, action: IAction) => {
 			}
 		}
 	})();
+	console.log(newState);
 	return newState;
 };
 

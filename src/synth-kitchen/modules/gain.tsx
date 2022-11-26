@@ -44,12 +44,5 @@ export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 
 	const enabled = state != undefined;
 
-	return enabled ? (
-		<>
-			<p>{JSON.stringify(module)}</p>
-			<p>{JSON.stringify(state)}</p>
-		</>
-	) : (
-		<p>loading...</p>
-	);
+	return enabled ? <p>{module.moduleKey}</p> : <p>loading...</p>;
 };

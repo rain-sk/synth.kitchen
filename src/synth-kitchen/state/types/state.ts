@@ -19,6 +19,14 @@ export type IState = {
 export const initialState: IState = {
 	heldModifiers: Modifier.NONE,
 	modules: {
+		def: {
+			moduleKey: 'def',
+			type: 'FILTER',
+			x: Math.round(Math.random() * 800),
+			y: Math.round(Math.random() * 800),
+			width: 200,
+			height: 200
+		},
 		GLOBAL_OUT: {
 			moduleKey: 'GLOBAL_OUT',
 			type: 'OUTPUT',
@@ -27,14 +35,6 @@ export const initialState: IState = {
 			width: 200,
 			height: 200,
 			state: { gain: 1 }
-		},
-		def: {
-			moduleKey: 'def',
-			type: 'FILTER',
-			x: Math.round(Math.random() * 800),
-			y: Math.round(Math.random() * 800),
-			width: 200,
-			height: 200
 		},
 		'123': {
 			moduleKey: '123',

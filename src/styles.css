@@ -30,6 +30,12 @@ main {
 	width: inherit;
 }
 
+canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
 .module {
 	background: #4f4658;
 	position: absolute;
@@ -55,4 +61,31 @@ main {
 .module.selected,
 .module.selection_pending {
 	z-index: 10;
+}
+
+nav {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	z-index: 20;
+}
+
+nav > section {
+	display: flex;
+	flex-direction: row;
+	gap: 0.5rem;
+	padding: 0 0.5rem;
+}
+
+#load {
+	display: flex;
+	align-items: center;
+}
+
+input[type='file'] {
+	display: none;
 }

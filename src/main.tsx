@@ -4,7 +4,8 @@ import { WebMidi } from 'webmidi';
 
 import { Kitchen } from './synth-kitchen/kitchen';
 
-import './index.css';
+import './reset.css';
+import './styles.css';
 
 WebMidi.enable()
 	.catch((err: string) => alert(err))

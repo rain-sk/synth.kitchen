@@ -4,6 +4,7 @@ import { KeyHandler } from './components/key-handler';
 import { ModuleCanvas } from './components/module-canvas';
 import { DispatchContext, reducer, StateContext } from './state';
 import { initialState } from './state/types/state';
+import { Toolbar } from './components/toolbar';
 
 export const Kitchen: React.FC = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
@@ -11,6 +12,7 @@ export const Kitchen: React.FC = () => {
 	return (
 		<StateContext.Provider value={state}>
 			<DispatchContext.Provider value={dispatch}>
+				<Toolbar />
 				<ResizableCanvas drawOnTop={false}>
 					<KeyHandler />
 					<ModuleCanvas modules={state.modules} />

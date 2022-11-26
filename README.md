@@ -10,6 +10,7 @@ The GUI should be inviting and feel natural.
 
 MVP:
 
+- [ ] don't spam requestAnimationFrame
 - [ ] modify the existing selection properly when using shift+drag
 - [ ] stop the viewport from growing for no apparent reason
 - [ ] adjust the viewport size to something reasonable during drag-continue and drag-end events
@@ -21,10 +22,10 @@ MVP:
 MVP:
 
 - [x] Some way to move selection from module to module using only the keyboard
-- [ ] Some way to go in-to/out-of a module's controls
 
 Stretch goal:
 
+- [ ] Some way to go in-to/out-of a module's controls
 - [ ] A way to navigate structurally, based on existing connections
 - [ ] A way to navigate independent of structure/tab-order (search?)
 
@@ -55,6 +56,19 @@ Stretch Goals:
 - [ ] connector inputs have some kind of gain control
 - [ ] connections give some visual feedback of what's passing through them
 
+### Saving/Loading
+
+MVP:
+
+- [x] export/import files containing JSON-stringified IState.modules
+- [ ] export/import files including connection state
+- [ ] catch and handle parse errors
+- [ ] catch and handle a potentially-malformed state
+
+Stretch goal:
+
+- [ ] ability define custom modules based on patches
+
 ### MIDI
 
 MVP:
@@ -78,9 +92,3 @@ Stretch Goals:
 
 - [ ] sync with external MIDI clocks
 - [ ] Ableton Link support
-
-### Saving/Loading
-
-MVP:
-
-- [ ] export/import files containing base64-encoded JSON-stringified IState.modules

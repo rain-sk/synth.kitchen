@@ -1,4 +1,5 @@
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
+import { ILoadPatch, loadPatchAction } from './load-patch';
 import {
 	deselectModuleAction,
 	ISelectModule,
@@ -22,6 +23,7 @@ import {
 
 export type IAction =
 	| IKeyboardEvent
+	| ILoadPatch
 	| ISelectionDrag
 	| ISelectModule
 	| IUpdateModulePosition
@@ -31,6 +33,7 @@ export const actions = {
 	deselectModuleAction,
 	keyDownAction,
 	keyUpAction,
+	loadPatchAction,
 	selectionDragContinueAction,
 	selectionDragEndAction,
 	selectionDragStartAction,
