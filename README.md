@@ -2,34 +2,66 @@
 
 In-browser modular synthesis with Web Audio and Web MIDI.
 
-# Why program synthesizers in the browser?
+## Plans
 
-Because modular synthesizers are expensive, and Web Audio makes generating and processing audio possible anywhere you have a computer with a modern browser.
+### Drag-And-Drop Canvas
 
-# Project goals
+The GUI should be inviting and feel natural.
 
-Synth Kitchen is built to provide newcomers to modular synthesis with a simple-to-understand interface for learning about and experimenting with synthesizers and the principles of modular synthesis. It is also built to be used by musicians and synth programmers.
+MVP:
 
-Roadmap:
+- [ ] modify the existing selection properly when using shift+drag
+- [ ] stop the viewport from growing for no apparent reason
+- [ ] adjust the viewport size to something reasonable during drag-continue and drag-end events
+- [ ] scroll when dragging a module past the edge of the viewport
+- [ ] handle dragging up/left in a way that feels equivalent as dragging down/right
 
-- [ ] Serializable / Deserializable State - enable import / export of synth configurations in json
-- - [ ] Develop the `aud-io` library to a point where it supports arbitrary import/export
-- - [ ] Support custom "composite" nodes (including the ability to port 3rd party nodes)
-- [ ] Global timing, to synchronise sequencers and other time-based modules
-- [ ] Single `Module` component, which integrates with `aud-io`'s data model
-- [ ] Additional Modules
-- - [ ] Envelope controlled by noteon/noteoff messages
-- [ ] Web MIDI Support
-- - [x] noteon/noteoff to control modules
-- - [ ] control-change (cc) to control parameters
-- - [ ] sync with exteral hardware/software
-- [ ] Accessibility
-- - [ ] Screen Readers - highly descriptive labels for UI elements
-- - [ ] Keyboard Users - intuitive, functional UI for keyboard users ( [shift +] tab, space, enter, arrow keys )
-- [ ] User accounts so people can save and share patches
+### Keyboard Nav
 
-Pipe Dreams:
+Some way to move selection from module to module using only the keyboard...
 
-- Recording and downloading sounds produced in the app
-- Support samplers (AudioBufferNode or uploaded mp3 / ogg) to produce music using existing sounds
-- Record samples via microphone and loop / process them in real time
+### Module UIs
+
+MVP:
+
+- [ ] modules have names and can be renamed
+- [ ] A-rate audio params have a connector, text-input, and slider
+- [ ] K-rate audio params have a relevant input
+- [ ] signal-flow is represented as left-to-right
+
+Stretch Goals:
+
+- [ ] sequencer is cool
+- [ ] modules look nice
+- [ ] modules have colors and can be re-colored
+
+### Connections
+
+MVP:
+
+- [ ] a way to connect/disconnect modules with the mouse
+- [ ] a way to connect/disconnect modules with the keyboard
+
+Stretch Goals:
+
+- [ ] connector inputs have some kind of gain control
+- [ ] connections give some visual feedback of what's passing through them
+
+### MIDI
+
+MVP:
+
+- [ ] MidiDevice module
+- [ ] MidiOscillator module
+
+Stretch Goals:
+
+- [ ] MidiEnvelope module
+- [ ] MidiSequencer module
+- [ ] MidiSequencer module can output to external devices (latency compensation?)
+
+### Global Sync
+
+MVP:
+
+- [ ] some way™️ to sync sequencers, envelopes, etc.
