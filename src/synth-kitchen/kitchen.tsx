@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import { Canvas } from './components/canvas';
+import { ResizableCanvas } from './components/resizable-canvas';
 import { KeyHandler } from './components/key-handler';
 import { Module } from './modules/module';
 import { DispatchContext, reducer, StateContext } from './state';
@@ -11,12 +11,9 @@ export const Kitchen: React.FC = () => {
 	return (
 		<StateContext.Provider value={state}>
 			<DispatchContext.Provider value={dispatch}>
-				<Canvas>
+				<ResizableCanvas drawOnTop={false}>
 					<KeyHandler />
-					{Object.values(state.modules).map((module) => (
-						<Module key={module.moduleKey} module={module} />
-					))}
-				</Canvas>
+				</ResizableCanvas>
 			</DispatchContext.Provider>
 		</StateContext.Provider>
 	);

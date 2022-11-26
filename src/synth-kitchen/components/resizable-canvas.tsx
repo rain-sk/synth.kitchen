@@ -7,8 +7,7 @@ import React, {
 } from 'react';
 import { useDispatchContext } from '../state';
 
-import { actions, IAction } from '../state/actions';
-import { SelectionDragType } from '../state/actions/selection-drag';
+import { actions } from '../state/actions';
 import { INVALID_POSITION } from '../state/types/state';
 
 const positionFromMouseEvent = (e: MouseEvent): [number, number] => [
@@ -16,9 +15,10 @@ const positionFromMouseEvent = (e: MouseEvent): [number, number] => [
 	e.clientY + document.documentElement.scrollTop
 ];
 
-export const Canvas: React.FC<{
+export const ResizableCanvas: React.FC<{
+	drawOnTop: boolean;
 	children: React.ReactNode;
-}> = ({ children }) => {
+}> = ({ drawOnTop, children }) => {
 	const dispatch = useDispatchContext();
 
 	const containerRef = useRef<HTMLElement | null>(null);
@@ -121,6 +121,22 @@ export const Canvas: React.FC<{
 		}
 	);
 
+	const HtmlCanvas = () => (
+		<canvas
+			ref={(canvas) => {
+				if (canvas) {
+					const context2d = canvas.getContext('2d');
+					if (context2d) {
+						canvasRef.current = { canvas, context2d };
+						if (containerRef.current && canvasRef.current) {
+							setInitialized(true);
+						}
+					}
+				}
+			}}
+		/>
+	);
+
 	return (
 		<main
 			ref={(main) => {
@@ -131,20 +147,9 @@ export const Canvas: React.FC<{
 			}}
 			onMouseDown={initialized ? onMouseDown : () => {}}
 		>
-			<canvas
-				ref={(canvas) => {
-					if (canvas) {
-						const context2d = canvas.getContext('2d');
-						if (context2d) {
-							canvasRef.current = { canvas, context2d };
-							if (containerRef.current && canvasRef.current) {
-								setInitialized(true);
-							}
-						}
-					}
-				}}
-			/>
+			{!drawOnTop && <HtmlCanvas />}
 			{children}
+			{drawOnTop && <HtmlCanvas />}
 		</main>
 	);
 };
