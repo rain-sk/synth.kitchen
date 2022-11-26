@@ -1,36 +1,6 @@
-import { IState, Modifier } from '../types/state';
+import { IState } from '../types/state';
 import { IKeyboardEvent, KeyboardEventType } from '../actions/keyboard-event';
-
-enum KeyCode {
-	SHIFT = 16,
-	ARROW_LEFT = 37,
-	ARROW_UP = 38,
-	ARROW_RIGHT = 39,
-	ARROW_DOWN = 40
-}
-
-const keyCodeModifierMap: Record<number, Modifier> = {
-	[KeyCode.SHIFT]: Modifier.SHIFT
-};
-
-const keyCodeMovementMap: Record<number, { deltaX: number; deltaY: number }> = {
-	[KeyCode.ARROW_LEFT]: {
-		deltaX: -15,
-		deltaY: 0
-	},
-	[KeyCode.ARROW_UP]: {
-		deltaX: 0,
-		deltaY: -15
-	},
-	[KeyCode.ARROW_RIGHT]: {
-		deltaX: 15,
-		deltaY: 0
-	},
-	[KeyCode.ARROW_DOWN]: {
-		deltaX: 0,
-		deltaY: 15
-	}
-};
+import { keyCodeModifierMap, keyCodeMovementMap } from '../../constants/key';
 
 export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 	state,
