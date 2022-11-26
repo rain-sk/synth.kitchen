@@ -11,6 +11,10 @@ import { IModule } from '../state/types/module';
 import { useDispatch } from '../state';
 
 import { OscillatorModule } from './oscillator';
+import { GainModule } from './gain';
+import { DelayModule } from './delay';
+import { FilterModule } from './filter';
+import { OutputModule } from './output';
 
 const useDragAndDrop = (
 	initialX: number,
@@ -74,8 +78,16 @@ const useDragAndDrop = (
 
 const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 	switch (module.type) {
+		case 'DELAY':
+			return <DelayModule module={module as IModule<'DELAY'>} />;
+		case 'FILTER':
+			return <FilterModule module={module as IModule<'FILTER'>} />;
+		case 'GAIN':
+			return <GainModule module={module as IModule<'GAIN'>} />;
 		case 'OSCILLATOR':
 			return <OscillatorModule module={module as IModule<'OSCILLATOR'>} />;
+		case 'OUTPUT':
+			return <OutputModule module={module as IModule<'OUTPUT'>} />;
 		default: {
 			return (
 				<>

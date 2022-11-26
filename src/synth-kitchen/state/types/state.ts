@@ -17,7 +17,10 @@ export const initialState: IState = {
 			type: 'OUTPUT',
 			x: Math.round(Math.random() * 800),
 			y: Math.round(Math.random() * 800),
-			gain: 1
+			width: 200,
+			height: 200,
+			selectionState: ModuleSelectionState.UNSELECTED,
+			state: { gain: 1 }
 		},
 		def: {
 			moduleKey: 'def',
