@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { keyCodeMovementMap } from '../constants/key';
-import { useDispatchContext } from '../contexts/dispatch';
-import { useStateContext } from '../contexts/state';
+import { useDispatchContext } from '../hooks/use-dispatch-context';
+import { useStateContext } from '../hooks/use-state-context';
 import { actions } from '../state/actions';
 
 export const KeyHandler: React.FC = () => {

@@ -4,8 +4,8 @@ import { actions } from '../state/actions';
 import { IPatch } from '../state/types/patch';
 import { KeyCode } from '../constants/key';
 import { ModuleType } from '../state/types/module';
-import { useDispatchContext } from '../contexts/dispatch';
-import { useStateContext } from '../contexts/state';
+import { useDispatchContext } from '../hooks/use-dispatch-context';
+import { useStateContext } from '../hooks/use-state-context';
 
 const moduleTypes: ModuleType[] = [
 	'DELAY',

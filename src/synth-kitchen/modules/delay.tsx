@@ -1,11 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import { IAudioContext, IDelayNode } from 'standardized-audio-context';
 import { audioContext } from '../audio';
-import { useDispatchContext } from '../contexts/dispatch';
 import { useModuleState } from '../hooks/use-module-state';
 
-import { actions } from '../state/actions';
 import { IModule, IModuleState } from '../state/types/module';
 
 const delayStateFromNode = (

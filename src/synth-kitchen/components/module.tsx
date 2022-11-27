@@ -15,9 +15,9 @@ import { DelayModule } from '../modules/delay';
 import { FilterModule } from '../modules/filter';
 import { OutputModule } from '../modules/output';
 import { Modifier } from '../state/types/state';
-import { useAnimationContext } from '../contexts/animation';
-import { useStateContext } from '../contexts/state';
-import { useDispatchContext } from '../contexts/dispatch';
+import { useDispatchContext } from '../hooks/use-dispatch-context';
+import { useStateContext } from '../hooks/use-state-context';
+import { useAnimationContext } from '../hooks/use-animation-context';
 
 const useDragAndDrop = (
 	initialX: number,

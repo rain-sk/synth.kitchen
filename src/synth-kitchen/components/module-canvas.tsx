@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Module } from './module';
 import { IModule } from '../state/types/module';
-import { useStateContext } from '../contexts/state';
+import { useStateContext } from '../hooks/use-state-context';
 
 export const ModuleCanvas: React.FC<{
 	modules: Record<string, IModule>;

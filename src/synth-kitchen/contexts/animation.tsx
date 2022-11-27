@@ -2,7 +2,9 @@ import React, { useCallback, useContext, useRef } from 'react';
 
 type AnimationCallback = () => void;
 
-const Context = React.createContext((callback: AnimationCallback) => {});
+export const AnimationContextInner = React.createContext(
+	(callback: AnimationCallback) => {}
+);
 
 export const AnimationContext: React.FC<{ children?: React.ReactNode }> = ({
 	children
@@ -26,10 +28,8 @@ export const AnimationContext: React.FC<{ children?: React.ReactNode }> = ({
 	);
 
 	return (
-		<Context.Provider value={queueAnimationCallback}>
+		<AnimationContextInner.Provider value={queueAnimationCallback}>
 			{children}
-		</Context.Provider>
+		</AnimationContextInner.Provider>
 	);
 };
-
-export const useAnimationContext = () => useContext(Context);

@@ -5,8 +5,8 @@ import React, {
 	useRef,
 	useState
 } from 'react';
-import { useAnimationContext } from '../contexts/animation';
-import { useDispatchContext } from '../contexts/dispatch';
+import { useAnimationContext } from '../hooks/use-animation-context';
+import { useDispatchContext } from '../hooks/use-dispatch-context';
 
 import { actions } from '../state/actions';
 import { INVALID_POSITION } from '../state/types/state';

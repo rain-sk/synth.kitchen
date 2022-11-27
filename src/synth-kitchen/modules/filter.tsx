@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import { IAudioContext, IBiquadFilterNode } from 'standardized-audio-context';
 import { audioContext } from '../audio';

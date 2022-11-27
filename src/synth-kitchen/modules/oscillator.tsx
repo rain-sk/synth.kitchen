@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 
 import { IAudioContext, IOscillatorNode } from 'standardized-audio-context';
 import { audioContext } from '../audio';
@@ -22,6 +22,8 @@ const initOscillatorState = (
 ) => {
 	oscillatorRef.current = audioContext.createOscillator();
 	oscillatorRef.current.start();
+
+	oscillatorRef.current.connect(audioContext.destination);
 
 	if (state) {
 		oscillatorRef.current.detune.setTargetAtTime(

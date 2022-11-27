@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatchContext } from '../contexts/dispatch';
 import { actions } from '../state/actions';
 import { IModuleState, ModuleType } from '../state/types/module';
+import { useDispatchContext } from './use-dispatch-context';
 
 export const useModuleState = <T extends ModuleType>(
 	initialState: IModuleState[T],
