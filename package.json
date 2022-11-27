@@ -11,6 +11,7 @@
 		"webmidi": "^3.0.22"
 	},
 	"scripts": {
+		"build": "vite build",
 		"start": "vite"
 	},
 	"devDependencies": {
