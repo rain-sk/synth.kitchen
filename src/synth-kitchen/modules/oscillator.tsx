@@ -2,9 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { IAudioContext, IOscillatorNode } from 'standardized-audio-context';
 import { audioContext } from '../audio';
-import { useDispatchContext } from '../contexts/dispatch';
+import { useModuleState } from '../hooks/use-module-state';
 
-import { actions } from '../state/actions';
 import { IModule, IModuleState } from '../state/types/module';
 
 const oscillatorStateFromNode = (
@@ -16,48 +15,41 @@ const oscillatorStateFromNode = (
 });
 
 const initOscillatorState = (
-	oscillator: React.MutableRefObject<
+	oscillatorRef: React.MutableRefObject<
 		IOscillatorNode<IAudioContext> | undefined
 	>,
 	state?: IModuleState['OSCILLATOR']
 ) => {
-	oscillator.current = audioContext.createOscillator();
-	oscillator.current.start();
+	oscillatorRef.current = audioContext.createOscillator();
+	oscillatorRef.current.start();
 
 	if (state) {
-		oscillator.current.detune.setTargetAtTime(
+		oscillatorRef.current.detune.setTargetAtTime(
 			state.detune,
 			audioContext.currentTime,
 			3
 		);
-		oscillator.current.frequency.setTargetAtTime(
+		oscillatorRef.current.frequency.setTargetAtTime(
 			state.frequency,
 			audioContext.currentTime,
 			3
 		);
-		oscillator.current.type = state.waveform;
+		oscillatorRef.current.type = state.waveform;
 
 		return state;
 	} else {
-		return oscillatorStateFromNode(oscillator.current);
+		return oscillatorStateFromNode(oscillatorRef.current);
 	}
 };
 
 export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 	module
 }) => {
-	const oscillator = useRef<IOscillatorNode<IAudioContext>>();
-	const [state /*setState*/] = useState<IModuleState['OSCILLATOR'] | undefined>(
-		initOscillatorState(oscillator, module.state)
+	const oscillatorRef = useRef<IOscillatorNode<IAudioContext>>();
+	const [state, setState] = useModuleState<'OSCILLATOR'>(
+		initOscillatorState(oscillatorRef, module.state),
+		module.moduleKey
 	);
-
-	const dispatch = useDispatchContext();
-
-	useEffect(() => {
-		if (state) {
-			dispatch(actions.updateModuleStateAction(module.moduleKey, state));
-		}
-	}, [state]);
 
 	const enabled = state != undefined;
 

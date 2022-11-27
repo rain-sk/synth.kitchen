@@ -2,9 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import { IAudioContext, IBiquadFilterNode } from 'standardized-audio-context';
 import { audioContext } from '../audio';
-import { useDispatchContext } from '../contexts/dispatch';
+import { useModuleState } from '../hooks/use-module-state';
 
-import { actions } from '../state/actions';
 import { IModule, IModuleState } from '../state/types/module';
 
 const filterStateFromNode = (
@@ -18,49 +17,44 @@ const filterStateFromNode = (
 });
 
 const initFilterState = (
-	filter: React.MutableRefObject<IBiquadFilterNode<IAudioContext> | undefined>,
+	filterRef: React.MutableRefObject<
+		IBiquadFilterNode<IAudioContext> | undefined
+	>,
 	state?: IModuleState['FILTER']
 ) => {
-	filter.current = audioContext.createBiquadFilter();
+	filterRef.current = audioContext.createBiquadFilter();
 
 	if (state) {
-		filter.current.frequency.setTargetAtTime(
+		filterRef.current.frequency.setTargetAtTime(
 			state.frequency,
 			audioContext.currentTime,
 			3
 		);
-		filter.current.detune.setTargetAtTime(
+		filterRef.current.detune.setTargetAtTime(
 			state.detune,
 			audioContext.currentTime,
 			3
 		);
-		filter.current.Q.setTargetAtTime(state.Q, audioContext.currentTime, 3);
-		filter.current.gain.setTargetAtTime(
+		filterRef.current.Q.setTargetAtTime(state.Q, audioContext.currentTime, 3);
+		filterRef.current.gain.setTargetAtTime(
 			state.gain,
 			audioContext.currentTime,
 			3
 		);
 		return state;
 	} else {
-		return filterStateFromNode(filter.current);
+		return filterStateFromNode(filterRef.current);
 	}
 };
 
 export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 	module
 }) => {
-	const filter = useRef<IBiquadFilterNode<IAudioContext>>();
-	const [state /*setState*/] = useState<IModuleState['FILTER']>(
-		initFilterState(filter, module.state)
+	const filterRef = useRef<IBiquadFilterNode<IAudioContext>>();
+	const [state, setState] = useModuleState<'FILTER'>(
+		initFilterState(filterRef, module.state),
+		module.moduleKey
 	);
-
-	const dispatch = useDispatchContext();
-
-	useEffect(() => {
-		if (state) {
-			dispatch(actions.updateModuleStateAction(module.moduleKey, state));
-		}
-	}, [state]);
 
 	const enabled = state != undefined;
 

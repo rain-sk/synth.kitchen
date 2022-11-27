@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { IAudioContext, IDelayNode } from 'standardized-audio-context';
 import { audioContext } from '../audio';
 import { useDispatchContext } from '../contexts/dispatch';
+import { useModuleState } from '../hooks/use-module-state';
 
 import { actions } from '../state/actions';
 import { IModule, IModuleState } from '../state/types/module';
@@ -14,37 +15,30 @@ const delayStateFromNode = (
 });
 
 const initDelayState = (
-	delay: React.MutableRefObject<IDelayNode<IAudioContext> | undefined>,
+	delayRef: React.MutableRefObject<IDelayNode<IAudioContext> | undefined>,
 	state?: IModuleState['DELAY']
 ) => {
-	delay.current = audioContext.createDelay();
+	delayRef.current = audioContext.createDelay();
 	if (state) {
-		delay.current.delayTime.setTargetAtTime(
+		delayRef.current.delayTime.setTargetAtTime(
 			state.delayTime,
 			audioContext.currentTime,
 			3
 		);
 		return state;
 	} else {
-		return delayStateFromNode(delay.current);
+		return delayStateFromNode(delayRef.current);
 	}
 };
 
 export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 	module
 }) => {
-	const delay = useRef<IDelayNode<IAudioContext>>();
-	const [state /*setState*/] = useState<IModuleState['DELAY']>(
-		initDelayState(delay, module.state)
+	const delayRef = useRef<IDelayNode<IAudioContext>>();
+	const [state, setState] = useModuleState<'DELAY'>(
+		initDelayState(delayRef, module.state),
+		module.moduleKey
 	);
-
-	const dispatch = useDispatchContext();
-
-	useEffect(() => {
-		if (state) {
-			dispatch(actions.updateModuleStateAction(module.moduleKey, state));
-		}
-	}, [state]);
 
 	const enabled = state != undefined;
 

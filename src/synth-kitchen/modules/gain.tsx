@@ -2,9 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import { IAudioContext, IGainNode } from 'standardized-audio-context';
 import { audioContext } from '../audio';
-import { useDispatchContext } from '../contexts/dispatch';
+import { useModuleState } from '../hooks/use-module-state';
 
-import { actions } from '../state/actions';
 import { IModule, IModuleState } from '../state/types/module';
 
 const gainStateFromNode = (
@@ -14,33 +13,30 @@ const gainStateFromNode = (
 });
 
 const initGainState = (
-	gain: React.MutableRefObject<IGainNode<IAudioContext> | undefined>,
+	gainRef: React.MutableRefObject<IGainNode<IAudioContext> | undefined>,
 	state?: IModuleState['GAIN']
 ) => {
-	gain.current = audioContext.createGain();
+	gainRef.current = audioContext.createGain();
 	if (state) {
-		gain.current.gain.setTargetAtTime(state.gain, audioContext.currentTime, 3);
+		gainRef.current.gain.setTargetAtTime(
+			state.gain,
+			audioContext.currentTime,
+			3
+		);
 		return state;
 	} else {
-		return gainStateFromNode(gain.current);
+		return gainStateFromNode(gainRef.current);
 	}
 };
 
 export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 	module
 }) => {
-	const gain = useRef<IGainNode<IAudioContext>>();
-	const [state /*setState*/] = useState<IModuleState['GAIN']>(
-		initGainState(gain, module.state)
+	const gainRef = useRef<IGainNode<IAudioContext>>();
+	const [state, setState] = useModuleState<'GAIN'>(
+		initGainState(gainRef, module.state),
+		module.moduleKey
 	);
-
-	const dispatch = useDispatchContext();
-
-	useEffect(() => {
-		if (state) {
-			dispatch(actions.updateModuleStateAction(module.moduleKey, state));
-		}
-	}, [state]);
 
 	const enabled = state != undefined;
 
