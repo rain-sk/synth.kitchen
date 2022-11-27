@@ -24,32 +24,14 @@ export const initialState: IState = {
 	isDraggingModules: false,
 	modules: {
 		'0': {
-			name: 'wah',
-			moduleKey: '0',
-			type: 'FILTER',
-			x: Math.round(Math.random() * 800),
-			y: Math.round(Math.random() * 800),
-			width: 200,
-			height: 200
-		},
-		'1': {
 			name: 'GLOBAL_OUT',
-			moduleKey: '1',
+			moduleKey: '0',
 			type: 'OUTPUT',
 			x: Math.round(Math.random() * 800),
 			y: Math.round(Math.random() * 800),
 			width: 200,
 			height: 200,
 			state: { gain: 1 }
-		},
-		'2': {
-			name: 'osc',
-			moduleKey: '2',
-			type: 'OSCILLATOR',
-			x: Math.round(Math.random() * 800),
-			y: Math.round(Math.random() * 800),
-			width: 200,
-			height: 200
 		}
 	},
 	mouseDragStartPosition: INVALID_POSITION,
