@@ -10,7 +10,7 @@ The GUI should be inviting and feel natural.
 
 MVP:
 
-- [ ] don't spam requestAnimationFrame
+- [x] don't spam requestAnimationFrame
 - [ ] modify the existing selection properly when using shift+drag
 - [ ] stop the viewport from growing for no apparent reason
 - [ ] adjust the viewport size to something reasonable during drag-continue and drag-end events

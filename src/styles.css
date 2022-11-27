@@ -36,6 +36,10 @@ canvas {
 	left: 0;
 }
 
+#module-canvas {
+	pointer-events: all;
+}
+
 .module {
 	background: #4f4658;
 	position: absolute;
@@ -43,7 +47,7 @@ canvas {
 	cursor: move;
 	border: 1px solid rgba(255, 255, 255, 0.25);
 	border-radius: 3px;
-	transition: all linear 0.1s;
+	transition: border linear 100ms, top linear 10ms, left linear 10ms;
 }
 
 .module.dragging {

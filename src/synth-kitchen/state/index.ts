@@ -30,16 +30,6 @@ export const reducer = (state: IState, action: IAction) => {
 			}
 		}
 	})();
-	console.log(newState);
+
 	return newState;
 };
-
-export const DispatchContext = React.createContext<React.Dispatch<IAction>>(
-	() => {}
-);
-
-export const useDispatchContext = () => useContext(DispatchContext);
-
-export const StateContext = React.createContext<IState>(initialState);
-
-export const useStateContext = () => useContext(StateContext);

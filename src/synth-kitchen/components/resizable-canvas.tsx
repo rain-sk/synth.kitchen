@@ -5,7 +5,8 @@ import React, {
 	useRef,
 	useState
 } from 'react';
-import { useDispatchContext } from '../state';
+import { useAnimationContext } from '../contexts/animation';
+import { useDispatchContext } from '../contexts/dispatch';
 
 import { actions } from '../state/actions';
 import { INVALID_POSITION } from '../state/types/state';
@@ -19,6 +20,7 @@ export const ResizableCanvas: React.FC<{
 	drawOnTop: boolean;
 	children: React.ReactNode;
 }> = ({ drawOnTop, children }) => {
+	const queueAnimationCallback = useAnimationContext();
 	const dispatch = useDispatchContext();
 
 	const containerRef = useRef<HTMLElement | null>(null);
@@ -60,7 +62,7 @@ export const ResizableCanvas: React.FC<{
 	});
 
 	const { current: onResize } = useRef(() => {
-		requestAnimationFrame(() => {
+		queueAnimationCallback(() => {
 			if (containerRef.current && canvasRef.current) {
 				const { width, height } = containerRef.current.getBoundingClientRect();
 
@@ -94,7 +96,7 @@ export const ResizableCanvas: React.FC<{
 	const { current: onDrag } = useRef((e: MouseEvent) => {
 		selectionEnd.current = positionFromMouseEvent(e);
 
-		requestAnimationFrame(drawSelection);
+		queueAnimationCallback(drawSelection);
 
 		dispatch(actions.selectionDragContinueAction(selectionEnd.current));
 	});
@@ -102,7 +104,7 @@ export const ResizableCanvas: React.FC<{
 	const { current: onMouseUp } = useRef((e: MouseEvent) => {
 		dispatch(actions.selectionDragEndAction(positionFromMouseEvent(e)));
 
-		clearSelection();
+		queueAnimationCallback(() => clearSelection());
 
 		document.body.removeEventListener('mouseup', onMouseUp);
 		document.body.removeEventListener('mousemove', onDrag);

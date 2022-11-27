@@ -1,6 +1,7 @@
 import React from 'react';
-import { useDispatchContext, useStateContext } from '../state';
-import { actions, IAction } from '../state/actions';
+import { useDispatchContext } from '../contexts/dispatch';
+import { useStateContext } from '../contexts/state';
+import { actions } from '../state/actions';
 import { IModule } from '../state/types/module';
 
 export const Toolbar: React.FC<{}> = () => {

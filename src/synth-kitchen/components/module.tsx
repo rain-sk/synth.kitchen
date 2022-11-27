@@ -6,7 +6,6 @@ import React, {
 	useRef
 } from 'react';
 
-import { useDispatchContext, useStateContext } from '../state';
 import { actions } from '../state/actions';
 import { IModule } from '../state/types/module';
 
@@ -16,30 +15,33 @@ import { DelayModule } from '../modules/delay';
 import { FilterModule } from '../modules/filter';
 import { OutputModule } from '../modules/output';
 import { Modifier } from '../state/types/state';
-
-const moveContainerRef = (
-	containerRef: React.MutableRefObject<HTMLElement | null>,
-	x: number,
-	y: number
-) => {
-	requestAnimationFrame(() => {
-		if (containerRef.current) {
-			containerRef.current.style.left = `${x}px`;
-			containerRef.current.style.top = `${y}px`;
-		}
-	});
-};
+import { useAnimationContext } from '../contexts/animation';
+import { useStateContext } from '../contexts/state';
+import { useDispatchContext } from '../contexts/dispatch';
 
 const useDragAndDrop = (
 	initialX: number,
 	initialY: number,
 	containerRef: React.MutableRefObject<HTMLElement | null>,
-	onUpdate: (x: number, y: number) => void
+	onUpdate: (x: number, y: number) => void,
+	queueAnimationCallback: (callback: () => void) => void
 ): [
 	React.MutableRefObject<boolean>,
 	(e: ReactMouseEvent<HTMLDivElement>) => void,
 	(x: number, y: number) => void
 ] => {
+	const moveContainerRef = (
+		containerRef: React.MutableRefObject<HTMLElement | null>,
+		x: number,
+		y: number
+	) =>
+		queueAnimationCallback(() => {
+			if (containerRef.current) {
+				containerRef.current.style.left = `${x}px`;
+				containerRef.current.style.top = `${y}px`;
+			}
+		});
+
 	const position = useRef({ x: initialX, y: initialY });
 	const isDraggingRef = useRef(false);
 
@@ -121,9 +123,10 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 	module
 }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
+	const queueAnimationCallback = useAnimationContext();
+	const dispatch = useDispatchContext();
 	const { selectedModuleKeys, selectionPending, heldModifiers } =
 		useStateContext();
-	const dispatch = useDispatchContext();
 
 	const onUpdatePosition = useCallback(
 		(x: number, y: number) => {
@@ -136,7 +139,8 @@ export const Module: React.FunctionComponent<{ module: IModule }> = ({
 		module.x,
 		module.y,
 		containerRef,
-		onUpdatePosition
+		onUpdatePosition,
+		queueAnimationCallback
 	);
 
 	useEffect(() => {

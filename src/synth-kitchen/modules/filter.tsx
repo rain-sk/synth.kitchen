@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import { IAudioContext, IBiquadFilterNode } from 'standardized-audio-context';
 import { audioContext } from '../audio';
+import { useDispatchContext } from '../contexts/dispatch';
 
 import { actions } from '../state/actions';
 import { IModule, IModuleState } from '../state/types/module';
-import { useDispatchContext } from '../state';
 
 const filterStateFromNode = (
 	filter: IBiquadFilterNode<IAudioContext>
