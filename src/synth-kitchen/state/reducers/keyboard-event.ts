@@ -1,6 +1,10 @@
 import { IState } from '../types/state';
 import { IKeyboardEvent, KeyboardEventType } from '../actions/keyboard-event';
-import { keyCodeModifierMap, keyCodeMovementMap } from '../../constants/key';
+import {
+	KeyCode,
+	keyCodeModifierMap,
+	keyCodeMovementMap
+} from '../../constants/key';
 
 export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 	state,
@@ -41,6 +45,16 @@ export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 						  }
 						: module
 				])
+			)
+		};
+	} else if (keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) {
+		return {
+			...state,
+			modules: Object.fromEntries(
+				Object.entries(state.modules).filter(
+					([moduleKey, module]) =>
+						!state.selectedModuleKeys.has(moduleKey) || module.type === 'OUTPUT'
+				)
 			)
 		};
 	} else {
