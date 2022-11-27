@@ -87,7 +87,12 @@ export const Toolbar: React.FC<{}> = () => {
 	return (
 		<nav>
 			<section>
-				<input type="text" value={state.name} onChange={handleNameChange} />
+				<input
+					aria-label="patch name"
+					type="text"
+					value={state.name}
+					onChange={handleNameChange}
+				/>
 				<button type="button" onClick={onSave}>
 					save
 				</button>
