@@ -50,10 +50,15 @@ export const Toolbar: React.FC<{}> = () => {
 				<button type="button" onClick={onSave}>
 					Save
 				</button>
-				<label id="load" tabIndex={0}>
+				<label role="button" id="load" htmlFor="load-input" tabIndex={0}>
 					Load
-					<input type="file" onChange={onLoad} />
 				</label>
+				<input
+					id="load-input"
+					type="file"
+					onChange={onLoad}
+					accept="text/json"
+				/>
 			</section>
 		</nav>
 	);
