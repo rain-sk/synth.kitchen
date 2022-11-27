@@ -8,6 +8,7 @@ export const Toolbar: React.FC<{}> = () => {
 	const dispatch = useDispatchContext();
 	const state = useStateContext();
 
+	// https://code.tutsplus.com/tutorials/how-to-save-a-file-with-javascript--cms-41105
 	const onSave = () => {
 		const tempAnchor = document.createElement('a');
 
@@ -22,6 +23,7 @@ export const Toolbar: React.FC<{}> = () => {
 		URL.revokeObjectURL(tempAnchor.href);
 	};
 
+	// https://researchhubs.com/post/computing/javascript/open-a-local-file-with-javascript.html
 	const onLoad = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = (e.target as any).files[0];
 		if (!file) {
