@@ -112,6 +112,10 @@ const useDragAndDrop = (
 	return [isDraggingRef, startDragging, setPosition];
 };
 
+const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
+	return <h2>{module.name}</h2>;
+};
+
 const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 	switch (module.type) {
 		case 'DELAY':
@@ -125,7 +129,7 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 		case 'OUTPUT':
 			return <OutputModule module={module as IModule<'OUTPUT'>} />;
 		default: {
-			return <p>{module.name}</p>;
+			return <p>unavailable</p>;
 		}
 	}
 };
@@ -189,17 +193,21 @@ export const Module: React.FunctionComponent<{
 		(e: React.MouseEvent<HTMLDivElement>) => {
 			const shiftClick = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
-			if (shiftClick && currentlySelected) {
-				dispatch(actions.deselectModuleAction(module.moduleKey));
-			} else {
-				dispatch(actions.historyPushAction());
-				if (shiftClick) {
-					dispatch(actions.selectModuleAction(module.moduleKey));
+			dispatch(actions.historyPushAction());
+
+			if (!shiftClick && !currentlySelected) {
+				if (containerRef.current) {
+					containerRef.current.focus();
 				} else {
-					containerRef.current?.focus();
+					dispatch(actions.selectSingleModuleAction(module.moduleKey));
 				}
-				startDragging(e);
+			} else if (shiftClick && currentlySelected) {
+				dispatch(actions.deselectModuleAction(module.moduleKey));
+			} else if (shiftClick && !currentlySelected) {
+				dispatch(actions.selectModuleAction(module.moduleKey));
 			}
+
+			startDragging(e);
 		},
 		[
 			currentlySelected,
@@ -224,6 +232,7 @@ export const Module: React.FunctionComponent<{
 			}}
 			ref={containerRef}
 		>
+			<ModuleHeader module={module} />
 			<ModuleUi module={module} />
 		</div>
 	);

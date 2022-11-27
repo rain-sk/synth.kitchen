@@ -89,10 +89,10 @@ export const Toolbar: React.FC<{}> = () => {
 			<section>
 				<input type="text" value={state.name} onChange={handleNameChange} />
 				<button type="button" onClick={onSave}>
-					Save
+					save
 				</button>
 				<label id="load" tabIndex={0} onKeyDown={handleLoadKeyDown}>
-					Load
+					load
 					<input type="file" onChange={onLoad} accept="text/json" />
 				</label>
 			</section>
@@ -125,7 +125,7 @@ export const Toolbar: React.FC<{}> = () => {
 				<button
 					type="button"
 					onClick={handleRedo}
-					disabled={state.patchHistoryOffset === 0}
+					disabled={state.patchHistoryOffset <= 0}
 				>
 					redo
 				</button>

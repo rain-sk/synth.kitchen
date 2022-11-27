@@ -45,5 +45,5 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 
 	const enabled = state != undefined;
 
-	return enabled ? <p>{module.name}</p> : <p>loading...</p>;
+	return enabled ? <p>enabled</p> : <p>loading...</p>;
 };

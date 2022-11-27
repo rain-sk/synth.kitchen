@@ -40,7 +40,7 @@ export const initialState: IState = {
 	mouseDragPosition: INVALID_POSITION,
 	name: randomName(),
 	patchHistory: [],
-	patchHistoryOffset: 0,
+	patchHistoryOffset: -1,
 	selectedModuleKeys: new Set(),
 	selectionPending: false
 };
