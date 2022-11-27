@@ -15,6 +15,8 @@ export type IState = IPatch & {
 	modules: Record<string, IModule>;
 	mouseDragStartPosition: [number, number];
 	mouseDragPosition: [number, number];
+	patchHistory: IPatch[];
+	patchHistoryOffset: number;
 	selectedModuleKeys: Set<string>;
 	selectionPending: boolean;
 };
@@ -28,7 +30,7 @@ export const initialState: IState = {
 			moduleKey: '0',
 			type: 'OUTPUT',
 			x: Math.round(Math.random() * 800),
-			y: Math.round(Math.random() * 800),
+			y: Math.round(Math.random() * 400),
 			width: 200,
 			height: 200,
 			state: { gain: 1 }
@@ -37,6 +39,8 @@ export const initialState: IState = {
 	mouseDragStartPosition: INVALID_POSITION,
 	mouseDragPosition: INVALID_POSITION,
 	name: randomName(),
+	patchHistory: [],
+	patchHistoryOffset: 0,
 	selectedModuleKeys: new Set(),
 	selectionPending: false
 };

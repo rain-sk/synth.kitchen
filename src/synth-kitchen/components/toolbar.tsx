@@ -19,14 +19,8 @@ export const Toolbar: React.FC<{}> = () => {
 	const dispatch = useDispatchContext();
 	const state = useStateContext();
 
-	const handleAddModule = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		const moduleType = e.target.value;
-		if (moduleType !== '') {
-			dispatch(actions.addModuleAction(moduleType as ModuleType));
-		}
-	};
-
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		dispatch(actions.historyPushAction());
 		dispatch(actions.changeNameAction(e.target.value));
 	};
 
@@ -74,6 +68,22 @@ export const Toolbar: React.FC<{}> = () => {
 		}
 	};
 
+	const handleAddModule = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		const moduleType = e.target.value;
+		if (moduleType !== '') {
+			dispatch(actions.historyPushAction());
+			dispatch(actions.addModuleAction(moduleType as ModuleType));
+		}
+	};
+
+	const handleUndo = () => {
+		dispatch(actions.historyUndoAction());
+	};
+
+	const handleRedo = () => {
+		dispatch(actions.historyRedoAction());
+	};
+
 	return (
 		<nav>
 			<section>
@@ -100,6 +110,25 @@ export const Toolbar: React.FC<{}> = () => {
 						>{`${type.toLocaleLowerCase()}`}</option>
 					))}
 				</select>
+				<button
+					type="button"
+					onClick={handleUndo}
+					disabled={
+						!(
+							state.patchHistory.length === 1 ||
+							state.patchHistoryOffset + 1 < state.patchHistory.length
+						)
+					}
+				>
+					undo
+				</button>
+				<button
+					type="button"
+					onClick={handleRedo}
+					disabled={state.patchHistoryOffset === 0}
+				>
+					redo
+				</button>
 			</section>
 		</nav>
 	);

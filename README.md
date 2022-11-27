@@ -11,8 +11,9 @@ The GUI should be inviting and feel natural.
 MVP:
 
 - [x] don't spam requestAnimationFrame
+- [x] stop the viewport from growing for no apparent reason
+- [ ] support undo/redo of patch state changes (modules, connections, name)
 - [ ] modify the existing selection properly when using shift+drag
-- [ ] stop the viewport from growing for no apparent reason
 - [ ] adjust the viewport size to something reasonable during drag-continue and drag-end events
 - [ ] scroll when dragging a module past the edge of the viewport
 - [ ] handle dragging up/left in a way that feels equivalent as dragging down/right
@@ -22,6 +23,7 @@ MVP:
 MVP:
 
 - [x] Some way to move selection from module to module using only the keyboard
+- [x] modules can be deleted with the keyboard
 
 Stretch goal:
 

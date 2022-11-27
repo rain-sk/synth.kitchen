@@ -1,6 +1,12 @@
 import { addModuleAction, IAddModule } from './add-module';
 import { changeNameAction, IChangeName } from './change-name';
 import { dragModulesAction, IDragModules } from './drag-modules';
+import {
+	historyPushAction,
+	historyRedoAction,
+	historyUndoAction,
+	IHistory
+} from './history';
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
 import { ILoadPatch, loadPatchAction } from './load-patch';
 import {
@@ -28,6 +34,7 @@ export type IAction =
 	| IAddModule
 	| IChangeName
 	| IDragModules
+	| IHistory
 	| IKeyboardEvent
 	| ILoadPatch
 	| ISelectionDrag
@@ -40,6 +47,9 @@ export const actions = {
 	changeNameAction,
 	deselectModuleAction,
 	dragModulesAction,
+	historyPushAction,
+	historyRedoAction,
+	historyUndoAction,
 	keyDownAction,
 	keyUpAction,
 	loadPatchAction,

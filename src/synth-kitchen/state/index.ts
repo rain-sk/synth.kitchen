@@ -15,6 +15,9 @@ export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 			case 'DragModules': {
 				return reducers.dragModules(state, action);
 			}
+			case 'History': {
+				return reducers.history(state, action);
+			}
 			case 'KeyboardEvent': {
 				return reducers.keyboardEvent(state, action);
 			}

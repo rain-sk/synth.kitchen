@@ -15,7 +15,7 @@ export const addModule: React.Reducer<IState, IAddModule> = (state, action) => {
 				moduleKey,
 				type: action.payload.type,
 				x: Math.round(Math.random() * 800),
-				y: Math.round(Math.random() * 800),
+				y: Math.round(Math.random() * 400),
 				width: 200,
 				height: 200
 			}

@@ -10,5 +10,7 @@ export const loadPatch: React.Reducer<IState, ILoadPatch> = (
 	selectedModuleKeys: new Set(),
 	mouseDragPosition: INVALID_POSITION,
 	mouseDragStartPosition: INVALID_POSITION,
+	patchHistory: [],
+	patchHistoryOffset: 0,
 	selectionPending: false
 });

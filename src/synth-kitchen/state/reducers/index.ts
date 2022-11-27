@@ -1,6 +1,7 @@
 import { addModule } from './add-module';
 import { changeName } from './change-name';
 import { dragModules } from './drag-modules';
+import { history } from './history';
 import { keyboardEvent } from './keyboard-event';
 import { loadPatch } from './load-patch';
 import { selectionDrag } from './selection-drag';
@@ -12,6 +13,7 @@ export const reducers = {
 	addModule,
 	changeName,
 	dragModules,
+	history,
 	keyboardEvent,
 	loadPatch,
 	selectionDrag,

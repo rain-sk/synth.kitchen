@@ -191,13 +191,15 @@ export const Module: React.FunctionComponent<{
 
 			if (shiftClick && currentlySelected) {
 				dispatch(actions.deselectModuleAction(module.moduleKey));
-			} else if (shiftClick) {
-				dispatch(actions.selectModuleAction(module.moduleKey));
 			} else {
-				containerRef.current?.focus();
+				dispatch(actions.historyPushAction());
+				if (shiftClick) {
+					dispatch(actions.selectModuleAction(module.moduleKey));
+				} else {
+					containerRef.current?.focus();
+				}
+				startDragging(e);
 			}
-
-			startDragging(e);
 		},
 		[
 			currentlySelected,
