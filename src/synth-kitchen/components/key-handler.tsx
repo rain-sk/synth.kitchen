@@ -12,7 +12,13 @@ export const KeyHandler: React.FC = () => {
 		if (e.keyCode in keyCodeMovementMap && selectedModuleKeys.size > 0) {
 			e.preventDefault();
 		}
-		dispatch(actions.keyDownAction(e.keyCode));
+		if (e.key === 'z' && e.metaKey) {
+			dispatch(
+				e.shiftKey ? actions.historyRedoAction() : actions.historyUndoAction()
+			);
+		} else {
+			dispatch(actions.keyDownAction(e.keyCode));
+		}
 	});
 
 	const { current: onKeyUp } = useRef((e: KeyboardEvent) => {
