@@ -11,7 +11,6 @@ import { AnimationContext } from './contexts/animation';
 
 export const Kitchen: React.FC = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-	console.log(state.patchHistory, state.patchHistoryOffset);
 
 	return (
 		<StateContext.Provider value={state}>
