@@ -35,7 +35,7 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 }) => {
 	const gainRef = useRef<IGainNode<IAudioContext>>();
 	const [state, setState] = useModuleState<'OUTPUT'>(
-		initOutputState(gainRef, module.state),
+		() => initOutputState(gainRef, module.state),
 		module.moduleKey
 	);
 

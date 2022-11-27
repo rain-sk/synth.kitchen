@@ -34,7 +34,7 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 }) => {
 	const delayRef = useRef<IDelayNode<IAudioContext>>();
 	const [state, setState] = useModuleState<'DELAY'>(
-		initDelayState(delayRef, module.state),
+		() => initDelayState(delayRef, module.state),
 		module.moduleKey
 	);
 

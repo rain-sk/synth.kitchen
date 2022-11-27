@@ -52,7 +52,7 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 }) => {
 	const filterRef = useRef<IBiquadFilterNode<IAudioContext>>();
 	const [state, setState] = useModuleState<'FILTER'>(
-		initFilterState(filterRef, module.state),
+		() => initFilterState(filterRef, module.state),
 		module.moduleKey
 	);
 
