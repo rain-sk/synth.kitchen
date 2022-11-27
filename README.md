@@ -12,10 +12,15 @@ MVP:
 
 - [x] don't spam requestAnimationFrame
 - [x] stop the viewport from growing for no apparent reason
-- [ ] support undo/redo of patch state changes (modules, connections, name)
+- [x] support undo/redo of patch state changes (modules, connections, name)
 - [ ] modify the existing selection properly when using shift+drag
 - [ ] adjust the viewport size to something reasonable during drag-continue and drag-end events
 - [ ] scroll when dragging a module past the edge of the viewport
+- [ ] handle dragging up/left in a way that feels equivalent as dragging down/right
+
+Stretch goals:
+
+- [ ] "smart" undo/redo: don't fill it up with junky intermediate state
 - [ ] handle dragging up/left in a way that feels equivalent as dragging down/right
 
 ### Keyboard Nav
@@ -35,15 +40,16 @@ Stretch goal:
 
 MVP:
 
-- [ ] modules have names and can be renamed
+- [ ] modules have names
+- [ ] modules can be renamed
 - [ ] A-rate audio params have a connector, text-input, and slider
 - [ ] K-rate audio params have a relevant input
 - [ ] signal-flow is represented as left-to-right
 
 Stretch Goals:
 
-- [ ] sequencer is cool
 - [ ] modules look nice
+- [ ] sequencer is cool
 - [ ] modules have colors and can be re-colored
 
 ### Connections
@@ -56,7 +62,7 @@ MVP:
 Stretch Goals:
 
 - [ ] connector inputs have some kind of gain control
-- [ ] connections give some visual feedback of what's passing through them
+- [ ] connection ports/cables give some visual feedback of what's passing through them
 
 ### Saving/Loading
 
@@ -69,7 +75,7 @@ MVP:
 
 Stretch goal:
 
-- [ ] ability define custom modules based on patches
+- [ ] ability define custom modules based on sub-patches
 
 ### MIDI
 
