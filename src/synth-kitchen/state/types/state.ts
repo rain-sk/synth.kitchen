@@ -9,6 +9,7 @@ export const INVALID_POSITION: [number, number] = [-1, -1];
 
 export type IState = {
 	heldModifiers: Modifier;
+	isDraggingModules: boolean;
 	modules: Record<string, IModule>;
 	mouseDragStartPosition: [number, number];
 	mouseDragPosition: [number, number];
@@ -18,6 +19,7 @@ export type IState = {
 
 export const initialState: IState = {
 	heldModifiers: Modifier.NONE,
+	isDraggingModules: false,
 	modules: {
 		def: {
 			moduleKey: 'def',

@@ -1,3 +1,4 @@
+import { dragModulesAction, IDragModules } from './drag-modules';
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
 import { ILoadPatch, loadPatchAction } from './load-patch';
 import {
@@ -22,6 +23,7 @@ import {
 } from './update-module-state';
 
 export type IAction =
+	| IDragModules
 	| IKeyboardEvent
 	| ILoadPatch
 	| ISelectionDrag
@@ -31,6 +33,7 @@ export type IAction =
 
 export const actions = {
 	deselectModuleAction,
+	dragModulesAction,
 	keyDownAction,
 	keyUpAction,
 	loadPatchAction,

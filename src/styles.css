@@ -47,11 +47,11 @@ canvas {
 	cursor: move;
 	border: 1px solid rgba(255, 255, 255, 0.25);
 	border-radius: 3px;
-	transition: border linear 100ms, top linear 10ms, left linear 10ms;
+	transition: border linear 100ms, top linear 100ms, left linear 100ms;
 }
 
-.module.dragging {
-	transition: none;
+#module-canvas.dragging > .module {
+	transition: border linear 100ms, top linear 10ms, left linear 10ms;
 }
 
 .module.selected {
