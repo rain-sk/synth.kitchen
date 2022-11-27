@@ -1,3 +1,5 @@
+import { addModuleAction, IAddModule } from './add-module';
+import { changeNameAction, IChangeName } from './change-name';
 import { dragModulesAction, IDragModules } from './drag-modules';
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
 import { ILoadPatch, loadPatchAction } from './load-patch';
@@ -23,6 +25,8 @@ import {
 } from './update-module-state';
 
 export type IAction =
+	| IAddModule
+	| IChangeName
 	| IDragModules
 	| IKeyboardEvent
 	| ILoadPatch
@@ -32,6 +36,8 @@ export type IAction =
 	| IUpdateModuleState;
 
 export const actions = {
+	addModuleAction,
+	changeNameAction,
 	deselectModuleAction,
 	dragModulesAction,
 	keyDownAction,

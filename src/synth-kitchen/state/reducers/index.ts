@@ -1,3 +1,5 @@
+import { addModule } from './add-module';
+import { changeName } from './change-name';
 import { dragModules } from './drag-modules';
 import { keyboardEvent } from './keyboard-event';
 import { loadPatch } from './load-patch';
@@ -7,6 +9,8 @@ import { updateModulePosition } from './update-module-position';
 import { updateModuleState } from './update-module-state';
 
 export const reducers = {
+	addModule,
+	changeName,
 	dragModules,
 	keyboardEvent,
 	loadPatch,

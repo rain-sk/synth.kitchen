@@ -6,7 +6,7 @@ export const loadPatch: React.Reducer<IState, ILoadPatch> = (
 	action
 ) => ({
 	...state,
-	modules: action.payload.modules,
+	...action.payload.patch,
 	selectedModuleKeys: new Set(),
 	mouseDragPosition: INVALID_POSITION,
 	mouseDragStartPosition: INVALID_POSITION,

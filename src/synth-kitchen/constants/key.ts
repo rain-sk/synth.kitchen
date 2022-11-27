@@ -1,7 +1,9 @@
 import { Modifier } from '../state/types/state';
 
-enum KeyCode {
+export enum KeyCode {
+	ENTER = 13,
 	SHIFT = 16,
+	SPACE = 32,
 	ARROW_LEFT = 37,
 	ARROW_UP = 38,
 	ARROW_RIGHT = 39,

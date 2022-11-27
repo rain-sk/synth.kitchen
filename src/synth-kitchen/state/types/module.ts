@@ -1,5 +1,12 @@
 import { TBiquadFilterType, TOscillatorType } from 'standardized-audio-context';
-import { ModuleType } from '../../../synth-kitchen-old/state/patch';
+
+export type ModuleType =
+	| 'DELAY'
+	| 'FILTER'
+	| 'GAIN'
+	| 'OSCILLATOR'
+	| 'OUTPUT'
+	| 'SEQUENCER';
 
 export interface IModuleState extends Record<ModuleType, any> {
 	GAIN: {
@@ -35,6 +42,7 @@ export interface IModuleState extends Record<ModuleType, any> {
 }
 
 export type IModule<T extends ModuleType = ModuleType> = {
+	name: string;
 	moduleKey: string;
 	type: T;
 	x: number;

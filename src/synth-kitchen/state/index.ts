@@ -6,6 +6,12 @@ import { IState } from './types/state';
 export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 	(() => {
 		switch (action.type) {
+			case 'AddModule': {
+				return reducers.addModule(state, action);
+			}
+			case 'ChangeName': {
+				return reducers.changeName(state, action);
+			}
 			case 'DragModules': {
 				return reducers.dragModules(state, action);
 			}

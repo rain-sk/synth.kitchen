@@ -125,7 +125,7 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 		case 'OUTPUT':
 			return <OutputModule module={module as IModule<'OUTPUT'>} />;
 		default: {
-			return <p>{module.moduleKey}</p>;
+			return <p>{module.name}</p>;
 		}
 	}
 };

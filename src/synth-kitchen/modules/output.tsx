@@ -31,7 +31,7 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 	module
 }) => {
 	const gain = useRef<IGainNode<IAudioContext>>();
-	const [state /*setState*/] = useState<IModuleState['OUTPUT']>(
+	const [state /*, setState*/] = useState<IModuleState['OUTPUT']>(
 		initOutputState(gain, module.state)
 	);
 
@@ -45,5 +45,5 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 
 	const enabled = state != undefined;
 
-	return enabled ? <p>{module.moduleKey}</p> : <p>loading...</p>;
+	return enabled ? <p>{module.name}</p> : <p>loading...</p>;
 };

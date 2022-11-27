@@ -1,17 +1,16 @@
 import { IModule } from '../types/module';
+import { IPatch } from '../types/patch';
 
 export type ILoadPatch = {
 	type: 'LoadPatch';
 	payload: {
-		modules: Record<string, IModule>;
+		patch: IPatch;
 	};
 };
 
-export const loadPatchAction = (
-	modules: Record<string, IModule>
-): ILoadPatch => ({
+export const loadPatchAction = (patch: IPatch): ILoadPatch => ({
 	type: 'LoadPatch',
 	payload: {
-		modules
+		patch
 	}
 });

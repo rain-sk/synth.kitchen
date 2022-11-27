@@ -48,5 +48,5 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 
 	const enabled = state != undefined;
 
-	return enabled ? <p>{module.moduleKey}</p> : <p>loading...</p>;
+	return enabled ? <p>{module.name}</p> : <p>loading...</p>;
 };
