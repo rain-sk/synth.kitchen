@@ -12,7 +12,6 @@ const moduleTypes: ModuleType[] = [
 	'FILTER',
 	'GAIN',
 	'OSCILLATOR',
-	'OUTPUT',
 	'SEQUENCER'
 ];
 
