@@ -38,15 +38,13 @@ const initOscillatorState = (
 	oscillatorRef.current = oscillatorNode;
 
 	if (state) {
-		oscillatorNode.detune.setTargetAtTime(
+		oscillatorNode.detune.setValueAtTime(
 			state.detune,
-			audioContext.currentTime,
-			3
+			audioContext.currentTime
 		);
-		oscillatorNode.frequency.setTargetAtTime(
+		oscillatorNode.frequency.setValueAtTime(
 			state.frequency,
-			audioContext.currentTime,
-			3
+			audioContext.currentTime
 		);
 		oscillatorNode.type = state.waveform;
 	} else {

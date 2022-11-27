@@ -25,22 +25,16 @@ const initFilterState = (
 	filterRef.current = audioContext.createBiquadFilter();
 
 	if (state) {
-		filterRef.current.frequency.setTargetAtTime(
+		filterRef.current.frequency.setValueAtTime(
 			state.frequency,
-			audioContext.currentTime,
-			3
+			audioContext.currentTime
 		);
-		filterRef.current.detune.setTargetAtTime(
+		filterRef.current.detune.setValueAtTime(
 			state.detune,
-			audioContext.currentTime,
-			3
+			audioContext.currentTime
 		);
-		filterRef.current.Q.setTargetAtTime(state.Q, audioContext.currentTime, 3);
-		filterRef.current.gain.setTargetAtTime(
-			state.gain,
-			audioContext.currentTime,
-			3
-		);
+		filterRef.current.Q.setValueAtTime(state.Q, audioContext.currentTime);
+		filterRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
 		return state;
 	} else {
 		return filterStateFromNode(filterRef.current);

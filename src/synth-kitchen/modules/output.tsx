@@ -19,11 +19,7 @@ const initOutputState = (
 	gainRef.current = audioContext.createGain();
 	gainRef.current.connect(audioContext.destination);
 	if (state) {
-		gainRef.current.gain.setTargetAtTime(
-			state.gain,
-			audioContext.currentTime,
-			3
-		);
+		gainRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
 		return state;
 	} else {
 		return outputStateFromNode(gainRef.current);

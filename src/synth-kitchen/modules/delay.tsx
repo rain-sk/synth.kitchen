@@ -18,10 +18,9 @@ const initDelayState = (
 ) => {
 	delayRef.current = audioContext.createDelay();
 	if (state) {
-		delayRef.current.delayTime.setTargetAtTime(
+		delayRef.current.delayTime.setValueAtTime(
 			state.delayTime,
-			audioContext.currentTime,
-			3
+			audioContext.currentTime
 		);
 		return state;
 	} else {
