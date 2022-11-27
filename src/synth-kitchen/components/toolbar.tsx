@@ -77,6 +77,16 @@ export const Toolbar: React.FC<{}> = () => {
 	return (
 		<nav>
 			<section>
+				<input type="text" value={state.name} onChange={handleNameChange} />
+				<button type="button" onClick={onSave}>
+					Save
+				</button>
+				<label id="load" tabIndex={0} onKeyDown={handleLoadKeyDown}>
+					Load
+					<input type="file" onChange={onLoad} accept="text/json" />
+				</label>
+			</section>
+			<section>
 				<select
 					value=""
 					onKeyDown={(e: any) => e.stopPropagation()}
@@ -90,16 +100,6 @@ export const Toolbar: React.FC<{}> = () => {
 						>{`${type.toLocaleLowerCase()}`}</option>
 					))}
 				</select>
-			</section>
-			<section>
-				<input type="text" value={state.name} onChange={handleNameChange} />
-				<button type="button" onClick={onSave}>
-					Save
-				</button>
-				<label id="load" tabIndex={0} onKeyDown={handleLoadKeyDown}>
-					Load
-					<input type="file" onChange={onLoad} accept="text/json" />
-				</label>
 			</section>
 		</nav>
 	);
