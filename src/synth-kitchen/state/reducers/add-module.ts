@@ -11,7 +11,7 @@ export const addModule: React.Reducer<IState, IAddModule> = (state, action) => {
 		modules: {
 			...state.modules,
 			[moduleKey]: {
-				name: randomName(),
+				name: randomName(action.payload.type.toLocaleLowerCase()),
 				moduleKey,
 				type: action.payload.type,
 				x: Math.round(Math.random() * 800),
