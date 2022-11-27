@@ -68,10 +68,12 @@ canvas {
 }
 
 nav {
+	background: #1d1921;
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100vw;
+	padding: 0.33rem 0;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -88,6 +90,7 @@ nav > section {
 #load {
 	display: flex;
 	align-items: center;
+	padding: 0 0.5rem;
 }
 
 input[type='file'] {
