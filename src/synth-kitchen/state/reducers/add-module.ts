@@ -2,9 +2,13 @@ import { IAddModule } from '../actions/add-module';
 import { IState } from '../types/state';
 import { randomName } from '../../utils/random-name';
 import { randomId } from '../../utils/random-id';
+import { reducers } from '.';
+import { actions } from '../actions';
 
 export const addModule: React.Reducer<IState, IAddModule> = (state, action) => {
 	const moduleKey = randomId();
+
+	state = reducers.history(state, actions.historyPushAction());
 
 	return {
 		...state,

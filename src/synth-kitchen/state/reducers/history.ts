@@ -6,17 +6,30 @@ import { IState } from '../types/state';
 export const history: React.Reducer<IState, IHistory> = (state, action) => {
 	const { type } = action.payload;
 
-	if (state.patchHistoryOffset === 0 && type === HistoryChangeType.UNDO) {
-		state = history(state, actions.historyPushAction());
+	const nothingToUndo =
+		type === HistoryChangeType.UNDO &&
+		state.patchHistoryOffset === state.patchHistory.length - 1;
+	const nothingToRedo =
+		type === HistoryChangeType.REDO && state.patchHistoryOffset <= 0;
+
+	if (nothingToUndo || nothingToRedo) {
+		return state;
 	}
 
-	const { modules, name, patchHistory, patchHistoryOffset } = state;
+	if (type === HistoryChangeType.UNDO && state.patchHistoryOffset === -1) {
+		state = {
+			...history(state, actions.historyPushAction()),
+			patchHistoryOffset: 0
+		};
+	}
+
+	let { modules, name, patchHistory, patchHistoryOffset } = state;
 
 	switch (type) {
 		case HistoryChangeType.PUSH: {
 			const newPatchHistory =
 				patchHistoryOffset > 0
-					? patchHistory.slice(0, patchHistory.length - 1 - patchHistoryOffset)
+					? patchHistory.splice(0, patchHistory.length - 1 - patchHistoryOffset)
 					: [...patchHistory];
 
 			const currentPatch = {
@@ -30,7 +43,10 @@ export const history: React.Reducer<IState, IHistory> = (state, action) => {
 					: {};
 
 			if (JSON.stringify(currentPatch) === JSON.stringify(mostRecentPatch)) {
-				return state;
+				return {
+					...state,
+					patchHistoryOffset: -1
+				};
 			} else {
 				newPatchHistory.push({
 					modules,
@@ -39,7 +55,7 @@ export const history: React.Reducer<IState, IHistory> = (state, action) => {
 				return {
 					...state,
 					patchHistory: newPatchHistory,
-					patchHistoryOffset: 0
+					patchHistoryOffset: -1
 				};
 			}
 		}
