@@ -24,6 +24,7 @@ export const ResizableCanvas: React.FC<{
 	const dispatch = useDispatchContext();
 
 	const containerRef = useRef<HTMLElement | null>(null);
+	const spacerRef = useRef<HTMLElement | null>(null);
 	const canvasRef = useRef<{
 		canvas: HTMLCanvasElement;
 		context2d: CanvasRenderingContext2D;
@@ -63,10 +64,15 @@ export const ResizableCanvas: React.FC<{
 
 	const { current: onResize } = useRef(() => {
 		queueAnimationCallback(() => {
-			if (containerRef.current && canvasRef.current) {
-				const { width, height } = containerRef.current.getBoundingClientRect();
-
+			if (containerRef.current && spacerRef.current && canvasRef.current) {
+				let { width, height } = canvasRef.current.canvas;
 				canvasRef.current.context2d.clearRect(0, 0, width, height);
+
+				({ width, height } = containerRef.current.getBoundingClientRect());
+
+				spacerRef.current.style.width = `calc(${width}px + 15rem)`;
+				spacerRef.current.style.height = `calc(${height}px + 15rem)`;
+
 				canvasRef.current.canvas.width = width;
 				canvasRef.current.canvas.height = height;
 
@@ -78,7 +84,7 @@ export const ResizableCanvas: React.FC<{
 	const { current: onMouseout } = useRef((e: MouseEvent) => {});
 
 	useEffect(() => {
-		if (containerRef.current && canvasRef.current) {
+		if (containerRef.current && spacerRef.current && canvasRef.current) {
 			onResize();
 
 			window.addEventListener('resize', onResize, false);
@@ -91,7 +97,7 @@ export const ResizableCanvas: React.FC<{
 				window.addEventListener('mouseout', onMouseout, false);
 			};
 		}
-	}, [initialized, containerRef.current, canvasRef.current]);
+	}, [initialized, containerRef.current, spacerRef.current, canvasRef.current]);
 
 	const { current: onDrag } = useRef((e: MouseEvent) => {
 		selectionEnd.current = positionFromMouseEvent(e);
@@ -123,16 +129,18 @@ export const ResizableCanvas: React.FC<{
 		}
 	);
 
+	const isInitialized = () =>
+		!!containerRef.current && !!spacerRef.current && !!canvasRef.current;
+
 	const HtmlCanvas = () => (
 		<canvas
+			key={0}
 			ref={(canvas) => {
 				if (canvas) {
 					const context2d = canvas.getContext('2d');
 					if (context2d) {
 						canvasRef.current = { canvas, context2d };
-						if (containerRef.current && canvasRef.current) {
-							setInitialized(true);
-						}
+						setInitialized(isInitialized());
 					}
 				}
 			}}
@@ -143,12 +151,16 @@ export const ResizableCanvas: React.FC<{
 		<main
 			ref={(main) => {
 				containerRef.current = main;
-				if (containerRef.current && canvasRef.current) {
-					setInitialized(true);
-				}
+				setInitialized(isInitialized());
 			}}
 			onMouseDown={initialized ? onMouseDown : () => {}}
 		>
+			<div
+				ref={(div) => {
+					spacerRef.current = div;
+					setInitialized(isInitialized());
+				}}
+			/>
 			{!drawOnTop && <HtmlCanvas />}
 			{children}
 			{drawOnTop && <HtmlCanvas />}
