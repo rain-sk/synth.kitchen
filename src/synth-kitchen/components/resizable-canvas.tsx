@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { useAnimationContext } from '../hooks/use-animation-context';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
+import { useStateContext } from '../hooks/use-state-context';
 
 import { actions } from '../state/actions';
 import { INVALID_POSITION } from '../state/types/state';
@@ -21,6 +22,7 @@ export const ResizableCanvas: React.FC<{
 	children: React.ReactNode;
 }> = ({ drawOnTop, children }) => {
 	const queueAnimationCallback = useAnimationContext();
+	const { modules } = useStateContext();
 	const dispatch = useDispatchContext();
 
 	const containerRef = useRef<HTMLElement | null>(null);
@@ -31,6 +33,8 @@ export const ResizableCanvas: React.FC<{
 	} | null>(null);
 
 	const [initialized, setInitialized] = useState(false);
+
+	const canvasWasResized = useRef(false);
 
 	const selectionStart = useRef(INVALID_POSITION);
 	const selectionEnd = useRef(INVALID_POSITION);
@@ -62,24 +66,53 @@ export const ResizableCanvas: React.FC<{
 		drawSelection();
 	});
 
-	const { current: onResize } = useRef(() => {
+	const onResize = useCallback(() => {
 		queueAnimationCallback(() => {
 			if (containerRef.current && spacerRef.current && canvasRef.current) {
-				let { width, height } = canvasRef.current.canvas;
-				canvasRef.current.context2d.clearRect(0, 0, width, height);
+				{
+					const { width, height } = canvasRef.current.canvas;
+					canvasRef.current.context2d.clearRect(0, 0, width, height);
+				}
 
-				({ width, height } = containerRef.current.getBoundingClientRect());
+				const containerRect = containerRef.current.getBoundingClientRect();
+				{
+					const modulesArray = Object.values(modules);
 
-				spacerRef.current.style.width = `calc(${width}px + 15rem)`;
-				spacerRef.current.style.height = `calc(${height}px + 15rem)`;
+					const width = Math.max(
+						...[
+							containerRect.width,
+							...modulesArray.map((module) => module.x + module.width)
+						]
+					);
+					const height = Math.max(
+						...[
+							containerRect.height,
+							...modulesArray.map((module) => module.y + module.height)
+						]
+					);
 
-				canvasRef.current.canvas.width = width;
-				canvasRef.current.canvas.height = height;
+					spacerRef.current.style.width = `calc(${width}px + 50vw)`;
+					spacerRef.current.style.height = `calc(${height}px + 50vh)`;
+
+					canvasRef.current.canvas.width = width;
+					canvasRef.current.canvas.height = height;
+				}
 
 				drawSelection();
+
+				if (!canvasWasResized.current) {
+					canvasWasResized.current = true;
+					const spacerRect = spacerRef.current.getBoundingClientRect();
+					console.log((spacerRect.width - window.innerWidth) / 2);
+					console.log((spacerRect.height - window.innerHeight) / 2);
+					containerRef.current.scrollTo({
+						left: (spacerRect.width - window.innerWidth) / 2,
+						top: (spacerRect.height - window.innerHeight) / 2
+					});
+				}
 			}
 		});
-	});
+	}, [modules]);
 
 	const { current: onMouseout } = useRef((e: MouseEvent) => {});
 
@@ -154,16 +187,16 @@ export const ResizableCanvas: React.FC<{
 				setInitialized(isInitialized());
 			}}
 			onMouseDown={initialized ? onMouseDown : () => {}}
+			onScroll={initialized ? () => onResize() : () => {}}
 		>
+			<HtmlCanvas />
 			<div
 				ref={(div) => {
 					spacerRef.current = div;
 					setInitialized(isInitialized());
 				}}
 			/>
-			{!drawOnTop && <HtmlCanvas />}
 			{children}
-			{drawOnTop && <HtmlCanvas />}
 		</main>
 	);
 };
