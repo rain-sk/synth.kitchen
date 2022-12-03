@@ -50,10 +50,9 @@ main {
 	overflow: scroll;
 }
 
-canvas {
+#selection {
 	position: absolute;
-	top: 0;
-	left: 0;
+	border: solid 1px #fffc;
 }
 
 #module-canvas {

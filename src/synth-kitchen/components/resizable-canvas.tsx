@@ -7,74 +7,85 @@ import React, {
 } from 'react';
 import { useAnimationContext } from '../hooks/use-animation-context';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
+import { useEffectOnce } from '../hooks/use-effect-once';
 import { useStateContext } from '../hooks/use-state-context';
 
 import { actions } from '../state/actions';
 import { INVALID_POSITION } from '../state/types/state';
 
-const positionFromMouseEvent = (e: MouseEvent): [number, number] => [
-	e.clientX + document.documentElement.scrollLeft,
-	e.clientY + document.documentElement.scrollTop
+const positionFromMouseEvent = (
+	e: MouseEvent,
+	scrollableElement: HTMLElement
+): [number, number] => [
+	e.clientX + scrollableElement.scrollLeft,
+	e.clientY + scrollableElement.scrollTop
 ];
+
+const state = {
+	initialized: false,
+	container: undefined as HTMLElement | undefined,
+	selection: {
+		element: undefined as HTMLDivElement | undefined,
+		start: INVALID_POSITION,
+		end: INVALID_POSITION
+	},
+	spacer: undefined as HTMLDivElement | undefined
+};
 
 export const ResizableCanvas: React.FC<{
 	drawOnTop: boolean;
 	children: React.ReactNode;
-}> = ({ drawOnTop, children }) => {
+}> = ({ children }) => {
+	useEffectOnce(() => {
+		if (state.initialized) {
+			console.error('oh no!');
+			throw 'oh no!';
+		} else {
+			state.initialized = true;
+		}
+	});
+
 	const queueAnimationCallback = useAnimationContext();
 	const { modules } = useStateContext();
 	const dispatch = useDispatchContext();
-
-	const containerRef = useRef<HTMLElement | null>(null);
-	const spacerRef = useRef<HTMLElement | null>(null);
-	const canvasRef = useRef<{
-		canvas: HTMLCanvasElement;
-		context2d: CanvasRenderingContext2D;
-	} | null>(null);
 
 	const [initialized, setInitialized] = useState(false);
 
 	const canvasWasResized = useRef(false);
 
-	const selectionStart = useRef(INVALID_POSITION);
-	const selectionEnd = useRef(INVALID_POSITION);
-
 	const { current: drawSelection } = useRef(() => {
-		if (containerRef.current && canvasRef.current) {
-			canvasRef.current.context2d.clearRect(
-				0,
-				0,
-				containerRef.current.clientWidth,
-				containerRef.current.offsetHeight
-			);
+		if (state.selection.element) {
+			if (state.selection.start.join(',') === INVALID_POSITION.join(',')) {
+				state.selection.element.style.display = 'none';
+			} else {
+				const x = state.selection.start[0];
+				const y = state.selection.start[1];
 
-			canvasRef.current.context2d.strokeStyle = 'rgba(255, 255, 255, 0.75)';
-
-			canvasRef.current.context2d.beginPath();
-			const x = selectionStart.current[0];
-			const y = selectionStart.current[1];
-			const w = selectionEnd.current[0] - x;
-			const h = selectionEnd.current[1] - y;
-			canvasRef.current.context2d.strokeRect(x, y, w, h);
+				state.selection.element.style.left = `${x}px`;
+				state.selection.element.style.top = `${y}px`;
+				state.selection.element.style.left = `${
+					state.selection.start[0] - x
+				}px`;
+				state.selection.element.style.top = `${state.selection.start[1] - y}px`;
+				state.selection.element.style.display = 'block';
+			}
 		}
 	});
 
 	const { current: clearSelection } = useRef(() => {
-		selectionStart.current = INVALID_POSITION;
-		selectionEnd.current = INVALID_POSITION;
+		state.selection.start = INVALID_POSITION;
+		state.selection.end = INVALID_POSITION;
 
 		drawSelection();
 	});
 
+	const isInitialized = () =>
+		!!state.container && !!state.selection && !!state.spacer;
+
 	const onResize = useCallback(() => {
 		queueAnimationCallback(() => {
-			if (containerRef.current && spacerRef.current && canvasRef.current) {
-				{
-					const { width, height } = canvasRef.current.canvas;
-					canvasRef.current.context2d.clearRect(0, 0, width, height);
-				}
-
-				const containerRect = containerRef.current.getBoundingClientRect();
+			if (state.container && state.spacer) {
+				const containerRect = state.container.getBoundingClientRect();
 				{
 					const modulesArray = Object.values(modules);
 
@@ -91,21 +102,18 @@ export const ResizableCanvas: React.FC<{
 						]
 					);
 
-					spacerRef.current.style.width = `calc(${width}px + 50vw)`;
-					spacerRef.current.style.height = `calc(${height}px + 50vh)`;
-
-					canvasRef.current.canvas.width = width;
-					canvasRef.current.canvas.height = height;
+					state.spacer.style.width = `calc(${width}px + 50vw)`;
+					state.spacer.style.height = `calc(${height}px + 50vh)`;
 				}
 
 				drawSelection();
 
 				if (!canvasWasResized.current) {
 					canvasWasResized.current = true;
-					const spacerRect = spacerRef.current.getBoundingClientRect();
+					const spacerRect = state.spacer.getBoundingClientRect();
 					console.log((spacerRect.width - window.innerWidth) / 2);
 					console.log((spacerRect.height - window.innerHeight) / 2);
-					containerRef.current.scrollTo({
+					state.container.scrollTo({
 						left: (spacerRect.width - window.innerWidth) / 2,
 						top: (spacerRect.height - window.innerHeight) / 2
 					});
@@ -117,7 +125,7 @@ export const ResizableCanvas: React.FC<{
 	const { current: onMouseout } = useRef((e: MouseEvent) => {});
 
 	useEffect(() => {
-		if (containerRef.current && spacerRef.current && canvasRef.current) {
+		if (state.container && state.selection && state.spacer) {
 			onResize();
 
 			window.addEventListener('resize', onResize, false);
@@ -130,18 +138,27 @@ export const ResizableCanvas: React.FC<{
 				window.addEventListener('mouseout', onMouseout, false);
 			};
 		}
-	}, [initialized, containerRef.current, spacerRef.current, canvasRef.current]);
+	}, [initialized, state.container, state.selection, state.spacer]);
 
 	const { current: onDrag } = useRef((e: MouseEvent) => {
-		selectionEnd.current = positionFromMouseEvent(e);
+		console.log(e);
+		console.log(state.container);
+		state.selection.end = positionFromMouseEvent(
+			e,
+			state.container as HTMLElement
+		);
 
 		queueAnimationCallback(drawSelection);
 
-		dispatch(actions.selectionDragContinueAction(selectionEnd.current));
+		dispatch(actions.selectionDragContinueAction(state.selection.end));
 	});
 
 	const { current: onMouseUp } = useRef((e: MouseEvent) => {
-		dispatch(actions.selectionDragEndAction(positionFromMouseEvent(e)));
+		dispatch(
+			actions.selectionDragEndAction(
+				positionFromMouseEvent(e, state.container as HTMLElement)
+			)
+		);
 
 		queueAnimationCallback(() => clearSelection());
 
@@ -151,9 +168,13 @@ export const ResizableCanvas: React.FC<{
 
 	const { current: onMouseDown } = useRef(
 		(e: ReactMouseEvent<HTMLDivElement>) => {
-			const position = positionFromMouseEvent(e.nativeEvent);
-			selectionStart.current = position;
-			selectionEnd.current = position;
+			const position = positionFromMouseEvent(
+				e.nativeEvent,
+				state.container as HTMLElement
+			);
+
+			state.selection.start = position;
+			state.selection.end = position;
 
 			dispatch(actions.selectionDragStartAction(position));
 
@@ -162,37 +183,25 @@ export const ResizableCanvas: React.FC<{
 		}
 	);
 
-	const isInitialized = () =>
-		!!containerRef.current && !!spacerRef.current && !!canvasRef.current;
-
-	const HtmlCanvas = () => (
-		<canvas
-			key={0}
-			ref={(canvas) => {
-				if (canvas) {
-					const context2d = canvas.getContext('2d');
-					if (context2d) {
-						canvasRef.current = { canvas, context2d };
-						setInitialized(isInitialized());
-					}
-				}
-			}}
-		/>
-	);
-
 	return (
 		<main
 			ref={(main) => {
-				containerRef.current = main;
+				state.container = main ?? undefined;
 				setInitialized(isInitialized());
 			}}
 			onMouseDown={initialized ? onMouseDown : () => {}}
-			onScroll={initialized ? () => onResize() : () => {}}
+			onScroll={initialized ? onResize : () => {}}
 		>
-			<HtmlCanvas />
+			<div
+				id="selection"
+				ref={(div) => {
+					state.selection.element = div ?? undefined;
+					setInitialized(isInitialized());
+				}}
+			/>
 			<div
 				ref={(div) => {
-					spacerRef.current = div;
+					state.spacer = div ?? undefined;
 					setInitialized(isInitialized());
 				}}
 			/>
