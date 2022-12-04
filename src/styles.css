@@ -53,6 +53,7 @@ main {
 #selection {
 	position: absolute;
 	border: solid 1px #fffc;
+	border-radius: 3px;
 }
 
 #module-canvas {

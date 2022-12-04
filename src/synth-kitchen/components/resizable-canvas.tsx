@@ -58,16 +58,19 @@ export const ResizableCanvas: React.FC<{
 			if (state.selection.start.join(',') === INVALID_POSITION.join(',')) {
 				state.selection.element.style.display = 'none';
 			} else {
-				const x = state.selection.start[0];
-				const y = state.selection.start[1];
+				const xStart = state.selection.start[0];
+				const xEnd = state.selection.end[0];
+				const yStart = state.selection.start[1];
+				const yEnd = state.selection.end[1];
 
-				state.selection.element.style.left = `${x}px`;
-				state.selection.element.style.top = `${y}px`;
-				state.selection.element.style.left = `${
-					state.selection.start[0] - x
-				}px`;
-				state.selection.element.style.top = `${state.selection.start[1] - y}px`;
 				state.selection.element.style.display = 'block';
+				state.selection.element.style.left = `${Math.min(xStart, xEnd)}px`;
+				state.selection.element.style.top = `calc(${Math.min(
+					yStart,
+					yEnd
+				)}px - 2.5rem)`;
+				state.selection.element.style.width = `${Math.abs(xEnd - xStart)}px`;
+				state.selection.element.style.height = `${Math.abs(yEnd - yStart)}px`;
 			}
 		}
 	});
@@ -174,12 +177,13 @@ export const ResizableCanvas: React.FC<{
 			);
 
 			state.selection.start = position;
-			state.selection.end = position;
 
 			dispatch(actions.selectionDragStartAction(position));
 
 			document.body.addEventListener('mouseup', onMouseUp);
 			document.body.addEventListener('mousemove', onDrag);
+
+			onDrag(e.nativeEvent);
 		}
 	);
 
