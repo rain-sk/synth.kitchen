@@ -14,7 +14,7 @@ MVP:
 - [x] stop the viewport from growing for no apparent reason
 - [x] support undo/redo of patch state changes (modules, connections, name)
 - [ ] newly-added modules are positioned "meaningfully" (try to avoid overlaps, aim for the center of the viewport)
-- [ ] newly-added modules' names are based on the type of module
+- [x] newly-added modules' names are based on the type of module
 - [ ] modify the existing selection properly when using shift+drag
 - [ ] adjust the viewport size to something reasonable during drag-continue and drag-end events
 - [ ] scroll when dragging a module past the edge of the viewport
