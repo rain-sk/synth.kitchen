@@ -18,12 +18,6 @@ MVP:
 - [ ] modify the existing selection properly when using shift+drag
 - [ ] adjust the viewport size to something reasonable during drag-continue and drag-end events
 - [ ] scroll when dragging a module past the edge of the viewport
-- [ ] handle dragging up/left in a way that feels equivalent as dragging down/right
-
-Stretch goals:
-
-- [ ] "smart" undo/redo: don't fill it up with junky intermediate state
-- [ ] handle dragging up/left in a way that feels equivalent as dragging down/right
 
 ### Keyboard Nav
 
