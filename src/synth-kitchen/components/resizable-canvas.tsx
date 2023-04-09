@@ -5,7 +5,7 @@ import React, {
 	useRef,
 	useState
 } from 'react';
-import { useAnimationContext } from '../hooks/use-animation-context';
+import { queueAnimation } from '../animation';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useEffectOnce } from '../hooks/use-effect-once';
 import { useStateContext } from '../hooks/use-state-context';
@@ -45,7 +45,6 @@ export const ResizableCanvas: React.FC<{
 		}
 	});
 
-	const queueAnimationCallback = useAnimationContext();
 	const { modules } = useStateContext();
 	const dispatch = useDispatchContext();
 
@@ -86,7 +85,7 @@ export const ResizableCanvas: React.FC<{
 		!!state.container && !!state.selection && !!state.spacer;
 
 	const onResize = useCallback(() => {
-		queueAnimationCallback(() => {
+		queueAnimation(() => {
 			if (state.container && state.spacer) {
 				const containerRect = state.container.getBoundingClientRect();
 				{
@@ -151,7 +150,7 @@ export const ResizableCanvas: React.FC<{
 			state.container as HTMLElement
 		);
 
-		queueAnimationCallback(drawSelection);
+		queueAnimation(drawSelection);
 
 		dispatch(actions.selectionDragContinueAction(state.selection.end));
 	});
@@ -163,7 +162,7 @@ export const ResizableCanvas: React.FC<{
 			)
 		);
 
-		queueAnimationCallback(() => clearSelection());
+		queueAnimation(() => clearSelection());
 
 		document.body.removeEventListener('mouseup', onMouseUp);
 		document.body.removeEventListener('mousemove', onDrag);

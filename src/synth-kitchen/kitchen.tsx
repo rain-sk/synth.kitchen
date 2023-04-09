@@ -7,7 +7,6 @@ import { initialState } from './state/types/state';
 import { Toolbar } from './components/toolbar';
 import { StateContext } from './contexts/state';
 import { DispatchContext } from './contexts/dispatch';
-import { AnimationContext } from './contexts/animation';
 
 export const Kitchen: React.FC = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
@@ -15,13 +14,11 @@ export const Kitchen: React.FC = () => {
 	return (
 		<StateContext.Provider value={state}>
 			<DispatchContext.Provider value={dispatch}>
-				<AnimationContext>
-					<Toolbar />
-					<ResizableCanvas drawOnTop={false}>
-						<KeyHandler />
-						<ModuleCanvas modules={state.modules} />
-					</ResizableCanvas>
-				</AnimationContext>
+				<Toolbar />
+				<ResizableCanvas drawOnTop={false}>
+					<KeyHandler />
+					<ModuleCanvas modules={state.modules} />
+				</ResizableCanvas>
 			</DispatchContext.Provider>
 		</StateContext.Provider>
 	);

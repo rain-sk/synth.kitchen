@@ -17,7 +17,7 @@ import { OutputModule } from '../modules/output';
 import { Modifier } from '../state/types/state';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
-import { useAnimationContext } from '../hooks/use-animation-context';
+import { queueAnimation } from '../animation';
 
 const useDragAndDrop = (
 	initialX: number,
@@ -25,7 +25,6 @@ const useDragAndDrop = (
 	containerRef: React.MutableRefObject<HTMLElement | null>,
 	setIsDragging: (isDraggingModules: boolean) => void,
 	onUpdate: (x: number, y: number) => void,
-	queueAnimationCallback: (callback: () => void) => void
 ): [
 	React.MutableRefObject<boolean>,
 	(e: ReactMouseEvent<HTMLDivElement>) => void,
@@ -36,7 +35,7 @@ const useDragAndDrop = (
 		x: number,
 		y: number
 	) =>
-		queueAnimationCallback(() => {
+	queueAnimation(() => {
 			if (containerRef.current) {
 				containerRef.current.style.left = `${x}px`;
 				containerRef.current.style.top = `${y}px`;
@@ -138,7 +137,6 @@ export const Module: React.FunctionComponent<{
 	module: IModule;
 }> = ({ module }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const queueAnimationCallback = useAnimationContext();
 	const dispatch = useDispatchContext();
 	const { selectedModuleKeys, selectionPending, heldModifiers } =
 		useStateContext();
@@ -163,7 +161,6 @@ export const Module: React.FunctionComponent<{
 		containerRef,
 		setIsDragging,
 		onUpdatePosition,
-		queueAnimationCallback
 	);
 
 	useEffect(() => {
