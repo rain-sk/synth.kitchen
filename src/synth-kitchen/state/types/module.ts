@@ -4,6 +4,7 @@ export type ModuleType =
 	| 'DELAY'
 	| 'FILTER'
 	| 'GAIN'
+	| 'NOISE'
 	| 'OSCILLATOR'
 	| 'OUTPUT'
 	| 'SEQUENCER';
@@ -12,6 +13,7 @@ export interface IModuleState extends Record<ModuleType, any> {
 	GAIN: {
 		gain: number;
 	};
+	NOISE: {};
 	DELAY: {
 		delayTime: number;
 	};
