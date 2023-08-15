@@ -6,25 +6,29 @@ import React, {
 	useRef
 } from 'react';
 
+import { ModuleContextProvider } from '../contexts/module';
+
 import { actions } from '../state/actions';
-import { IModule } from '../state/types/module';
+import { IModule, ModuleIo } from '../state/types/module';
 
 import { OscillatorModule } from '../modules/oscillator';
 import { GainModule } from '../modules/gain';
 import { DelayModule } from '../modules/delay';
 import { FilterModule } from '../modules/filter';
+import { NoiseModule } from '../modules/noise';
 import { OutputModule } from '../modules/output';
 import { Modifier } from '../state/types/state';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 import { queueAnimation } from '../animation';
+import { ModuleOutputs } from './module-outputs';
 
 const useDragAndDrop = (
 	initialX: number,
 	initialY: number,
 	containerRef: React.MutableRefObject<HTMLElement | null>,
 	setIsDragging: (isDraggingModules: boolean) => void,
-	onUpdate: (x: number, y: number) => void,
+	onUpdate: (x: number, y: number) => void
 ): [
 	React.MutableRefObject<boolean>,
 	(e: ReactMouseEvent<HTMLDivElement>) => void,
@@ -35,7 +39,7 @@ const useDragAndDrop = (
 		x: number,
 		y: number
 	) =>
-	queueAnimation(() => {
+		queueAnimation(() => {
 			if (containerRef.current) {
 				containerRef.current.style.left = `${x}px`;
 				containerRef.current.style.top = `${y}px`;
@@ -123,6 +127,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 			return <FilterModule module={module as IModule<'FILTER'>} />;
 		case 'GAIN':
 			return <GainModule module={module as IModule<'GAIN'>} />;
+		case 'NOISE':
+			return <NoiseModule module={module as IModule<'NOISE'>} />;
 		case 'OSCILLATOR':
 			return <OscillatorModule module={module as IModule<'OSCILLATOR'>} />;
 		case 'OUTPUT':
@@ -160,7 +166,7 @@ export const Module: React.FunctionComponent<{
 		module.y,
 		containerRef,
 		setIsDragging,
-		onUpdatePosition,
+		onUpdatePosition
 	);
 
 	useEffect(() => {
@@ -216,21 +222,28 @@ export const Module: React.FunctionComponent<{
 	);
 
 	return (
-		<div
-			role="treeitem"
-			aria-selected={currentlySelected}
-			tabIndex={0}
-			onFocus={onFocus}
-			className={`module${selectionStateString}${draggingStateString}`}
-			onMouseDown={onMouseDown}
-			style={{
-				width: module.width,
-				height: module.height
-			}}
-			ref={containerRef}
-		>
-			<ModuleHeader module={module} />
-			<ModuleUi module={module} />
-		</div>
+		<ModuleContextProvider>
+			<div
+				role="treeitem"
+				aria-selected={currentlySelected}
+				tabIndex={0}
+				onFocus={onFocus}
+				className={`module${selectionStateString}${draggingStateString}`}
+				onMouseDown={onMouseDown}
+				style={{
+					width: module.width,
+					height: module.height
+				}}
+				ref={containerRef}
+			>
+				{/* <ModuleInputs module={module} inputs={ModuleIo[module.type]} /> */}
+				<ModuleHeader module={module} />
+				<ModuleUi module={module} />
+				<ModuleOutputs
+					module={module}
+					outputs={ModuleIo[module.type].outputs}
+				/>
+			</div>
+		</ModuleContextProvider>
 	);
 };

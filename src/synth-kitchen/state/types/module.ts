@@ -43,6 +43,21 @@ export interface IModuleState extends Record<ModuleType, any> {
 	};
 }
 
+export type IModuleIoInfo = { inputs: string[]; outputs: string[] };
+
+export const ModuleIo: Record<ModuleType, IModuleIoInfo> = {
+	GAIN: { inputs: ['in'], outputs: ['out'] },
+	NOISE: { inputs: [], outputs: ['out'] },
+	DELAY: {
+		inputs: ['in'],
+		outputs: ['out']
+	},
+	FILTER: { inputs: ['in'], outputs: ['out'] },
+	OSCILLATOR: { inputs: [], outputs: ['out'] },
+	SEQUENCER: { inputs: [], outputs: ['out'] },
+	OUTPUT: { inputs: ['in'], outputs: [] }
+};
+
 export type IModule<T extends ModuleType = ModuleType> = {
 	name: string;
 	moduleKey: string;

@@ -15,13 +15,13 @@ export const initAudio = async () => {
 			document.removeEventListener('touchstart', resume, false);
 
 			if ('resume' in audioContext) {
-				audioContext.resume();
-				audio.initialized = true;
+				audioContext.resume().then(() => {
+					audio.initialized = true;
+					resolve();
+				});
 			} else {
 				console.error('Unable to resume AudioContext');
 			}
-
-			resolve();
 		};
 
 		document.addEventListener('click', resume, false);
