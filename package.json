@@ -1,24 +1,31 @@
 {
 	"name": "synth.kitchen",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"private": true,
+	"type": "module",
 	"dependencies": {
 		"project-name-generator": "^2.1.9",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"standardized-audio-context": "^25.3.35",
+		"standardized-audio-context": "^25.3.55",
 		"uuid": "^9.0.0",
-		"webmidi": "^3.0.22"
+		"webmidi": "^3.1.6"
 	},
 	"scripts": {
-		"build": "vite build",
-		"start": "vite"
+		"build": "tsc && vite build",
+		"start": "vite",
+		"preview": "vite preview"
 	},
 	"devDependencies": {
-		"@types/react": "^18.0.25",
-		"@types/react-dom": "^18.0.9",
-		"@vitejs/plugin-react": "^2.2.0",
-		"typescript": "^4.9.3",
-		"vite": "^3.2.4"
+		"@types/react": "^18.2.20",
+		"@types/react-dom": "^18.2.7",
+		"@typescript-eslint/eslint-plugin": "^6.4.0",
+		"@typescript-eslint/parser": "^6.4.0",
+		"@vitejs/plugin-react": "^4.0.4",
+		"eslint": "^8.47.0",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"eslint-plugin-react-refresh": "^0.4.3",
+		"typescript": "^5.1.6",
+		"vite": "^4.4.9"
 	}
 }
