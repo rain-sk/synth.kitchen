@@ -29,8 +29,8 @@ export const initialState: IState = {
 			name: 'GLOBAL_OUT',
 			moduleKey: '0',
 			type: 'OUTPUT',
-			x: Math.round(Math.random() * 800),
-			y: Math.round(Math.random() * 400),
+			x: document.documentElement.scrollWidth / 1.47,
+			y: document.documentElement.scrollHeight / 1.8,
 			width: 200,
 			height: 200,
 			state: { gain: 1 }
