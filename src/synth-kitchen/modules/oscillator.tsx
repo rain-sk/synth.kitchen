@@ -1,4 +1,10 @@
-import React, { useContext, useRef } from 'react';
+import React, {
+	ChangeEvent,
+	useCallback,
+	useContext,
+	useRef,
+	useState
+} from 'react';
 
 import { IAudioContext, IOscillatorNode } from 'standardized-audio-context';
 import { audioContext } from '../audio';
@@ -7,6 +13,10 @@ import { useModuleState } from '../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../state/types/module';
 import { ModuleContext } from '../contexts/module';
+import { useDispatchContext } from '../hooks/use-dispatch-context';
+import { disableKeyMovementAction } from '../state/actions/disable-key-movement';
+import { enableKeyMovementAction } from '../state/actions/enable-key-movement';
+import { NumberBox } from '../components/number-box';
 
 const oscillatorStateFromNode = (
 	node: IOscillatorNode<IAudioContext>
@@ -45,9 +55,10 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 	module
 }) => {
 	const { setOutputAccessor, setParamAccessor } = useContext(ModuleContext);
+	const dispatch = useDispatchContext();
 
 	const oscillatorRef = useRef<IOscillatorNode<IAudioContext>>();
-	const [state] = useModuleState<'OSCILLATOR'>(
+	const [state, setState] = useModuleState<'OSCILLATOR'>(
 		() => initOscillator(oscillatorRef, module.state),
 		module.moduleKey
 	);
@@ -78,7 +89,31 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 		};
 	});
 
+	const commitFrequencyChange = useCallback(
+		(frequency: number) => {
+			oscillatorRef.current?.frequency.linearRampToValueAtTime(
+				frequency,
+				audioContext.currentTime
+			);
+			setState({
+				...state,
+				frequency
+			});
+		},
+		[oscillatorRef.current, audioContext, state]
+	);
+
 	const enabled = state != undefined;
 
-	return enabled ? <p>enabled</p> : <p>loading...</p>;
+	return !enabled ? (
+		<p>loading...</p>
+	) : (
+		<>
+			<NumberBox
+				name="frequency"
+				value={state.frequency}
+				commitValueCallback={commitFrequencyChange}
+			/>
+		</>
+	);
 };
