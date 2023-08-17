@@ -47,7 +47,10 @@ export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 				])
 			)
 		};
-	} else if (keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) {
+	} else if (
+		(keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) &&
+		state.isKeyMovementEnabled
+	) {
 		return {
 			...state,
 			modules: Object.fromEntries(
