@@ -11,6 +11,7 @@ export const INVALID_POSITION: [number, number] = [-1, -1];
 
 export type IState = IPatch & {
 	heldModifiers: Modifier;
+	isKeyMovementEnabled: boolean;
 	isDraggingModules: boolean;
 	modules: Record<string, IModule>;
 	mouseDragStartPosition: [number, number];
@@ -24,6 +25,7 @@ export type IState = IPatch & {
 export const initialState: IState = {
 	heldModifiers: Modifier.NONE,
 	isDraggingModules: false,
+	isKeyMovementEnabled: true,
 	modules: {
 		'0': {
 			name: 'GLOBAL_OUT',

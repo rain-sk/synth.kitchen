@@ -1,6 +1,14 @@
 import { addModuleAction, IAddModule } from './add-module';
 import { changeNameAction, IChangeName } from './change-name';
+import {
+	IDisableKeyMovement,
+	disableKeyMovementAction
+} from './disable-key-movement';
 import { dragModulesAction, IDragModules } from './drag-modules';
+import {
+	IEnableKeyMovement,
+	enableKeyMovementAction
+} from './enable-key-movement';
 import {
 	historyPushAction,
 	historyRedoAction,
@@ -33,7 +41,9 @@ import {
 export type IAction =
 	| IAddModule
 	| IChangeName
+	| IDisableKeyMovement
 	| IDragModules
+	| IEnableKeyMovement
 	| IHistory
 	| IKeyboardEvent
 	| ILoadPatch
@@ -46,7 +56,9 @@ export const actions = {
 	addModuleAction,
 	changeNameAction,
 	deselectModuleAction,
+	disableKeyMovementAction,
 	dragModulesAction,
+	enableKeyMovementAction,
 	historyPushAction,
 	historyRedoAction,
 	historyUndoAction,
