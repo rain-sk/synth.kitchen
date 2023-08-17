@@ -12,7 +12,7 @@ const gainStateFromNode = (
 	gain: node.gain.value
 });
 
-const initGainState = (
+const initGain = (
 	gainRef: React.MutableRefObject<IGainNode<IAudioContext> | undefined>,
 	state?: IModuleState['GAIN']
 ) => {
@@ -29,8 +29,8 @@ export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 	module
 }) => {
 	const gainRef = useRef<IGainNode<IAudioContext>>();
-	const [state, setState] = useModuleState<'GAIN'>(
-		() => initGainState(gainRef, module.state),
+	const [state] = useModuleState<'GAIN'>(
+		() => initGain(gainRef, module.state),
 		module.moduleKey
 	);
 

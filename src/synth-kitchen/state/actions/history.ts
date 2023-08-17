@@ -1,5 +1,3 @@
-import { ModuleType } from '../types/module';
-
 export enum HistoryChangeType {
 	PUSH,
 	REDO,

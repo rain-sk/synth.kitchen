@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Module } from './module';
 import { IModule } from '../state/types/module';
 import { useStateContext } from '../hooks/use-state-context';

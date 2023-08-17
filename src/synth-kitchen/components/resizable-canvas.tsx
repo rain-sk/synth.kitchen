@@ -124,7 +124,7 @@ export const ResizableCanvas: React.FC<{
 		});
 	}, [modules]);
 
-	const { current: onMouseout } = useRef((e: MouseEvent) => {});
+	const { current: onMouseout } = useRef((/*e: MouseEvent*/) => {});
 
 	useEffect(() => {
 		if (state.container && state.selection && state.spacer) {

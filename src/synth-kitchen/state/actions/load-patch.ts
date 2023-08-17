@@ -1,4 +1,3 @@
-import { IModule } from '../types/module';
 import { IPatch } from '../types/patch';
 
 export type ILoadPatch = {

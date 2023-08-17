@@ -5,7 +5,7 @@ import { ModuleContext } from '../contexts/module';
 export const ModuleOutputs: React.FunctionComponent<{
 	module: IModule;
 	outputs: string[];
-}> = ({ module, outputs }) => {
+}> = ({ outputs }) => {
 	const { outputAccessor } = useContext(ModuleContext);
 
 	if (outputAccessor) {

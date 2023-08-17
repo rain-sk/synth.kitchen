@@ -12,7 +12,7 @@ const delayStateFromNode = (
 	delayTime: node.delayTime.value
 });
 
-const initDelayState = (
+const initDelay = (
 	delayRef: React.MutableRefObject<IDelayNode<IAudioContext> | undefined>,
 	state?: IModuleState['DELAY']
 ) => {
@@ -32,8 +32,8 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 	module
 }) => {
 	const delayRef = useRef<IDelayNode<IAudioContext>>();
-	const [state, setState] = useModuleState<'DELAY'>(
-		() => initDelayState(delayRef, module.state),
+	const [state] = useModuleState<'DELAY'>(
+		() => initDelay(delayRef, module.state),
 		module.moduleKey
 	);
 

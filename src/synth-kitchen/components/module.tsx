@@ -93,7 +93,7 @@ const useDragAndDrop = (
 			dragOffset.current.x = e.clientX - x;
 			dragOffset.current.y = e.clientY - y;
 
-			const onMouseUp = (e: MouseEvent) => {
+			const onMouseUp = () => {
 				stopDragging();
 				document.body.removeEventListener('mouseup', onMouseUp);
 				document.body.removeEventListener('mousemove', onDrag.current);

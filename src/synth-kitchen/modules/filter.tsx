@@ -16,7 +16,7 @@ const filterStateFromNode = (
 	type: filter.type
 });
 
-const initFilterState = (
+const initFilter = (
 	filterRef: React.MutableRefObject<
 		IBiquadFilterNode<IAudioContext> | undefined
 	>,
@@ -45,8 +45,8 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 	module
 }) => {
 	const filterRef = useRef<IBiquadFilterNode<IAudioContext>>();
-	const [state, setState] = useModuleState<'FILTER'>(
-		() => initFilterState(filterRef, module.state),
+	const [state] = useModuleState<'FILTER'>(
+		() => initFilter(filterRef, module.state),
 		module.moduleKey
 	);
 

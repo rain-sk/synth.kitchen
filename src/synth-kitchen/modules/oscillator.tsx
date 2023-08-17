@@ -16,7 +16,7 @@ const oscillatorStateFromNode = (
 	waveform: node.type
 });
 
-const initOscillatorState = (
+const initOscillator = (
 	oscillatorRef: React.MutableRefObject<
 		IOscillatorNode<IAudioContext> | undefined
 	>,
@@ -47,8 +47,8 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 	const { setOutputAccessor, setParamAccessor } = useContext(ModuleContext);
 
 	const oscillatorRef = useRef<IOscillatorNode<IAudioContext>>();
-	const [state, setState] = useModuleState<'OSCILLATOR'>(
-		() => initOscillatorState(oscillatorRef, module.state),
+	const [state] = useModuleState<'OSCILLATOR'>(
+		() => initOscillator(oscillatorRef, module.state),
 		module.moduleKey
 	);
 

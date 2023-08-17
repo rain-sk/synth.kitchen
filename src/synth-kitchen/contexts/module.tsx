@@ -1,20 +1,23 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import {
 	IAudioContext,
 	IAudioNode,
 	IAudioParam
 } from 'standardized-audio-context';
 
-type IoAccessor = (key: string) => IAudioNode<IAudioContext> | undefined;
-type ParamAccessor = (key: string) => IAudioParam | undefined;
+type IIoAccessor = (key: string) => IAudioNode<IAudioContext> | undefined;
+type IParamAccessor = (key: string) => IAudioParam | undefined;
+
+type IIoAccessorSetter = (inputAccessor: IIoAccessor) => void;
+type IParamAccessorSetter = (paramAccessor: IParamAccessor) => void;
 
 const initModuleContextValue = {
-	inputAccessor: undefined as IoAccessor | undefined,
-	outputAccessor: undefined as IoAccessor | undefined,
-	paramAccessor: undefined as ParamAccessor | undefined,
-	setInputAccessor: (inputAccessor: IoAccessor) => {},
-	setOutputAccessor: (outputAccessor: IoAccessor) => {},
-	setParamAccessor: (paramAccessor: ParamAccessor) => {}
+	inputAccessor: undefined as IIoAccessor | undefined,
+	outputAccessor: undefined as IIoAccessor | undefined,
+	paramAccessor: undefined as IParamAccessor | undefined,
+	setInputAccessor: (() => {}) as any as IIoAccessorSetter,
+	setOutputAccessor: (() => {}) as any as IIoAccessorSetter,
+	setParamAccessor: (() => {}) as any as IParamAccessorSetter
 };
 
 export const ModuleContext = React.createContext(initModuleContextValue);
@@ -24,13 +27,13 @@ export const ModuleContextProvider: React.FunctionComponent<{
 }> = ({ children }) => {
 	const [state, setState] = useState(initModuleContextValue);
 
-	const setInputAccessor = (inputAccessor: IoAccessor) => {
+	const setInputAccessor = (inputAccessor: IIoAccessor) => {
 		setState({ ...state, inputAccessor });
 	};
-	const setOutputAccessor = (outputAccessor: IoAccessor) => {
+	const setOutputAccessor = (outputAccessor: IIoAccessor) => {
 		setState({ ...state, outputAccessor });
 	};
-	const setParamAccessor = (paramAccessor: ParamAccessor) => {
+	const setParamAccessor = (paramAccessor: IParamAccessor) => {
 		setState({ ...state, paramAccessor });
 	};
 
