@@ -230,10 +230,6 @@ export const Module: React.FunctionComponent<{
 				onFocus={onFocus}
 				className={`module${selectionStateString}${draggingStateString}`}
 				onMouseDown={onMouseDown}
-				style={{
-					width: module.width,
-					height: module.height
-				}}
 				ref={containerRef}
 			>
 				{/* <ModuleInputs module={module} inputs={ModuleIo[module.type]} /> */}

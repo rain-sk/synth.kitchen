@@ -64,8 +64,6 @@ export type IModule<T extends ModuleType = ModuleType> = {
 	type: T;
 	x: number;
 	y: number;
-	width: number;
-	height: number;
 	state?: IModuleState[T];
 };
 

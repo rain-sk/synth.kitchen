@@ -67,7 +67,13 @@ main {
 	cursor: move;
 	border: 1px solid rgba(255, 255, 255, 0.25);
 	border-radius: 3px;
+	padding: 1rem;
 	transition: border linear 100ms, top linear 100ms, left linear 100ms;
+}
+
+.module h2 {
+	max-width: 300px;
+	margin-bottom: 1rem;
 }
 
 #module-canvas.dragging > .module {
@@ -85,6 +91,15 @@ main {
 .module.selected,
 .module.selection_pending {
 	z-index: 1;
+}
+
+.numbox {
+	display: flex;
+	justify-content: space-between;
+}
+
+.numbox:not(:first-child) {
+	margin-top: 0.5rem;
 }
 
 #load {

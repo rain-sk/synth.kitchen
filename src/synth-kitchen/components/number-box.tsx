@@ -82,7 +82,7 @@ export const NumberBox: React.FunctionComponent<{
 	);
 
 	return (
-		<>
+		<span className="numbox">
 			<label htmlFor={id}>{name}</label>
 			<input
 				id={id}
@@ -93,6 +93,6 @@ export const NumberBox: React.FunctionComponent<{
 				onBlur={onBlur}
 				onKeyDown={onKeyDown}
 			/>
-		</>
+		</span>
 	);
 };

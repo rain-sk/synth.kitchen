@@ -33,8 +33,6 @@ export const initialState: IState = {
 			type: 'OUTPUT',
 			x: document.documentElement.scrollWidth / 1.47,
 			y: document.documentElement.scrollHeight / 1.8,
-			width: 200,
-			height: 200,
 			state: { gain: 1 }
 		}
 	},
