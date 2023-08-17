@@ -111,9 +111,7 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 
 	const enabled = state != undefined;
 
-	return !enabled ? (
-		<p>loading...</p>
-	) : (
+	return enabled ? (
 		<section>
 			<NumberBox
 				name="frequency"
@@ -126,5 +124,5 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 				commitValueCallback={commitDetuneChange}
 			/>
 		</section>
-	);
+	) : null;
 };
