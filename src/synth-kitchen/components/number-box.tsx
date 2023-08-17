@@ -10,30 +10,55 @@ export const NumberBox: React.FunctionComponent<{
 }> = ({ name, value, commitValueCallback }) => {
 	const dispatch = useDispatchContext();
 
-	const [tempValue, setTempValue] = useState<number | void>();
+	const [tempValue, setTempValue] = useState<string | void>();
+
+	const valueToCommit = useCallback(() => {
+		return tempValue ? parseFloat(tempValue) : value;
+	}, [tempValue, value]);
 
 	const onFocus = useCallback(() => {
-		console.log('disable');
 		dispatch(disableKeyMovementAction());
-		setTempValue(value);
+		setTempValue(`${value}`);
 	}, [dispatch, disableKeyMovementAction, setTempValue, value]);
 
 	const onChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
-			setTempValue(Number(e.target.value));
+			const string = e.target.value.trim();
+			if (string === '') {
+				setTempValue(string);
+				return;
+			}
+
+			const negative = string[0] === '-';
+
+			let onlyNumeric = `${negative ? '-' : ''}${string.replace(
+				/[^\d.]/g,
+				''
+			)}`;
+			const indexOfFirstDecimal = onlyNumeric.indexOf('.');
+			if (indexOfFirstDecimal > -1) {
+				onlyNumeric = `${onlyNumeric.slice(
+					0,
+					indexOfFirstDecimal
+				)}.${onlyNumeric.slice(indexOfFirstDecimal).replace(/[^\d]/g, '')}`;
+			}
+
+			const newValue = negative
+				? -parseFloat(onlyNumeric)
+				: parseFloat(onlyNumeric);
+
+			setTempValue(isNaN(newValue) ? tempValue : onlyNumeric);
 		},
-		[setTempValue]
+		[setTempValue, tempValue]
 	);
 
 	const onBlur = useCallback(() => {
-		commitValueCallback(tempValue ?? value);
+		commitValueCallback(valueToCommit());
 		setTempValue();
 		dispatch(enableKeyMovementAction());
-		console.log('enable');
 	}, [
 		commitValueCallback,
-		tempValue,
-		value,
+		valueToCommit,
 		setTempValue,
 		dispatch,
 		enableKeyMovementAction
@@ -42,19 +67,23 @@ export const NumberBox: React.FunctionComponent<{
 	const onKeyDown = useCallback(
 		(e: React.KeyboardEvent<HTMLInputElement>) => {
 			if (e.key === 'Enter') {
-				commitValueCallback(tempValue ?? value);
+				commitValueCallback(valueToCommit());
+				(e.target as any).select();
+			} else if (e.key === 'Escape') {
+				setTempValue(`${value}`);
+				setTimeout(() => (e.target as any).select(), 1);
 			} else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-				commitValueCallback(tempValue ?? value);
+				commitValueCallback(valueToCommit());
 			}
 		},
-		[commitValueCallback, tempValue, value]
+		[commitValueCallback, valueToCommit, setTempValue, value]
 	);
 
 	return (
 		<label>
 			{name}
 			<input
-				type="number"
+				type="text"
 				value={tempValue ?? value}
 				onChange={onChange}
 				onFocus={onFocus}

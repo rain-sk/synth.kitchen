@@ -1,21 +1,14 @@
-import React, {
-	ChangeEvent,
-	useCallback,
-	useContext,
-	useRef,
-	useState
-} from 'react';
-
+import React, { useCallback, useContext, useRef } from 'react';
 import { IAudioContext, IOscillatorNode } from 'standardized-audio-context';
+
 import { audioContext } from '../audio';
+
+import { ModuleContext } from '../contexts/module';
+
 import { useEffectOnce } from '../hooks/use-effect-once';
 import { useModuleState } from '../hooks/use-module-state';
-
 import { IModule, IModuleState } from '../state/types/module';
-import { ModuleContext } from '../contexts/module';
-import { useDispatchContext } from '../hooks/use-dispatch-context';
-import { disableKeyMovementAction } from '../state/actions/disable-key-movement';
-import { enableKeyMovementAction } from '../state/actions/enable-key-movement';
+
 import { NumberBox } from '../components/number-box';
 
 const oscillatorStateFromNode = (
@@ -55,7 +48,6 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 	module
 }) => {
 	const { setOutputAccessor, setParamAccessor } = useContext(ModuleContext);
-	const dispatch = useDispatchContext();
 
 	const oscillatorRef = useRef<IOscillatorNode<IAudioContext>>();
 	const [state, setState] = useModuleState<'OSCILLATOR'>(
@@ -103,17 +95,36 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 		[oscillatorRef.current, audioContext, state]
 	);
 
+	const commitDetuneChange = useCallback(
+		(detune: number) => {
+			oscillatorRef.current?.detune.linearRampToValueAtTime(
+				detune,
+				audioContext.currentTime
+			);
+			setState({
+				...state,
+				detune
+			});
+		},
+		[oscillatorRef.current, audioContext, state]
+	);
+
 	const enabled = state != undefined;
 
 	return !enabled ? (
 		<p>loading...</p>
 	) : (
-		<>
+		<section>
 			<NumberBox
 				name="frequency"
 				value={state.frequency}
 				commitValueCallback={commitFrequencyChange}
 			/>
-		</>
+			<NumberBox
+				name="detune"
+				value={state.detune}
+				commitValueCallback={commitDetuneChange}
+			/>
+		</section>
 	);
 };
