@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { disableKeyMovementAction } from '../state/actions/disable-key-movement';
 import { enableKeyMovementAction } from '../state/actions/enable-key-movement';
+import { randomId } from '../utils/random-id';
 
 export const NumberBox: React.FunctionComponent<{
 	name: string;
@@ -10,6 +11,7 @@ export const NumberBox: React.FunctionComponent<{
 }> = ({ name, value, commitValueCallback }) => {
 	const dispatch = useDispatchContext();
 
+	const [id] = useState(() => randomId());
 	const [tempValue, setTempValue] = useState<string | void>();
 
 	const valueToCommit = useCallback(() => {
@@ -80,9 +82,10 @@ export const NumberBox: React.FunctionComponent<{
 	);
 
 	return (
-		<label>
-			{name}
+		<>
+			<label htmlFor={id}>{name}</label>
 			<input
+				id={id}
 				type="text"
 				value={tempValue ?? value}
 				onChange={onChange}
@@ -90,6 +93,6 @@ export const NumberBox: React.FunctionComponent<{
 				onBlur={onBlur}
 				onKeyDown={onKeyDown}
 			/>
-		</label>
+		</>
 	);
 };
