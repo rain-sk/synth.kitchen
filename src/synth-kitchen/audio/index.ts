@@ -1,4 +1,5 @@
 import { AudioContext } from 'standardized-audio-context';
+import { initAudioProcessors } from './processors';
 
 export const audio = {
 	initialized: false
@@ -6,27 +7,20 @@ export const audio = {
 
 export const audioContext = new AudioContext();
 
+const resumeAudioContext = new Promise<void>((resolve) => {
+	const startButton = document.getElementsByTagName('button')[0];
+	startButton.focus();
+	startButton.addEventListener('click', () => {
+		if ('resume' in audioContext) {
+			audioContext.resume().then(() => {
+				resolve();
+			});
+		}
+	});
+});
+
 export const initAudio = async () => {
-	return new Promise<void>((resolve) => {
-		const resume: any = () => {
-			document.removeEventListener('click', resume, false);
-			document.removeEventListener('mousemove', resume, false);
-			document.removeEventListener('touchmove', resume, false);
-			document.removeEventListener('touchstart', resume, false);
-
-			if ('resume' in audioContext) {
-				audioContext.resume().then(() => {
-					audio.initialized = true;
-					resolve();
-				});
-			} else {
-				console.error('Unable to resume AudioContext');
-			}
-		};
-
-		document.addEventListener('click', resume, false);
-		document.addEventListener('mousemove', resume, false);
-		document.addEventListener('touchmove', resume, false);
-		document.addEventListener('touchstart', resume, false);
+	return resumeAudioContext.then(initAudioProcessors(audioContext)).then(() => {
+		audio.initialized = true;
 	});
 };
