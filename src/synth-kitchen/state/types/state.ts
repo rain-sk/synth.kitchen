@@ -1,5 +1,7 @@
 import { randomName } from '../../utils/random-name';
+import { IInput } from './input';
 import { IModule } from './module';
+import { IParameter } from './parameter';
 import { IPatch } from './patch';
 
 export enum Modifier {
@@ -20,6 +22,8 @@ export type IState = IPatch & {
 	patchHistoryOffset: number;
 	selectedModuleKeys: Set<string>;
 	selectionPending: boolean;
+	parameters: Record<string, IParameter>;
+	inputs: Record<string, Record<number, IInput>>;
 };
 
 export const initialState: IState = {
@@ -42,5 +46,7 @@ export const initialState: IState = {
 	patchHistory: [],
 	patchHistoryOffset: -1,
 	selectedModuleKeys: new Set(),
-	selectionPending: false
+	selectionPending: false,
+	parameters: {},
+	inputs: {}
 };

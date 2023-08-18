@@ -9,7 +9,7 @@ import React, {
 import { ModuleContextProvider } from '../contexts/module';
 
 import { actions } from '../state/actions';
-import { IModule, ModuleIo } from '../state/types/module';
+import { IModule } from '../state/types/module';
 
 import { OscillatorModule } from '../modules/oscillator';
 import { GainModule } from '../modules/gain';
@@ -21,7 +21,6 @@ import { Modifier } from '../state/types/state';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 import { queueAnimation } from '../animation';
-import { ModuleOutputs } from './module-outputs';
 
 const useDragAndDrop = (
 	initialX: number,
@@ -224,6 +223,7 @@ export const Module: React.FunctionComponent<{
 	return (
 		<ModuleContextProvider>
 			<div
+				id={module.moduleKey}
 				role="treeitem"
 				aria-selected={currentlySelected}
 				tabIndex={0}
@@ -232,13 +232,8 @@ export const Module: React.FunctionComponent<{
 				onMouseDown={onMouseDown}
 				ref={containerRef}
 			>
-				{/* <ModuleInputs module={module} inputs={ModuleIo[module.type]} /> */}
 				<ModuleHeader module={module} />
 				<ModuleUi module={module} />
-				<ModuleOutputs
-					module={module}
-					outputs={ModuleIo[module.type].outputs}
-				/>
 			</div>
 		</ModuleContextProvider>
 	);

@@ -46,7 +46,17 @@ const modulesInRange = (
 	};
 
 	modules.forEach((module) => {
-		if (rectContainsOtherRect(rect, module)) {
+		const navElement = document.getElementsByTagName('nav')[0];
+		const moduleElement = document.getElementById(module.moduleKey);
+
+		const moduleRect = {
+			x: module.x,
+			y: module.y + navElement.clientHeight,
+			width: moduleElement?.clientWidth ?? 0,
+			height: moduleElement?.clientHeight ?? 0
+		};
+
+		if (rectContainsOtherRect(rect, moduleRect)) {
 			moduleKeysInRange.add(module.moduleKey);
 		}
 	});

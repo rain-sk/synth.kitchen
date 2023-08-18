@@ -18,10 +18,14 @@ export const NumberBox: React.FunctionComponent<{
 		return tempValue ? parseFloat(tempValue) : value;
 	}, [tempValue, value]);
 
-	const onFocus = useCallback(() => {
-		dispatch(disableKeyMovementAction());
-		setTempValue(`${value}`);
-	}, [dispatch, disableKeyMovementAction, setTempValue, value]);
+	const onFocus = useCallback(
+		(e: React.FocusEvent<HTMLInputElement>) => {
+			dispatch(disableKeyMovementAction());
+			setTempValue(`${value}`);
+			e.target.select();
+		},
+		[dispatch, disableKeyMovementAction, setTempValue, value]
+	);
 
 	const onChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +87,9 @@ export const NumberBox: React.FunctionComponent<{
 
 	return (
 		<span className="numbox">
-			<label htmlFor={id}>{name}</label>
+			<label htmlFor={id}>
+				<h3>{name}</h3>
+			</label>
 			<input
 				id={id}
 				type="text"

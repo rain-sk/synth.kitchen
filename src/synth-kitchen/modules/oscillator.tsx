@@ -1,15 +1,17 @@
-import React, { useCallback, useContext, useRef } from 'react';
-import { IAudioContext, IOscillatorNode } from 'standardized-audio-context';
+import React, { useCallback, useRef } from 'react';
+import {
+	IAudioContext,
+	IAudioParam,
+	IOscillatorNode
+} from 'standardized-audio-context';
 
 import { audioContext } from '../audio';
-
-import { ModuleContext } from '../contexts/module';
 
 import { useEffectOnce } from '../hooks/use-effect-once';
 import { useModuleState } from '../hooks/use-module-state';
 import { IModule, IModuleState } from '../state/types/module';
 
-import { NumberBox } from '../components/number-box';
+import { NumberParameter } from '../components/number-parameter';
 
 const oscillatorStateFromNode = (
 	node: IOscillatorNode<IAudioContext>
@@ -47,8 +49,6 @@ const initOscillator = (
 export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 	module
 }) => {
-	const { setOutputAccessor, setParamAccessor } = useContext(ModuleContext);
-
 	const oscillatorRef = useRef<IOscillatorNode<IAudioContext>>();
 	const [state, setState] = useModuleState<'OSCILLATOR'>(
 		() => initOscillator(oscillatorRef, module.state),
@@ -58,22 +58,6 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 	useEffectOnce(() => {
 		oscillatorRef.current?.start();
 		oscillatorRef.current?.connect(audioContext.destination);
-
-		setOutputAccessor((key) => {
-			switch (key) {
-				case 'out':
-					return oscillatorRef.current;
-			}
-		});
-
-		setParamAccessor((key) => {
-			switch (key) {
-				case 'frequency':
-					return oscillatorRef.current?.frequency;
-				case 'detune':
-					return oscillatorRef.current?.detune;
-			}
-		});
 
 		return () => {
 			oscillatorRef.current?.stop();
@@ -106,19 +90,30 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 				detune
 			});
 		},
-		[oscillatorRef.current, audioContext, state]
+		[audioContext, state]
 	);
+
+	const frequencyAccessor = useCallback(() => {
+		return oscillatorRef.current?.frequency as IAudioParam;
+	}, []);
+	const detuneAccessor = useCallback(() => {
+		return oscillatorRef.current?.detune as IAudioParam;
+	}, []);
 
 	const enabled = state != undefined;
 
 	return enabled ? (
 		<section>
-			<NumberBox
+			<NumberParameter
+				moduleKey={module.moduleKey}
+				paramAccessor={frequencyAccessor}
 				name="frequency"
 				value={state.frequency}
 				commitValueCallback={commitFrequencyChange}
 			/>
-			<NumberBox
+			<NumberParameter
+				moduleKey={module.moduleKey}
+				paramAccessor={detuneAccessor}
 				name="detune"
 				value={state.detune}
 				commitValueCallback={commitDetuneChange}

@@ -42,6 +42,24 @@ export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 			case 'UpdateModuleState': {
 				return reducers.updateModuleState(state, action);
 			}
+			case 'RegisterParameter': {
+				return reducers.registerParameter(state, action);
+			}
+			case 'UpdateParameterRegistration': {
+				return reducers.updateParameterRegistration(state, action);
+			}
+			case 'UnregisterParameter': {
+				return reducers.unregisterParameter(state, action);
+			}
+			case 'RegisterInput': {
+				return reducers.registerInput(state, action);
+			}
+			case 'UpdateInputRegistration': {
+				return reducers.updateInputRegistration(state, action);
+			}
+			case 'UnregisterInput': {
+				return reducers.unregisterInput(state, action);
+			}
 			default: {
 				return state;
 			}

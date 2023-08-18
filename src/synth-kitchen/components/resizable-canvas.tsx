@@ -92,16 +92,10 @@ export const ResizableCanvas: React.FC<{
 					const modulesArray = Object.values(modules);
 
 					const width = Math.max(
-						...[
-							containerRect.width,
-							...modulesArray.map((module) => module.x + module.width)
-						]
+						...[containerRect.width, ...modulesArray.map((module) => module.x)]
 					);
 					const height = Math.max(
-						...[
-							containerRect.height,
-							...modulesArray.map((module) => module.y + module.height)
-						]
+						...[containerRect.height, ...modulesArray.map((module) => module.y)]
 					);
 
 					state.spacer.style.width = `calc(${width}px + 50vw)`;

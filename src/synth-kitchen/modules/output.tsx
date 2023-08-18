@@ -1,10 +1,15 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 
-import { IAudioContext, IGainNode } from 'standardized-audio-context';
+import {
+	IAudioContext,
+	IAudioParam,
+	IGainNode
+} from 'standardized-audio-context';
 import { audioContext } from '../audio';
 import { useModuleState } from '../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../state/types/module';
+import { NumberParameter } from '../components/number-parameter';
 
 const outputStateFromNode = (
 	node: IGainNode<IAudioContext>
@@ -30,12 +35,40 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 	module
 }) => {
 	const gainRef = useRef<IGainNode<IAudioContext>>();
-	const [state] = useModuleState<'OUTPUT'>(
+	const [state, setState] = useModuleState<'OUTPUT'>(
 		() => initOutput(gainRef, module.state),
 		module.moduleKey
 	);
 
+	const commitGainChange = useCallback(
+		(gain: number) => {
+			gainRef.current?.gain.linearRampToValueAtTime(
+				gain,
+				audioContext.currentTime
+			);
+			setState({
+				...state,
+				gain
+			});
+		},
+		[setState, state]
+	);
+
+	const gainAccessor = useCallback(() => {
+		return gainRef.current?.gain as IAudioParam;
+	}, []);
+
 	const enabled = state != undefined;
 
-	return enabled ? <p>enabled</p> : <p>loading...</p>;
+	return enabled ? (
+		<>
+			<NumberParameter
+				moduleKey={module.moduleKey}
+				paramAccessor={gainAccessor}
+				name="gain"
+				value={state.gain}
+				commitValueCallback={commitGainChange}
+			/>
+		</>
+	) : null;
 };

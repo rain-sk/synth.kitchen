@@ -93,6 +93,15 @@ main {
 	z-index: 1;
 }
 
+.numparam {
+	display: flex;
+	justify-content: space-between;
+}
+
+.numparam button {
+	margin-right: 1rem;
+}
+
 .numbox {
 	display: flex;
 	justify-content: space-between;
@@ -100,6 +109,14 @@ main {
 
 .numbox:not(:first-child) {
 	margin-top: 0.5rem;
+}
+
+.numbox label {
+	min-width: 6rem;
+}
+
+.numbox input {
+	margin-left: 1rem;
 }
 
 #load {

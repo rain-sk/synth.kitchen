@@ -17,6 +17,11 @@ import {
 } from './history';
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
 import { ILoadPatch, loadPatchAction } from './load-patch';
+import { IRegisterInput, registerInputAction } from './register-input';
+import {
+	IRegisterParameter,
+	registerParameterAction
+} from './register-parameter';
 import {
 	deselectModuleAction,
 	ISelectModule,
@@ -30,6 +35,14 @@ import {
 	selectionDragStartAction
 } from './selection-drag';
 import {
+	IUnregisterParameter,
+	unregisterParameterAction
+} from './unregister-parameter';
+import {
+	IUpdateParameterRegistration,
+	updateParameterRegistrationAction
+} from './update-parameter-registration';
+import {
 	IUpdateModulePosition,
 	updateModulePositionAction
 } from './update-module-position';
@@ -37,6 +50,11 @@ import {
 	IUpdateModuleState,
 	updateModuleStateAction
 } from './update-module-state';
+import { IUnregisterInput, unregisterInputAction } from './unregister-input';
+import {
+	IUpdateInputRegistration,
+	updateInputRegistrationAction
+} from './update-input-registration';
 
 export type IAction =
 	| IAddModule
@@ -47,10 +65,16 @@ export type IAction =
 	| IHistory
 	| IKeyboardEvent
 	| ILoadPatch
+	| IRegisterInput
+	| IRegisterParameter
 	| ISelectionDrag
 	| ISelectModule
+	| IUnregisterInput
+	| IUnregisterParameter
+	| IUpdateInputRegistration
 	| IUpdateModulePosition
-	| IUpdateModuleState;
+	| IUpdateModuleState
+	| IUpdateParameterRegistration;
 
 export const actions = {
 	addModuleAction,
@@ -65,11 +89,17 @@ export const actions = {
 	keyDownAction,
 	keyUpAction,
 	loadPatchAction,
+	registerInputAction,
+	registerParameterAction,
 	selectionDragContinueAction,
 	selectionDragEndAction,
 	selectionDragStartAction,
 	selectModuleAction,
 	selectSingleModuleAction,
+	unregisterInputAction,
+	unregisterParameterAction,
+	updateInputRegistrationAction,
 	updateModulePositionAction,
-	updateModuleStateAction
+	updateModuleStateAction,
+	updateParameterRegistrationAction
 };
