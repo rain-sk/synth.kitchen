@@ -1,25 +1,15 @@
 import React, { useRef } from 'react';
 
-import {
-	AudioWorkletNode,
-	IAudioContext,
-	IAudioWorkletNode
-} from 'standardized-audio-context';
+import { NoiseNode } from '../audio/nodes/noise';
 
-import { audioContext } from '../audio';
 import { useModuleState } from '../hooks/use-module-state';
 import { IModule, IModuleState } from '../state/types/module';
 
 const initNoise = (
-	noiseRef: React.MutableRefObject<
-		IAudioWorkletNode<IAudioContext> | undefined
-	>,
+	noiseRef: React.MutableRefObject<NoiseNode | undefined>,
 	state?: IModuleState['NOISE']
 ) => {
-	noiseRef.current = new (AudioWorkletNode as any)(
-		audioContext,
-		'noise-processor'
-	);
+	noiseRef.current = new NoiseNode();
 	if (state) {
 		return state;
 	} else {
@@ -30,7 +20,7 @@ const initNoise = (
 export const NoiseModule: React.FC<{ module: IModule<'NOISE'> }> = ({
 	module
 }) => {
-	const noiseRef = useRef<IAudioWorkletNode<IAudioContext>>();
+	const noiseRef = useRef<NoiseNode>();
 	const [state] = useModuleState<'NOISE'>(
 		() => initNoise(noiseRef, module.state),
 		module.moduleKey
