@@ -57,11 +57,9 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 
 	useEffectOnce(() => {
 		oscillatorRef.current?.start();
-		oscillatorRef.current?.connect(audioContext.destination);
 
 		return () => {
 			oscillatorRef.current?.stop();
-			oscillatorRef.current?.disconnect(audioContext.destination);
 		};
 	});
 
