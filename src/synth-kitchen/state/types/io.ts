@@ -15,3 +15,9 @@ export type IIo = {
 	type: IoType;
 	accessor: () => IAudioNode<IAudioContext> | IAudioParam;
 };
+
+export type IoKey = string;
+
+export const ioKey = (io: Omit<IIo, 'accessor'>): IoKey => {
+	return `${io.moduleKey}_${io.type}_${io.channel}`;
+};

@@ -1,5 +1,5 @@
 import { randomName } from '../../utils/random-name';
-import { IIo, IoType } from './io';
+import { IIo, IoKey } from './io';
 import { IModule } from './module';
 import { IParameter } from './parameter';
 import { IPatch } from './patch';
@@ -23,7 +23,7 @@ export type IState = IPatch & {
 	selectedModuleKeys: Set<string>;
 	selectionPending: boolean;
 	parameters: Record<string, IParameter>;
-	io: Record<string, Record<IoType, Record<number, IIo>>>;
+	io: Record<IoKey, IIo>;
 };
 
 export const initialState: IState = {

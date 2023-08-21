@@ -5,3 +5,6 @@ export type IParameter = {
 	name: string;
 	accessor: () => IAudioParam;
 };
+
+export const paramKey = (param: Omit<IParameter, 'accessor'>) =>
+	`${param.moduleKey}_${param.name}`;

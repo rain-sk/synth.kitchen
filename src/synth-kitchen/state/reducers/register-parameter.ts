@@ -1,7 +1,6 @@
 import { IRegisterParameter } from '../actions/register-parameter';
+import { paramKey } from '../types/parameter';
 import { IState } from '../types/state';
-
-import { paramId } from '../../utils/param-id';
 
 export const registerParameter: React.Reducer<IState, IRegisterParameter> = (
 	state,
@@ -10,6 +9,6 @@ export const registerParameter: React.Reducer<IState, IRegisterParameter> = (
 	...state,
 	parameters: {
 		...state.parameters,
-		[paramId(action.payload)]: action.payload
+		[paramKey(action.payload)]: action.payload
 	}
 });
