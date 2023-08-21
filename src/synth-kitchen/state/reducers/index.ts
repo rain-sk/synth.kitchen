@@ -6,13 +6,13 @@ import { enableKeyMovement } from './enable-key-movement';
 import { history } from './history';
 import { keyboardEvent } from './keyboard-event';
 import { loadPatch } from './load-patch';
-import { registerInput } from './register-input';
+import { registerIo } from './register-io';
 import { registerParameter } from './register-parameter';
 import { selectionDrag } from './selection-drag';
 import { selectModule } from './select-module';
-import { unregisterInput } from './unregister-input';
+import { unregisterIo } from './unregister-io';
 import { unregisterParameter } from './unregister-parameter';
-import { updateInputRegistration } from './update-input-registration';
+import { updateIoRegistration } from './update-io-registration';
 import { updateModulePosition } from './update-module-position';
 import { updateModuleState } from './update-module-state';
 import { updateParameterRegistration } from './update-parameter-registration';
@@ -26,13 +26,13 @@ export const reducers = {
 	history,
 	keyboardEvent,
 	loadPatch,
-	registerInput,
+	registerIo,
 	registerParameter,
 	selectionDrag,
 	selectModule,
-	unregisterInput,
+	unregisterIo,
 	unregisterParameter,
-	updateInputRegistration,
+	updateIoRegistration,
 	updateModulePosition,
 	updateModuleState,
 	updateParameterRegistration

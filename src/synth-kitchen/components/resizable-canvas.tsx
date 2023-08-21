@@ -116,7 +116,7 @@ export const ResizableCanvas: React.FC<{
 				}
 			}
 		});
-	}, [modules]);
+	}, [queueAnimation, state.container, state.spacer, modules, drawSelection]);
 
 	const { current: onMouseout } = useRef((/*e: MouseEvent*/) => {});
 

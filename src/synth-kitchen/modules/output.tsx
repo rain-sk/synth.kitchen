@@ -51,7 +51,7 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 				gain
 			});
 		},
-		[setState, state]
+		[gainRef, setState, state]
 	);
 
 	const gainAccessor = useCallback(() => {

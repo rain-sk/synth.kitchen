@@ -51,14 +51,14 @@ export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 			case 'UnregisterParameter': {
 				return reducers.unregisterParameter(state, action);
 			}
-			case 'RegisterInput': {
-				return reducers.registerInput(state, action);
+			case 'RegisterIo': {
+				return reducers.registerIo(state, action);
 			}
-			case 'UpdateInputRegistration': {
-				return reducers.updateInputRegistration(state, action);
+			case 'UpdateIoRegistration': {
+				return reducers.updateIoRegistration(state, action);
 			}
-			case 'UnregisterInput': {
-				return reducers.unregisterInput(state, action);
+			case 'UnregisterIo': {
+				return reducers.unregisterIo(state, action);
 			}
 			default: {
 				return state;
