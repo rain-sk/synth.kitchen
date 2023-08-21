@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import {
 	AudioWorkletNode,
@@ -37,16 +37,6 @@ export const NoiseModule: React.FC<{ module: IModule<'NOISE'> }> = ({
 	);
 
 	const enabled = state != undefined && noiseRef.current;
-
-	useEffect(() => {
-		if (enabled) {
-			noiseRef.current?.connect(audioContext.destination);
-			console.log(noiseRef.current);
-			return () => {
-				noiseRef.current?.disconnect(audioContext.destination);
-			};
-		}
-	}, [enabled]);
 
 	return enabled ? <p>enabled</p> : <p>loading...</p>;
 };
