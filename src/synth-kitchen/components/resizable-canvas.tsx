@@ -52,7 +52,7 @@ export const ResizableCanvas: React.FC<{
 
 	const canvasWasResized = useRef(false);
 
-	const { current: drawSelection } = useRef(() => {
+	const drawSelection = useCallback(() => {
 		if (state.selection.element) {
 			if (state.selection.start.join(',') === INVALID_POSITION.join(',')) {
 				state.selection.element.style.display = 'none';
@@ -72,14 +72,14 @@ export const ResizableCanvas: React.FC<{
 				state.selection.element.style.height = `${Math.abs(yEnd - yStart)}px`;
 			}
 		}
-	});
+	}, []);
 
-	const { current: clearSelection } = useRef(() => {
+	const clearSelection = useCallback(() => {
 		state.selection.start = INVALID_POSITION;
 		state.selection.end = INVALID_POSITION;
 
 		drawSelection();
-	});
+	}, []);
 
 	const isInitialized = () =>
 		!!state.container && !!state.selection && !!state.spacer;
@@ -136,7 +136,7 @@ export const ResizableCanvas: React.FC<{
 		}
 	}, [initialized, state.container, state.selection, state.spacer]);
 
-	const { current: onDrag } = useRef((e: MouseEvent) => {
+	const onDrag = useCallback((e: MouseEvent) => {
 		console.log(e);
 		console.log(state.container);
 		state.selection.end = positionFromMouseEvent(
@@ -147,38 +147,36 @@ export const ResizableCanvas: React.FC<{
 		queueAnimation(drawSelection);
 
 		dispatch(actions.selectionDragContinueAction(state.selection.end));
-	});
+	}, []);
 
-	const { current: onMouseUp } = useRef((e: MouseEvent) => {
+	const onMouseUp = useCallback((e: MouseEvent) => {
 		dispatch(
 			actions.selectionDragEndAction(
 				positionFromMouseEvent(e, state.container as HTMLElement)
 			)
 		);
 
-		queueAnimation(() => clearSelection());
+		queueAnimation(clearSelection);
 
 		document.body.removeEventListener('mouseup', onMouseUp);
 		document.body.removeEventListener('mousemove', onDrag);
-	});
+	}, []);
 
-	const { current: onMouseDown } = useRef(
-		(e: ReactMouseEvent<HTMLDivElement>) => {
-			const position = positionFromMouseEvent(
-				e.nativeEvent,
-				state.container as HTMLElement
-			);
+	const onMouseDown = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
+		const position = positionFromMouseEvent(
+			e.nativeEvent,
+			state.container as HTMLElement
+		);
 
-			state.selection.start = position;
+		state.selection.start = position;
 
-			dispatch(actions.selectionDragStartAction(position));
+		dispatch(actions.selectionDragStartAction(position));
 
-			document.body.addEventListener('mouseup', onMouseUp);
-			document.body.addEventListener('mousemove', onDrag);
+		document.body.addEventListener('mouseup', onMouseUp);
+		document.body.addEventListener('mousemove', onDrag);
 
-			onDrag(e.nativeEvent);
-		}
-	);
+		onDrag(e.nativeEvent);
+	}, []);
 
 	return (
 		<main
