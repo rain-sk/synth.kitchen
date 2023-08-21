@@ -6,8 +6,6 @@ import React, {
 	useRef
 } from 'react';
 
-import { ModuleContextProvider } from '../contexts/module';
-
 import { actions } from '../state/actions';
 import { IModule } from '../state/types/module';
 
@@ -221,20 +219,18 @@ export const Module: React.FunctionComponent<{
 	);
 
 	return (
-		<ModuleContextProvider>
-			<div
-				id={module.moduleKey}
-				role="treeitem"
-				aria-selected={currentlySelected}
-				tabIndex={0}
-				onFocus={onFocus}
-				className={`module${selectionStateString}${draggingStateString}`}
-				onMouseDown={onMouseDown}
-				ref={containerRef}
-			>
-				<ModuleHeader module={module} />
-				<ModuleUi module={module} />
-			</div>
-		</ModuleContextProvider>
+		<div
+			id={module.moduleKey}
+			role="treeitem"
+			aria-selected={currentlySelected}
+			tabIndex={0}
+			onFocus={onFocus}
+			className={`module${selectionStateString}${draggingStateString}`}
+			onMouseDown={onMouseDown}
+			ref={containerRef}
+		>
+			<ModuleHeader module={module} />
+			<ModuleUi module={module} />
+		</div>
 	);
 };
