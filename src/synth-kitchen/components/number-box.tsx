@@ -37,6 +37,11 @@ export const NumberBox: React.FunctionComponent<{
 
 			const negative = string[0] === '-';
 
+			if (negative && string.length === 1) {
+				setTempValue(string);
+				return;
+			}
+
 			let onlyNumeric = `${negative ? '-' : ''}${string.replace(
 				/[^\d.]/g,
 				''
