@@ -13,5 +13,5 @@ export class NoiseNode {
 		'noise-processor'
 	);
 
-	node = (): Readonly<IAudioWorkletNode<IAudioContext>> => this._node;
+	node = (): IAudioWorkletNode<IAudioContext> => this._node;
 }

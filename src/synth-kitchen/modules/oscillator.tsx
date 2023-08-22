@@ -12,6 +12,7 @@ import { useModuleState } from '../hooks/use-module-state';
 import { IModule, IModuleState } from '../state/types/module';
 
 import { NumberParameter } from '../components/number-parameter';
+import { IoConnectors } from '../components/io-connectors';
 
 const oscillatorStateFromNode = (
 	node: IOscillatorNode<IAudioContext>
@@ -98,24 +99,37 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 		return oscillatorRef.current?.detune as IAudioParam;
 	}, []);
 
-	const enabled = state != undefined;
+	const enabled = state != undefined && oscillatorRef.current;
+
+	const outputAccessor = useCallback(
+		() => oscillatorRef.current as any,
+		[enabled]
+	);
 
 	return enabled ? (
-		<section>
-			<NumberParameter
+		<>
+			<IoConnectors
 				moduleKey={module.moduleKey}
-				paramAccessor={frequencyAccessor}
-				name="frequency"
-				value={state.frequency}
-				commitValueCallback={commitFrequencyChange}
+				inputAccessors={[]}
+				outputAccessors={[outputAccessor]}
 			/>
-			<NumberParameter
-				moduleKey={module.moduleKey}
-				paramAccessor={detuneAccessor}
-				name="detune"
-				value={state.detune}
-				commitValueCallback={commitDetuneChange}
-			/>
-		</section>
+
+			<section>
+				<NumberParameter
+					moduleKey={module.moduleKey}
+					paramAccessor={frequencyAccessor}
+					name="frequency"
+					value={state.frequency}
+					commitValueCallback={commitFrequencyChange}
+				/>
+				<NumberParameter
+					moduleKey={module.moduleKey}
+					paramAccessor={detuneAccessor}
+					name="detune"
+					value={state.detune}
+					commitValueCallback={commitDetuneChange}
+				/>
+			</section>
+		</>
 	) : null;
 };

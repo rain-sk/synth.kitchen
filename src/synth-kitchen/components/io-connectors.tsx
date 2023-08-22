@@ -8,7 +8,7 @@ export const IoConnectors: React.FunctionComponent<{
 	outputAccessors: (() => IAudioNode<IAudioContext>)[];
 }> = ({ moduleKey, inputAccessors, outputAccessors }) => {
 	return (
-		<>
+		<section className="connectors">
 			{inputAccessors.map((accessor, i) => (
 				<InputConnector
 					moduleKey={moduleKey}
@@ -25,6 +25,6 @@ export const IoConnectors: React.FunctionComponent<{
 					key={i}
 				/>
 			))}
-		</>
+		</section>
 	);
 };

@@ -12,6 +12,9 @@ export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 			case 'ChangeName': {
 				return reducers.changeName(state, action);
 			}
+			case 'ClickConnector': {
+				return reducers.clickConnector(state, action);
+			}
 			case 'DisableKeyMovement': {
 				return reducers.disableKeyMovement(state, action);
 			}

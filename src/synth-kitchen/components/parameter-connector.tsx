@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useEffectOnce } from '../hooks/use-effect-once';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { registerParameterAction } from '../state/actions/register-parameter';
 import { IParameter } from '../state/types/parameter';
 import { unregisterParameterAction } from '../state/actions/unregister-parameter';
 import { updateParameterRegistrationAction } from '../state/actions/update-parameter-registration';
+import { clickParamAction } from '../state/actions/click-connector';
 
 export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	moduleKey,
@@ -25,5 +26,13 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 		dispatch(updateParameterRegistrationAction(moduleKey, name, accessor));
 	}, [accessor]);
 
-	return <button type="button">o</button>;
+	const onClick = useCallback(() => {
+		dispatch(clickParamAction({ moduleKey, name }));
+	}, [dispatch, clickParamAction, moduleKey, name]);
+
+	return (
+		<button type="button" onClick={onClick}>
+			o
+		</button>
+	);
 };

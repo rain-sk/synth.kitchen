@@ -24,6 +24,14 @@ export type IState = IPatch & {
 	selectionPending: boolean;
 	parameters: Record<string, IParameter>;
 	io: Record<IoKey, IIo>;
+	connections: Record<string, boolean>;
+	activeConnector?:
+		| {
+				io: IoKey;
+		  }
+		| {
+				param: string;
+		  };
 };
 
 export const initialState: IState = {
@@ -48,5 +56,6 @@ export const initialState: IState = {
 	selectedModuleKeys: new Set(),
 	selectionPending: false,
 	parameters: {},
-	io: {}
+	io: {},
+	connections: {}
 };

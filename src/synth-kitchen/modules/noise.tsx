@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import { NoiseNode } from '../audio/nodes/noise';
 
 import { useModuleState } from '../hooks/use-module-state';
 import { IModule, IModuleState } from '../state/types/module';
+import { IoConnectors } from '../components/io-connectors';
 
 const initNoise = (
 	noiseRef: React.MutableRefObject<NoiseNode | undefined>,
@@ -28,5 +29,18 @@ export const NoiseModule: React.FC<{ module: IModule<'NOISE'> }> = ({
 
 	const enabled = state != undefined && noiseRef.current;
 
-	return enabled ? <p>enabled</p> : <p>loading...</p>;
+	const outputAccessor = useCallback(
+		() => noiseRef.current?.node() as any,
+		[enabled]
+	);
+
+	return enabled ? (
+		<IoConnectors
+			moduleKey={module.moduleKey}
+			inputAccessors={[]}
+			outputAccessors={[outputAccessor]}
+		/>
+	) : (
+		<p>loading...</p>
+	);
 };

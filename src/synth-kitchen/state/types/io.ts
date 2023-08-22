@@ -1,8 +1,4 @@
-import {
-	IAudioContext,
-	IAudioNode,
-	IAudioParam
-} from 'standardized-audio-context';
+import { IAudioContext, IAudioNode } from 'standardized-audio-context';
 
 export enum IoType {
 	input,
@@ -13,7 +9,7 @@ export type IIo = {
 	moduleKey: string;
 	channel: number;
 	type: IoType;
-	accessor: () => IAudioNode<IAudioContext> | IAudioParam;
+	accessor: () => IAudioNode<IAudioContext>;
 };
 
 export type IoKey = string;

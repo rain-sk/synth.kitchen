@@ -1,5 +1,6 @@
 import { addModule } from './add-module';
 import { changeName } from './change-name';
+import { clickConnector } from './click-connector';
 import { disableKeyMovement } from './disable-key-movement';
 import { dragModules } from './drag-modules';
 import { enableKeyMovement } from './enable-key-movement';
@@ -20,6 +21,7 @@ import { updateParameterRegistration } from './update-parameter-registration';
 export const reducers = {
 	addModule,
 	changeName,
+	clickConnector,
 	disableKeyMovement,
 	dragModules,
 	enableKeyMovement,

@@ -64,10 +64,16 @@ import {
 	updateInputRegistrationAction,
 	updateOutputRegistrationAction
 } from './update-io-registration';
+import {
+	IClickConnector,
+	clickIoAction,
+	clickParamAction
+} from './click-connector';
 
 export type IAction =
 	| IAddModule
 	| IChangeName
+	| IClickConnector
 	| IDisableKeyMovement
 	| IDragModules
 	| IEnableKeyMovement
@@ -88,6 +94,8 @@ export type IAction =
 export const actions = {
 	addModuleAction,
 	changeNameAction,
+	clickIoAction,
+	clickParamAction,
 	deselectModuleAction,
 	disableKeyMovementAction,
 	dragModulesAction,

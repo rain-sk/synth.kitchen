@@ -10,6 +10,7 @@ import { useModuleState } from '../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../state/types/module';
 import { NumberParameter } from '../components/number-parameter';
+import { IoConnectors } from '../components/io-connectors';
 
 const outputStateFromNode = (
 	node: IGainNode<IAudioContext>
@@ -62,6 +63,11 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 
 	return enabled ? (
 		<>
+			<IoConnectors
+				moduleKey={module.moduleKey}
+				inputAccessors={[() => audioContext.destination]}
+				outputAccessors={[]}
+			/>
 			<NumberParameter
 				moduleKey={module.moduleKey}
 				paramAccessor={gainAccessor}

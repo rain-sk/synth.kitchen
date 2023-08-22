@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { useEffectOnce } from '../hooks/use-effect-once';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
@@ -16,6 +16,26 @@ import {
 	unregisterOutputAction
 } from '../state/actions/unregister-io';
 import { IAudioContext, IAudioNode } from 'standardized-audio-context';
+import { IoType } from '../state/types/io';
+import { clickIoAction } from '../state/actions/click-connector';
+
+const IoConnector: React.FunctionComponent<{
+	moduleKey: string;
+	channel: number;
+	type: IoType;
+}> = ({ moduleKey, type, channel }) => {
+	const dispatch = useDispatchContext();
+
+	const onClick = useCallback(() => {
+		dispatch(clickIoAction({ moduleKey, channel, type }));
+	}, [dispatch, clickIoAction, moduleKey, channel]);
+
+	return (
+		<button type="button" onClick={onClick}>
+			o
+		</button>
+	);
+};
 
 export const InputConnector: React.FunctionComponent<{
 	moduleKey: string;
@@ -36,7 +56,9 @@ export const InputConnector: React.FunctionComponent<{
 		dispatch(updateInputRegistrationAction(moduleKey, channel, accessor));
 	}, [channel, accessor]);
 
-	return <button type="button">o</button>;
+	return (
+		<IoConnector moduleKey={moduleKey} channel={channel} type={IoType.input} />
+	);
 };
 
 export const OutputConnector: React.FunctionComponent<{
@@ -58,5 +80,7 @@ export const OutputConnector: React.FunctionComponent<{
 		dispatch(updateOutputRegistrationAction(moduleKey, channel, accessor));
 	}, [channel, accessor]);
 
-	return <button type="button">o</button>;
+	return (
+		<IoConnector moduleKey={moduleKey} channel={channel} type={IoType.output} />
+	);
 };
