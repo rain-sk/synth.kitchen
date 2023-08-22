@@ -32,16 +32,6 @@ const validConnection = (
 	const io2IsOutput = 'type' in io2 && io2.type === IoType.output;
 	const io2IsInput = !io2IsOutput;
 
-	const inputWithKey = io1IsInput
-		? {
-				key: io1IsParam ? paramKey(io1) : ioKey(io1),
-				accessor: io1.accessor
-		  }
-		: {
-				key: io2IsParam ? paramKey(io2) : ioKey(io2),
-				accessor: io2.accessor
-		  };
-
 	return io1IsInput !== io2IsInput && (io1IsOutput || io2IsOutput)
 		? [
 				io1IsInput
