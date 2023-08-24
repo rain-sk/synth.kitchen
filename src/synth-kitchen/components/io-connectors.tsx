@@ -1,6 +1,7 @@
 import React from 'react';
 import { IAudioContext, IAudioNode } from 'standardized-audio-context';
-import { InputConnector, OutputConnector } from './io-connector';
+import { IoConnector } from './io-connector';
+import { IoType } from '../state/types/io';
 
 export const IoConnectors: React.FunctionComponent<{
 	moduleKey: string;
@@ -9,22 +10,28 @@ export const IoConnectors: React.FunctionComponent<{
 }> = ({ moduleKey, inputAccessors, outputAccessors }) => {
 	return (
 		<section className="connectors">
-			{inputAccessors.map((accessor, i) => (
-				<InputConnector
-					moduleKey={moduleKey}
-					accessor={accessor}
-					channel={i}
-					key={i}
-				/>
-			))}
-			{outputAccessors.map((accessor, i) => (
-				<OutputConnector
-					moduleKey={moduleKey}
-					accessor={accessor}
-					channel={i}
-					key={i}
-				/>
-			))}
+			<span>
+				{inputAccessors.map((accessor, i) => (
+					<IoConnector
+						moduleKey={moduleKey}
+						accessor={accessor}
+						type={IoType.input}
+						channel={i}
+						key={i}
+					/>
+				))}
+			</span>
+			<span>
+				{outputAccessors.map((accessor, i) => (
+					<IoConnector
+						moduleKey={moduleKey}
+						accessor={accessor}
+						type={IoType.output}
+						channel={i}
+						key={i}
+					/>
+				))}
+			</span>
 		</section>
 	);
 };

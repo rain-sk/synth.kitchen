@@ -1,86 +1,52 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 
 import { useEffectOnce } from '../hooks/use-effect-once';
-import { useDispatchContext } from '../hooks/use-dispatch-context';
 
-import {
-	updateInputRegistrationAction,
-	updateOutputRegistrationAction
-} from '../state/actions/update-io-registration';
-import {
-	registerInputAction,
-	registerOutputAction
-} from '../state/actions/register-io';
-import {
-	unregisterInputAction,
-	unregisterOutputAction
-} from '../state/actions/unregister-io';
 import { IAudioContext, IAudioNode } from 'standardized-audio-context';
-import { IoType } from '../state/types/io';
-import { clickIoAction } from '../state/actions/click-connector';
+import { IoType, ioKey } from '../state/types/io';
+import { ConnectionContext } from '../contexts/connection';
 
-const IoConnector: React.FunctionComponent<{
+export const IoConnector: React.FunctionComponent<{
 	moduleKey: string;
 	channel: number;
 	type: IoType;
-}> = ({ moduleKey, type, channel }) => {
-	const dispatch = useDispatchContext();
+	accessor: () => IAudioNode<IAudioContext>;
+}> = ({ moduleKey, type, channel, accessor }) => {
+	const {
+		activeConnectorKey,
+		clickConnector,
+		highlightInputs,
+		highlightOutputs,
+		registerConnector,
+		unregisterConnector
+	} = useContext(ConnectionContext);
+
+	const [connectorKey] = useState(() => ioKey({ moduleKey, channel, type }));
+
+	useEffectOnce(() => {
+		registerConnector({ moduleKey, channel, type, accessor });
+
+		return () => {
+			unregisterConnector({ moduleKey, channel, type, accessor });
+		};
+	});
 
 	const onClick = useCallback(() => {
-		dispatch(clickIoAction({ moduleKey, channel, type }));
-	}, [dispatch, clickIoAction, moduleKey, channel]);
+		clickConnector({ moduleKey, type, channel, accessor });
+	}, [clickConnector, moduleKey, type, channel, accessor]);
+
+	const isActive = activeConnectorKey === connectorKey;
+	const highlight =
+		!isActive && (type === IoType.input ? highlightInputs : highlightOutputs);
 
 	return (
-		<button type="button" onClick={onClick}>
+		<button
+			id={connectorKey}
+			type="button"
+			onClick={onClick}
+			className={isActive ? 'active' : highlight ? 'highlight' : ''}
+		>
 			o
 		</button>
-	);
-};
-
-export const InputConnector: React.FunctionComponent<{
-	moduleKey: string;
-	channel: number;
-	accessor: () => IAudioNode<IAudioContext>;
-}> = ({ moduleKey, channel, accessor }) => {
-	const dispatch = useDispatchContext();
-
-	useEffectOnce(() => {
-		dispatch(registerInputAction(moduleKey, channel, accessor));
-
-		return () => {
-			dispatch(unregisterInputAction(moduleKey, channel));
-		};
-	});
-
-	useEffect(() => {
-		dispatch(updateInputRegistrationAction(moduleKey, channel, accessor));
-	}, [channel, accessor]);
-
-	return (
-		<IoConnector moduleKey={moduleKey} channel={channel} type={IoType.input} />
-	);
-};
-
-export const OutputConnector: React.FunctionComponent<{
-	moduleKey: string;
-	channel: number;
-	accessor: () => IAudioNode<IAudioContext>;
-}> = ({ moduleKey, channel, accessor }) => {
-	const dispatch = useDispatchContext();
-
-	useEffectOnce(() => {
-		dispatch(registerOutputAction(moduleKey, channel, accessor));
-
-		return () => {
-			dispatch(unregisterOutputAction(moduleKey, channel));
-		};
-	});
-
-	useEffect(() => {
-		dispatch(updateOutputRegistrationAction(moduleKey, channel, accessor));
-	}, [channel, accessor]);
-
-	return (
-		<IoConnector moduleKey={moduleKey} channel={channel} type={IoType.output} />
 	);
 };

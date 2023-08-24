@@ -18,15 +18,6 @@ import {
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
 import { ILoadPatch, loadPatchAction } from './load-patch';
 import {
-	IRegisterIo,
-	registerInputAction,
-	registerOutputAction
-} from './register-io';
-import {
-	IRegisterParameter,
-	registerParameterAction
-} from './register-parameter';
-import {
 	deselectModuleAction,
 	ISelectModule,
 	selectModuleAction,
@@ -39,14 +30,6 @@ import {
 	selectionDragStartAction
 } from './selection-drag';
 import {
-	IUnregisterParameter,
-	unregisterParameterAction
-} from './unregister-parameter';
-import {
-	IUpdateParameterRegistration,
-	updateParameterRegistrationAction
-} from './update-parameter-registration';
-import {
 	IUpdateModulePosition,
 	updateModulePositionAction
 } from './update-module-position';
@@ -54,48 +37,24 @@ import {
 	IUpdateModuleState,
 	updateModuleStateAction
 } from './update-module-state';
-import {
-	IUnregisterIo,
-	unregisterInputAction,
-	unregisterOutputAction
-} from './unregister-io';
-import {
-	IUpdateIoRegistration,
-	updateInputRegistrationAction,
-	updateOutputRegistrationAction
-} from './update-io-registration';
-import {
-	IClickConnector,
-	clickIoAction,
-	clickParamAction
-} from './click-connector';
 
 export type IAction =
 	| IAddModule
 	| IChangeName
-	| IClickConnector
 	| IDisableKeyMovement
 	| IDragModules
 	| IEnableKeyMovement
 	| IHistory
 	| IKeyboardEvent
 	| ILoadPatch
-	| IRegisterIo
-	| IRegisterParameter
 	| ISelectionDrag
 	| ISelectModule
-	| IUnregisterIo
-	| IUnregisterParameter
-	| IUpdateIoRegistration
 	| IUpdateModulePosition
-	| IUpdateModuleState
-	| IUpdateParameterRegistration;
+	| IUpdateModuleState;
 
 export const actions = {
 	addModuleAction,
 	changeNameAction,
-	clickIoAction,
-	clickParamAction,
 	deselectModuleAction,
 	disableKeyMovementAction,
 	dragModulesAction,
@@ -106,20 +65,11 @@ export const actions = {
 	keyDownAction,
 	keyUpAction,
 	loadPatchAction,
-	registerInputAction,
-	registerOutputAction,
-	registerParameterAction,
 	selectionDragContinueAction,
 	selectionDragEndAction,
 	selectionDragStartAction,
 	selectModuleAction,
 	selectSingleModuleAction,
-	unregisterInputAction,
-	unregisterOutputAction,
-	unregisterParameterAction,
-	updateInputRegistrationAction,
 	updateModulePositionAction,
-	updateModuleStateAction,
-	updateOutputRegistrationAction,
-	updateParameterRegistrationAction
+	updateModuleStateAction
 };

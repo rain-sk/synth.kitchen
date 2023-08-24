@@ -12,9 +12,6 @@ export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 			case 'ChangeName': {
 				return reducers.changeName(state, action);
 			}
-			case 'ClickConnector': {
-				return reducers.clickConnector(state, action);
-			}
 			case 'DisableKeyMovement': {
 				return reducers.disableKeyMovement(state, action);
 			}
@@ -44,24 +41,6 @@ export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 			}
 			case 'UpdateModuleState': {
 				return reducers.updateModuleState(state, action);
-			}
-			case 'RegisterParameter': {
-				return reducers.registerParameter(state, action);
-			}
-			case 'UpdateParameterRegistration': {
-				return reducers.updateParameterRegistration(state, action);
-			}
-			case 'UnregisterParameter': {
-				return reducers.unregisterParameter(state, action);
-			}
-			case 'RegisterIo': {
-				return reducers.registerIo(state, action);
-			}
-			case 'UpdateIoRegistration': {
-				return reducers.updateIoRegistration(state, action);
-			}
-			case 'UnregisterIo': {
-				return reducers.unregisterIo(state, action);
 			}
 			default: {
 				return state;

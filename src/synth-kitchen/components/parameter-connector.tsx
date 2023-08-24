@@ -1,37 +1,45 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useEffectOnce } from '../hooks/use-effect-once';
-import { useDispatchContext } from '../hooks/use-dispatch-context';
-import { registerParameterAction } from '../state/actions/register-parameter';
-import { IParameter } from '../state/types/parameter';
-import { unregisterParameterAction } from '../state/actions/unregister-parameter';
-import { updateParameterRegistrationAction } from '../state/actions/update-parameter-registration';
-import { clickParamAction } from '../state/actions/click-connector';
+import { IParameter, paramKey } from '../state/types/parameter';
+import { ConnectionContext } from '../contexts/connection';
 
 export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	moduleKey,
 	name,
 	accessor
 }) => {
-	const dispatch = useDispatchContext();
+	const [connectorKey] = useState(() => paramKey({ moduleKey, name }));
+
+	const {
+		activeConnectorKey,
+		clickConnector,
+		highlightInputs,
+		registerConnector,
+		unregisterConnector
+	} = useContext(ConnectionContext);
 
 	useEffectOnce(() => {
-		dispatch(registerParameterAction(moduleKey, name, accessor));
+		registerConnector({ moduleKey, name, accessor });
 
 		return () => {
-			dispatch(unregisterParameterAction(moduleKey, name));
+			unregisterConnector({ moduleKey, name, accessor });
 		};
 	});
 
-	useEffect(() => {
-		dispatch(updateParameterRegistrationAction(moduleKey, name, accessor));
-	}, [accessor]);
-
 	const onClick = useCallback(() => {
-		dispatch(clickParamAction({ moduleKey, name }));
-	}, [dispatch, clickParamAction, moduleKey, name]);
+		clickConnector({ moduleKey, name, accessor });
+	}, [clickConnector, moduleKey, name, accessor]);
+
+	const isActive = activeConnectorKey === connectorKey;
+	const highlight = highlightInputs;
 
 	return (
-		<button type="button" onClick={onClick}>
+		<button
+			id={connectorKey}
+			type="button"
+			onClick={onClick}
+			className={isActive ? 'active' : highlight ? 'highlight' : ''}
+		>
 			o
 		</button>
 	);

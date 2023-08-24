@@ -76,6 +76,14 @@ main {
 	margin-bottom: 1rem;
 }
 
+.module .active {
+	background-color: yellow;
+}
+
+.module .highlight {
+	background-color: green;
+}
+
 #module-canvas.dragging > .module {
 	transition: border linear 100ms, top linear 10ms, left linear 10ms;
 }
@@ -91,6 +99,12 @@ main {
 .module.selected,
 .module.selection_pending {
 	z-index: 1;
+}
+
+.connectors {
+	margin-bottom: 0.5rem;
+	display: flex;
+	justify-content: space-between;
 }
 
 .numparam {
