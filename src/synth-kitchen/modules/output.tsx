@@ -59,13 +59,13 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 		return gainRef.current?.gain as IAudioParam;
 	}, []);
 
-	const enabled = state != undefined;
+	const enabled = state != undefined && gainRef.current;
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[() => audioContext.destination]}
+				inputAccessors={[() => gainRef.current as any]}
 				outputAccessors={[]}
 			/>
 			<NumberParameter
