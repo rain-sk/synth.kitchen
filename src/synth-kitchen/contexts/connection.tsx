@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { IIo, IoType, ioKey } from '../state/types/io';
 import { IParameter, paramKey } from '../state/types/parameter';
 // import { useDispatchContext } from '../hooks/use-dispatch-context';
@@ -67,6 +67,7 @@ type IConnectionContext = {
 	activeConnectorKey?: string;
 	readonly connections: Map<string, [IOutput, IInput]>;
 	readonly connectors: Map<string, IConnectorInfo>;
+	connectedToActiveConnector: string[];
 	connectorCount: number;
 	connectionCount: number;
 	highlightInputs: boolean;
@@ -79,6 +80,7 @@ type IConnectionContext = {
 export const ConnectionContext = React.createContext<IConnectionContext>({
 	connections: new Map<string, [IOutput, IInput]>(),
 	connectors: new Map<string, IConnectorInfo>(),
+	connectedToActiveConnector: [],
 	connectorCount: 0,
 	connectionCount: 0,
 	highlightInputs: false,
@@ -177,10 +179,23 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 	const activeConnectorIsInput =
 		activeConnectorExists && !activeConnectorIsOutput;
 
+	const connectedToActiveConnector = useMemo(() => {
+		if (!activeConnectorKey || !activeConnector) {
+			return [];
+		}
+
+		return [...activeConnector[1]]
+			.map((key) => connections.get(key) as [IIo, IInput])
+			.map(([output, input]) =>
+				activeConnectorIsOutput ? connectorKey(input) : connectorKey(output)
+			);
+	}, [activeConnectorKey]);
+
 	return (
 		<ConnectionContext.Provider
 			value={{
 				activeConnectorKey,
+				connectedToActiveConnector,
 				connectorCount,
 				connectionCount,
 				connectors,

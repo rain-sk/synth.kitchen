@@ -12,6 +12,7 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 
 	const {
 		activeConnectorKey,
+		connectedToActiveConnector,
 		clickConnector,
 		highlightInputs,
 		registerConnector,
@@ -31,6 +32,8 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	}, [clickConnector, moduleKey, name, accessor]);
 
 	const isActive = activeConnectorKey === connectorKey;
+	const isConnectedToActiveConnector =
+		connectedToActiveConnector.includes(connectorKey);
 	const highlight = highlightInputs;
 
 	return (
@@ -38,7 +41,15 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 			id={connectorKey}
 			type="button"
 			onClick={onClick}
-			className={isActive ? 'active' : highlight ? 'highlight' : ''}
+			className={
+				isActive
+					? 'active'
+					: isConnectedToActiveConnector
+					? 'connected'
+					: highlight
+					? 'highlight'
+					: ''
+			}
 		>
 			o
 		</button>

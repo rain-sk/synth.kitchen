@@ -80,6 +80,10 @@ main {
 	background-color: yellow;
 }
 
+.module .connected {
+	background-color: red;
+}
+
 .module .highlight {
 	background-color: green;
 }

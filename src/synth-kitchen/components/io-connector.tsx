@@ -14,6 +14,7 @@ export const IoConnector: React.FunctionComponent<{
 }> = ({ moduleKey, type, channel, accessor }) => {
 	const {
 		activeConnectorKey,
+		connectedToActiveConnector,
 		clickConnector,
 		highlightInputs,
 		highlightOutputs,
@@ -36,6 +37,8 @@ export const IoConnector: React.FunctionComponent<{
 	}, [clickConnector, moduleKey, type, channel, accessor]);
 
 	const isActive = activeConnectorKey === connectorKey;
+	const isConnectedToActiveConnector =
+		connectedToActiveConnector.includes(connectorKey);
 	const highlight =
 		!isActive && (type === IoType.input ? highlightInputs : highlightOutputs);
 
@@ -44,7 +47,15 @@ export const IoConnector: React.FunctionComponent<{
 			id={connectorKey}
 			type="button"
 			onClick={onClick}
-			className={isActive ? 'active' : highlight ? 'highlight' : ''}
+			className={
+				isActive
+					? 'active'
+					: isConnectedToActiveConnector
+					? 'connected'
+					: highlight
+					? 'highlight'
+					: ''
+			}
 		>
 			o
 		</button>
