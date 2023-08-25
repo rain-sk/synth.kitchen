@@ -130,6 +130,13 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 			/>
 
 			<section>
+				<RadioParameter
+					moduleKey={module.moduleKey}
+					name="waveform"
+					value={state.waveform}
+					options={['sawtooth', 'sine', 'square', 'triangle']}
+					commitValueCallback={commitWaveformChange}
+				/>
 				<NumberParameter
 					moduleKey={module.moduleKey}
 					paramAccessor={frequencyAccessor}
@@ -143,13 +150,6 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 					name="detune"
 					value={state.detune}
 					commitValueCallback={commitDetuneChange}
-				/>
-				<RadioParameter
-					moduleKey={module.moduleKey}
-					name="waveform"
-					value={state.waveform}
-					options={['sawtooth', 'sine', 'square', 'triangle']}
-					commitValueCallback={commitWaveformChange}
 				/>
 			</section>
 		</>

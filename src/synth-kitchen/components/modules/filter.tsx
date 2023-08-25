@@ -156,6 +156,22 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 			/>
 
 			<section>
+				<RadioParameter
+					moduleKey={module.moduleKey}
+					name="type"
+					value={state.type}
+					options={[
+						'allpass',
+						'bandpass',
+						'highpass',
+						'highshelf',
+						'lowpass',
+						'lowshelf',
+						'notch',
+						'peaking'
+					]}
+					commitValueCallback={commitTypeChange}
+				/>
 				<NumberParameter
 					moduleKey={module.moduleKey}
 					paramAccessor={frequencyAccessor}
@@ -183,22 +199,6 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 					name="gain"
 					value={state.gain}
 					commitValueCallback={commitGainChange}
-				/>
-				<RadioParameter
-					moduleKey={module.moduleKey}
-					name="type"
-					value={state.type}
-					options={[
-						'allpass',
-						'bandpass',
-						'highpass',
-						'highshelf',
-						'lowpass',
-						'lowshelf',
-						'notch',
-						'peaking'
-					]}
-					commitValueCallback={commitTypeChange}
 				/>
 			</section>
 		</>
