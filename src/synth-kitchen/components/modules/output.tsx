@@ -5,12 +5,12 @@ import {
 	IAudioParam,
 	IGainNode
 } from 'standardized-audio-context';
-import { audioContext } from '../audio';
-import { useModuleState } from '../hooks/use-module-state';
+import { audioContext } from '../../audio';
+import { useModuleState } from '../../hooks/use-module-state';
 
-import { IModule, IModuleState } from '../state/types/module';
-import { NumberParameter } from '../components/number-parameter';
-import { IoConnectors } from '../components/io-connectors';
+import { IModule, IModuleState } from '../../state/types/module';
+import { NumberParameter } from '../number-parameter';
+import { IoConnectors } from '../io-connectors';
 
 const outputStateFromNode = (
 	node: IGainNode<IAudioContext>

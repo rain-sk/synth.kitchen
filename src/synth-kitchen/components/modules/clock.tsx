@@ -1,12 +1,12 @@
 import React, { useCallback, useRef } from 'react';
 
-import { ClockNode } from '../audio/nodes/clock';
+import { ClockNode } from '../../audio/nodes/clock';
 
-import { useModuleState } from '../hooks/use-module-state';
-import { IModule, IModuleState } from '../state/types/module';
-import { IoConnectors } from '../components/io-connectors';
-import { NumberParameter } from '../components/number-parameter';
-import { audioContext } from '../audio';
+import { useModuleState } from '../../hooks/use-module-state';
+import { IModule, IModuleState } from '../../state/types/module';
+import { IoConnectors } from '../io-connectors';
+import { NumberParameter } from '../number-parameter';
+import { audioContext } from '../../audio';
 
 const clockStateFromNode = (clock: ClockNode): IModuleState['CLOCK'] => ({
 	tempo: clock.tempo.value

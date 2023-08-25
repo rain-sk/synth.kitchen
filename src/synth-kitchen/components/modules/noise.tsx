@@ -1,10 +1,10 @@
 import React, { useCallback, useRef } from 'react';
 
-import { NoiseNode } from '../audio/nodes/noise';
+import { NoiseNode } from '../../audio/nodes/noise';
 
-import { useModuleState } from '../hooks/use-module-state';
-import { IModule, IModuleState } from '../state/types/module';
-import { IoConnectors } from '../components/io-connectors';
+import { useModuleState } from '../../hooks/use-module-state';
+import { IModule, IModuleState } from '../../state/types/module';
+import { IoConnectors } from '../io-connectors';
 
 const initNoise = (
 	noiseRef: React.MutableRefObject<NoiseNode | undefined>,

@@ -9,18 +9,18 @@ import React, {
 import { actions } from '../state/actions';
 import { IModule } from '../state/types/module';
 
-import { OscillatorModule } from '../modules/oscillator';
-import { GainModule } from '../modules/gain';
-import { DelayModule } from '../modules/delay';
-import { FilterModule } from '../modules/filter';
-import { NoiseModule } from '../modules/noise';
-import { OutputModule } from '../modules/output';
+import { OscillatorModule } from './modules/oscillator';
+import { GainModule } from './modules/gain';
+import { DelayModule } from './modules/delay';
+import { FilterModule } from './modules/filter';
+import { NoiseModule } from './modules/noise';
+import { OutputModule } from './modules/output';
 import { Modifier } from '../state/types/state';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 import { queueAnimation } from '../animation';
-import { ClockModule } from '../modules/clock';
-import { SequencerModule } from '../modules/sequencer';
+import { ClockModule } from './modules/clock';
+import { SequencerModule } from './modules/sequencer';
 
 const useDragAndDrop = (
 	initialX: number,

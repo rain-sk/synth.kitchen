@@ -5,15 +5,15 @@ import {
 	IOscillatorNode
 } from 'standardized-audio-context';
 
-import { audioContext } from '../audio';
+import { audioContext } from '../../audio';
 
-import { useEffectOnce } from '../hooks/use-effect-once';
-import { useModuleState } from '../hooks/use-module-state';
-import { IModule, IModuleState } from '../state/types/module';
+import { useEffectOnce } from '../../hooks/use-effect-once';
+import { useModuleState } from '../../hooks/use-module-state';
+import { IModule, IModuleState } from '../../state/types/module';
 
-import { NumberParameter } from '../components/number-parameter';
-import { IoConnectors } from '../components/io-connectors';
-import { RadioParameter } from '../components/radio-parameter';
+import { NumberParameter } from '../number-parameter';
+import { IoConnectors } from '../io-connectors';
+import { RadioParameter } from '../radio-parameter';
 
 const oscillatorStateFromNode = (
 	node: IOscillatorNode<IAudioContext>

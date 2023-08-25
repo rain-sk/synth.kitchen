@@ -32,13 +32,15 @@ export interface IModuleState extends Record<ModuleType, any> {
 		waveform: TOscillatorType;
 	};
 	SEQUENCER: {
-		// mode: 'forward' | 'backward';
-		// glide: number;
-		// steps: {
-		// 	offset: number;
-		// 	duration: number;
-		// 	reverse: boolean;
-		// }[];
+		steps: number;
+		step0: number;
+		step1: number;
+		step2: number;
+		step3: number;
+		step4: number;
+		step5: number;
+		step6: number;
+		step7: number;
 	};
 	OUTPUT: {
 		gain: number;

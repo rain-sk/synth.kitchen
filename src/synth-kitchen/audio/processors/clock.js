@@ -2,7 +2,7 @@ function calcPhase(phase, ticksPerMinute) {
 	const ticksPerSecond = ticksPerMinute / 60;
 	const framesPerTick = sampleRate / ticksPerSecond;
 	const phaseOffsetPerFrame = 1 / framesPerTick;
-	return phase + phaseOffsetPerFrame;
+	return phase + Math.abs(phaseOffsetPerFrame);
 }
 
 class Clock extends AudioWorkletProcessor {
