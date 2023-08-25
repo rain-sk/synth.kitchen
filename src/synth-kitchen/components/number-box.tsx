@@ -83,8 +83,11 @@ export const NumberBox: React.FunctionComponent<{
 			} else if (e.key === 'Escape') {
 				setTempValue(`${value}`);
 				setTimeout(() => (e.target as any).select(), 1);
-			} else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-				commitValueCallback(valueToCommit());
+			} else if (e.shiftKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+				const newValue =
+					e.key === 'ArrowUp' ? valueToCommit() * 2 : valueToCommit() / 2;
+				setTempValue(`${newValue}`);
+				commitValueCallback(newValue);
 			}
 		},
 		[commitValueCallback, valueToCommit, setTempValue, value]
