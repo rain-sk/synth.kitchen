@@ -63,6 +63,8 @@ export const connectorInfo = (key?: string) =>
 
 type IConnectionContext = {
 	activeConnectorKey?: string;
+	readonly connections: Map<string, [IOutput, IInput]>;
+	readonly connectors: Map<string, IConnectorInfo>;
 	connectorCount: number;
 	connectionCount: number;
 	highlightInputs: boolean;
@@ -73,6 +75,8 @@ type IConnectionContext = {
 };
 
 export const ConnectionContext = React.createContext<IConnectionContext>({
+	connections: new Map<string, [IOutput, IInput]>(),
+	connectors: new Map<string, IConnectorInfo>(),
 	connectorCount: 0,
 	connectionCount: 0,
 	highlightInputs: false,
@@ -166,6 +170,8 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 				activeConnectorKey,
 				connectorCount,
 				connectionCount,
+				connectors,
+				connections,
 				highlightInputs: activeConnectorIsOutput,
 				highlightOutputs: activeConnectorIsInput,
 				registerConnector,
