@@ -4,7 +4,7 @@ import { IPatch } from '../types/patch';
 import { IState } from '../types/state';
 
 export const history: React.Reducer<IState, IHistory> = (state, action) => {
-	const { type } = action.payload;
+	const { type, connections } = action.payload;
 
 	const nothingToUndo =
 		type === HistoryChangeType.UNDO &&
@@ -34,7 +34,8 @@ export const history: React.Reducer<IState, IHistory> = (state, action) => {
 
 			const currentPatch = {
 				modules,
-				name
+				name,
+				connections
 			};
 
 			const mostRecentPatch =
@@ -48,10 +49,8 @@ export const history: React.Reducer<IState, IHistory> = (state, action) => {
 					patchHistoryOffset: -1
 				};
 			} else {
-				newPatchHistory.push({
-					modules,
-					name
-				});
+				newPatchHistory.push(currentPatch);
+				console.log(newPatchHistory);
 				return {
 					...state,
 					patchHistory: newPatchHistory,

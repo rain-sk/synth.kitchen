@@ -8,13 +8,17 @@ export type IHistory = {
 	type: 'History';
 	payload: {
 		type: HistoryChangeType;
+		connections?: Record<string, [string, string]>;
 	};
 };
 
-export const historyPushAction = (): IHistory => ({
+export const historyPushAction = (
+	connections?: Record<string, [string, string]>
+): IHistory => ({
 	type: 'History',
 	payload: {
-		type: HistoryChangeType.PUSH
+		type: HistoryChangeType.PUSH,
+		connections
 	}
 });
 
