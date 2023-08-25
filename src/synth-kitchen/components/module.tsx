@@ -19,6 +19,8 @@ import { Modifier } from '../state/types/state';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 import { queueAnimation } from '../animation';
+import { ClockModule } from '../modules/clock';
+import { SequencerModule } from '../modules/sequencer';
 
 const useDragAndDrop = (
 	initialX: number,
@@ -118,6 +120,8 @@ const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 
 const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 	switch (module.type) {
+		case 'CLOCK':
+			return <ClockModule module={module as IModule<'CLOCK'>} />;
 		case 'DELAY':
 			return <DelayModule module={module as IModule<'DELAY'>} />;
 		case 'FILTER':
@@ -130,6 +134,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 			return <OscillatorModule module={module as IModule<'OSCILLATOR'>} />;
 		case 'OUTPUT':
 			return <OutputModule module={module as IModule<'OUTPUT'>} />;
+		case 'SEQUENCER':
+			return <SequencerModule module={module as IModule<'SEQUENCER'>} />;
 		default: {
 			return <p>unavailable</p>;
 		}

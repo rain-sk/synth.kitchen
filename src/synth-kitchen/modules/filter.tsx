@@ -1,10 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 
-import { IAudioContext, IBiquadFilterNode } from 'standardized-audio-context';
+import {
+	IAudioContext,
+	IAudioParam,
+	IBiquadFilterNode,
+	TBiquadFilterType
+} from 'standardized-audio-context';
 import { audioContext } from '../audio';
 import { useModuleState } from '../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../state/types/module';
+import { IoConnectors } from '../components/io-connectors';
+import { NumberParameter } from '../components/number-parameter';
+import { RadioParameter } from '../components/radio-parameter';
 
 const filterStateFromNode = (
 	filter: IBiquadFilterNode<IAudioContext>
@@ -35,6 +43,7 @@ const initFilter = (
 		);
 		filterRef.current.Q.setValueAtTime(state.Q, audioContext.currentTime);
 		filterRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
+		filterRef.current.type = state.type;
 		return state;
 	} else {
 		return filterStateFromNode(filterRef.current);
@@ -45,12 +54,153 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 	module
 }) => {
 	const filterRef = useRef<IBiquadFilterNode<IAudioContext>>();
-	const [state] = useModuleState<'FILTER'>(
+	const [state, setState] = useModuleState<'FILTER'>(
 		() => initFilter(filterRef, module.state),
 		module.moduleKey
 	);
 
+	const commitFrequencyChange = useCallback(
+		(frequency: number) => {
+			filterRef.current?.frequency.linearRampToValueAtTime(
+				frequency,
+				audioContext.currentTime
+			);
+			setState({
+				...state,
+				frequency
+			});
+		},
+		[filterRef.current, audioContext, state]
+	);
+
+	const commitDetuneChange = useCallback(
+		(detune: number) => {
+			filterRef.current?.detune.linearRampToValueAtTime(
+				detune,
+				audioContext.currentTime
+			);
+			setState({
+				...state,
+				detune
+			});
+		},
+		[audioContext, state]
+	);
+
+	const commitTypeChange = useCallback(
+		(type: string) => {
+			if (filterRef.current) {
+				filterRef.current.type = type as TBiquadFilterType;
+				setState({
+					...state,
+					type: type as TBiquadFilterType
+				});
+			}
+		},
+		[audioContext, state]
+	);
+
+	const commitQChange = useCallback(
+		(Q: number) => {
+			filterRef.current?.Q.linearRampToValueAtTime(Q, audioContext.currentTime);
+			setState({
+				...state,
+				Q
+			});
+		},
+		[audioContext, state]
+	);
+
+	const commitGainChange = useCallback(
+		(gain: number) => {
+			filterRef.current?.gain.linearRampToValueAtTime(
+				gain,
+				audioContext.currentTime
+			);
+			setState({
+				...state,
+				gain
+			});
+		},
+		[audioContext, state]
+	);
+
+	const frequencyAccessor = useCallback(() => {
+		return filterRef.current?.frequency as IAudioParam;
+	}, []);
+
+	const detuneAccessor = useCallback(() => {
+		return filterRef.current?.detune as IAudioParam;
+	}, []);
+
+	const qAccessor = useCallback(() => {
+		return filterRef.current?.Q as IAudioParam;
+	}, []);
+
+	const gainAccessor = useCallback(() => {
+		return filterRef.current?.gain as IAudioParam;
+	}, []);
+
 	const enabled = state != undefined;
 
-	return enabled ? <p>enabled</p> : <p>loading...</p>;
+	const inputAccessor = useCallback(() => filterRef.current as any, [enabled]);
+
+	const outputAccessor = useCallback(() => filterRef.current as any, [enabled]);
+
+	return enabled ? (
+		<>
+			<IoConnectors
+				moduleKey={module.moduleKey}
+				inputAccessors={[inputAccessor]}
+				outputAccessors={[outputAccessor]}
+			/>
+
+			<section>
+				<NumberParameter
+					moduleKey={module.moduleKey}
+					paramAccessor={frequencyAccessor}
+					name="frequency"
+					value={state.frequency}
+					commitValueCallback={commitFrequencyChange}
+				/>
+				<NumberParameter
+					moduleKey={module.moduleKey}
+					paramAccessor={detuneAccessor}
+					name="detune"
+					value={state.detune}
+					commitValueCallback={commitDetuneChange}
+				/>
+				<NumberParameter
+					moduleKey={module.moduleKey}
+					paramAccessor={qAccessor}
+					name="Q"
+					value={state.Q}
+					commitValueCallback={commitQChange}
+				/>
+				<NumberParameter
+					moduleKey={module.moduleKey}
+					paramAccessor={gainAccessor}
+					name="gain"
+					value={state.gain}
+					commitValueCallback={commitGainChange}
+				/>
+				<RadioParameter
+					moduleKey={module.moduleKey}
+					name="type"
+					value={state.type}
+					options={[
+						'allpass',
+						'bandpass',
+						'highpass',
+						'highshelf',
+						'lowpass',
+						'lowshelf',
+						'notch',
+						'peaking'
+					]}
+					commitValueCallback={commitTypeChange}
+				/>
+			</section>
+		</>
+	) : null;
 };

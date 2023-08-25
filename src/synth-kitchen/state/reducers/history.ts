@@ -50,7 +50,6 @@ export const history: React.Reducer<IState, IHistory> = (state, action) => {
 				};
 			} else {
 				newPatchHistory.push(currentPatch);
-				console.log(newPatchHistory);
 				return {
 					...state,
 					patchHistory: newPatchHistory,

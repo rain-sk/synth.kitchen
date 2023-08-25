@@ -1,6 +1,7 @@
 import { TBiquadFilterType, TOscillatorType } from 'standardized-audio-context';
 
 export type ModuleType =
+	| 'CLOCK'
 	| 'DELAY'
 	| 'FILTER'
 	| 'GAIN'
@@ -14,6 +15,7 @@ export interface IModuleState extends Record<ModuleType, any> {
 		gain: number;
 	};
 	NOISE: {};
+	CLOCK: { tempo: number };
 	DELAY: {
 		delayTime: number;
 	};
@@ -30,13 +32,13 @@ export interface IModuleState extends Record<ModuleType, any> {
 		waveform: TOscillatorType;
 	};
 	SEQUENCER: {
-		mode: 'forward' | 'backward';
-		glide: number;
-		steps: {
-			offset: number;
-			duration: number;
-			reverse: boolean;
-		}[];
+		// mode: 'forward' | 'backward';
+		// glide: number;
+		// steps: {
+		// 	offset: number;
+		// 	duration: number;
+		// 	reverse: boolean;
+		// }[];
 	};
 	OUTPUT: {
 		gain: number;

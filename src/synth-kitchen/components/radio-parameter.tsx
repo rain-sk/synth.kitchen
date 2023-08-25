@@ -21,7 +21,9 @@ export const RadioParameter: React.FunctionComponent<{
 			<label htmlFor={id}>{name}</label>
 			<select name={id} id={id} value={value} onChange={onChange}>
 				{options.map((option) => (
-					<option value={option}>{option}</option>
+					<option key={option} value={option}>
+						{option}
+					</option>
 				))}
 			</select>
 		</section>
