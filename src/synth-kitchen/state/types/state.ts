@@ -38,7 +38,7 @@ export const initialState: IState = {
 			type: 'OUTPUT',
 			x: document.documentElement.scrollWidth / 1.47,
 			y: document.documentElement.scrollHeight / 1.8,
-			state: { gain: 1 }
+			state: { gain: 0.5 }
 		}
 	},
 	mouseDragStartPosition: INVALID_POSITION,
