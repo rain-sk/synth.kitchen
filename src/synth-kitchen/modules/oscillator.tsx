@@ -13,6 +13,7 @@ import { IModule, IModuleState } from '../state/types/module';
 
 import { NumberParameter } from '../components/number-parameter';
 import { IoConnectors } from '../components/io-connectors';
+import { RadioParameter } from '../components/radio-parameter';
 
 const oscillatorStateFromNode = (
 	node: IOscillatorNode<IAudioContext>
@@ -92,6 +93,20 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 		[audioContext, state]
 	);
 
+	const commitWaveformChange = useCallback(
+		(type: string) => {
+			if (oscillatorRef.current) {
+				const waveform = type as OscillatorType;
+				oscillatorRef.current.type = waveform;
+				setState({
+					...state,
+					waveform
+				});
+			}
+		},
+		[audioContext, state]
+	);
+
 	const frequencyAccessor = useCallback(() => {
 		return oscillatorRef.current?.frequency as IAudioParam;
 	}, []);
@@ -128,6 +143,13 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 					name="detune"
 					value={state.detune}
 					commitValueCallback={commitDetuneChange}
+				/>
+				<RadioParameter
+					moduleKey={module.moduleKey}
+					name="waveform"
+					value={state.waveform}
+					options={['sawtooth', 'sine', 'square', 'triangle']}
+					commitValueCallback={commitWaveformChange}
 				/>
 			</section>
 		</>

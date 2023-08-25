@@ -107,9 +107,11 @@ main {
 	justify-content: space-between;
 }
 
-.numparam {
+.numparam,
+.radioparam {
 	display: flex;
 	justify-content: space-between;
+	margin-top: 0.5rem;
 }
 
 .numparam button {
@@ -119,10 +121,6 @@ main {
 .numbox {
 	display: flex;
 	justify-content: space-between;
-}
-
-.numbox:not(:first-child) {
-	margin-top: 0.5rem;
 }
 
 .numbox label {
