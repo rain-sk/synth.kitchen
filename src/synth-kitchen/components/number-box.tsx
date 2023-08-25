@@ -88,6 +88,7 @@ export const NumberBox: React.FunctionComponent<{
 					e.key === 'ArrowUp' ? valueToCommit() * 2 : valueToCommit() / 2;
 				setTempValue(`${newValue}`);
 				commitValueCallback(newValue);
+				setTimeout(() => (e.target as any).select(), 1);
 			}
 		},
 		[commitValueCallback, valueToCommit, setTempValue, value]
