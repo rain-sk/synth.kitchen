@@ -9,6 +9,7 @@ import { StateContext } from './contexts/state';
 import { DispatchContext } from './contexts/dispatch';
 import { ConnectionContextProvider } from './contexts/connection';
 import { IAction } from './state/actions';
+import { Connections } from './components/connections';
 
 const ContextWrapper: React.FC<
 	React.PropsWithChildren<{ state: IState; dispatch: React.Dispatch<IAction> }>
@@ -31,6 +32,7 @@ export const Kitchen: React.FC = () => {
 			<ResizableCanvas drawOnTop={false}>
 				<KeyHandler />
 				<ModuleCanvas modules={state.modules} />
+				<Connections />
 			</ResizableCanvas>
 		</ContextWrapper>
 	);
