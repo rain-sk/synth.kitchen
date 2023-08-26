@@ -10,10 +10,12 @@ class Clock extends AudioWorkletProcessor {
 		return [{ name: 'tempo', defaultValue: 120, minValue: 0, maxValue: 1000 }];
 	}
 
-	lastTick = -1;
-	phase = 0;
+	phase = 1;
 
 	process(inputs, outputs, parameters) {
+		const input = inputs[0];
+		const hasInput = input.length > 0;
+
 		const output = outputs[0];
 		const channelOne = output[0];
 
@@ -23,12 +25,11 @@ class Clock extends AudioWorkletProcessor {
 
 		for (let i = 0; i < channelOne.length; i++) {
 			phase =
-				this.lastTick === -1
+				hasInput && input[0][i] === 1
 					? 1
 					: calcPhase(phase, isTempoConstant ? tempo[0] : tempo[i]);
 
 			if (phase >= 1) {
-				this.lastTick = currentTime;
 				phase -= 1;
 				channelOne[i] = 1;
 			} else {

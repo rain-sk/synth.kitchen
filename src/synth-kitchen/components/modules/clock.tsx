@@ -54,6 +54,11 @@ export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 		[enabled]
 	);
 
+	const inputAccessor = useCallback(
+		() => clockRef.current?.node() as any,
+		[enabled]
+	);
+
 	const outputAccessor = useCallback(
 		() => clockRef.current?.node() as any,
 		[enabled]
@@ -63,7 +68,7 @@ export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[]}
+				inputAccessors={[inputAccessor]}
 				outputAccessors={[outputAccessor]}
 			/>
 			<section>
