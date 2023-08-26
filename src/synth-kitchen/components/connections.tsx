@@ -50,6 +50,7 @@ export const Connections: React.FC = () => {
 				console.log({ outputX, outputY, inputX, inputY });
 
 				context2d.beginPath();
+				context2d.lineWidth = 4;
 				context2d.moveTo(outputX, outputY);
 				context2d.lineTo(inputX, inputY);
 				context2d.stroke();
