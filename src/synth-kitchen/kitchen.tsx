@@ -32,8 +32,8 @@ export const Kitchen: React.FC = () => {
 			<ResizableCanvas drawOnTop={false}>
 				<KeyHandler />
 				<ModuleCanvas modules={state.modules} />
-				<Connections />
 			</ResizableCanvas>
+			<Connections />
 		</ContextWrapper>
 	);
 };
