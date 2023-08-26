@@ -1,6 +1,14 @@
+function calcPhase(phase, ticksPerMinute) {
+	const ticksPerSecond = ticksPerMinute / 60;
+	const framesPerTick = sampleRate / ticksPerSecond;
+	const phaseOffsetPerFrame = 1 / framesPerTick;
+	return phase + Math.abs(phaseOffsetPerFrame);
+}
+
 class Sequencer extends AudioWorkletProcessor {
 	static get parameterDescriptors() {
 		return [
+			{ name: 'tempo', defaultValue: 120, minValue: 0, maxValue: 1000 },
 			{ name: 'steps', defaultValue: 8, minValue: 2, maxValue: 8 },
 			{
 				name: 'step0',
@@ -37,6 +45,7 @@ class Sequencer extends AudioWorkletProcessor {
 		];
 	}
 
+	phase = 1;
 	step = -1;
 
 	process(inputs, outputs, parameters) {
@@ -45,19 +54,27 @@ class Sequencer extends AudioWorkletProcessor {
 
 		const channelOneOut = output[0];
 
-		let step = this.step;
+		const tempo = parameters.tempo;
+		const isTempoConstant = tempo.length === 1;
 
-		if (input.length === 0) {
-			return true;
-		}
+		const hasInput = input.length !== 0;
+
+		let phase = this.phase;
+		let step = this.step;
 
 		const steps = parameters.steps;
 		const stepsIsConstant = steps.length === 1;
 
 		for (let i = 0; i < channelOneOut.length; i++) {
-			const advanceOneStep = input[0][i] === 1;
-			if (advanceOneStep) {
-				step = (step + 1) % Math.floor(stepsIsConstant ? steps[0] : steps[i]);
+			phase = calcPhase(phase, isTempoConstant ? tempo[0] : tempo[i]);
+
+			const reset = hasInput && input[0][i] === 1;
+			if (reset) {
+				step = 0;
+				phase = 0;
+			} else if (phase >= 1) {
+				step = (step + 1) % (stepsIsConstant ? steps[0] : steps[i]);
+				phase -= 1;
 			}
 
 			if (step === 0) {
@@ -95,6 +112,7 @@ class Sequencer extends AudioWorkletProcessor {
 			}
 		}
 
+		this.phase = phase;
 		this.step = step;
 
 		return true;
