@@ -12,6 +12,8 @@ export const IoConnector: React.FunctionComponent<{
 	type: IoType;
 	accessor: () => IAudioNode<IAudioContext>;
 }> = ({ moduleKey, type, channel, accessor }) => {
+	const [connectorKey] = useState(() => ioKey({ moduleKey, channel, type }));
+
 	const {
 		activeConnectorKey,
 		connectedToActiveConnector,
@@ -21,8 +23,6 @@ export const IoConnector: React.FunctionComponent<{
 		registerConnector,
 		unregisterConnector
 	} = useContext(ConnectionContext);
-
-	const [connectorKey] = useState(() => ioKey({ moduleKey, channel, type }));
 
 	useEffectOnce(() => {
 		registerConnector({ moduleKey, channel, type, accessor });
