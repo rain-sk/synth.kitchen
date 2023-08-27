@@ -1,9 +1,10 @@
 import { AudioWorkletNode, IAudioContext } from 'standardized-audio-context';
+import adsr from './adsr.js?url';
 import clock from './clock.js?url';
 import noise from './noise.js?url';
 import sequencer from './sequencer.js?url';
 
-export const processors = [clock, noise, sequencer];
+export const processors = [adsr, clock, noise, sequencer];
 
 export const initAudioProcessors = (context: IAudioContext) => async () => {
 	if (!AudioWorkletNode) {
