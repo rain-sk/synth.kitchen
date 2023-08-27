@@ -22,6 +22,7 @@ import { queueAnimation } from '../animation';
 import { ClockModule } from './modules/clock';
 import { SequencerModule } from './modules/sequencer';
 import { GateModule } from './modules/gate';
+import { AdsrModule } from './modules/adsr';
 
 const useDragAndDrop = (
 	initialX: number,
@@ -121,6 +122,8 @@ const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 
 const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 	switch (module.type) {
+		case 'ADSR':
+			return <AdsrModule module={module as IModule<'ADSR'>} />;
 		case 'CLOCK':
 			return <ClockModule module={module as IModule<'CLOCK'>} />;
 		case 'DELAY':

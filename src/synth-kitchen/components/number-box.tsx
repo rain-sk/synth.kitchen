@@ -37,7 +37,10 @@ export const NumberBox: React.FunctionComponent<{
 
 			const negative = string[0] === '-';
 
-			if (negative && string.length === 1) {
+			if (
+				string.length === 1 &&
+				(negative || string[0] === '.' || string[0] === ',')
+			) {
 				setTempValue(string);
 				return;
 			}

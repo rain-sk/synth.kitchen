@@ -8,6 +8,7 @@ import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 
 const moduleTypes: ModuleType[] = [
+	'ADSR',
 	'CLOCK',
 	'DELAY',
 	'FILTER',

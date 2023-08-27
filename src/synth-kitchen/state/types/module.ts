@@ -1,6 +1,7 @@
 import { TBiquadFilterType, TOscillatorType } from 'standardized-audio-context';
 
 export type ModuleType =
+	| 'ADSR'
 	| 'CLOCK'
 	| 'DELAY'
 	| 'FILTER'
@@ -12,11 +13,17 @@ export type ModuleType =
 	| 'SEQUENCER';
 
 export interface IModuleState extends Record<ModuleType, any> {
+	ADSR: {
+		attack: number;
+		decay: number;
+		sustain: number;
+		release: number;
+	};
+	CLOCK: { tempo: number };
 	GAIN: {
 		gain: number;
 	};
 	NOISE: {};
-	CLOCK: { tempo: number };
 	DELAY: {
 		delayTime: number;
 	};

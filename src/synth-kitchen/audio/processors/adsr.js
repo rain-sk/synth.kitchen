@@ -54,7 +54,7 @@ class Adsr extends AudioWorkletProcessor {
 		const release = parameters.release;
 		const isReleaseConstant = release.length === 1;
 
-		for (let i = 0; i < channelOne.length; i++) {
+		for (let i = 0; i < output[0].length; i++) {
 			const gateOpen = input[0][i] === 1;
 
 			if (tickStart === -1 && input[0][i] === 1) {
@@ -80,7 +80,9 @@ class Adsr extends AudioWorkletProcessor {
 					tickEnd
 				);
 
-				output.forEach((channel) => (channel[i] = frameValue));
+				for (let channel = 0; channel < output.length; channel++) {
+					output[channel][i] = frameValue;
+				}
 
 				if (tickEnd !== -1 && currentTime - tickEnd > frameRelease) {
 					tickStart = -1;
