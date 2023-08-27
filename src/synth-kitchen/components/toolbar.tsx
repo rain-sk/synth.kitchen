@@ -12,6 +12,7 @@ const moduleTypes: ModuleType[] = [
 	'DELAY',
 	'FILTER',
 	'GAIN',
+	'GATE',
 	'NOISE',
 	'OSCILLATOR',
 	'SEQUENCER'

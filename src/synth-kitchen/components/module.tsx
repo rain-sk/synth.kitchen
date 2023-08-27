@@ -21,6 +21,7 @@ import { useStateContext } from '../hooks/use-state-context';
 import { queueAnimation } from '../animation';
 import { ClockModule } from './modules/clock';
 import { SequencerModule } from './modules/sequencer';
+import { GateModule } from './modules/gate';
 
 const useDragAndDrop = (
 	initialX: number,
@@ -128,6 +129,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 			return <FilterModule module={module as IModule<'FILTER'>} />;
 		case 'GAIN':
 			return <GainModule module={module as IModule<'GAIN'>} />;
+		case 'GATE':
+			return <GateModule module={module as IModule<'GATE'>} />;
 		case 'NOISE':
 			return <NoiseModule module={module as IModule<'NOISE'>} />;
 		case 'OSCILLATOR':

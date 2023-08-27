@@ -5,6 +5,7 @@ export type ModuleType =
 	| 'DELAY'
 	| 'FILTER'
 	| 'GAIN'
+	| 'GATE'
 	| 'NOISE'
 	| 'OSCILLATOR'
 	| 'OUTPUT'
@@ -26,6 +27,7 @@ export interface IModuleState extends Record<ModuleType, any> {
 		gain: number;
 		type: TBiquadFilterType;
 	};
+	GATE: { gate: number };
 	OSCILLATOR: {
 		frequency: number;
 		detune: number;
