@@ -107,8 +107,8 @@ export const ResizableCanvas: React.FC<{
 				if (!canvasWasResized.current) {
 					canvasWasResized.current = true;
 					const spacerRect = state.spacer.getBoundingClientRect();
-					console.log((spacerRect.width - window.innerWidth) / 2);
-					console.log((spacerRect.height - window.innerHeight) / 2);
+					// console.log((spacerRect.width - window.innerWidth) / 2);
+					// console.log((spacerRect.height - window.innerHeight) / 2);
 					state.container.scrollTo({
 						left: (spacerRect.width - window.innerWidth) / 2,
 						top: (spacerRect.height - window.innerHeight) / 2
@@ -137,8 +137,8 @@ export const ResizableCanvas: React.FC<{
 	}, [initialized, state.container, state.selection, state.spacer]);
 
 	const onDrag = useCallback((e: MouseEvent) => {
-		console.log(e);
-		console.log(state.container);
+		// console.log(e);
+		// console.log(state.container);
 		state.selection.end = positionFromMouseEvent(
 			e,
 			state.container as HTMLElement

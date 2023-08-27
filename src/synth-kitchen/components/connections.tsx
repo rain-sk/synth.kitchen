@@ -5,7 +5,7 @@ import { INVALID_POSITION } from '../state/types/state';
 import { useEffectOnce } from '../hooks/use-effect-once';
 
 const coordinates = (connectorKey: string) => {
-	console.log(connectorKey);
+	// console.log(connectorKey);
 	const connector = document.getElementById(connectorKey);
 	if (!connector) {
 		return INVALID_POSITION;
@@ -47,7 +47,7 @@ export const Connections: React.FC = () => {
 			);
 
 			connectionsToDraw.forEach(([[outputX, outputY], [inputX, inputY]]) => {
-				console.log({ outputX, outputY, inputX, inputY });
+				// console.log({ outputX, outputY, inputX, inputY });
 
 				context2d.beginPath();
 				context2d.lineWidth = 4;
