@@ -2,16 +2,16 @@ function interpolate(a, d, s, r, tickStart, tickEnd) {
 	const timeSinceLastTick = currentTime - tickStart;
 
 	if (timeSinceLastTick <= a) {
-		return timeSinceLastTick / a;
+		return a === 0 ? 1 : timeSinceLastTick / a;
 	} else if (timeSinceLastTick <= a + d) {
 		const decayTimeElapsed = timeSinceLastTick - a;
-		const decayRatio = decayTimeElapsed / d;
+		const decayRatio = d === 0 ? 1 : decayTimeElapsed / d;
 		return 1 - decayRatio * (1 - s);
 	} else if (tickEnd === -1) {
 		return s;
 	} else {
 		const releaseTimeElapsed = currentTime - tickEnd;
-		const releaseRatio = releaseTimeElapsed / r;
+		const releaseRatio = r === 0 ? 1 : releaseTimeElapsed / r;
 		return Math.max(s - releaseRatio * s, 0);
 	}
 }
