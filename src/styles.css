@@ -31,7 +31,7 @@ nav {
 	display: flex;
 	flex-direction: row-reverse;
 	justify-content: space-between;
-	z-index: 2;
+	z-index: 20;
 }
 
 nav > section {
