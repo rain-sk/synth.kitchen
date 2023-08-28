@@ -45,7 +45,7 @@ Done:
 - [x] A-rate audio params have a connector, text-input, and slider
 - [x] signal-flow is represented as left-to-right
 
-Stretch Goals:
+TODO:
 
 - [ ] modules can be renamed
 - [ ] modules look nice
@@ -59,7 +59,7 @@ Done:
 - [x] a way to connect/disconnect modules with the mouse
 - [x] a way to connect/disconnect modules with the keyboard
 
-Stretch Goals:
+TODO:
 
 - [ ] undo/redo takes connections into account
 - [ ] connector inputs have some kind of gain control
