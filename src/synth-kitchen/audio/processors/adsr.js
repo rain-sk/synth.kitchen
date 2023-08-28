@@ -1,14 +1,17 @@
 function interpolate(a, d, s, r, tickStart, tickEnd) {
 	const timeSinceLastTick = currentTime - tickStart;
+	const noteOn = tickEnd === -1;
 
-	if (timeSinceLastTick <= a) {
-		return a === 0 ? 1 : timeSinceLastTick / a;
-	} else if (timeSinceLastTick <= a + d) {
-		const decayTimeElapsed = timeSinceLastTick - a;
-		const decayRatio = d === 0 ? 1 : decayTimeElapsed / d;
-		return 1 - decayRatio * (1 - s);
-	} else if (tickEnd === -1) {
-		return s;
+	if (noteOn) {
+		if (timeSinceLastTick <= a) {
+			return a === 0 ? 1 : timeSinceLastTick / a;
+		} else if (timeSinceLastTick <= a + d) {
+			const decayTimeElapsed = timeSinceLastTick - a;
+			const decayRatio = d === 0 ? 1 : decayTimeElapsed / d;
+			return 1 - decayRatio * (1 - s);
+		} else {
+			return s;
+		}
 	} else {
 		const releaseTimeElapsed = currentTime - tickEnd;
 		const releaseRatio = r === 0 ? 1 : releaseTimeElapsed / r;
@@ -68,6 +71,7 @@ class Adsr extends AudioWorkletProcessor {
 				const frameRelease = isReleaseConstant ? release[0] : release[i];
 
 				if (tickEnd === -1 && !gateOpen) {
+					console.log({ currentTime });
 					tickEnd = currentTime;
 				}
 
