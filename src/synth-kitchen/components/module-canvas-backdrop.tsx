@@ -32,7 +32,7 @@ const state = {
 	spacer: undefined as HTMLDivElement | undefined
 };
 
-export const ResizableCanvas: React.FC<{
+export const ModuleCanvasBackdrop: React.FC<{
 	drawOnTop: boolean;
 	children: React.ReactNode;
 }> = ({ children }) => {
