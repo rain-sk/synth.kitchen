@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import { ResizableCanvas } from './components/resizable-canvas';
+import { ModuleCanvasBackdrop } from './components/module-canvas-backdrop';
 import { KeyHandler } from './components/key-handler';
 import { ModuleCanvas } from './components/module-canvas';
 import { reducer } from './state';
@@ -29,10 +29,10 @@ export const Kitchen: React.FC = () => {
 	return (
 		<ContextWrapper state={state} dispatch={dispatch}>
 			<Toolbar />
-			<ResizableCanvas drawOnTop={false}>
+			<ModuleCanvasBackdrop drawOnTop={false}>
 				<KeyHandler />
 				<ModuleCanvas modules={state.modules} />
-			</ResizableCanvas>
+			</ModuleCanvasBackdrop>
 			<Connections />
 		</ContextWrapper>
 	);
