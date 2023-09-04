@@ -13,9 +13,9 @@
 	},
 	"scripts": {
 		"build": "tsc && vite build",
-		"start": "concurrently \"npm:dev\" \"npm:lint\"",
+		"start": "clear; concurrently \"npm:dev\" \"npm:lint\"",
 		"dev": "vite",
-		"lint": "tsc -w",
+		"lint": "tsc --preserveWatchOutput --watch",
 		"preview": "vite preview"
 	},
 	"devDependencies": {
