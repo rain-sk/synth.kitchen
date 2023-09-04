@@ -13,8 +13,9 @@
 	},
 	"scripts": {
 		"build": "tsc && vite build",
-		"start": "vite",
-		"lint": "tsc",
+		"start": "concurrently \"npm:dev\" \"npm:lint\"",
+		"dev": "vite",
+		"lint": "tsc -w",
 		"preview": "vite preview"
 	},
 	"devDependencies": {
@@ -23,6 +24,7 @@
 		"@typescript-eslint/eslint-plugin": "^6.4.0",
 		"@typescript-eslint/parser": "^6.4.0",
 		"@vitejs/plugin-react": "^4.0.4",
+		"concurrently": "^8.2.1",
 		"eslint": "^8.47.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.3",
