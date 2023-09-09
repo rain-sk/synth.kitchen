@@ -62,6 +62,7 @@ class Adsr extends AudioWorkletProcessor {
 
 			if (tickStart === -1 && gateOpen) {
 				tickStart = currentTime;
+				tickEnd = -1;
 			}
 
 			if (tickStart !== -1) {
