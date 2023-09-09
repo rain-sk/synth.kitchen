@@ -8,13 +8,15 @@ export const audio = {
 export const audioContext = new AudioContext();
 
 const resumeAudioContext = new Promise<void>((resolve) => {
-	const startButton = document.getElementsByTagName('button')[0];
-	startButton.focus();
-	startButton.addEventListener('click', () => {
+	const startButton = document.getElementById('start');
+	startButton?.focus();
+	startButton?.addEventListener('click', () => {
 		if ('resume' in audioContext) {
 			audioContext.resume().then(() => {
 				resolve();
 			});
+		} else {
+			throw 'Unable to initialize audio';
 		}
 	});
 });
