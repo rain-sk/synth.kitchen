@@ -60,7 +60,7 @@ class Adsr extends AudioWorkletProcessor {
 		for (let i = 0; i < output[0].length; i++) {
 			const gateOpen = input[0][i] === 1;
 
-			if (tickStart === -1 && input[0][i] === 1) {
+			if (tickStart === -1 && gateOpen) {
 				tickStart = currentTime;
 			}
 
