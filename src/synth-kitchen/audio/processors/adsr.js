@@ -72,7 +72,6 @@ class Adsr extends AudioWorkletProcessor {
 				const frameRelease = isReleaseConstant ? release[0] : release[i];
 
 				if (tickEnd === -1 && !gateOpen) {
-					console.log({ currentTime });
 					tickEnd = currentTime;
 				}
 
