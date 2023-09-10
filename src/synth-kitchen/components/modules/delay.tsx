@@ -83,6 +83,4 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 			</section>
 		</>
 	) : null;
-
-	return enabled ? <p>enabled</p> : <p>loading...</p>;
 };
