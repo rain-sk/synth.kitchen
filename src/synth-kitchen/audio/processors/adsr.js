@@ -1,23 +1,27 @@
-function interpolate(a, d, s, r, tickStart, tickEnd) {
-	const noteOn = tickStart !== -1;
+// TODO:
+// [ ] stop relying on currentTime; count the number of frames and multiply that by the framerate
+
+function interpolate(a, d, s, r, framesSinceTickStart, framesSinceTickEnd) {
+	const noteOn = framesSinceTickStart !== -1;
 
 	if (noteOn) {
-		const timeSinceLastTick = currentTime - tickStart;
+		const timeSinceTickStart = framesSinceTickStart / sampleRate;
 
-		if (a > 0 && timeSinceLastTick <= a) {
-			return timeSinceLastTick / a;
-		} else if (d > 0 && timeSinceLastTick <= a + d) {
-			const decayTimeElapsed = timeSinceLastTick - a;
+		if (a > 0 && timeSinceTickStart <= a) {
+			return timeSinceTickStart / a;
+		} else if (d > 0 && timeSinceTickStart <= a + d) {
+			const decayTimeElapsed = timeSinceTickStart - a;
 			const decayRatio = d === 0 ? 1 : decayTimeElapsed / d;
 			return 1 - decayRatio * (1 - s);
 		} else {
 			return s;
 		}
-	} else {
-		const releaseTimeElapsed = currentTime - tickEnd;
-		const releaseRatio = r === 0 ? 1 : releaseTimeElapsed / r;
+	} else if (framesSinceTickEnd !== -1) {
+		const timeSinceTickEnd = framesSinceTickEnd / sampleRate;
+		const releaseRatio = r === 0 ? 1 : timeSinceTickEnd / r;
 		return Math.max(s - releaseRatio * s, 0);
 	}
+	return 0;
 }
 
 class Adsr extends AudioWorkletProcessor {
@@ -32,8 +36,8 @@ class Adsr extends AudioWorkletProcessor {
 
 	lastFrame = 0;
 
-	tickStart = -1;
-	tickEnd = -1;
+	framesSinceTickStart = -1;
+	framesSinceTickEnd = -1;
 
 	process(inputs, outputs, parameters) {
 		const input = inputs[0];
@@ -47,8 +51,8 @@ class Adsr extends AudioWorkletProcessor {
 
 		let lastFrame = this.lastFrame;
 
-		let tickStart = this.tickStart;
-		let tickEnd = this.tickEnd;
+		let framesSinceTickStart = this.framesSinceTickStart;
+		let framesSinceTickEnd = this.framesSinceTickEnd;
 
 		const attack = parameters.attack;
 		const isAttackConstant = attack.length === 1;
@@ -65,26 +69,30 @@ class Adsr extends AudioWorkletProcessor {
 		for (let i = 0; i < output[0].length; i++) {
 			const gateOpen = input[0][i] === 1;
 
-			if (tickStart === -1 && gateOpen) {
-				tickStart = currentTime;
-				tickEnd = -1;
+			if (gateOpen) {
+				framesSinceTickStart++;
+				framesSinceTickEnd = -1;
 			}
 
-			if (tickStart !== -1 || tickEnd !== -1) {
-				if (tickEnd === -1 && !gateOpen) {
-					tickEnd = currentTime;
-					tickStart = -1;
-				}
+			if (framesSinceTickStart === -1 && framesSinceTickEnd === -1) {
+				continue;
+			}
 
-				const frameRelease = isReleaseConstant ? release[0] : release[i];
+			if (!gateOpen) {
+				framesSinceTickEnd++;
+				framesSinceTickStart = -1;
+			}
 
+			const frameRelease = isReleaseConstant ? release[0] : release[i];
+
+			{
 				const adsrValue = interpolate(
 					isAttackConstant ? attack[0] : attack[i],
 					isDecayConstant ? decay[0] : decay[i],
 					isSustainConstant ? sustain[0] : sustain[i],
 					frameRelease,
-					tickStart,
-					tickEnd
+					framesSinceTickStart,
+					framesSinceTickEnd
 				);
 
 				const frameValue = (adsrValue + lastFrame) / 2;
@@ -94,18 +102,21 @@ class Adsr extends AudioWorkletProcessor {
 				}
 
 				lastFrame = frameValue;
+			}
 
-				if (tickEnd !== -1 && currentTime - tickEnd > frameRelease) {
-					tickStart = -1;
-					tickEnd = -1;
-				}
+			if (
+				framesSinceTickEnd !== -1 &&
+				framesSinceTickEnd / sampleRate > frameRelease
+			) {
+				framesSinceTickStart = -1;
+				framesSinceTickEnd = -1;
 			}
 		}
 
 		this.lastFrame = lastFrame;
 
-		this.tickStart = tickStart;
-		this.tickEnd = tickEnd;
+		this.framesSinceTickStart = framesSinceTickStart;
+		this.framesSinceTickEnd = framesSinceTickEnd;
 
 		return true;
 	}
