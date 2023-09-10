@@ -1,11 +1,12 @@
 function interpolate(a, d, s, r, tickStart, tickEnd) {
-	const timeSinceLastTick = currentTime - tickStart;
-	const noteOn = tickEnd === -1;
+	const noteOn = tickStart !== -1;
 
 	if (noteOn) {
-		if (timeSinceLastTick <= a) {
-			return a === 0 ? 1 : timeSinceLastTick / a;
-		} else if (timeSinceLastTick <= a + d) {
+		const timeSinceLastTick = currentTime - tickStart;
+
+		if (a > 0 && timeSinceLastTick <= a) {
+			return timeSinceLastTick / a;
+		} else if (d > 0 && timeSinceLastTick <= a + d) {
 			const decayTimeElapsed = timeSinceLastTick - a;
 			const decayRatio = d === 0 ? 1 : decayTimeElapsed / d;
 			return 1 - decayRatio * (1 - s);
@@ -24,10 +25,12 @@ class Adsr extends AudioWorkletProcessor {
 		return [
 			{ name: 'attack', defaultValue: 0.1, minValue: 0, maxValue: 60 },
 			{ name: 'decay', defaultValue: 0.1, minValue: 0, maxValue: 60 },
-			{ name: 'sustain', defaultValue: 0.7, minValue: 0, maxValue: 1 },
-			{ name: 'release', defaultValue: 0.3, minValue: 0, maxValue: 60 }
+			{ name: 'sustain', defaultValue: 0.5, minValue: 0, maxValue: 1 },
+			{ name: 'release', defaultValue: 0.1, minValue: 0, maxValue: 60 }
 		];
 	}
+
+	lastFrame = 0;
 
 	tickStart = -1;
 	tickEnd = -1;
@@ -41,6 +44,8 @@ class Adsr extends AudioWorkletProcessor {
 		}
 
 		const output = outputs[0];
+
+		let lastFrame = this.lastFrame;
 
 		let tickStart = this.tickStart;
 		let tickEnd = this.tickEnd;
@@ -65,20 +70,18 @@ class Adsr extends AudioWorkletProcessor {
 				tickEnd = -1;
 			}
 
-			if (tickStart !== -1) {
-				const frameAttack = isAttackConstant ? attack[0] : attack[i];
-				const frameDecay = isDecayConstant ? decay[0] : decay[i];
-				const frameSustain = isSustainConstant ? sustain[0] : sustain[i];
-				const frameRelease = isReleaseConstant ? release[0] : release[i];
-
+			if (tickStart !== -1 || tickEnd !== -1) {
 				if (tickEnd === -1 && !gateOpen) {
 					tickEnd = currentTime;
+					tickStart = -1;
 				}
 
+				const frameRelease = isReleaseConstant ? release[0] : release[i];
+
 				const frameValue = interpolate(
-					frameAttack,
-					frameDecay,
-					frameSustain,
+					isAttackConstant ? attack[0] : attack[i],
+					isDecayConstant ? decay[0] : decay[i],
+					isSustainConstant ? sustain[0] : sustain[i],
 					frameRelease,
 					tickStart,
 					tickEnd
