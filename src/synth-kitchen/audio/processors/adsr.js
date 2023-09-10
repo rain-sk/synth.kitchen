@@ -78,7 +78,7 @@ class Adsr extends AudioWorkletProcessor {
 
 				const frameRelease = isReleaseConstant ? release[0] : release[i];
 
-				const frameValue = interpolate(
+				const adsrValue = interpolate(
 					isAttackConstant ? attack[0] : attack[i],
 					isDecayConstant ? decay[0] : decay[i],
 					isSustainConstant ? sustain[0] : sustain[i],
@@ -87,9 +87,13 @@ class Adsr extends AudioWorkletProcessor {
 					tickEnd
 				);
 
+				const frameValue = (adsrValue + lastFrame) / 2;
+
 				for (let channel = 0; channel < output.length; channel++) {
 					output[channel][i] = frameValue;
 				}
+
+				lastFrame = frameValue;
 
 				if (tickEnd !== -1 && currentTime - tickEnd > frameRelease) {
 					tickStart = -1;
@@ -97,6 +101,8 @@ class Adsr extends AudioWorkletProcessor {
 				}
 			}
 		}
+
+		this.lastFrame = lastFrame;
 
 		this.tickStart = tickStart;
 		this.tickEnd = tickEnd;
