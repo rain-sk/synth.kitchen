@@ -7,18 +7,15 @@ import { ModuleType } from '../state/types/module';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 
-const moduleTypes: ModuleType[] = [
-	'ADSR',
-	'CLOCK',
+const controlModules: ModuleType[] = ['CLOCK', 'GATE', 'ENVELOPE', 'SEQUENCER'];
+
+const soundModules: ModuleType[] = ['OSCILLATOR', 'NOISE'];
+
+const effectModules: ModuleType[] = [
 	'DELAY',
-	'ENVELOPE',
 	'FILTER',
 	'GAIN',
-	'GATE',
 	'LIMITER',
-	'NOISE',
-	'OSCILLATOR',
-	'SEQUENCER',
 	'VCA'
 ];
 
@@ -127,12 +124,30 @@ export const Toolbar: React.FC<{}> = () => {
 					onChange={handleAddModule}
 				>
 					<option value="">add module</option>
-					{moduleTypes.map((type) => (
-						<option
-							key={type}
-							value={type}
-						>{`${type.toLocaleLowerCase()}`}</option>
-					))}
+					<optgroup label="Control">
+						{controlModules.map((type) => (
+							<option
+								key={type}
+								value={type}
+							>{`${type.toLocaleLowerCase()}`}</option>
+						))}
+					</optgroup>
+					<optgroup label="Sounds">
+						{soundModules.map((type) => (
+							<option
+								key={type}
+								value={type}
+							>{`${type.toLocaleLowerCase()}`}</option>
+						))}
+					</optgroup>
+					<optgroup label="Effects">
+						{effectModules.map((type) => (
+							<option
+								key={type}
+								value={type}
+							>{`${type.toLocaleLowerCase()}`}</option>
+						))}
+					</optgroup>
 				</select>
 				<button
 					type="button"
@@ -160,6 +175,7 @@ export const Toolbar: React.FC<{}> = () => {
 					min={0}
 					max={200}
 				/> */}
+				g{' '}
 			</section>
 		</nav>
 	);
