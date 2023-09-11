@@ -9,10 +9,10 @@ import { NumberParameter } from '../number-parameter';
 import { audioContext } from '../../audio/context';
 
 const adsrStateFromNode = (adsr: AdsrNode): IModuleState['ADSR'] => ({
-	attack: Math.round(adsr.attack.value * 10) / 10,
-	decay: Math.round(adsr.decay.value * 10) / 10,
-	sustain: Math.round(adsr.sustain.value * 10) / 10,
-	release: Math.round(adsr.release.value * 10) / 10
+	attack: Math.round(adsr.attack.value * 100) / 100,
+	decay: Math.round(adsr.decay.value * 100) / 100,
+	sustain: Math.round(adsr.sustain.value * 100) / 100,
+	release: Math.round(adsr.release.value * 100) / 100
 });
 
 const initAdsr = (
