@@ -27,9 +27,9 @@ function interpolate(a, d, s, r, framesSinceTickStart, framesSinceTickEnd) {
 class Adsr extends AudioWorkletProcessor {
 	static get parameterDescriptors() {
 		return [
-			{ name: 'attack', defaultValue: 0.1, minValue: 0, maxValue: 60 },
-			{ name: 'decay', defaultValue: 0.1, minValue: 0, maxValue: 60 },
-			{ name: 'sustain', defaultValue: 0.5, minValue: 0, maxValue: 1 },
+			{ name: 'attack', defaultValue: 0, minValue: 0, maxValue: 60 },
+			{ name: 'decay', defaultValue: 0, minValue: 0, maxValue: 60 },
+			{ name: 'sustain', defaultValue: 1, minValue: 0, maxValue: 1 },
 			{ name: 'release', defaultValue: 0.1, minValue: 0, maxValue: 60 }
 		];
 	}
