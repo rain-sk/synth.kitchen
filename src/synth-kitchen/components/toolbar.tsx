@@ -175,7 +175,6 @@ export const Toolbar: React.FC<{}> = () => {
 					min={0}
 					max={200}
 				/> */}
-				g{' '}
 			</section>
 		</nav>
 	);
