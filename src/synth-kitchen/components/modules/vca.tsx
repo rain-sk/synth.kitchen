@@ -7,6 +7,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { VcaNode } from '../../audio/nodes/vca';
+import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
 	attack: Math.round(node.attack.value * 100) / 100,
@@ -50,6 +51,10 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 	);
 
 	const enabled = state != undefined;
+
+	useEffectOnce(() => () => {
+		vcaRef.current?.disconnect();
+	});
 
 	const input = useCallback(() => vcaRef.current?.gain() as any, [enabled]);
 

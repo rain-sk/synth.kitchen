@@ -8,24 +8,25 @@ import { AdsrNode } from './adsr';
 
 export class VcaNode {
 	private _adsr = new AdsrNode();
-	private _gain = audioContext.createGain();
+	private _adsrPeak = audioContext.createGain();
+	private _signalGain = audioContext.createGain();
 
 	constructor() {
-		this.attack.setValueAtTime(0.05, audioContext.currentTime);
-		this.decay.setValueAtTime(0.1, audioContext.currentTime);
-		this.sustain.setValueAtTime(0.75, audioContext.currentTime);
-		this.release.setValueAtTime(0.3, audioContext.currentTime);
-		this._adsr.node().connect(this._gain);
+		this._signalGain.gain.setValueAtTime(0, audioContext.currentTime);
+		this._adsr.node().connect(this._adsrPeak);
+		this._adsrPeak.connect(this._signalGain.gain);
 	}
 
 	disconnect = () => {
-		this._adsr.node().disconnect(this._gain);
+		this._adsr.node().disconnect(this._adsrPeak);
+		this._adsrPeak.disconnect(this._signalGain.gain);
 		this._adsr = null as any;
-		this._gain = null as any;
+		this._adsrPeak = null as any;
+		this._signalGain = null as any;
 	};
 
 	adsr = (): AdsrNode => this._adsr;
-	gain = (): IGainNode<IAudioContext> => this._gain;
+	gain = (): IGainNode<IAudioContext> => this._signalGain;
 
 	get attack(): IAudioParam {
 		return this._adsr.attack;
@@ -44,6 +45,6 @@ export class VcaNode {
 	}
 
 	get peak(): IAudioParam {
-		return this._gain.gain;
+		return this._adsrPeak.gain;
 	}
 }
