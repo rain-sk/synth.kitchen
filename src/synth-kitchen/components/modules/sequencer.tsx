@@ -8,6 +8,7 @@ import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { IAudioParam } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
+import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const sequencerStateFromNode = (
 	sequencer: SequencerNode
@@ -44,6 +45,10 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 		() => initSequencer(sequencerRef, module.state) as any,
 		module.moduleKey
 	);
+
+	useEffectOnce(() => () => {
+		sequencerRef.current?.disconnect();
+	});
 
 	const commitTempoChange = useCallback(
 		(tempo: number) => {

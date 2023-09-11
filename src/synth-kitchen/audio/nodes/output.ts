@@ -25,6 +25,7 @@ export class OutputNode {
 			this._gain.disconnect(this._limiter.input());
 			this._gain.disconnect(this._delay.delayTime);
 			this._limiter.output().disconnect(audioContext.destination);
+			this._limiter.disconnect();
 			this._gain = null as any;
 			this._delay = null as any;
 			this._limiter = null as any;

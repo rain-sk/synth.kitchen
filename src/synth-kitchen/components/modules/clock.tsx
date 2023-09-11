@@ -7,6 +7,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { audioContext } from '../../audio/context';
+import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const clockStateFromNode = (clock: ClockNode): IModuleState['CLOCK'] => ({
 	tempo: clock.tempo.value
@@ -32,6 +33,10 @@ export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 		() => initClock(clockRef, module.state) as any,
 		module.moduleKey
 	);
+
+	useEffectOnce(() => () => {
+		clockRef.current?.disconnect();
+	});
 
 	const commitTempoChange = useCallback(
 		(tempo: number) => {

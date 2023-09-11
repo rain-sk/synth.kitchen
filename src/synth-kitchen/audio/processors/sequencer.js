@@ -17,7 +17,8 @@ class Sequencer extends AudioWorkletProcessor {
 			{ name: 'step4', defaultValue: 700 },
 			{ name: 'step5', defaultValue: 900 },
 			{ name: 'step6', defaultValue: 1100 },
-			{ name: 'step7', defaultValue: 1200 }
+			{ name: 'step7', defaultValue: 1200 },
+			{ name: 'active', defaultValue: 1, minValue: 0, maxValue: 1 }
 		];
 	}
 
@@ -25,6 +26,13 @@ class Sequencer extends AudioWorkletProcessor {
 	step = -1;
 
 	process(inputs, outputs, parameters) {
+		const active = parameters.active;
+		const isActiveConstant = active.length === 1;
+
+		if (isActiveConstant && active[0] === 0) {
+			return false;
+		}
+
 		const input = inputs[0];
 		const output = outputs[0];
 
@@ -40,6 +48,10 @@ class Sequencer extends AudioWorkletProcessor {
 		const stepsIsConstant = steps.length === 1;
 
 		for (let i = 0; i < output[0].length; i++) {
+			if (!isActiveConstant && active[i] === 0) {
+				return false;
+			}
+
 			phase = calcPhase(phase, isTempoConstant ? tempo[0] : tempo[i]);
 
 			const reset = hasInput && input[0][i] === 1;

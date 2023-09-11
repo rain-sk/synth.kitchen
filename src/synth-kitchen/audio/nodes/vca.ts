@@ -19,6 +19,7 @@ export class VcaNode {
 
 	disconnect = () => {
 		setTimeout(() => {
+			this._adsr.disconnect();
 			this._adsr.node().disconnect(this._adsrPeak);
 			this._adsrPeak.disconnect(this._signalGain.gain);
 			this._adsr = null as any;

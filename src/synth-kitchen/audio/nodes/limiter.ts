@@ -46,6 +46,13 @@ export class LimiterNode {
 			this._limiter2.disconnect(this._limiter3);
 			this._limiter3.disconnect(this._limiter4);
 			this._limiter4.disconnect(this._brickWall);
+			this._brickWall.disconnect();
+
+			this._limiter1 = null as any;
+			this._limiter2 = null as any;
+			this._limiter3 = null as any;
+			this._limiter4 = null as any;
+			this._brickWall = null as any;
 		}, 200);
 	};
 

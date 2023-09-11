@@ -7,6 +7,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { audioContext } from '../../audio/context';
+import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const adsrStateFromNode = (adsr: AdsrNode): IModuleState['ADSR'] => ({
 	attack: Math.round(adsr.attack.value * 100) / 100,
@@ -35,6 +36,10 @@ export const AdsrModule: React.FC<{ module: IModule<'ADSR'> }> = ({
 		() => initAdsr(adsrRef, module.state) as any,
 		module.moduleKey
 	);
+
+	useEffectOnce(() => {
+		adsrRef.current?.disconnect();
+	});
 
 	const commitAttackChange = useCallback(
 		(attack: number) => {

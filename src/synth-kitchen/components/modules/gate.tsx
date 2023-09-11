@@ -7,6 +7,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { audioContext } from '../../audio/context';
+import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const gateStateFromNode = (gate: GateNode): IModuleState['GATE'] => ({
 	gate: gate.gate.value
@@ -32,6 +33,10 @@ export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
 		() => initGate(gateRef, module.state) as any,
 		module.moduleKey
 	);
+
+	useEffectOnce(() => () => {
+		gateRef.current?.disconnect();
+	});
 
 	const commitGateChange = useCallback(
 		(gate: number) => {

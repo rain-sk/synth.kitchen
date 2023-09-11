@@ -5,6 +5,7 @@ import { NoiseNode } from '../../audio/nodes/noise';
 import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
+import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const initNoise = (
 	noiseRef: React.MutableRefObject<NoiseNode | undefined>,
@@ -26,6 +27,10 @@ export const NoiseModule: React.FC<{ module: IModule<'NOISE'> }> = ({
 		() => initNoise(noiseRef, module.state),
 		module.moduleKey
 	);
+
+	useEffectOnce(() => () => {
+		noiseRef.current?.disconnect();
+	});
 
 	const enabled = state != undefined && noiseRef.current;
 

@@ -16,6 +16,7 @@ export class EnvelopeNode {
 
 	disconnect = () => {
 		setTimeout(() => {
+			this._adsr.disconnect();
 			this._adsr.node().disconnect(this._gain);
 			this._adsr = null as any;
 			this._gain = null as any;

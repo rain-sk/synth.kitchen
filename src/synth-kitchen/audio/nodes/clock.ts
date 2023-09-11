@@ -12,6 +12,15 @@ export class ClockNode {
 		'clock'
 	) as IAudioWorkletNode<IAudioContext>;
 
+	disconnect = () => {
+		setTimeout(() => {
+			this._node.parameters
+				.get('active')
+				?.setValueAtTime(0, audioContext.currentTime);
+			this._node = null as any;
+		}, 200);
+	};
+
 	node = (): IAudioWorkletNode<IAudioContext> => this._node;
 
 	get tempo(): IAudioParam {

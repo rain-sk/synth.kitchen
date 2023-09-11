@@ -12,6 +12,13 @@ export class AdsrNode {
 		'adsr'
 	) as IAudioWorkletNode<IAudioContext>;
 
+	disconnect = () => {
+		this._node.parameters
+			.get('active')
+			?.setValueAtTime(0, audioContext.currentTime);
+		this._node = null as any;
+	};
+
 	node = (): IAudioWorkletNode<IAudioContext> => this._node;
 
 	get attack(): IAudioParam {

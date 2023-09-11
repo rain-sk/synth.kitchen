@@ -7,18 +7,28 @@ function calcPhase(phase, ticksPerMinute) {
 
 class Gate extends AudioWorkletProcessor {
 	static get parameterDescriptors() {
-		return [{ name: 'gate', defaultValue: 0.5, minValue: 0, maxValue: 1 }];
+		return [
+			{ name: 'gate', defaultValue: 0.5, minValue: 0, maxValue: 1 },
+			{ name: 'active', defaultValue: 1, minValue: 0, maxValue: 1 }
+		];
 	}
 
 	lastTick = -1;
 	lastTickLength = -1;
 
 	process(inputs, outputs, parameters) {
+		const active = parameters.active;
+		const isActiveConstant = active.length === 1;
+
+		if (isActiveConstant && active[0] === 0) {
+			return false;
+		}
+
 		const input = inputs[0];
 		const hasInput = input.length > 0;
 
 		if (!hasInput) {
-			return;
+			return true;
 		}
 
 		const output = outputs[0];
@@ -31,6 +41,10 @@ class Gate extends AudioWorkletProcessor {
 		let lastTickLength = this.lastTickLength;
 
 		for (let i = 0; i < channelOne.length; i++) {
+			if (!isActiveConstant && active[i] === 0) {
+				return false;
+			}
+
 			const inputIsTick = input[0][i] === 1;
 
 			if (inputIsTick) {
