@@ -12,7 +12,7 @@ export class OutputNode {
 
 	constructor() {
 		this._delay.delayTime.setValueAtTime(
-			1 / audioContext.sampleRate,
+			256 / audioContext.sampleRate,
 			audioContext.currentTime
 		);
 		this._gain.connect(this._delay.delayTime);

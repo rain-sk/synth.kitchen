@@ -4,6 +4,7 @@ export type ModuleType =
 	| 'ADSR'
 	| 'CLOCK'
 	| 'DELAY'
+	| 'ENVELOPE'
 	| 'FILTER'
 	| 'GAIN'
 	| 'GATE'
@@ -27,6 +28,13 @@ export interface IModuleState extends Record<ModuleType, any> {
 	NOISE: {};
 	DELAY: {
 		delayTime: number;
+	};
+	ENVELOPE: {
+		attack: number;
+		decay: number;
+		sustain: number;
+		release: number;
+		peak: number;
 	};
 	FILTER: {
 		frequency: number;

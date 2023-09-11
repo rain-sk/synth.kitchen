@@ -24,6 +24,7 @@ import { SequencerModule } from './modules/sequencer';
 import { GateModule } from './modules/gate';
 import { AdsrModule } from './modules/adsr';
 import { VcaModule } from './modules/vca';
+import { EnvelopeModule } from './modules/envelope';
 
 const useDragAndDrop = (
 	initialX: number,
@@ -145,6 +146,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 			return <SequencerModule module={module as IModule<'SEQUENCER'>} />;
 		case 'VCA':
 			return <VcaModule module={module as IModule<'VCA'>} />;
+		case 'ENVELOPE':
+			return <EnvelopeModule module={module as IModule<'ENVELOPE'>} />;
 		default: {
 			return <p>unavailable</p>;
 		}
