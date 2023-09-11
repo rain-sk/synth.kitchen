@@ -11,6 +11,7 @@ const moduleTypes: ModuleType[] = [
 	'ADSR',
 	'CLOCK',
 	'DELAY',
+	'ENVELOPE',
 	'FILTER',
 	'GAIN',
 	'GATE',
