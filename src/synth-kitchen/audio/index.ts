@@ -1,11 +1,9 @@
-import { AudioContext } from 'standardized-audio-context';
+import { audioContext } from './context';
 import { initAudioProcessors } from './processors';
 
 export const audio = {
 	initialized: false
 };
-
-export const audioContext = new AudioContext();
 
 const resumeAudioContext = new Promise<void>((resolve) => {
 	const startButton = document.getElementById('start');

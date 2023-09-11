@@ -5,7 +5,7 @@ import {
 	IOscillatorNode
 } from 'standardized-audio-context';
 
-import { audioContext } from '../../audio';
+import { audioContext } from '../../audio/context';
 
 import { useEffectOnce } from '../../hooks/use-effect-once';
 import { useModuleState } from '../../hooks/use-module-state';
@@ -116,17 +116,14 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 
 	const enabled = state != undefined && oscillatorRef.current;
 
-	const outputAccessor = useCallback(
-		() => oscillatorRef.current as any,
-		[enabled]
-	);
+	const output = useCallback(() => oscillatorRef.current as any, [enabled]);
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{}}
+				outputAccessors={{ output }}
 			/>
 
 			<section>

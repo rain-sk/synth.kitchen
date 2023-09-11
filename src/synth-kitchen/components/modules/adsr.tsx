@@ -6,13 +6,13 @@ import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
-import { audioContext } from '../../audio';
+import { audioContext } from '../../audio/context';
 
 const adsrStateFromNode = (adsr: AdsrNode): IModuleState['ADSR'] => ({
-	attack: Math.round(adsr.attack.value * 10) / 10,
-	decay: Math.round(adsr.decay.value * 10) / 10,
-	sustain: Math.round(adsr.sustain.value * 10) / 10,
-	release: Math.round(adsr.release.value * 10) / 10
+	attack: Math.round(adsr.attack.value * 100) / 100,
+	decay: Math.round(adsr.decay.value * 100) / 100,
+	sustain: Math.round(adsr.sustain.value * 100) / 100,
+	release: Math.round(adsr.release.value * 100) / 100
 });
 
 const initAdsr = (
@@ -114,24 +114,19 @@ export const AdsrModule: React.FC<{ module: IModule<'ADSR'> }> = ({
 		[enabled]
 	);
 
-	const inputAccessor = useCallback(
-		() => adsrRef.current?.node() as any,
-		[enabled]
-	);
+	const gate = useCallback(() => adsrRef.current?.node() as any, [enabled]);
 
-	const outputAccessor = useCallback(
-		() => adsrRef.current?.node() as any,
-		[enabled]
-	);
+	const output = useCallback(() => adsrRef.current?.node() as any, [enabled]);
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ gate }}
+				outputAccessors={{ output }}
 			/>
 			<section>
+				<h3 className="visually-hidden">Parameters</h3>
 				<NumberParameter
 					moduleKey={module.moduleKey}
 					paramAccessor={attackAccessor}

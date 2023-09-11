@@ -16,7 +16,8 @@ const moduleTypes: ModuleType[] = [
 	'GATE',
 	'NOISE',
 	'OSCILLATOR',
-	'SEQUENCER'
+	'SEQUENCER',
+	'VCA'
 ];
 
 export const Toolbar: React.FC<{}> = () => {

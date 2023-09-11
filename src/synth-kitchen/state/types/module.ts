@@ -10,7 +10,8 @@ export type ModuleType =
 	| 'NOISE'
 	| 'OSCILLATOR'
 	| 'OUTPUT'
-	| 'SEQUENCER';
+	| 'SEQUENCER'
+	| 'VCA';
 
 export interface IModuleState extends Record<ModuleType, any> {
 	ADSR: {
@@ -54,6 +55,13 @@ export interface IModuleState extends Record<ModuleType, any> {
 	};
 	OUTPUT: {
 		gain: number;
+	};
+	VCA: {
+		attack: number;
+		decay: number;
+		sustain: number;
+		release: number;
+		peak: number;
 	};
 }
 

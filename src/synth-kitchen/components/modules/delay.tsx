@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 
 import { IAudioContext, IDelayNode } from 'standardized-audio-context';
-import { audioContext } from '../../audio';
+import { audioContext } from '../../audio/context';
 import { useModuleState } from '../../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../../state/types/module';
@@ -41,9 +41,9 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 
 	const enabled = !!state;
 
-	const inputAccessor = useCallback(() => delayRef.current as any, [enabled]);
+	const input = useCallback(() => delayRef.current as any, [enabled]);
 
-	const outputAccessor = useCallback(() => delayRef.current as any, [enabled]);
+	const output = useCallback(() => delayRef.current as any, [enabled]);
 
 	const commitTimeChange = useCallback(
 		(delayTime: number) => {
@@ -68,8 +68,8 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ input }}
+				outputAccessors={{ output }}
 			/>
 
 			<section>

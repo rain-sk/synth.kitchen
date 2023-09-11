@@ -6,7 +6,7 @@ import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
-import { audioContext } from '../../audio';
+import { audioContext } from '../../audio/context';
 
 const clockStateFromNode = (clock: ClockNode): IModuleState['CLOCK'] => ({
 	tempo: clock.tempo.value
@@ -54,22 +54,16 @@ export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 		[enabled]
 	);
 
-	const inputAccessor = useCallback(
-		() => clockRef.current?.node() as any,
-		[enabled]
-	);
+	const sync = useCallback(() => clockRef.current?.node() as any, [enabled]);
 
-	const outputAccessor = useCallback(
-		() => clockRef.current?.node() as any,
-		[enabled]
-	);
+	const output = useCallback(() => clockRef.current?.node() as any, [enabled]);
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ sync }}
+				outputAccessors={{ output }}
 			/>
 			<section>
 				<NumberParameter

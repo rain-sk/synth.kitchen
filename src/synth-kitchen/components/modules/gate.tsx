@@ -6,7 +6,7 @@ import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
-import { audioContext } from '../../audio';
+import { audioContext } from '../../audio/context';
 
 const gateStateFromNode = (gate: GateNode): IModuleState['GATE'] => ({
 	gate: gate.gate.value
@@ -54,22 +54,16 @@ export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
 		[enabled]
 	);
 
-	const inputAccessor = useCallback(
-		() => gateRef.current?.node() as any,
-		[enabled]
-	);
+	const sync = useCallback(() => gateRef.current?.node() as any, [enabled]);
 
-	const outputAccessor = useCallback(
-		() => gateRef.current?.node() as any,
-		[enabled]
-	);
+	const output = useCallback(() => gateRef.current?.node() as any, [enabled]);
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ sync }}
+				outputAccessors={{ output }}
 			/>
 			<section>
 				<NumberParameter

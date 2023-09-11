@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 
 import { useEffectOnce } from '../hooks/use-effect-once';
 
@@ -7,11 +7,12 @@ import { IoType, ioKey } from '../state/types/io';
 import { ConnectionContext } from '../contexts/connection';
 
 export const IoConnector: React.FunctionComponent<{
+	name: string;
 	moduleKey: string;
 	channel: number;
 	type: IoType;
 	accessor: () => IAudioNode<IAudioContext>;
-}> = ({ moduleKey, type, channel, accessor }) => {
+}> = ({ name, moduleKey, type, channel, accessor }) => {
 	const [connectorKey] = useState(() => ioKey({ moduleKey, channel, type }));
 
 	const {
@@ -36,28 +37,36 @@ export const IoConnector: React.FunctionComponent<{
 		clickConnector({ moduleKey, type, channel, accessor });
 	}, [clickConnector, moduleKey, type, channel, accessor]);
 
+	const isInput = type === IoType.input;
 	const isActive = activeConnectorKey === connectorKey;
 	const isConnectedToActiveConnector =
 		connectedToActiveConnector.includes(connectorKey);
-	const highlight =
-		!isActive && (type === IoType.input ? highlightInputs : highlightOutputs);
+	const highlight = !isActive && (isInput ? highlightInputs : highlightOutputs);
+
+	const roleDescription = useMemo(
+		() => `${isInput ? 'input' : 'output'} connector`,
+		[isInput]
+	);
 
 	return (
-		<button
-			id={connectorKey}
-			type="button"
-			onClick={onClick}
-			className={
-				isActive
-					? 'active'
-					: isConnectedToActiveConnector
-					? 'connected'
-					: highlight
-					? 'highlight'
-					: ''
-			}
-		>
-			o
-		</button>
+		<span className="io">
+			{!isInput && <label htmlFor={connectorKey}>{name}</label>}
+			<button
+				aria-roledescription={roleDescription}
+				id={connectorKey}
+				type="button"
+				onClick={onClick}
+				className={`connector ${
+					isActive
+						? 'active'
+						: isConnectedToActiveConnector
+						? 'connected'
+						: highlight
+						? 'highlight'
+						: ''
+				}`}
+			/>
+			{isInput && <label htmlFor={connectorKey}>{name}</label>}
+		</span>
 	);
 };

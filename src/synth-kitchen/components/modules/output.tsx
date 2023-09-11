@@ -1,49 +1,43 @@
 import React, { useCallback, useRef } from 'react';
 
-import {
-	IAudioContext,
-	IAudioParam,
-	IGainNode
-} from 'standardized-audio-context';
-import { audioContext } from '../../audio';
+import { IAudioParam } from 'standardized-audio-context';
+import { audioContext } from '../../audio/context';
 import { useModuleState } from '../../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../../state/types/module';
 import { NumberParameter } from '../number-parameter';
 import { IoConnectors } from '../io-connectors';
+import { OutputNode } from '../../audio/nodes/output';
 
-const outputStateFromNode = (
-	node: IGainNode<IAudioContext>
-): IModuleState['OUTPUT'] => ({
+const outputStateFromNode = (node: OutputNode): IModuleState['OUTPUT'] => ({
 	gain: node.gain.value
 });
 
 const initOutput = (
-	gainRef: React.MutableRefObject<IGainNode<IAudioContext> | undefined>,
+	outputRef: React.MutableRefObject<OutputNode | undefined>,
 	state?: IModuleState['OUTPUT']
 ) => {
-	gainRef.current = audioContext.createGain();
-	gainRef.current.connect(audioContext.destination);
+	outputRef.current = new OutputNode();
 	if (state) {
-		gainRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
+		outputRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
 		return state;
 	} else {
-		return outputStateFromNode(gainRef.current);
+		return outputStateFromNode(outputRef.current);
 	}
 };
 
 export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 	module
 }) => {
-	const gainRef = useRef<IGainNode<IAudioContext>>();
+	const outputRef = useRef<OutputNode>();
 	const [state, setState] = useModuleState<'OUTPUT'>(
-		() => initOutput(gainRef, module.state),
+		() => initOutput(outputRef, module.state),
 		module.moduleKey
 	);
 
 	const commitGainChange = useCallback(
 		(gain: number) => {
-			gainRef.current?.gain.linearRampToValueAtTime(
+			outputRef.current?.gain.linearRampToValueAtTime(
 				gain,
 				audioContext.currentTime
 			);
@@ -52,21 +46,24 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 				gain
 			});
 		},
-		[gainRef, setState, state]
+		[outputRef, setState, state]
 	);
 
 	const gainAccessor = useCallback(() => {
-		return gainRef.current?.gain as IAudioParam;
+		return outputRef.current?.gain as IAudioParam;
 	}, []);
 
-	const enabled = state != undefined && gainRef.current;
+	const speaker = outputRef.current?.speaker as any;
+	const resampling = outputRef.current?.resampling as any;
+
+	const enabled = state != undefined && outputRef.current;
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[() => gainRef.current as any]}
-				outputAccessors={[]}
+				inputAccessors={{ speaker }}
+				outputAccessors={{ resampling }}
 			/>
 			<NumberParameter
 				moduleKey={module.moduleKey}

@@ -23,6 +23,7 @@ import { ClockModule } from './modules/clock';
 import { SequencerModule } from './modules/sequencer';
 import { GateModule } from './modules/gate';
 import { AdsrModule } from './modules/adsr';
+import { VcaModule } from './modules/vca';
 
 const useDragAndDrop = (
 	initialX: number,
@@ -142,6 +143,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 			return <OutputModule module={module as IModule<'OUTPUT'>} />;
 		case 'SEQUENCER':
 			return <SequencerModule module={module as IModule<'SEQUENCER'>} />;
+		case 'VCA':
+			return <VcaModule module={module as IModule<'VCA'>} />;
 		default: {
 			return <p>unavailable</p>;
 		}
