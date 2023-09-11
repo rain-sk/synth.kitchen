@@ -18,11 +18,13 @@ export class VcaNode {
 	}
 
 	disconnect = () => {
-		this._adsr.node().disconnect(this._adsrPeak);
-		this._adsrPeak.disconnect(this._signalGain.gain);
-		this._adsr = null as any;
-		this._adsrPeak = null as any;
-		this._signalGain = null as any;
+		setTimeout(() => {
+			this._adsr.node().disconnect(this._adsrPeak);
+			this._adsrPeak.disconnect(this._signalGain.gain);
+			this._adsr = null as any;
+			this._adsrPeak = null as any;
+			this._signalGain = null as any;
+		}, 200);
 	};
 
 	adsr = (): AdsrNode => this._adsr;
