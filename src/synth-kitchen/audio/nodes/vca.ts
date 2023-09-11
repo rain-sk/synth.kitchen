@@ -11,6 +11,10 @@ export class VcaNode {
 	private _gain = audioContext.createGain();
 
 	constructor() {
+		this.attack.setValueAtTime(0.05, audioContext.currentTime);
+		this.decay.setValueAtTime(0.1, audioContext.currentTime);
+		this.sustain.setValueAtTime(0.75, audioContext.currentTime);
+		this.release.setValueAtTime(0.3, audioContext.currentTime);
 		this._adsr.node().connect(this._gain);
 	}
 
