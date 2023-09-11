@@ -18,8 +18,10 @@ class Noise extends AudioWorkletProcessor {
 				return false;
 			}
 
+			const frameValue = Math.random() * 2 - 1;
+
 			for (let channel = 0; channel < output.length; channel++) {
-				output[channel][i] = Math.random() * 2 - 1;
+				output[channel][i] = frameValue;
 			}
 		}
 		return true;
