@@ -40,6 +40,15 @@ export class LimiterNode {
 		this._limiter4.release.value = 0.01;
 	}
 
+	disconnect = () => {
+		setTimeout(() => {
+			this._limiter1.disconnect(this._limiter2);
+			this._limiter2.disconnect(this._limiter3);
+			this._limiter3.disconnect(this._limiter4);
+			this._limiter4.disconnect(this._brickWall);
+		}, 200);
+	};
+
 	input = (): IAudioNode<IAudioContext> => this._limiter1;
 	output = (): IAudioWorkletNode<IAudioContext> => this._brickWall;
 }
