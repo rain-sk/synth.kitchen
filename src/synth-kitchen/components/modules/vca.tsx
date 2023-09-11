@@ -1,6 +1,5 @@
 import React, { useCallback, useRef } from 'react';
 
-import { IAudioContext } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
 import { useModuleState } from '../../hooks/use-module-state';
 
@@ -10,11 +9,11 @@ import { NumberParameter } from '../number-parameter';
 import { VcaNode } from '../../audio/nodes/vca';
 
 const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
-	attack: node.attack.value,
-	decay: node.decay.value,
-	sustain: node.sustain.value,
-	release: node.release.value,
-	peak: node.peak.value
+	attack: Math.round(node.attack.value * 100) / 100,
+	decay: Math.round(node.decay.value * 100) / 100,
+	sustain: Math.round(node.sustain.value * 100) / 100,
+	release: Math.round(node.release.value * 100) / 100,
+	peak: Math.round(node.peak.value * 100) / 100
 });
 
 const initVca = (
