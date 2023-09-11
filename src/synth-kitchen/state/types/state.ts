@@ -33,7 +33,7 @@ export const initialState: IState = {
 	isKeyMovementEnabled: true,
 	modules: {
 		'0': {
-			name: 'GLOBAL_OUT',
+			name: 'output',
 			moduleKey: '0',
 			type: 'OUTPUT',
 			x: document.documentElement.scrollWidth / 1.47,

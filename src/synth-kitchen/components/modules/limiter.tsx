@@ -1,10 +1,11 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import { LimiterNode } from '../../audio/nodes/limiter';
 
 import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
+import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const initLimiter = (
 	limiterRef: React.MutableRefObject<LimiterNode | undefined>,
@@ -26,6 +27,10 @@ export const LimiterModule: React.FC<{ module: IModule<'LIMITER'> }> = ({
 		() => initLimiter(limiterRef, module.state),
 		module.moduleKey
 	);
+
+	useEffectOnce(() => () => {
+		limiterRef.current?.disconnect();
+	});
 
 	const enabled = state != undefined && limiterRef.current;
 
