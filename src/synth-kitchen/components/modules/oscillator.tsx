@@ -5,7 +5,7 @@ import {
 	IOscillatorNode
 } from 'standardized-audio-context';
 
-import { audioContext } from '../../audio';
+import { audioContext } from '../../audio/context';
 
 import { useEffectOnce } from '../../hooks/use-effect-once';
 import { useModuleState } from '../../hooks/use-module-state';

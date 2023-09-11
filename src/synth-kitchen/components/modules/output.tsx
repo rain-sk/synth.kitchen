@@ -5,7 +5,7 @@ import {
 	IAudioParam,
 	IGainNode
 } from 'standardized-audio-context';
-import { audioContext } from '../../audio';
+import { audioContext } from '../../audio/context';
 import { useModuleState } from '../../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../../state/types/module';

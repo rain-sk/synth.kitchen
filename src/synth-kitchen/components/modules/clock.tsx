@@ -6,7 +6,7 @@ import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
-import { audioContext } from '../../audio';
+import { audioContext } from '../../audio/context';
 
 const clockStateFromNode = (clock: ClockNode): IModuleState['CLOCK'] => ({
 	tempo: clock.tempo.value

@@ -3,7 +3,7 @@ import {
 	IAudioContext,
 	IAudioWorkletNode
 } from 'standardized-audio-context';
-import { audioContext } from '..';
+import { audioContext } from '../context';
 
 export class NoiseNode {
 	private _node = new (AudioWorkletNode as any)(audioContext, 'noise');

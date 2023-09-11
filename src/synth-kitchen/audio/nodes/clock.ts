@@ -4,7 +4,7 @@ import {
 	IAudioParam,
 	IAudioWorkletNode
 } from 'standardized-audio-context';
-import { audioContext } from '..';
+import { audioContext } from '../context';
 
 export class ClockNode {
 	private _node = new (AudioWorkletNode as any)(
