@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React /*, { useState }*/ from 'react';
 
 import { actions } from '../state/actions';
 import { IPatch } from '../state/types/patch';
@@ -26,7 +26,7 @@ export const Toolbar: React.FC<{}> = () => {
 	const dispatch = useDispatchContext();
 	const state = useStateContext();
 
-	const [zoom, setZoom] = useState(100);
+	// const [zoom, setZoom] = useState(100);
 
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		dispatch(actions.historyPushAction());
@@ -93,15 +93,15 @@ export const Toolbar: React.FC<{}> = () => {
 		dispatch(actions.historyRedoAction());
 	};
 
-	const onChangeZoom: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-		const newZoom = parseInt(e.target.value);
-		setZoom(newZoom);
-		const canvas = document.getElementById('module-canvas');
-		if (canvas) {
-			console.log(canvas);
-			canvas.style.transform = `scale(${newZoom / 100})`;
-		}
-	};
+	// const onChangeZoom: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+	// 	const newZoom = parseInt(e.target.value);
+	// 	setZoom(newZoom);
+	// 	const canvas = document.getElementById('module-canvas');
+	// 	if (canvas) {
+	// 		console.log(canvas);
+	// 		canvas.style.transform = `scale(${newZoom / 100})`;
+	// 	}
+	// };
 
 	return (
 		<nav>
@@ -153,13 +153,13 @@ export const Toolbar: React.FC<{}> = () => {
 				>
 					redo
 				</button>
-				<input
+				{/* <input
 					type="range"
 					value={zoom}
 					onChange={onChangeZoom}
 					min={0}
 					max={200}
-				/>
+				/> */}
 			</section>
 		</nav>
 	);
