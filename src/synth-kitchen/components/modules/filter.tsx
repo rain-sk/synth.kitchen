@@ -143,16 +143,16 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 
 	const enabled = state != undefined;
 
-	const inputAccessor = useCallback(() => filterRef.current as any, [enabled]);
+	const input = useCallback(() => filterRef.current as any, [enabled]);
 
-	const outputAccessor = useCallback(() => filterRef.current as any, [enabled]);
+	const output = useCallback(() => filterRef.current as any, [enabled]);
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ input }}
+				outputAccessors={{ output }}
 			/>
 
 			<section>

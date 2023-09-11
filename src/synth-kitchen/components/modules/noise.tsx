@@ -29,16 +29,13 @@ export const NoiseModule: React.FC<{ module: IModule<'NOISE'> }> = ({
 
 	const enabled = state != undefined && noiseRef.current;
 
-	const outputAccessor = useCallback(
-		() => noiseRef.current?.node() as any,
-		[enabled]
-	);
+	const output = useCallback(() => noiseRef.current?.node() as any, [enabled]);
 
 	return enabled ? (
 		<IoConnectors
 			moduleKey={module.moduleKey}
-			inputAccessors={[]}
-			outputAccessors={[outputAccessor]}
+			inputAccessors={{}}
+			outputAccessors={{ output }}
 		/>
 	) : (
 		<p>loading...</p>

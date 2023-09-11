@@ -5,33 +5,38 @@ import { IoType } from '../state/types/io';
 
 export const IoConnectors: React.FunctionComponent<{
 	moduleKey: string;
-	inputAccessors: (() => IAudioNode<IAudioContext>)[];
-	outputAccessors: (() => IAudioNode<IAudioContext>)[];
+	inputAccessors: Record<string, () => IAudioNode<IAudioContext>>;
+	outputAccessors: Record<string, () => IAudioNode<IAudioContext>>;
 }> = ({ moduleKey, inputAccessors, outputAccessors }) => {
 	return (
 		<section className="connectors">
-			<span>
-				{inputAccessors.map((accessor, i) => (
+			<h3 className="visually-hidden">Connectors</h3>
+			<section className="inputs">
+				<h4 className="visually-hidden">Inputs</h4>
+				{Object.entries(inputAccessors).map(([key, accessor], i) => (
 					<IoConnector
 						moduleKey={moduleKey}
 						accessor={accessor}
 						type={IoType.input}
 						channel={i}
-						key={i}
+						key={key}
+						name={key}
 					/>
 				))}
-			</span>
-			<span>
-				{outputAccessors.map((accessor, i) => (
+			</section>
+			<section className="outputs">
+				<h4 className="visually-hidden">Outputs</h4>
+				{Object.entries(outputAccessors).map(([key, accessor], i) => (
 					<IoConnector
 						moduleKey={moduleKey}
 						accessor={accessor}
 						type={IoType.output}
 						channel={i}
-						key={i}
+						key={key}
+						name={key}
 					/>
 				))}
-			</span>
+			</section>
 		</section>
 	);
 };

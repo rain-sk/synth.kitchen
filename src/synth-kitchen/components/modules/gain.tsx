@@ -38,9 +38,9 @@ export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 
 	const enabled = state != undefined;
 
-	const inputAccessor = useCallback(() => gainRef.current as any, [enabled]);
+	const input = useCallback(() => gainRef.current as any, [enabled]);
 
-	const outputAccessor = useCallback(() => gainRef.current as any, [enabled]);
+	const output = useCallback(() => gainRef.current as any, [enabled]);
 
 	const commitGainChange = useCallback(
 		(gain: number) => {
@@ -65,8 +65,8 @@ export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ input }}
+				outputAccessors={{ output }}
 			/>
 
 			<section>

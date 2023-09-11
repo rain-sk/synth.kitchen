@@ -54,22 +54,16 @@ export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
 		[enabled]
 	);
 
-	const inputAccessor = useCallback(
-		() => gateRef.current?.node() as any,
-		[enabled]
-	);
+	const sync = useCallback(() => gateRef.current?.node() as any, [enabled]);
 
-	const outputAccessor = useCallback(
-		() => gateRef.current?.node() as any,
-		[enabled]
-	);
+	const output = useCallback(() => gateRef.current?.node() as any, [enabled]);
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ sync }}
+				outputAccessors={{ output }}
 			/>
 			<section>
 				<NumberParameter

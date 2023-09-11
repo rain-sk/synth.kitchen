@@ -20,6 +20,18 @@ body,
 	position: relative;
 }
 
+.visually-hidden:not(:focus):not(:active) {
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: auto;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	white-space: nowrap;
+}
+
 nav {
 	position: absolute;
 	top: 0;
@@ -116,9 +128,39 @@ main {
 }
 
 .connectors {
-	margin-bottom: 0.5rem;
+	margin-bottom: 1rem;
 	display: flex;
 	justify-content: space-between;
+}
+
+.connectors .inputs,
+.connectors .outputs {
+	display: flex;
+	flex-direction: column;
+}
+
+.io {
+	display: flex;
+	flex: 1rem;
+}
+
+.io:not(:first-child) {
+	margin-top: 0.5rem;
+}
+
+.connector {
+	display: block;
+	width: 1.2rem;
+	height: 1.2rem;
+	margin: 0;
+}
+
+.connector:first-child {
+	margin-right: 1rem;
+}
+
+.connector:last-child {
+	margin-left: 1rem;
 }
 
 .numparam,

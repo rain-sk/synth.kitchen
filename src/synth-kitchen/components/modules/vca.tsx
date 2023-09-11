@@ -52,15 +52,14 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 
 	const enabled = state != undefined;
 
-	const inputAccessor = useCallback(
+	const input = useCallback(() => vcaRef.current?.gain() as any, [enabled]);
+
+	const gate = useCallback(
 		() => vcaRef.current?.adsr().node() as any,
 		[enabled]
 	);
 
-	const outputAccessor = useCallback(
-		() => vcaRef.current?.gain() as any,
-		[enabled]
-	);
+	const output = useCallback(() => vcaRef.current?.gain() as any, [enabled]);
 
 	const commitAttackChange = useCallback(
 		(attack: number) => {
@@ -161,8 +160,8 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ input, gate }}
+				outputAccessors={{ output }}
 			/>
 
 			<section>

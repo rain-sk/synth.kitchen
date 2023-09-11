@@ -189,12 +189,12 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const enabled = state != undefined && sequencerRef.current;
 
-	const inputAccessor = useCallback(
+	const sync = useCallback(
 		() => sequencerRef.current?.node() as any,
 		[enabled]
 	);
 
-	const outputAccessor = useCallback(
+	const output = useCallback(
 		() => sequencerRef.current?.node() as any,
 		[enabled]
 	);
@@ -253,8 +253,8 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ sync }}
+				outputAccessors={{ output }}
 			/>
 			<section>
 				<NumberParameter

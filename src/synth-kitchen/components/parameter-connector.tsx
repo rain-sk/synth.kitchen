@@ -38,10 +38,12 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 
 	return (
 		<button
+			aria-label={name}
+			aria-roledescription="parameter connector"
 			id={connectorKey}
 			type="button"
 			onClick={onClick}
-			className={
+			className={`connector ${
 				isActive
 					? 'active'
 					: isConnectedToActiveConnector
@@ -49,9 +51,7 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 					: highlight
 					? 'highlight'
 					: ''
-			}
-		>
-			o
-		</button>
+			}`}
+		/>
 	);
 };

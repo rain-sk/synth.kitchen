@@ -41,9 +41,9 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 
 	const enabled = !!state;
 
-	const inputAccessor = useCallback(() => delayRef.current as any, [enabled]);
+	const input = useCallback(() => delayRef.current as any, [enabled]);
 
-	const outputAccessor = useCallback(() => delayRef.current as any, [enabled]);
+	const output = useCallback(() => delayRef.current as any, [enabled]);
 
 	const commitTimeChange = useCallback(
 		(delayTime: number) => {
@@ -68,8 +68,8 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ input }}
+				outputAccessors={{ output }}
 			/>
 
 			<section>

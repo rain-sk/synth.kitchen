@@ -59,14 +59,17 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 		return gainRef.current?.gain as IAudioParam;
 	}, []);
 
+	const speaker = () => gainRef.current as any;
+	const resampling = () => gainRef.current as any;
+
 	const enabled = state != undefined && gainRef.current;
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[() => gainRef.current as any]}
-				outputAccessors={[]}
+				inputAccessors={{ speaker }}
+				outputAccessors={{ resampling }}
 			/>
 			<NumberParameter
 				moduleKey={module.moduleKey}

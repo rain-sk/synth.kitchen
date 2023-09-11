@@ -54,22 +54,16 @@ export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 		[enabled]
 	);
 
-	const inputAccessor = useCallback(
-		() => clockRef.current?.node() as any,
-		[enabled]
-	);
+	const sync = useCallback(() => clockRef.current?.node() as any, [enabled]);
 
-	const outputAccessor = useCallback(
-		() => clockRef.current?.node() as any,
-		[enabled]
-	);
+	const output = useCallback(() => clockRef.current?.node() as any, [enabled]);
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={[inputAccessor]}
-				outputAccessors={[outputAccessor]}
+				inputAccessors={{ sync }}
+				outputAccessors={{ output }}
 			/>
 			<section>
 				<NumberParameter
