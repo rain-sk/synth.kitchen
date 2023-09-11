@@ -15,6 +15,7 @@ const moduleTypes: ModuleType[] = [
 	'FILTER',
 	'GAIN',
 	'GATE',
+	'LIMITER',
 	'NOISE',
 	'OSCILLATOR',
 	'SEQUENCER',

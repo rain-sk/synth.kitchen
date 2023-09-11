@@ -25,6 +25,7 @@ import { GateModule } from './modules/gate';
 import { AdsrModule } from './modules/adsr';
 import { VcaModule } from './modules/vca';
 import { EnvelopeModule } from './modules/envelope';
+import { LimiterModule } from './modules/limiter';
 
 const useDragAndDrop = (
 	initialX: number,
@@ -136,6 +137,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 			return <GainModule module={module as IModule<'GAIN'>} />;
 		case 'GATE':
 			return <GateModule module={module as IModule<'GATE'>} />;
+		case 'LIMITER':
+			return <LimiterModule module={module as IModule<'LIMITER'>} />;
 		case 'NOISE':
 			return <NoiseModule module={module as IModule<'NOISE'>} />;
 		case 'OSCILLATOR':
