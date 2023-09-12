@@ -48,13 +48,19 @@ export const Connections: React.FC = () => {
 			);
 
 			connectionsToDraw.forEach(([[outputX, outputY], [inputX, inputY]]) => {
-				// console.log({ outputX, outputY, inputX, inputY });
-
 				context2d.beginPath();
 				context2d.lineWidth = 4;
 				context2d.moveTo(outputX, outputY);
 				context2d.lineTo(inputX, inputY);
 				context2d.stroke();
+
+				context2d.beginPath();
+				context2d.arc(outputX, outputY, 5, 0, 2 * Math.PI);
+				context2d.fill();
+
+				context2d.beginPath();
+				context2d.arc(inputX, inputY, 5, 0, 2 * Math.PI);
+				context2d.fill();
 			});
 		}
 	}, []);
