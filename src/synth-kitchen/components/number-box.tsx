@@ -41,14 +41,13 @@ export const NumberBox: React.FunctionComponent<{
 				string.length === 1 &&
 				(negative || string[0] === '.' || string[0] === ',')
 			) {
-				setTempValue(string);
+				setTempValue(negative ? '-' : '.');
 				return;
 			}
 
-			let onlyNumeric = `${negative ? '-' : ''}${string.replace(
-				/[^\d.]/g,
-				''
-			)}`;
+			let onlyNumeric = `${negative ? '-' : ''}${string
+				.replace(',', '.')
+				.replace(/[^\d.]/g, '')}`;
 			const indexOfFirstDecimal = onlyNumeric.indexOf('.');
 			if (indexOfFirstDecimal > -1) {
 				onlyNumeric = `${onlyNumeric.slice(
