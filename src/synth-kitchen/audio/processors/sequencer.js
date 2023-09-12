@@ -8,16 +8,16 @@ function calcPhase(phase, ticksPerMinute) {
 class Sequencer extends AudioWorkletProcessor {
 	static get parameterDescriptors() {
 		return [
-			{ name: 'tempo', defaultValue: 120, minValue: 0, maxValue: 1000 },
-			{ name: 'steps', defaultValue: 8, minValue: 2, maxValue: 8 },
+			{ name: 'tempo', defaultValue: 120, minValue: 0, maxValue: sampleRate },
+			{ name: 'steps', defaultValue: 4, minValue: 2, maxValue: 8 },
 			{ name: 'step0', defaultValue: 0 },
-			{ name: 'step1', defaultValue: 200 },
-			{ name: 'step2', defaultValue: 400 },
-			{ name: 'step3', defaultValue: 500 },
-			{ name: 'step4', defaultValue: 700 },
-			{ name: 'step5', defaultValue: 900 },
-			{ name: 'step6', defaultValue: 1100 },
-			{ name: 'step7', defaultValue: 1200 },
+			{ name: 'step1', defaultValue: 0 },
+			{ name: 'step2', defaultValue: 0 },
+			{ name: 'step3', defaultValue: 0 },
+			{ name: 'step4', defaultValue: 0 },
+			{ name: 'step5', defaultValue: 0 },
+			{ name: 'step6', defaultValue: 0 },
+			{ name: 'step7', defaultValue: 0 },
 			{ name: 'active', defaultValue: 1, minValue: 0, maxValue: 1 }
 		];
 	}

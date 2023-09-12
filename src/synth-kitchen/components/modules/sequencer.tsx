@@ -52,7 +52,7 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const commitTempoChange = useCallback(
 		(tempo: number) => {
-			tempo = Math.floor(Math.max(0, Math.min(1000, tempo)));
+			tempo = Math.floor(Math.max(0, tempo));
 			sequencerRef.current?.tempo.linearRampToValueAtTime(
 				tempo,
 				audioContext.currentTime
