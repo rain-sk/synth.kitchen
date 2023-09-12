@@ -12,6 +12,7 @@ import { EnvelopeNode } from '../../audio/nodes/envelope';
 const envelopeStateFromNode = (
 	node: EnvelopeNode
 ): IModuleState['ENVELOPE'] => ({
+	gate: Math.round(node.gate.value * 100) / 100,
 	attack: Math.round(node.attack.value * 100) / 100,
 	decay: Math.round(node.decay.value * 100) / 100,
 	sustain: Math.round(node.sustain.value * 100) / 100,
@@ -25,6 +26,10 @@ const initEnvelope = (
 ) => {
 	envelopeRef.current = new EnvelopeNode();
 	if (state) {
+		envelopeRef.current.gate.setValueAtTime(
+			state.gate,
+			audioContext.currentTime
+		);
 		envelopeRef.current.attack.setValueAtTime(
 			state.attack,
 			audioContext.currentTime
@@ -66,13 +71,32 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		envelopeRef.current?.disconnect();
 	});
 
-	const gate = useCallback(
-		() => envelopeRef.current?.adsr().node() as any,
+	const sync = useCallback(
+		() => envelopeRef.current?.sync().node() as any,
 		[enabled]
 	);
 
 	const output = useCallback(
 		() => envelopeRef.current?.gain() as any,
+		[enabled]
+	);
+
+	const commitGateChange = useCallback(
+		(gate: number) => {
+			envelopeRef.current?.gate.linearRampToValueAtTime(
+				gate,
+				audioContext.currentTime
+			);
+			setState({
+				...state,
+				gate
+			});
+		},
+		[audioContext, state]
+	);
+
+	const gateAccessor = useCallback(
+		() => envelopeRef.current?.gate as any,
 		[enabled]
 	);
 
@@ -175,11 +199,18 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={{ gate }}
+				inputAccessors={{ sync }}
 				outputAccessors={{ output }}
 			/>
 
 			<section>
+				<NumberParameter
+					moduleKey={module.moduleKey}
+					paramAccessor={gateAccessor}
+					name="gate"
+					value={state.gate}
+					commitValueCallback={commitGateChange}
+				/>
 				<NumberParameter
 					moduleKey={module.moduleKey}
 					paramAccessor={attackAccessor}

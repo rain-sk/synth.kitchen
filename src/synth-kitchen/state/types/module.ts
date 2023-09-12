@@ -25,6 +25,7 @@ export interface IModuleState extends Record<ModuleType, any> {
 		delayTime: number;
 	};
 	ENVELOPE: {
+		gate: number;
 		attack: number;
 		decay: number;
 		sustain: number;
