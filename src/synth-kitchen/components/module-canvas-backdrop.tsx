@@ -12,6 +12,7 @@ import { useStateContext } from '../hooks/use-state-context';
 
 import { actions } from '../state/actions';
 import { INVALID_POSITION } from '../state/types/state';
+import { AddModule } from './add-module';
 
 const positionFromMouseEvent = (
 	e: MouseEvent,
@@ -45,10 +46,22 @@ export const ModuleCanvasBackdrop: React.FC<{
 		}
 	});
 
-	const { modules } = useStateContext();
+	const { modules, selectedModuleKeys } = useStateContext();
 	const dispatch = useDispatchContext();
 
 	const [initialized, setInitialized] = useState(false);
+
+	const [deviceButtonPosition, setDeviceButtonPosition] =
+		useState(INVALID_POSITION);
+
+	useEffect(() => {
+		setDeviceButtonPosition(INVALID_POSITION);
+	}, [modules]);
+	useEffect(() => {
+		if (selectedModuleKeys.size !== 0) {
+			setDeviceButtonPosition(INVALID_POSITION);
+		}
+	}, [deviceButtonPosition, selectedModuleKeys.size]);
 
 	const canvasWasResized = useRef(false);
 
@@ -149,12 +162,28 @@ export const ModuleCanvasBackdrop: React.FC<{
 		dispatch(actions.selectionDragContinueAction(state.selection.end));
 	}, []);
 
+	const deviceButtonTimer = useRef<number>();
 	const onMouseUp = useCallback((e: MouseEvent) => {
 		dispatch(
 			actions.selectionDragEndAction(
 				positionFromMouseEvent(e, state.container as HTMLElement)
 			)
 		);
+
+		if (
+			Math.abs(state.selection.start[0] - state.selection.end[0]) < 5 &&
+			Math.abs(state.selection.start[1] - state.selection.end[1]) < 5
+		) {
+			setDeviceButtonPosition(state.selection.start);
+
+			if (deviceButtonTimer.current !== undefined) {
+				clearTimeout(deviceButtonTimer.current);
+			}
+
+			deviceButtonTimer.current = setTimeout(() => {
+				setDeviceButtonPosition(INVALID_POSITION);
+			}, 10000);
+		}
 
 		queueAnimation(clearSelection);
 
@@ -201,6 +230,10 @@ export const ModuleCanvasBackdrop: React.FC<{
 				}}
 			/>
 			{children}
+			{deviceButtonPosition !== INVALID_POSITION &&
+				selectedModuleKeys.size === 0 && (
+					<AddModule position={deviceButtonPosition} />
+				)}
 		</main>
 	);
 };

@@ -18,8 +18,12 @@ export const addModule: React.Reducer<IState, IAddModule> = (state, action) => {
 				name: randomName(action.payload.type.toLocaleLowerCase()),
 				moduleKey,
 				type: action.payload.type,
-				x: Math.round(Math.random() * 800),
-				y: Math.round(Math.random() * 400)
+				x: action.payload.position
+					? action.payload.position[0]
+					: Math.round(Math.random() * 800),
+				y: action.payload.position
+					? action.payload.position[1]
+					: Math.round(Math.random() * 400)
 			}
 		}
 	};

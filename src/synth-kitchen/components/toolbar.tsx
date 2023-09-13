@@ -3,21 +3,9 @@ import React /*, { useState }*/ from 'react';
 import { actions } from '../state/actions';
 import { IPatch } from '../state/types/patch';
 import { KeyCode } from '../constants/key';
-import { ModuleType } from '../state/types/module';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
-
-const controlModules: ModuleType[] = ['CLOCK', 'GATE', 'ENVELOPE', 'SEQUENCER'];
-
-const soundModules: ModuleType[] = ['OSCILLATOR', 'NOISE'];
-
-const effectModules: ModuleType[] = [
-	'DELAY',
-	'FILTER',
-	'GAIN',
-	'LIMITER',
-	'VCA'
-];
+import { AddModule } from './add-module';
 
 export const Toolbar: React.FC<{}> = () => {
 	const dispatch = useDispatchContext();
@@ -74,14 +62,6 @@ export const Toolbar: React.FC<{}> = () => {
 		}
 	};
 
-	const handleAddModule = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		const moduleType = e.target.value;
-		if (moduleType !== '') {
-			dispatch(actions.historyPushAction());
-			dispatch(actions.addModuleAction(moduleType as ModuleType));
-		}
-	};
-
 	const handleUndo = () => {
 		dispatch(actions.historyUndoAction());
 	};
@@ -118,37 +98,7 @@ export const Toolbar: React.FC<{}> = () => {
 				</label>
 			</section>
 			<section>
-				<select
-					value=""
-					onKeyDown={(e: any) => e.stopPropagation()}
-					onChange={handleAddModule}
-				>
-					<option value="">add module</option>
-					<optgroup label="Control">
-						{controlModules.map((type) => (
-							<option
-								key={type}
-								value={type}
-							>{`${type.toLocaleLowerCase()}`}</option>
-						))}
-					</optgroup>
-					<optgroup label="Sounds">
-						{soundModules.map((type) => (
-							<option
-								key={type}
-								value={type}
-							>{`${type.toLocaleLowerCase()}`}</option>
-						))}
-					</optgroup>
-					<optgroup label="Effects">
-						{effectModules.map((type) => (
-							<option
-								key={type}
-								value={type}
-							>{`${type.toLocaleLowerCase()}`}</option>
-						))}
-					</optgroup>
-				</select>
+				<AddModule />
 				<button
 					type="button"
 					onClick={handleUndo}

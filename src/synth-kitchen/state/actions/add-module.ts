@@ -4,12 +4,17 @@ export type IAddModule = {
 	type: 'AddModule';
 	payload: {
 		type: ModuleType;
+		position?: [number, number];
 	};
 };
 
-export const addModuleAction = (type: ModuleType): IAddModule => ({
+export const addModuleAction = (
+	type: ModuleType,
+	position?: [number, number]
+): IAddModule => ({
 	type: 'AddModule',
 	payload: {
-		type
+		type,
+		position
 	}
 });
