@@ -36,6 +36,7 @@ export const AddModule: React.FC<{ position?: [number, number] }> = ({
 		<select
 			value=""
 			onKeyDown={(e: any) => e.stopPropagation()}
+			onMouseDown={(e: any) => e.stopPropagation()}
 			onChange={handleAddModule}
 			style={
 				position && position !== INVALID_POSITION
