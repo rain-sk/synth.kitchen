@@ -44,7 +44,8 @@ export const AddModule: React.FC<{ position?: [number, number] }> = ({
 							position: 'absolute',
 							left: position[0],
 							top: position[1] - 40,
-							transform: 'translate(-50%, -50%)'
+							transform: 'translate(-50%, -50%)',
+							transition: 'all .001s ease'
 					  }
 					: {}
 			}
