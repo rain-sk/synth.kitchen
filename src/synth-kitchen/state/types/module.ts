@@ -46,7 +46,6 @@ export interface IModuleState extends Record<ModuleType, any> {
 		waveform: TOscillatorType;
 	};
 	SEQUENCER: {
-		tempo: number;
 		steps: number;
 		step0: number;
 		step1: number;

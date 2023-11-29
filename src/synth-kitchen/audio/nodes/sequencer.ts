@@ -20,10 +20,6 @@ export class SequencerNode {
 
 	node = (): IAudioWorkletNode<IAudioContext> => this._node;
 
-	get tempo(): IAudioParam {
-		return this._node.parameters.get('tempo') as IAudioParam;
-	}
-
 	get steps(): IAudioParam {
 		return this._node.parameters.get('steps') as IAudioParam;
 	}

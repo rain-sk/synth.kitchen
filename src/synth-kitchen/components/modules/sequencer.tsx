@@ -13,7 +13,6 @@ import { useEffectOnce } from '../../hooks/use-effect-once';
 const sequencerStateFromNode = (
 	sequencer: SequencerNode
 ): IModuleState['SEQUENCER'] => ({
-	tempo: sequencer.tempo.value,
 	steps: sequencer.steps.value,
 	step0: sequencer.step0.value,
 	step1: sequencer.step1.value,
@@ -49,21 +48,6 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 	useEffectOnce(() => () => {
 		sequencerRef.current?.disconnect();
 	});
-
-	const commitTempoChange = useCallback(
-		(tempo: number) => {
-			tempo = Math.floor(Math.max(0, tempo));
-			sequencerRef.current?.tempo.linearRampToValueAtTime(
-				tempo,
-				audioContext.currentTime
-			);
-			setState({
-				...state,
-				tempo
-			});
-		},
-		[audioContext, state]
-	);
 
 	const commitStepsChange = useCallback(
 		(steps: number) => {
@@ -194,18 +178,13 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const enabled = state != undefined && sequencerRef.current;
 
-	const sync = useCallback(
+	const clock = useCallback(
 		() => sequencerRef.current?.node() as any,
 		[enabled]
 	);
 
 	const output = useCallback(
 		() => sequencerRef.current?.node() as any,
-		[enabled]
-	);
-
-	const tempoAccessor = useCallback(
-		() => sequencerRef.current?.tempo as IAudioParam,
 		[enabled]
 	);
 
@@ -258,17 +237,10 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={{ sync }}
+				inputAccessors={{ clock }}
 				outputAccessors={{ output }}
 			/>
 			<section>
-				<NumberParameter
-					moduleKey={module.moduleKey}
-					paramAccessor={tempoAccessor}
-					name="tempo"
-					value={state.tempo}
-					commitValueCallback={commitTempoChange}
-				/>
 				<NumberParameter
 					moduleKey={module.moduleKey}
 					paramAccessor={stepsAccessor}

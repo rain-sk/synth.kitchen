@@ -162,7 +162,6 @@ export const ModuleCanvasBackdrop: React.FC<{
 		dispatch(actions.selectionDragContinueAction(state.selection.end));
 	}, []);
 
-	const deviceButtonTimer = useRef<number>();
 	const onMouseUp = useCallback((e: MouseEvent) => {
 		dispatch(
 			actions.selectionDragEndAction(
@@ -175,14 +174,6 @@ export const ModuleCanvasBackdrop: React.FC<{
 			Math.abs(state.selection.start[1] - state.selection.end[1]) < 5
 		) {
 			setDeviceButtonPosition(state.selection.start);
-
-			if (deviceButtonTimer.current !== undefined) {
-				clearTimeout(deviceButtonTimer.current);
-			}
-
-			deviceButtonTimer.current = setTimeout(() => {
-				setDeviceButtonPosition(INVALID_POSITION);
-			}, 10000);
 		}
 
 		queueAnimation(clearSelection);

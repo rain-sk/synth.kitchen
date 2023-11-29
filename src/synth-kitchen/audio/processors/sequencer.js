@@ -8,7 +8,6 @@ function calcPhase(phase, ticksPerMinute) {
 class Sequencer extends AudioWorkletProcessor {
 	static get parameterDescriptors() {
 		return [
-			{ name: 'tempo', defaultValue: 120, minValue: 0, maxValue: sampleRate },
 			{ name: 'steps', defaultValue: 4, minValue: 2, maxValue: 8 },
 			{ name: 'step0', defaultValue: 0 },
 			{ name: 'step1', defaultValue: 0 },
@@ -22,8 +21,7 @@ class Sequencer extends AudioWorkletProcessor {
 		];
 	}
 
-	phase = 1;
-	step = -1;
+	step = 0;
 
 	process(inputs, outputs, parameters) {
 		const active = parameters.active;
@@ -36,12 +34,8 @@ class Sequencer extends AudioWorkletProcessor {
 		const input = inputs[0];
 		const output = outputs[0];
 
-		const tempo = parameters.tempo;
-		const isTempoConstant = tempo.length === 1;
-
 		const hasInput = input.length !== 0;
 
-		let phase = this.phase;
 		let step = this.step;
 
 		const steps = parameters.steps;
@@ -52,19 +46,13 @@ class Sequencer extends AudioWorkletProcessor {
 				return false;
 			}
 
-			phase = calcPhase(phase, isTempoConstant ? tempo[0] : tempo[i]);
-
-			const reset = hasInput && input[0][i] === 1;
-			if (reset) {
-				step = 0;
-				phase = 0;
-			} else if (phase >= 1) {
-				const frameStep = stepsIsConstant ? steps[0] : steps[i];
-				step = (step + 1) % frameStep;
-				phase -= 1;
+			const tick = hasInput && input[0][i] === 1;
+			if (tick) {
+				const frameSteps = stepsIsConstant ? steps[0] : steps[i];
+				step = (step + 1) % frameSteps;
 			}
 
-			const frameStep = (() => {
+			const frameValue = (() => {
 				switch (step) {
 					case 0: {
 						const step0 = parameters.step0;
@@ -101,8 +89,8 @@ class Sequencer extends AudioWorkletProcessor {
 						const step6IsConstant = step6.length === 1;
 						return step6IsConstant ? step6[0] : step6[i];
 					}
-					case 7:
-					default: {
+					case 7: 
+					default: { 
 						const step7 = parameters.step7;
 						const step7IsConstant = step7.length === 1;
 						return step7IsConstant ? step7[0] : step7[i];
@@ -111,11 +99,10 @@ class Sequencer extends AudioWorkletProcessor {
 			})();
 
 			for (let channel = 0; channel < output.length; channel++) {
-				output[channel][i] = frameStep;
+				output[channel][i] = frameValue;
 			}
 		}
 
-		this.phase = phase;
 		this.step = step;
 
 		return true;
