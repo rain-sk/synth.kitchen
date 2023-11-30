@@ -8,7 +8,7 @@ function calcPhase(phase, ticksPerMinute) {
 class Clock extends AudioWorkletProcessor {
 	static get parameterDescriptors() {
 		return [
-			{ name: 'tempo', defaultValue: 120, minValue: 0, maxValue: 1000 },
+			{ name: 'tempo', defaultValue: 120, minValue: 0, maxValue: 12000000 },
 			{ name: 'active', defaultValue: 1, minValue: 0, maxValue: 1 }
 		];
 	}
