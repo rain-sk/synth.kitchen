@@ -1,4 +1,4 @@
-import React /*, { useState }*/ from 'react';
+import React, { useContext } from 'react';
 
 import { actions } from '../state/actions';
 import { IPatch } from '../state/types/patch';
@@ -6,10 +6,12 @@ import { KeyCode } from '../constants/key';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 import { AddModule } from './add-module';
+import { ConnectionContext } from '../contexts/connection';
 
 export const Toolbar: React.FC<{}> = () => {
 	const dispatch = useDispatchContext();
 	const state = useStateContext();
+	const { connections } = useContext(ConnectionContext);
 
 	// const [zoom, setZoom] = useState(100);
 
@@ -24,7 +26,8 @@ export const Toolbar: React.FC<{}> = () => {
 
 		const patch: IPatch = {
 			modules: state.modules,
-			name: state.name
+			name: state.name,
+			connections: Object.fromEntries(connections.entries())
 		};
 
 		const blob = new Blob([JSON.stringify(patch)], {

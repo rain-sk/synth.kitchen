@@ -1,6 +1,13 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState
+} from 'react';
 import { IIo, IoType, ioKey } from '../state/types/io';
 import { IParameter, paramKey } from '../state/types/parameter';
+import { useStateContext } from '../hooks/use-state-context';
 // import { useDispatchContext } from '../hooks/use-dispatch-context';
 // import { historyPushAction } from '../state/actions/history';
 
@@ -99,6 +106,60 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 
 	const [connectorCount, setConnectorCount] = useState(0);
 	const [connectionCount, setConnectionCount] = useState(0);
+
+	const { connectionsToLoad } = useStateContext() as any;
+	const connectionsToLoadRef = useRef<Record<string, [IOutput, IInput]>>();
+	useEffect(() => {
+		if (
+			connectionsToLoad &&
+			connectionsToLoad != connectionsToLoadRef.current
+		) {
+			connectionsToLoadRef.current = connectionsToLoad;
+
+			function tryLoadConnections() {
+				if (!connectionsToLoadRef.current) {
+					return;
+				}
+
+				try {
+					const toLoad = Object.fromEntries(
+						Object.entries(connectionsToLoadRef.current).filter(
+							([, [output, input]]) => {
+								return (
+									connectorInfo(connectorKey(output)) &&
+									connectorInfo(connectorKey(input))
+								);
+							}
+						)
+					);
+					connectionsToLoadRef.current = Object.fromEntries(
+						Object.entries(connectionsToLoadRef.current).filter(([key]) => {
+							return !toLoad[key];
+						})
+					);
+
+					Object.values(toLoad).forEach(([output, input]) => {
+						output = (
+							connectors.get(connectorKey(output)) as any
+						)[0] as IOutput;
+						input = (connectors.get(connectorKey(input)) as any)[0] as IInput;
+						setConnectionCount(connectOrDisconnect(output, input));
+					});
+
+					if (
+						connectionsToLoadRef.current &&
+						Object.keys(connectionsToLoadRef.current).length > 0
+					) {
+						setTimeout(tryLoadConnections, 17);
+					}
+				} catch (e) {
+					console.error(e);
+				}
+			}
+
+			setTimeout(tryLoadConnections, 17);
+		}
+	}, [connectionsToLoad]);
 
 	const registerConnector = useCallback(
 		(connector: IConnector) => {

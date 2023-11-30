@@ -41,6 +41,7 @@ export const Connections: React.FC = () => {
 			);
 
 			const connectionsToDraw = [...connections.values()].map(
+				// todo: filter out off-screen connections
 				([output, input]) => [
 					coordinates(connectorKey(output)),
 					coordinates(connectorKey(input))
