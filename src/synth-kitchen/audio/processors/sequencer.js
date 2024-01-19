@@ -48,7 +48,10 @@ class Sequencer extends AudioWorkletProcessor {
 
 			const tick = hasInput && input[0][i] === 1;
 			if (tick) {
-				const frameSteps = stepsIsConstant ? steps[0] : steps[i];
+				const frameSteps = Math.min(
+					Math.max(2, Math.round(stepsIsConstant ? steps[0] : steps[i])),
+					8
+				);
 				step = (step + 1) % frameSteps;
 			}
 
@@ -89,8 +92,8 @@ class Sequencer extends AudioWorkletProcessor {
 						const step6IsConstant = step6.length === 1;
 						return step6IsConstant ? step6[0] : step6[i];
 					}
-					case 7: 
-					default: { 
+					case 7:
+					default: {
 						const step7 = parameters.step7;
 						const step7IsConstant = step7.length === 1;
 						return step7IsConstant ? step7[0] : step7[i];
