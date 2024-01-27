@@ -4,6 +4,8 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
+		"extendable-media-recorder": "^9.1.7",
+		"extendable-media-recorder-wav-encoder": "^7.0.102",
 		"project-name-generator": "^2.1.9",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

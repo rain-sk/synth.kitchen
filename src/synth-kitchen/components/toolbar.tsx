@@ -7,6 +7,7 @@ import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 import { AddModule } from './add-module';
 import { ConnectionContext } from '../contexts/connection';
+import { Record } from './record';
 
 export const Toolbar: React.FC<{}> = () => {
 	const dispatch = useDispatchContext();
@@ -65,13 +66,13 @@ export const Toolbar: React.FC<{}> = () => {
 		}
 	};
 
-	const handleUndo = () => {
-		dispatch(actions.historyUndoAction());
-	};
+	// const handleUndo = () => {
+	// 	dispatch(actions.historyUndoAction());
+	// };
 
-	const handleRedo = () => {
-		dispatch(actions.historyRedoAction());
-	};
+	// const handleRedo = () => {
+	// 	dispatch(actions.historyRedoAction());
+	// };
 
 	// const onChangeZoom: React.ChangeEventHandler<HTMLInputElement> = (e) => {
 	// 	const newZoom = parseInt(e.target.value);
@@ -102,7 +103,8 @@ export const Toolbar: React.FC<{}> = () => {
 			</section>
 			<section>
 				<AddModule />
-				<button
+				<Record />
+				{/*<button
 					type="button"
 					onClick={handleUndo}
 					disabled={
@@ -121,7 +123,7 @@ export const Toolbar: React.FC<{}> = () => {
 				>
 					redo
 				</button>
-				{/* <input
+				<input
 					type="range"
 					value={zoom}
 					onChange={onChangeZoom}
