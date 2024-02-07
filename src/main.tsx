@@ -3,19 +3,13 @@ import ReactDOM from 'react-dom/client';
 
 import { audio, initAudio } from './synth-kitchen/audio';
 import { Kitchen } from './synth-kitchen/kitchen';
-// import { initMidi, midi } from './synth-kitchen/midi';
+import { initMidi, midi } from './synth-kitchen/midi';
 
 import './reset.css';
 import './styles.css';
 
-Promise.all([
-	initAudio()
-	// initMidi(),
-]).then(() => {
-	if (
-		audio.initialized
-		// && midi.initialized
-	) {
+Promise.all([initAudio(), initMidi()]).then(() => {
+	if (audio.initialized && midi.initialized) {
 		ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 			<React.StrictMode>
 				<Kitchen />

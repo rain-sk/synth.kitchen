@@ -10,6 +10,7 @@ import { DispatchContext } from './contexts/dispatch';
 import { ConnectionContextProvider } from './contexts/connection';
 import { IAction } from './state/actions';
 import { Connections } from './components/connections';
+import { MidiContextProvider } from './contexts/midi';
 
 const ContextWrapper: React.FC<
 	React.PropsWithChildren<{ state: IState; dispatch: React.Dispatch<IAction> }>
@@ -17,7 +18,9 @@ const ContextWrapper: React.FC<
 	return (
 		<StateContext.Provider value={state}>
 			<DispatchContext.Provider value={dispatch}>
-				<ConnectionContextProvider>{children}</ConnectionContextProvider>
+				<ConnectionContextProvider>
+					<MidiContextProvider>{children}</MidiContextProvider>
+				</ConnectionContextProvider>
 			</DispatchContext.Provider>
 		</StateContext.Provider>
 	);

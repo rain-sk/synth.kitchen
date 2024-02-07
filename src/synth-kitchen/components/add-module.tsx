@@ -4,7 +4,13 @@ import { actions } from '../state/actions';
 import { ModuleType } from '../state/types/module';
 import { INVALID_POSITION } from '../state/types/state';
 
-const controlModules: ModuleType[] = ['CLOCK', 'GATE', 'ENVELOPE', 'SEQUENCER'];
+const controlModules: ModuleType[] = [
+	'CLOCK',
+	'MIDI_CLOCK',
+	'GATE',
+	'ENVELOPE',
+	'SEQUENCER'
+];
 
 const soundModules: ModuleType[] = ['OSCILLATOR', 'NOISE'];
 

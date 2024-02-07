@@ -9,22 +9,23 @@ import React, {
 import { actions } from '../state/actions';
 import { IModule } from '../state/types/module';
 
-import { OscillatorModule } from './modules/oscillator';
-import { GainModule } from './modules/gain';
+import { ClockModule } from './modules/clock';
 import { DelayModule } from './modules/delay';
+import { EnvelopeModule } from './modules/envelope';
 import { FilterModule } from './modules/filter';
-import { NoiseModule } from './modules/noise';
-import { OutputModule } from './modules/output';
+import { GainModule } from './modules/gain';
+import { GateModule } from './modules/gate';
+import { LimiterModule } from './modules/limiter';
+import { MidiClockModule } from './modules/midi-clock';
 import { Modifier } from '../state/types/state';
+import { NoiseModule } from './modules/noise';
+import { OscillatorModule } from './modules/oscillator';
+import { OutputModule } from './modules/output';
+import { queueAnimation } from '../animation';
+import { SequencerModule } from './modules/sequencer';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
-import { queueAnimation } from '../animation';
-import { ClockModule } from './modules/clock';
-import { SequencerModule } from './modules/sequencer';
-import { GateModule } from './modules/gate';
 import { VcaModule } from './modules/vca';
-import { EnvelopeModule } from './modules/envelope';
-import { LimiterModule } from './modules/limiter';
 
 const useDragAndDrop = (
 	initialX: number,
@@ -126,6 +127,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 	switch (module.type) {
 		case 'CLOCK':
 			return <ClockModule module={module as IModule<'CLOCK'>} />;
+		case 'MIDI_CLOCK':
+			return <MidiClockModule module={module as IModule<'MIDI_CLOCK'>} />;
 		case 'DELAY':
 			return <DelayModule module={module as IModule<'DELAY'>} />;
 		case 'FILTER':
