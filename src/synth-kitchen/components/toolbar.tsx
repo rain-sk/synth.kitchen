@@ -5,7 +5,6 @@ import { IPatch } from '../state/types/patch';
 import { KeyCode } from '../constants/key';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
-import { AddModule } from './add-module';
 import { ConnectionContext } from '../contexts/connection';
 import { Record } from './record';
 
@@ -102,7 +101,7 @@ export const Toolbar: React.FC<{}> = () => {
 				</label>
 			</section>
 			<section>
-				<AddModule />
+				{/* <AddModule /> */}
 				<Record />
 				{/*<button
 					type="button"
