@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	IMediaRecorder,
 	MediaRecorder,
@@ -10,12 +10,30 @@ import { audioContext, resampling } from '../audio/context';
 import { useEffectOnce } from '../hooks/use-effect-once';
 import { useStateContext } from '../hooks/use-state-context';
 
+const hhmmss = (seconds: number) => {
+	const h = Math.floor(seconds / 3600);
+	const m = Math.floor((seconds % 3600) / 60);
+	const s = Math.floor(seconds % 60);
+
+	const ss = s < 10 ? `0${s}` : `${s}`;
+	if (h > 0) {
+		const mm = m < 10 ? `0${m}` : `${m}`;
+		return `${h}:${mm}:${ss}`;
+	} else {
+		return `${m}:${ss}`;
+	}
+};
+
 export const Record: React.FC = () => {
 	const state = useStateContext();
 	const mediaRecorder = useRef<IMediaRecorder>();
 	const chunks = useRef<Blob[]>();
-	const [recording, setRecording] = useState(false);
+
 	const [loaded, setLoaded] = useState(false);
+	const [recording, setRecording] = useState(false);
+
+	const recordingStartTimeRef = useRef(0);
+	const [recordingTime, setRecordingTime] = useState(0);
 
 	useEffectOnce(() => {
 		(async () => {
@@ -24,8 +42,23 @@ export const Record: React.FC = () => {
 		})();
 	});
 
+	let timerCallback: any;
+	timerCallback = useCallback(() => {
+		setRecordingTime(audioContext.currentTime - recordingStartTimeRef.current);
+		if (recording) {
+			setTimeout(timerCallback, 500);
+		}
+	}, [recording]);
+
+	useEffect(() => {
+		if (recording) {
+			timerCallback();
+		}
+	}, [recording]);
+
 	const handleRecord = useCallback(() => {
 		setRecording(true);
+		recordingStartTimeRef.current = audioContext.currentTime;
 		const streamDestination = audioContext.createMediaStreamDestination();
 		mediaRecorder.current = new MediaRecorder(streamDestination.stream, {
 			mimeType: 'audio/wav'
@@ -33,14 +66,19 @@ export const Record: React.FC = () => {
 		chunks.current = [];
 		mediaRecorder.current.ondataavailable = (chunk: BlobEvent) => {
 			chunks.current?.push(chunk.data);
+			setRecordingTime(
+				audioContext.currentTime - recordingStartTimeRef.current
+			);
 		};
 		resampling.connect(streamDestination);
 		mediaRecorder.current.start();
-	}, [recording, setRecording]);
+	}, [recording, setRecording, recordingStartTimeRef, setRecordingTime]);
 
 	const handleStop = useCallback(() => {
 		if (mediaRecorder.current) {
+			recordingStartTimeRef.current = 0;
 			setRecording(false);
+			setRecordingTime(0);
 			mediaRecorder.current.onstop = () => {
 				const blob = new Blob(chunks.current, {
 					type: 'audio/wav'
@@ -59,8 +97,10 @@ export const Record: React.FC = () => {
 	}, [recording, setRecording]);
 
 	return loaded ? (
-		<button type="button" onClick={recording ? handleStop : handleRecord}>
-			{recording ? 'stop recording' : 'record'}
-		</button>
+		<>
+			<button type="button" onClick={recording ? handleStop : handleRecord}>
+				{recording ? `stop (${hhmmss(recordingTime)})` : 'record'}
+			</button>
+		</>
 	) : null;
 };
