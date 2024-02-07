@@ -10,6 +10,7 @@ import { VcaNode } from '../../audio/nodes/vca';
 import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
+	gate: Math.round(node.gate.value * 10000) / 10000,
 	attack: Math.round(node.attack.value * 100) / 100,
 	decay: Math.round(node.decay.value * 100) / 100,
 	sustain: Math.round(node.sustain.value * 100) / 100,
@@ -23,6 +24,7 @@ const initVca = (
 ) => {
 	vcaRef.current = new VcaNode();
 	if (state) {
+		vcaRef.current.gate.setValueAtTime(state.gate, audioContext.currentTime);
 		vcaRef.current.attack.setValueAtTime(
 			state.attack,
 			audioContext.currentTime
@@ -58,12 +60,31 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 
 	const input = useCallback(() => vcaRef.current?.gain() as any, [enabled]);
 
-	const gate = useCallback(
-		() => vcaRef.current?.adsr().node() as any,
+	const sync = useCallback(
+		() => vcaRef.current?.sync().node() as any,
 		[enabled]
 	);
 
 	const output = useCallback(() => vcaRef.current?.gain() as any, [enabled]);
+
+	const commitGateChange = useCallback(
+		(gate: number) => {
+			vcaRef.current?.gate.linearRampToValueAtTime(
+				gate,
+				audioContext.currentTime
+			);
+			setState({
+				...state,
+				gate
+			});
+		},
+		[audioContext, state]
+	);
+
+	const gateAccessor = useCallback(
+		() => vcaRef.current?.gate as any,
+		[enabled]
+	);
 
 	const commitAttackChange = useCallback(
 		(attack: number) => {
@@ -164,11 +185,18 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={{ input, gate }}
+				inputAccessors={{ input, sync }}
 				outputAccessors={{ output }}
 			/>
 
 			<section>
+				<NumberParameter
+					moduleKey={module.moduleKey}
+					paramAccessor={gateAccessor}
+					name="gate"
+					value={state.gate}
+					commitValueCallback={commitGateChange}
+				/>
 				<NumberParameter
 					moduleKey={module.moduleKey}
 					paramAccessor={attackAccessor}

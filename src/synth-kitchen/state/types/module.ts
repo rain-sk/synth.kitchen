@@ -60,6 +60,7 @@ export interface IModuleState extends Record<ModuleType, any> {
 		gain: number;
 	};
 	VCA: {
+		gate: number;
 		attack: number;
 		decay: number;
 		sustain: number;
