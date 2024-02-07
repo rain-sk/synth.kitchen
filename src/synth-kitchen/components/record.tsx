@@ -5,24 +5,11 @@ import {
 	register
 } from 'extendable-media-recorder';
 import { connect } from 'extendable-media-recorder-wav-encoder';
+import hhmmss from 'hhmmss';
 
 import { audioContext, resampling } from '../audio/context';
 import { useEffectOnce } from '../hooks/use-effect-once';
 import { useStateContext } from '../hooks/use-state-context';
-
-const hhmmss = (seconds: number) => {
-	const h = Math.floor(seconds / 3600);
-	const m = Math.floor((seconds % 3600) / 60);
-	const s = Math.floor(seconds % 60);
-
-	const ss = s < 10 ? `0${s}` : `${s}`;
-	if (h > 0) {
-		const mm = m < 10 ? `0${m}` : `${m}`;
-		return `${h}:${mm}:${ss}`;
-	} else {
-		return `${m}:${ss}`;
-	}
-};
 
 export const Record: React.FC = () => {
 	const state = useStateContext();
