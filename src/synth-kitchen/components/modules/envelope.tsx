@@ -12,7 +12,7 @@ import { EnvelopeNode } from '../../audio/nodes/envelope';
 const envelopeStateFromNode = (
 	node: EnvelopeNode
 ): IModuleState['ENVELOPE'] => ({
-	gate: Math.round(node.gate.value * 100) / 100,
+	gate: Math.round(node.gate.value * 10000) / 10000,
 	attack: Math.round(node.attack.value * 100) / 100,
 	decay: Math.round(node.decay.value * 100) / 100,
 	sustain: Math.round(node.sustain.value * 100) / 100,
