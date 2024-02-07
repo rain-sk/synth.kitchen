@@ -26,7 +26,7 @@ export class OutputNode {
 			this._gain = null as any;
 			this._delay = null as any;
 			this._limiter = null as any;
-		}, 200);
+		}, 10);
 	};
 
 	speaker = (): IGainNode<IAudioContext> => this._gain;

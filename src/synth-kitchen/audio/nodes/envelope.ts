@@ -25,7 +25,7 @@ export class EnvelopeNode {
 			this._adsr = null as any;
 			this._gain = null as any;
 			this._gate = null as any;
-		}, 200);
+		}, 10);
 	};
 
 	sync = (): GateNode => this._gate;

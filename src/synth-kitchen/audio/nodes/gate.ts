@@ -18,7 +18,7 @@ export class GateNode {
 				.get('active')
 				?.setValueAtTime(0, audioContext.currentTime);
 			this._node = null as any;
-		}, 200);
+		}, 10);
 	};
 
 	node = (): IAudioWorkletNode<IAudioContext> => this._node;

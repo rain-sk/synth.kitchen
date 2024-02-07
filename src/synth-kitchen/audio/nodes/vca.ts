@@ -25,7 +25,7 @@ export class VcaNode {
 			this._adsr = null as any;
 			this._adsrPeak = null as any;
 			this._signalGain = null as any;
-		}, 200);
+		}, 10);
 	};
 
 	adsr = (): AdsrNode => this._adsr;

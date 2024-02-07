@@ -53,7 +53,7 @@ export class LimiterNode {
 			this._limiter3 = null as any;
 			this._limiter4 = null as any;
 			this._brickWall = null as any;
-		}, 200);
+		}, 10);
 	};
 
 	input = (): IAudioNode<IAudioContext> => this._limiter1;
