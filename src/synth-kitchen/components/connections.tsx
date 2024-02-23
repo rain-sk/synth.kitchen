@@ -19,6 +19,17 @@ const coordinates = (connectorKey: string) => {
 	];
 };
 
+const devicePixelRatio = window.devicePixelRatio || 1;
+
+const resizeCanvas = (
+	canvas: HTMLCanvasElement,
+	width: number,
+	height: number
+) => {
+	canvas.width = width * devicePixelRatio;
+	canvas.height = height * devicePixelRatio;
+};
+
 export const Connections: React.FC = () => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
@@ -29,6 +40,9 @@ export const Connections: React.FC = () => {
 	const drawConnections = useCallback(() => {
 		if (canvasRef.current && !contextRef.current) {
 			contextRef.current = canvasRef.current.getContext('2d') ?? undefined;
+			if (contextRef.current) {
+				contextRef.current.scale(devicePixelRatio, devicePixelRatio);
+			}
 		}
 
 		if (contextRef.current && canvasRef.current) {
@@ -39,6 +53,10 @@ export const Connections: React.FC = () => {
 				canvasRef.current.width,
 				canvasRef.current.height
 			);
+
+			var rect = canvasRef.current.getBoundingClientRect();
+
+			resizeCanvas(canvasRef.current, rect.width, rect.height);
 
 			const connectionsToDraw = [...connections.values()].map(
 				// todo: filter out off-screen connections
@@ -75,8 +93,7 @@ export const Connections: React.FC = () => {
 		if (canvasRef.current && contextRef.current) {
 			contextRef.current.clearRect(0, 0, width, height);
 			contextRef.current.clearRect(0, 0, width, height);
-			canvasRef.current.width = width;
-			canvasRef.current.height = height;
+			resizeCanvas(canvasRef.current, width, height);
 		}
 
 		queueAnimation(drawConnections);
