@@ -79,5 +79,3 @@ export type IModule<T extends ModuleType = ModuleType> = {
 	y: number;
 	state?: IModuleState[T];
 };
-
-export type IOscillatorModule = IModule<'OSCILLATOR'>;
