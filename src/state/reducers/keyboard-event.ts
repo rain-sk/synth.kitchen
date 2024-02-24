@@ -29,7 +29,11 @@ export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 				};
 			}
 		}
-	} else if (keyCode in keyCodeMovementMap && state.isKeyMovementEnabled) {
+	} else if (
+		keyCode in keyCodeMovementMap &&
+		state.isKeyMovementEnabled &&
+		action.payload.type === KeyboardEventType.KEY_DOWN
+	) {
 		const { deltaX, deltaY } = keyCodeMovementMap[keyCode];
 
 		return {
