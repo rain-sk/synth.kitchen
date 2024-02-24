@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import { audio, initAudio } from './synth-kitchen/audio';
-import { Kitchen } from './synth-kitchen/components/kitchen';
-import { initMidi, midi } from './synth-kitchen/midi';
+import { audio, initAudio } from './audio';
+import { initMidi, midi } from './midi';
+
+import { Kitchen } from './components/kitchen';
 
 import './reset.css';
 import './styles.css';
