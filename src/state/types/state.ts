@@ -27,7 +27,7 @@ export type IState = IPatch & {
 	connections: Record<string, boolean>;
 };
 
-export const initialState: IState = {
+export const blankState = (): IState => ({
 	heldModifiers: Modifier.NONE,
 	isKeyMovementEnabled: true,
 	modules: {
@@ -39,10 +39,7 @@ export const initialState: IState = {
 		}
 	},
 	modulePositions: {
-		'0': [
-			document.documentElement.scrollWidth / 1.47,
-			document.documentElement.scrollHeight / 1.8
-		]
+		'0': [50, 50]
 	},
 	mouseDragStartPosition: INVALID_POSITION,
 	mouseDragPosition: INVALID_POSITION,
@@ -54,4 +51,6 @@ export const initialState: IState = {
 	parameters: {},
 	io: {},
 	connections: {}
-};
+});
+
+export const initialState: IState = blankState();
