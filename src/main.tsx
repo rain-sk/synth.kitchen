@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { audio, initAudio } from './synth-kitchen/audio';
-import { Kitchen } from './synth-kitchen/kitchen';
+import { Kitchen } from './synth-kitchen/components/kitchen';
 import { initMidi, midi } from './synth-kitchen/midi';
 
 import './reset.css';
