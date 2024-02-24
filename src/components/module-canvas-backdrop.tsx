@@ -103,6 +103,12 @@ export const ModuleCanvasBackdrop: React.FC<{
 		});
 	}, [queueAnimation, state.container, state.spacer, modules, drawSelection]);
 
+	const onScroll = useCallback(() => {
+		if (state.container && state.spacer) {
+			console.log('update spacer size and position...');
+		}
+	}, []);
+
 	const { current: onMouseout } = useRef((/*e: MouseEvent*/) => {});
 
 	useEffect(() => {
@@ -112,11 +118,13 @@ export const ModuleCanvasBackdrop: React.FC<{
 			window.addEventListener('resize', onResize, false);
 			document.addEventListener('resize', onResize, false);
 			window.addEventListener('mouseout', onMouseout, false);
+			state.container.addEventListener('scroll', onScroll, false);
 
 			return () => {
 				window.removeEventListener('resize', onResize, false);
 				document.removeEventListener('resize', onResize, false);
 				window.addEventListener('mouseout', onMouseout, false);
+				state.container?.removeEventListener('scroll', onScroll, false);
 			};
 		}
 	}, [initialized, onResize, state.container, state.selection, state.spacer]);

@@ -69,6 +69,7 @@ main {
 }
 
 #spacer {
+	position: relative;
 	min-width: calc(100vw + 2px);
 	min-height: calc(100vh + 2px - 2.5rem);
 }

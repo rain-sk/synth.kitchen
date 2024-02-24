@@ -104,20 +104,15 @@ export const Connections: React.FC = () => {
 		drawConnections();
 	}, []);
 
-	const onScroll = useCallback((e: any) => {
-		console.log({ scroll: e });
-		onResize();
-	}, []);
-
 	useEffectOnce(() => {
 		const parent = document.getElementById('root');
 		const main = document.getElementsByTagName('main')[0];
 		(parent as any).addEventListener('resize', onResize, false);
-		(main as any).addEventListener('scroll', onScroll, false);
+		(main as any).addEventListener('scroll', onResize, false);
 		onResize();
 		return () => {
 			(parent as any).removeEventListener('resize', onResize, false);
-			(main as any).removeEventListener('scroll', onScroll, false);
+			(main as any).removeEventListener('scroll', onResize, false);
 		};
 	});
 
