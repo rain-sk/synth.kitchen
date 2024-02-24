@@ -90,7 +90,7 @@ main {
 	border: 1px solid rgba(255, 255, 255, 0.25);
 	border-radius: 3px;
 	padding: 1rem;
-	transition: border linear 100ms, top linear 100ms, left linear 100ms;
+	transition: border linear 100ms;
 }
 
 .module h2 {
@@ -111,7 +111,7 @@ main {
 }
 
 #module-canvas.dragging > .module {
-	transition: border linear 100ms, top linear 10ms, left linear 10ms;
+	transition: border linear 100ms;
 }
 
 .module.selected {
