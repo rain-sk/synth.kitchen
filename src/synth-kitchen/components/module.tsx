@@ -21,7 +21,7 @@ import { Modifier } from '../state/types/state';
 import { NoiseModule } from './modules/noise';
 import { OscillatorModule } from './modules/oscillator';
 import { OutputModule } from './modules/output';
-import { queueAnimation } from '../animation';
+import { queueAnimation } from '../utils/animation';
 import { SequencerModule } from './modules/sequencer';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';

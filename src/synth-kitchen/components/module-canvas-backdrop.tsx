@@ -5,7 +5,7 @@ import React, {
 	useRef,
 	useState
 } from 'react';
-import { queueAnimation } from '../animation';
+import { queueAnimation } from '../utils/animation';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useEffectOnce } from '../hooks/use-effect-once';
 import { useStateContext } from '../hooks/use-state-context';

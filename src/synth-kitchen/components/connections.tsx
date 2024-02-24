@@ -3,7 +3,7 @@ import { ConnectionContext, connectorKey } from '../contexts/connection';
 import { useStateContext } from '../hooks/use-state-context';
 import { INVALID_POSITION } from '../state/types/state';
 import { useEffectOnce } from '../hooks/use-effect-once';
-import { queueAnimation } from '../animation';
+import { queueAnimation } from '../utils/animation';
 
 const coordinates = (connectorKey: string) => {
 	// console.log(connectorKey);
