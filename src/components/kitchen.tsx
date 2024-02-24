@@ -33,12 +33,12 @@ export const Kitchen: React.FC = () => {
 		() =>
 			Object.entries(state.modulePositions)
 				.sort(
-					([, positionA], [, positionB]) =>
-						Math.sqrt(Math.pow(positionA[0], 2) + Math.pow(positionA[1], 2)) -
-						Math.sqrt(Math.pow(positionB[0], 2) + Math.pow(positionB[1], 2))
+					([, [ax, ay]], [, [bx, by]]) =>
+						Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2)) -
+						Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2))
 				)
 				.map(([moduleKey]) => state.modules[moduleKey]),
-		[state.modules, state.modulePositions]
+		[state.modulePositions]
 	);
 
 	return (
