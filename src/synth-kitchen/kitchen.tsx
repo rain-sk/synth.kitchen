@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useMemo, useReducer } from 'react';
 import { ModuleCanvasBackdrop } from './components/module-canvas-backdrop';
 import { KeyHandler } from './components/key-handler';
 import { ModuleCanvas } from './components/module-canvas';
@@ -29,12 +29,24 @@ const ContextWrapper: React.FC<
 export const Kitchen: React.FC = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
+	const sortedModules = useMemo(
+		() =>
+			Object.entries(state.modulePositions)
+				.sort(
+					([, positionA], [, positionB]) =>
+						Math.sqrt(Math.pow(positionA[0], 2) + Math.pow(positionA[1], 2)) -
+						Math.sqrt(Math.pow(positionB[0], 2) + Math.pow(positionB[1], 2))
+				)
+				.map(([moduleKey]) => state.modules[moduleKey]),
+		[state.modules, state.modulePositions]
+	);
+
 	return (
 		<ContextWrapper state={state} dispatch={dispatch}>
 			<Toolbar />
 			<ModuleCanvasBackdrop drawOnTop={false}>
 				<KeyHandler />
-				<ModuleCanvas modules={state.modules} />
+				<ModuleCanvas modules={sortedModules} />
 			</ModuleCanvasBackdrop>
 			<Connections />
 		</ContextWrapper>

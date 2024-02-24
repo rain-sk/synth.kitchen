@@ -75,8 +75,6 @@ export type IModule<T extends ModuleType = ModuleType> = {
 	name: string;
 	moduleKey: string;
 	type: T;
-	x: number;
-	y: number;
 	state?: IModuleState[T];
 };
 

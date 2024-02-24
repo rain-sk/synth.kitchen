@@ -3,7 +3,8 @@ import React, {
 	useCallback,
 	useEffect,
 	useMemo,
-	useRef
+	useRef,
+	useState
 } from 'react';
 
 import { actions } from '../state/actions';
@@ -31,10 +32,9 @@ const useDragAndDrop = (
 	initialX: number,
 	initialY: number,
 	containerRef: React.MutableRefObject<HTMLElement | null>,
-	setIsDragging: (isDraggingModules: boolean) => void,
 	onUpdate: (x: number, y: number) => void
 ): [
-	React.MutableRefObject<boolean>,
+	boolean,
 	(e: ReactMouseEvent<HTMLDivElement>) => void,
 	(x: number, y: number) => void
 ] => {
@@ -51,7 +51,7 @@ const useDragAndDrop = (
 		});
 
 	const position = useRef({ x: initialX, y: initialY });
-	const isDraggingRef = useRef(false);
+	const [isDragging, setIsDragging] = useState(false);
 
 	const { x, y } = position.current;
 
@@ -62,7 +62,6 @@ const useDragAndDrop = (
 	const dragOffset = useRef({ x: 0, y: 0 });
 
 	const stopDragging = () => {
-		isDraggingRef.current = false;
 		setIsDragging(false);
 		dragOffset.current.x = 0;
 		dragOffset.current.y = 0;
@@ -91,7 +90,6 @@ const useDragAndDrop = (
 		e.stopPropagation();
 
 		if (e.nativeEvent.button == 0) {
-			isDraggingRef.current = true;
 			setIsDragging(true);
 
 			dragOffset.current.x = e.clientX - x;
@@ -116,7 +114,7 @@ const useDragAndDrop = (
 		moveContainerRef(containerRef, x, y);
 	});
 
-	return [isDraggingRef, startDragging, setPosition];
+	return [isDragging, startDragging, setPosition];
 };
 
 const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
@@ -159,7 +157,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 
 export const Module: React.FunctionComponent<{
 	module: IModule;
-}> = ({ module }) => {
+	position: [number, number];
+}> = ({ module, position }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const dispatch = useDispatchContext();
 	const { selectedModuleKeys, selectionPending, heldModifiers } =
@@ -172,26 +171,18 @@ export const Module: React.FunctionComponent<{
 		[dispatch, module.moduleKey]
 	);
 
-	const setIsDragging = useCallback(
-		(isDraggingModules: boolean) => {
-			dispatch(actions.dragModulesAction(isDraggingModules));
-		},
-		[dispatch]
-	);
-
-	const [isDraggingRef, startDragging, setPosition] = useDragAndDrop(
-		module.x,
-		module.y,
+	const [isDragging, startDragging, setPosition] = useDragAndDrop(
+		position[0],
+		position[1],
 		containerRef,
-		setIsDragging,
 		onUpdatePosition
 	);
 
 	useEffect(() => {
-		if (!isDraggingRef.current) {
-			setPosition(module.x, module.y);
+		if (!isDragging) {
+			setPosition(position[0], position[1]);
 		}
-	}, [isDraggingRef.current, module.x, module.y]);
+	}, [position]);
 
 	const currentlySelected = useMemo(
 		() => selectedModuleKeys.has(module.moduleKey),
@@ -204,7 +195,7 @@ export const Module: React.FunctionComponent<{
 			: ' selected'
 		: ' unselected';
 
-	const draggingStateString = isDraggingRef.current ? ' dragging' : '';
+	const draggingStateString = isDragging ? ' dragging' : '';
 
 	const onFocus = useCallback(() => {
 		dispatch(actions.selectSingleModuleAction(module.moduleKey));

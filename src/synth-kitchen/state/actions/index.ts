@@ -4,7 +4,6 @@ import {
 	IDisableKeyMovement,
 	disableKeyMovementAction
 } from './disable-key-movement';
-import { dragModulesAction, IDragModules } from './drag-modules';
 import {
 	IEnableKeyMovement,
 	enableKeyMovementAction
@@ -42,7 +41,6 @@ export type IAction =
 	| IAddModule
 	| IChangeName
 	| IDisableKeyMovement
-	| IDragModules
 	| IEnableKeyMovement
 	| IHistory
 	| IKeyboardEvent
@@ -57,7 +55,6 @@ export const actions = {
 	changeNameAction,
 	deselectModuleAction,
 	disableKeyMovementAction,
-	dragModulesAction,
 	enableKeyMovementAction,
 	historyPushAction,
 	historyRedoAction,

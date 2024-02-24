@@ -29,8 +29,7 @@ const state = {
 		element: undefined as HTMLDivElement | undefined,
 		start: INVALID_POSITION,
 		end: INVALID_POSITION
-	},
-	spacer: undefined as HTMLDivElement | undefined
+	}
 };
 
 export const ModuleCanvasBackdrop: React.FC<{
@@ -63,8 +62,6 @@ export const ModuleCanvasBackdrop: React.FC<{
 		}
 	}, [deviceButtonPosition, selectedModuleKeys.size]);
 
-	const canvasWasResized = useRef(false);
-
 	const drawSelection = useCallback(() => {
 		if (state.selection.element) {
 			if (state.selection.start.join(',') === INVALID_POSITION.join(',')) {
@@ -94,47 +91,20 @@ export const ModuleCanvasBackdrop: React.FC<{
 		drawSelection();
 	}, []);
 
-	const isInitialized = () =>
-		!!state.container && !!state.selection && !!state.spacer;
+	const isInitialized = () => !!state.container && !!state.selection;
 
 	const onResize = useCallback(() => {
 		queueAnimation(() => {
-			if (state.container && state.spacer) {
-				const containerRect = state.container.getBoundingClientRect();
-				{
-					const modulesArray = Object.values(modules);
-
-					const width = Math.max(
-						...[containerRect.width, ...modulesArray.map((module) => module.x)]
-					);
-					const height = Math.max(
-						...[containerRect.height, ...modulesArray.map((module) => module.y)]
-					);
-
-					state.spacer.style.width = `calc(${width}px + 50vw)`;
-					state.spacer.style.height = `calc(${height}px + 50vh)`;
-				}
-
+			if (state.container) {
 				drawSelection();
-
-				if (!canvasWasResized.current) {
-					canvasWasResized.current = true;
-					const spacerRect = state.spacer.getBoundingClientRect();
-					// console.log((spacerRect.width - window.innerWidth) / 2);
-					// console.log((spacerRect.height - window.innerHeight) / 2);
-					state.container.scrollTo({
-						left: (spacerRect.width - window.innerWidth) / 2,
-						top: (spacerRect.height - window.innerHeight) / 2
-					});
-				}
 			}
 		});
-	}, [queueAnimation, state.container, state.spacer, modules, drawSelection]);
+	}, [queueAnimation, state.container, modules, drawSelection]);
 
 	const { current: onMouseout } = useRef((/*e: MouseEvent*/) => {});
 
 	useEffect(() => {
-		if (state.container && state.selection && state.spacer) {
+		if (state.container && state.selection) {
 			onResize();
 
 			window.addEventListener('resize', onResize, false);
@@ -147,7 +117,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 				window.addEventListener('mouseout', onMouseout, false);
 			};
 		}
-	}, [initialized, state.container, state.selection, state.spacer]);
+	}, [initialized, state.container, state.selection]);
 
 	const onDrag = useCallback((e: MouseEvent) => {
 		// console.log(e);
@@ -211,12 +181,6 @@ export const ModuleCanvasBackdrop: React.FC<{
 				id="selection"
 				ref={(div) => {
 					state.selection.element = div ?? undefined;
-					setInitialized(isInitialized());
-				}}
-			/>
-			<div
-				ref={(div) => {
-					state.spacer = div ?? undefined;
 					setInitialized(isInitialized());
 				}}
 			/>

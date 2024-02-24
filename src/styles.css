@@ -110,8 +110,8 @@ main {
 	background-color: green;
 }
 
-#module-canvas.dragging > .module {
-	transition: border linear 100ms, top linear 10ms, left linear 10ms;
+#module-canvas > .module {
+	transition: border linear 100ms;
 }
 
 .module.selected {
