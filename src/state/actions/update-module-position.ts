@@ -2,20 +2,17 @@ export type IUpdateModulePosition = {
 	type: 'UpdateModulePosition';
 	payload: {
 		moduleKey: string;
-		x: number;
-		y: number;
+		position: [number, number];
 	};
 };
 
 export const updateModulePositionAction = (
 	moduleKey: string,
-	x: number,
-	y: number
+	position: [number, number]
 ): IUpdateModulePosition => ({
 	type: 'UpdateModulePosition',
 	payload: {
 		moduleKey,
-		x,
-		y
+		position
 	}
 });

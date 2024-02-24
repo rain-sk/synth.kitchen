@@ -26,15 +26,15 @@ const resizeCanvas = (
 	width: number,
 	height: number
 ) => {
-	canvas.width = width * devicePixelRatio;
-	canvas.height = height * devicePixelRatio;
+	canvas.width = width;
+	canvas.height = height;
 };
 
 export const Connections: React.FC = () => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
 
-	const { modules } = useStateContext();
+	const { modules, modulePositions } = useStateContext();
 	const { connectionCount, connections } = useContext(ConnectionContext);
 
 	const drawConnections = useCallback(() => {
@@ -111,7 +111,7 @@ export const Connections: React.FC = () => {
 		};
 	});
 
-	useEffect(onResize, [connectionCount, modules]);
+	useEffect(onResize, [connectionCount, modules, modulePositions]);
 
 	return (
 		<canvas

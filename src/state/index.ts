@@ -15,9 +15,6 @@ export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 			case 'DisableKeyMovement': {
 				return reducers.disableKeyMovement(state, action);
 			}
-			case 'DragModules': {
-				return reducers.dragModules(state, action);
-			}
 			case 'EnableKeyMovement': {
 				return reducers.enableKeyMovement(state, action);
 			}

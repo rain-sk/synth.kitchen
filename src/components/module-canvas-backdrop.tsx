@@ -63,8 +63,6 @@ export const ModuleCanvasBackdrop: React.FC<{
 		}
 	}, [deviceButtonPosition, selectedModuleKeys.size]);
 
-	const canvasWasResized = useRef(false);
-
 	const drawSelection = useCallback(() => {
 		if (state.selection.element) {
 			if (state.selection.start.join(',') === INVALID_POSITION.join(',')) {
@@ -99,34 +97,8 @@ export const ModuleCanvasBackdrop: React.FC<{
 
 	const onResize = useCallback(() => {
 		queueAnimation(() => {
-			if (state.container && state.spacer) {
-				const containerRect = state.container.getBoundingClientRect();
-				{
-					const modulesArray = Object.values(modules);
-
-					const width = Math.max(
-						...[containerRect.width, ...modulesArray.map((module) => module.x)]
-					);
-					const height = Math.max(
-						...[containerRect.height, ...modulesArray.map((module) => module.y)]
-					);
-
-					state.spacer.style.width = `calc(${width}px + 50vw)`;
-					state.spacer.style.height = `calc(${height}px + 50vh)`;
-				}
-
+			if (state.container) {
 				drawSelection();
-
-				if (!canvasWasResized.current) {
-					canvasWasResized.current = true;
-					const spacerRect = state.spacer.getBoundingClientRect();
-					// console.log((spacerRect.width - window.innerWidth) / 2);
-					// console.log((spacerRect.height - window.innerHeight) / 2);
-					state.container.scrollTo({
-						left: (spacerRect.width - window.innerWidth) / 2,
-						top: (spacerRect.height - window.innerHeight) / 2
-					});
-				}
 			}
 		});
 	}, [queueAnimation, state.container, state.spacer, modules, drawSelection]);

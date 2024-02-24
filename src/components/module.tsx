@@ -3,7 +3,8 @@ import React, {
 	useCallback,
 	useEffect,
 	useMemo,
-	useRef
+	useRef,
+	useState
 } from 'react';
 
 import { actions } from '../state/actions';
@@ -28,41 +29,45 @@ import { useStateContext } from '../hooks/use-state-context';
 import { VcaModule } from './modules/vca';
 
 const useDragAndDrop = (
-	initialX: number,
-	initialY: number,
-	containerRef: React.MutableRefObject<HTMLElement | null>,
-	setIsDragging: (isDraggingModules: boolean) => void,
-	onUpdate: (x: number, y: number) => void
+	moduleKey: string,
+	initialPosition: [number, number],
+	containerRef: React.MutableRefObject<HTMLElement | null>
 ): [
-	React.MutableRefObject<boolean>,
+	boolean,
 	(e: ReactMouseEvent<HTMLDivElement>) => void,
-	(x: number, y: number) => void
+	(position: [number, number]) => void
 ] => {
+	const dispatch = useDispatchContext();
+	const updateModulePosition = useCallback(
+		(position: [number, number]) => {
+			dispatch(actions.updateModulePositionAction(moduleKey, position));
+		},
+		[dispatch, moduleKey]
+	);
+
 	const moveContainerRef = (
 		containerRef: React.MutableRefObject<HTMLElement | null>,
-		x: number,
-		y: number
+		position: [number, number]
 	) =>
 		queueAnimation(() => {
 			if (containerRef.current) {
-				containerRef.current.style.left = `${x}px`;
-				containerRef.current.style.top = `${y}px`;
+				containerRef.current.style.left = `${position[0]}px`;
+				containerRef.current.style.top = `${position[1]}px`;
 			}
 		});
 
-	const position = useRef({ x: initialX, y: initialY });
-	const isDraggingRef = useRef(false);
+	const position = useRef(initialPosition);
+	const [isDragging, setIsDragging] = useState(false);
 
-	const { x, y } = position.current;
+	const [x, y] = position.current;
 
 	useEffect(() => {
-		moveContainerRef(containerRef, initialX, initialY);
+		moveContainerRef(containerRef, initialPosition);
 	}, [containerRef.current]);
 
 	const dragOffset = useRef({ x: 0, y: 0 });
 
 	const stopDragging = () => {
-		isDraggingRef.current = false;
 		setIsDragging(false);
 		dragOffset.current.x = 0;
 		dragOffset.current.y = 0;
@@ -74,15 +79,13 @@ const useDragAndDrop = (
 		} else {
 			const x = e.clientX - dragOffset.current.x;
 			const y = e.clientY - dragOffset.current.y;
+			const newPosition: [number, number] = [x, y];
 
-			moveContainerRef(containerRef, x, y);
+			moveContainerRef(containerRef, newPosition);
 
-			position.current = {
-				x,
-				y
-			};
+			position.current = newPosition;
 
-			onUpdate(x, y);
+			updateModulePosition(newPosition);
 		}
 	});
 
@@ -91,7 +94,6 @@ const useDragAndDrop = (
 		e.stopPropagation();
 
 		if (e.nativeEvent.button == 0) {
-			isDraggingRef.current = true;
 			setIsDragging(true);
 
 			dragOffset.current.x = e.clientX - x;
@@ -108,15 +110,12 @@ const useDragAndDrop = (
 		}
 	};
 
-	const { current: setPosition } = useRef((x: number, y: number) => {
-		position.current = {
-			x,
-			y
-		};
-		moveContainerRef(containerRef, x, y);
+	const { current: setPosition } = useRef((newPosition: [number, number]) => {
+		position.current = newPosition;
+		moveContainerRef(containerRef, newPosition);
 	});
 
-	return [isDraggingRef, startDragging, setPosition];
+	return [isDragging, startDragging, setPosition];
 };
 
 const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
@@ -159,52 +158,41 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 
 export const Module: React.FunctionComponent<{
 	module: IModule;
-}> = ({ module }) => {
+	position: [number, number];
+}> = ({ module, position }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const dispatch = useDispatchContext();
 	const { selectedModuleKeys, selectionPending, heldModifiers } =
 		useStateContext();
 
-	const onUpdatePosition = useCallback(
-		(x: number, y: number) => {
-			dispatch(actions.updateModulePositionAction(module.moduleKey, x, y));
-		},
-		[dispatch, module.moduleKey]
-	);
-
-	const setIsDragging = useCallback(
-		(isDraggingModules: boolean) => {
-			dispatch(actions.dragModulesAction(isDraggingModules));
-		},
-		[dispatch]
-	);
-
-	const [isDraggingRef, startDragging, setPosition] = useDragAndDrop(
-		module.x,
-		module.y,
-		containerRef,
-		setIsDragging,
-		onUpdatePosition
+	const [isDragging, startDragging, setPosition] = useDragAndDrop(
+		module.moduleKey,
+		position,
+		containerRef
 	);
 
 	useEffect(() => {
-		if (!isDraggingRef.current) {
-			setPosition(module.x, module.y);
+		if (!isDragging) {
+			setPosition(position);
 		}
-	}, [isDraggingRef.current, module.x, module.y]);
+	}, [position]);
 
 	const currentlySelected = useMemo(
 		() => selectedModuleKeys.has(module.moduleKey),
 		[selectedModuleKeys, module.moduleKey]
 	);
 
-	const selectionStateString = currentlySelected
-		? selectionPending
-			? ' selection_pending'
-			: ' selected'
-		: ' unselected';
+	const selectionStateString = useMemo(
+		() =>
+			currentlySelected
+				? selectionPending
+					? ' selection_pending'
+					: ' selected'
+				: ' unselected',
+		[currentlySelected, selectionPending]
+	);
 
-	const draggingStateString = isDraggingRef.current ? ' dragging' : '';
+	const draggingStateString = isDragging ? ' dragging' : '';
 
 	const onFocus = useCallback(() => {
 		dispatch(actions.selectSingleModuleAction(module.moduleKey));
