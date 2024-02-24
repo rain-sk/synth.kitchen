@@ -61,7 +61,7 @@ export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 			)
 		};
 	} else {
-		console.log(type, keyCode);
+		// console.log(type, keyCode);
 		return state;
 	}
 };

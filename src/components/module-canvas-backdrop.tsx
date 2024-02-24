@@ -113,7 +113,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 			const expandLeft = spacerRect.left - mainRect.left < 150;
 			const expandRight = spacerRect.right - mainRect.right < 150;
 
-			console.log({ expandTop, expandBottom, expandLeft, expandRight });
+			// console.log({ expandTop, expandBottom, expandLeft, expandRight });
 
 			if (expandRight) {
 				state.spacer.style.width = `calc(${spacerRect.width}px + 150px)`;
@@ -122,10 +122,10 @@ export const ModuleCanvasBackdrop: React.FC<{
 				state.spacer.style.height = `calc(${spacerRect.height}px + 150px)`;
 			}
 			if (expandLeft) {
-				console.log('hmm');
+				// console.log('hmm');
 			}
 			if (expandTop) {
-				console.log('hmm');
+				// console.log('hmm');
 			}
 		}
 	}, []);
