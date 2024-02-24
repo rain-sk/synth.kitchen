@@ -5,7 +5,7 @@ import { INVALID_POSITION } from '../state/types/state';
 import { useEffectOnce } from '../hooks/use-effect-once';
 import { queueAnimation } from '../utils/animation';
 
-const coordinates = (connectorKey: string) => {
+const coordinates = (connectorKey: string, offsetTop: number) => {
 	// console.log(connectorKey);
 	const connector = document.getElementById(connectorKey);
 	if (!connector) {
@@ -15,7 +15,7 @@ const coordinates = (connectorKey: string) => {
 	const rect = connector.getBoundingClientRect();
 	return [
 		rect.left + rect.width / 2 + window.pageXOffset,
-		rect.top + rect.height / 2 + window.pageYOffset
+		rect.top + rect.height / 2 + window.pageYOffset - offsetTop
 	];
 };
 
@@ -33,6 +33,7 @@ const resizeCanvas = (
 export const Connections: React.FC = () => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
+	const mainRef = useRef(document.getElementById('main'));
 
 	const { modules, modulePositions } = useStateContext();
 	const { connectionCount, connections } = useContext(ConnectionContext);
@@ -61,8 +62,8 @@ export const Connections: React.FC = () => {
 			const connectionsToDraw = [...connections.values()].map(
 				// todo: filter out off-screen connections
 				([output, input]) => [
-					coordinates(connectorKey(output)),
-					coordinates(connectorKey(input))
+					coordinates(connectorKey(output), mainRef.current?.offsetTop ?? 0),
+					coordinates(connectorKey(input), mainRef.current?.offsetTop ?? 0)
 				]
 			);
 
@@ -85,10 +86,12 @@ export const Connections: React.FC = () => {
 	}, []);
 
 	const onResize = useCallback(() => {
-		const parent = document.getElementById('root');
+		if (!mainRef.current) {
+			mainRef.current = document.getElementById('main');
+		}
 
-		const width = parent ? parent.offsetWidth : 0;
-		const height = parent ? parent.offsetHeight : 0;
+		const width = mainRef.current ? mainRef.current.offsetWidth : 0;
+		const height = mainRef.current ? mainRef.current.offsetHeight : 0;
 
 		if (canvasRef.current && contextRef.current) {
 			contextRef.current.clearRect(0, 0, width, height);
@@ -99,15 +102,20 @@ export const Connections: React.FC = () => {
 		queueAnimation(drawConnections);
 	}, []);
 
+	const onScroll = useCallback((e: any) => {
+		console.log({ scroll: e });
+		onResize();
+	}, []);
+
 	useEffectOnce(() => {
 		const parent = document.getElementById('root');
 		const main = document.getElementsByTagName('main')[0];
 		(parent as any).addEventListener('resize', onResize, false);
-		(main as any).addEventListener('scroll', onResize, false);
+		(main as any).addEventListener('scroll', onScroll, false);
 		onResize();
 		return () => {
 			(parent as any).removeEventListener('resize', onResize, false);
-			(main as any).removeEventListener('scroll', onResize, false);
+			(main as any).removeEventListener('scroll', onScroll, false);
 		};
 	});
 

@@ -122,8 +122,6 @@ export const ModuleCanvasBackdrop: React.FC<{
 	}, [initialized, state.container, state.selection, state.spacer]);
 
 	const onDrag = useCallback((e: MouseEvent) => {
-		// console.log(e);
-		// console.log(state.container);
 		state.selection.end = positionFromMouseEvent(
 			e,
 			state.container as HTMLElement
@@ -172,6 +170,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 
 	return (
 		<main
+			id="main"
 			ref={(main) => {
 				state.container = main ?? undefined;
 				setInitialized(isInitialized());

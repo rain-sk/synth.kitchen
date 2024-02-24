@@ -47,8 +47,8 @@ export const Kitchen: React.FC = () => {
 			<ModuleCanvasBackdrop drawOnTop={false}>
 				<KeyHandler />
 				<ModuleCanvas modules={sortedModules} />
+				<Connections />
 			</ModuleCanvasBackdrop>
-			<Connections />
 		</ContextWrapper>
 	);
 };

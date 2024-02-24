@@ -110,7 +110,7 @@ main {
 	background-color: green;
 }
 
-#module-canvas.dragging > .module {
+#module-canvas > .module {
 	transition: border linear 100ms;
 }
 
