@@ -105,7 +105,28 @@ export const ModuleCanvasBackdrop: React.FC<{
 
 	const onScroll = useCallback(() => {
 		if (state.container && state.spacer) {
-			console.log('update spacer size and position...');
+			const mainRect = state.container.getBoundingClientRect();
+			const spacerRect = state.spacer.getBoundingClientRect();
+
+			const expandTop = spacerRect.top - mainRect.top < 150;
+			const expandBottom = spacerRect.bottom - mainRect.bottom < 150;
+			const expandLeft = spacerRect.left - mainRect.left < 150;
+			const expandRight = spacerRect.right - mainRect.right < 150;
+
+			console.log({ expandTop, expandBottom, expandLeft, expandRight });
+
+			if (expandRight) {
+				state.spacer.style.width = `calc(${spacerRect.width}px + 150px)`;
+			}
+			if (expandBottom) {
+				state.spacer.style.height = `calc(${spacerRect.height}px + 150px)`;
+			}
+			if (expandLeft) {
+				console.log('hmm');
+			}
+			if (expandTop) {
+				console.log('hmm');
+			}
 		}
 	}, []);
 
