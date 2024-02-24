@@ -3,7 +3,7 @@ import { ConnectionContext, connectorKey } from '../contexts/connection';
 import { useStateContext } from '../hooks/use-state-context';
 import { INVALID_POSITION } from '../state/types/state';
 import { useEffectOnce } from '../hooks/use-effect-once';
-import { queueAnimation } from '../utils/animation';
+import { queueAnimationCallback } from '../utils/animation';
 
 const coordinates = (connectorKey: string, offsetTop: number) => {
 	const connector = document.getElementById(connectorKey);
@@ -37,52 +37,55 @@ export const Connections: React.FC = () => {
 	const { modules, modulePositions } = useStateContext();
 	const { connectionCount, connections } = useContext(ConnectionContext);
 
-	const drawConnections = useCallback(() => {
-		if (canvasRef.current && !contextRef.current) {
-			contextRef.current = canvasRef.current.getContext('2d') ?? undefined;
-			if (contextRef.current) {
-				contextRef.current.scale(devicePixelRatio, devicePixelRatio);
+	const drawConnections = useCallback(
+		queueAnimationCallback(() => {
+			if (canvasRef.current && !contextRef.current) {
+				contextRef.current = canvasRef.current.getContext('2d') ?? undefined;
+				if (contextRef.current) {
+					contextRef.current.scale(devicePixelRatio, devicePixelRatio);
+				}
 			}
-		}
 
-		if (contextRef.current && canvasRef.current) {
-			const context2d = contextRef.current;
-			contextRef.current.clearRect(
-				0,
-				0,
-				canvasRef.current.width,
-				canvasRef.current.height
-			);
+			if (contextRef.current && canvasRef.current) {
+				const context2d = contextRef.current;
+				contextRef.current.clearRect(
+					0,
+					0,
+					canvasRef.current.width,
+					canvasRef.current.height
+				);
 
-			var rect = canvasRef.current.getBoundingClientRect();
+				var rect = canvasRef.current.getBoundingClientRect();
 
-			resizeCanvas(canvasRef.current, rect.width, rect.height);
+				resizeCanvas(canvasRef.current, rect.width, rect.height);
 
-			const connectionsToDraw = [...connections.values()].map(
-				// todo: filter out off-screen connections
-				([output, input]) => [
-					coordinates(connectorKey(output), mainRef.current?.offsetTop ?? 0),
-					coordinates(connectorKey(input), mainRef.current?.offsetTop ?? 0)
-				]
-			);
+				const connectionsToDraw = [...connections.values()].map(
+					// todo: filter out off-screen connections
+					([output, input]) => [
+						coordinates(connectorKey(output), mainRef.current?.offsetTop ?? 0),
+						coordinates(connectorKey(input), mainRef.current?.offsetTop ?? 0)
+					]
+				);
 
-			connectionsToDraw.forEach(([[outputX, outputY], [inputX, inputY]]) => {
-				context2d.beginPath();
-				context2d.lineWidth = 4;
-				context2d.moveTo(outputX, outputY);
-				context2d.lineTo(inputX, inputY);
-				context2d.stroke();
+				connectionsToDraw.forEach(([[outputX, outputY], [inputX, inputY]]) => {
+					context2d.beginPath();
+					context2d.lineWidth = 4;
+					context2d.moveTo(outputX, outputY);
+					context2d.lineTo(inputX, inputY);
+					context2d.stroke();
 
-				context2d.beginPath();
-				context2d.arc(outputX, outputY, 5, 0, 2 * Math.PI);
-				context2d.fill();
+					context2d.beginPath();
+					context2d.arc(outputX, outputY, 5, 0, 2 * Math.PI);
+					context2d.fill();
 
-				context2d.beginPath();
-				context2d.arc(inputX, inputY, 5, 0, 2 * Math.PI);
-				context2d.fill();
-			});
-		}
-	}, []);
+					context2d.beginPath();
+					context2d.arc(inputX, inputY, 5, 0, 2 * Math.PI);
+					context2d.fill();
+				});
+			}
+		}),
+		[]
+	);
 
 	const onResize = useCallback(() => {
 		if (!mainRef.current) {
@@ -98,7 +101,7 @@ export const Connections: React.FC = () => {
 			resizeCanvas(canvasRef.current, width, height);
 		}
 
-		queueAnimation(drawConnections);
+		drawConnections();
 	}, []);
 
 	const onScroll = useCallback((e: any) => {

@@ -14,3 +14,6 @@ export const queueAnimation = (callback: AnimationCallback) => {
 	}
 	callbackQueue.push(callback);
 };
+
+export const queueAnimationCallback = (callback: AnimationCallback) => () =>
+	queueAnimation(callback);

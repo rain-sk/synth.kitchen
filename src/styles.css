@@ -68,6 +68,11 @@ main {
 	border-radius: 3px;
 }
 
+#spacer {
+	min-width: calc(100vw + 2px);
+	min-height: calc(100vh + 2px - 2.5rem);
+}
+
 #connections {
 	z-index: 10;
 	pointer-events: none;

@@ -119,7 +119,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 				window.addEventListener('mouseout', onMouseout, false);
 			};
 		}
-	}, [initialized, state.container, state.selection, state.spacer]);
+	}, [initialized, onResize, state.container, state.selection, state.spacer]);
 
 	const onDrag = useCallback((e: MouseEvent) => {
 		state.selection.end = positionFromMouseEvent(
@@ -186,6 +186,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 				}}
 			/>
 			<div
+				id="spacer"
 				ref={(div) => {
 					state.spacer = div ?? undefined;
 					setInitialized(isInitialized());
