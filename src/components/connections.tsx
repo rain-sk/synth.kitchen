@@ -6,7 +6,6 @@ import { useEffectOnce } from '../hooks/use-effect-once';
 import { queueAnimation } from '../utils/animation';
 
 const coordinates = (connectorKey: string, offsetTop: number) => {
-	// console.log(connectorKey);
 	const connector = document.getElementById(connectorKey);
 	if (!connector) {
 		return INVALID_POSITION;
@@ -127,6 +126,7 @@ export const Connections: React.FC = () => {
 			ref={(ref) => {
 				canvasRef.current = ref ?? undefined;
 			}}
+			style={{ position: 'fixed', top: '2.5rem' }}
 		/>
 	);
 };
