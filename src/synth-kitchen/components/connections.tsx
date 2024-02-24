@@ -23,7 +23,7 @@ export const Connections: React.FC = () => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
 
-	const { modules, modulePositions } = useStateContext();
+	const { modules } = useStateContext();
 	const { connectionCount, connections } = useContext(ConnectionContext);
 
 	const drawConnections = useCallback(() => {
@@ -94,7 +94,7 @@ export const Connections: React.FC = () => {
 		};
 	});
 
-	useEffect(onResize, [connectionCount, modules, modulePositions]);
+	useEffect(onResize, [connectionCount, modules]);
 
 	return (
 		<canvas

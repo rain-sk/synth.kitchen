@@ -34,12 +34,16 @@ export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 
 		return {
 			...state,
-			modulePositions: Object.fromEntries(
-				Object.entries(state.modulePositions).map(([moduleKey, position]) => [
+			modules: Object.fromEntries(
+				Object.entries(state.modules).map(([moduleKey, module]) => [
 					moduleKey,
 					state.selectedModuleKeys.has(moduleKey)
-						? [position[0] + deltaX, position[1] + deltaY]
-						: position
+						? {
+								...module,
+								x: module.x + deltaX,
+								y: module.y + deltaY
+						  }
+						: module
 				])
 			)
 		};

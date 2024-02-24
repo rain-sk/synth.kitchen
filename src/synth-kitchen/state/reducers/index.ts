@@ -1,6 +1,7 @@
 import { addModule } from './add-module';
 import { changeName } from './change-name';
 import { disableKeyMovement } from './disable-key-movement';
+import { dragModules } from './drag-modules';
 import { enableKeyMovement } from './enable-key-movement';
 import { history } from './history';
 import { keyboardEvent } from './keyboard-event';
@@ -14,6 +15,7 @@ export const reducers = {
 	addModule,
 	changeName,
 	disableKeyMovement,
+	dragModules,
 	enableKeyMovement,
 	history,
 	keyboardEvent,

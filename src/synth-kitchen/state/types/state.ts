@@ -14,8 +14,8 @@ export const INVALID_POSITION: [number, number] = [-1, -1];
 export type IState = IPatch & {
 	heldModifiers: Modifier;
 	isKeyMovementEnabled: boolean;
+	isDraggingModules: boolean;
 	modules: Record<string, IModule>;
-	modulePositions: Record<string, [number, number]>;
 	mouseDragStartPosition: [number, number];
 	mouseDragPosition: [number, number];
 	patchHistory: IPatch[];
@@ -29,20 +29,17 @@ export type IState = IPatch & {
 
 export const initialState: IState = {
 	heldModifiers: Modifier.NONE,
+	isDraggingModules: false,
 	isKeyMovementEnabled: true,
 	modules: {
 		'0': {
 			name: 'output',
 			moduleKey: '0',
 			type: 'OUTPUT',
+			x: document.documentElement.scrollWidth / 1.47,
+			y: document.documentElement.scrollHeight / 1.8,
 			state: { gain: 0.45 }
 		}
-	},
-	modulePositions: {
-		'0': [
-			document.documentElement.scrollWidth / 1.47,
-			document.documentElement.scrollHeight / 1.8
-		]
 	},
 	mouseDragStartPosition: INVALID_POSITION,
 	mouseDragPosition: INVALID_POSITION,

@@ -34,8 +34,7 @@ const rectContainsOtherRect = (
 const modulesInRange = (
 	mouseDragStartPosition: [number, number],
 	currentMousePosition: [number, number],
-	modules: Record<string, IModule>,
-	modulePositions: Record<string, [number, number]>
+	modules: IModule[]
 ): Set<string> => {
 	const moduleKeysInRange = new Set<string>();
 
@@ -46,23 +45,21 @@ const modulesInRange = (
 		height: Math.abs(mouseDragStartPosition[1] - currentMousePosition[1])
 	};
 
-	for (let moduleKey in modules) {
-		const position = modulePositions[moduleKey];
-
+	modules.forEach((module) => {
 		const navElement = document.getElementsByTagName('nav')[0];
-		const moduleElement = document.getElementById(moduleKey);
+		const moduleElement = document.getElementById(module.moduleKey);
 
 		const moduleRect = {
-			x: position[0],
-			y: position[1] + navElement.clientHeight,
+			x: module.x,
+			y: module.y + navElement.clientHeight,
 			width: moduleElement?.clientWidth ?? 0,
 			height: moduleElement?.clientHeight ?? 0
 		};
 
 		if (rectContainsOtherRect(rect, moduleRect)) {
-			moduleKeysInRange.add(moduleKey);
+			moduleKeysInRange.add(module.moduleKey);
 		}
-	}
+	});
 
 	return moduleKeysInRange;
 };
@@ -86,13 +83,12 @@ export const selectionDrag: React.Reducer<IState, ISelectionDrag> = (
 			};
 		}
 		case SelectionDragType.DRAG_CONTINUE: {
-			const { mouseDragStartPosition, modules, modulePositions } = state;
+			const { mouseDragStartPosition, modules } = state;
 
 			const modulesInDrag = modulesInRange(
 				mouseDragStartPosition,
 				position,
-				modules,
-				modulePositions
+				Object.values(modules)
 			);
 
 			const selectedModuleKeys =
@@ -107,7 +103,7 @@ export const selectionDrag: React.Reducer<IState, ISelectionDrag> = (
 			};
 		}
 		case SelectionDragType.DRAG_END: {
-			const { mouseDragStartPosition, modules, modulePositions } = state;
+			const { mouseDragStartPosition, modules } = state;
 
 			return {
 				...state,
@@ -116,8 +112,7 @@ export const selectionDrag: React.Reducer<IState, ISelectionDrag> = (
 				selectedModuleKeys: modulesInRange(
 					mouseDragStartPosition,
 					position,
-					modules,
-					modulePositions
+					Object.values(modules)
 				),
 				selectionPending: false
 			};
