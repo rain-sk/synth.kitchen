@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { queueAnimation } from '../utils/animation';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
-import { useEffectOnce } from '../hooks/use-effect-once';
 import { useStateContext } from '../hooks/use-state-context';
 
 import { actions } from '../state/actions';
@@ -23,7 +22,6 @@ const positionFromMouseEvent = (
 ];
 
 const state = {
-	initialized: false,
 	container: undefined as HTMLElement | undefined,
 	selection: {
 		element: undefined as HTMLDivElement | undefined,
@@ -37,15 +35,6 @@ export const ModuleCanvasBackdrop: React.FC<{
 	drawOnTop: boolean;
 	children: React.ReactNode;
 }> = ({ children }) => {
-	useEffectOnce(() => {
-		if (state.initialized) {
-			console.error('oh no!');
-			throw 'oh no!';
-		} else {
-			state.initialized = true;
-		}
-	});
-
 	const { modules, selectedModuleKeys } = useStateContext();
 	const dispatch = useDispatchContext();
 
