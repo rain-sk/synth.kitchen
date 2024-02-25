@@ -8,12 +8,6 @@ import {
 	IEnableKeyMovement,
 	enableKeyMovementAction
 } from './enable-key-movement';
-import {
-	historyPushAction,
-	historyRedoAction,
-	historyUndoAction,
-	IHistory
-} from './history';
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
 import { ILoadPatch, loadPatchAction } from './load-patch';
 import {
@@ -42,7 +36,6 @@ export type IAction =
 	| IChangeName
 	| IDisableKeyMovement
 	| IEnableKeyMovement
-	| IHistory
 	| IKeyboardEvent
 	| ILoadPatch
 	| ISelectionDrag
@@ -56,9 +49,6 @@ export const actions = {
 	deselectModuleAction,
 	disableKeyMovementAction,
 	enableKeyMovementAction,
-	historyPushAction,
-	historyRedoAction,
-	historyUndoAction,
 	keyDownAction,
 	keyUpAction,
 	loadPatchAction,

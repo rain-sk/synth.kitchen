@@ -31,7 +31,6 @@ export const AddModule: React.FC<{ position?: [number, number] }> = ({
 		(e: React.ChangeEvent<HTMLSelectElement>) => {
 			const moduleType = e.target.value;
 			if (moduleType !== '') {
-				dispatch(actions.historyPushAction());
 				dispatch(actions.addModuleAction(moduleType as ModuleType, position));
 			}
 		},

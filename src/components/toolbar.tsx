@@ -16,7 +16,6 @@ export const Toolbar: React.FC<{}> = () => {
 	// const [zoom, setZoom] = useState(100);
 
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		dispatch(actions.historyPushAction());
 		dispatch(actions.changeNameAction(e.target.value));
 	};
 
@@ -103,32 +102,6 @@ export const Toolbar: React.FC<{}> = () => {
 			<section>
 				{/* <AddModule /> */}
 				<Record />
-				{/*<button
-					type="button"
-					onClick={handleUndo}
-					disabled={
-						!(
-							state.patchHistory.length === 1 ||
-							state.patchHistoryOffset + 1 < state.patchHistory.length
-						)
-					}
-				>
-					undo
-				</button>
-				<button
-					type="button"
-					onClick={handleRedo}
-					disabled={state.patchHistoryOffset <= 0}
-				>
-					redo
-				</button>
-				<input
-					type="range"
-					value={zoom}
-					onChange={onChangeZoom}
-					min={0}
-					max={200}
-				/> */}
 			</section>
 		</nav>
 	);

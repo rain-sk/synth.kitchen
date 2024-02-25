@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+
 import { keyCodeMovementMap } from '../constants/key';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
@@ -12,13 +13,8 @@ export const KeyHandler: React.FC = () => {
 		if (e.keyCode in keyCodeMovementMap && selectedModuleKeys.size > 0) {
 			e.preventDefault();
 		}
-		if (e.key === 'z' && e.metaKey) {
-			dispatch(
-				e.shiftKey ? actions.historyRedoAction() : actions.historyUndoAction()
-			);
-		} else {
-			dispatch(actions.keyDownAction(e.keyCode));
-		}
+
+		dispatch(actions.keyDownAction(e.keyCode));
 	});
 
 	const { current: onKeyUp } = useRef((e: KeyboardEvent) => {

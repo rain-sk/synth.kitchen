@@ -202,8 +202,6 @@ export const Module: React.FunctionComponent<{
 		(e: React.MouseEvent<HTMLDivElement>) => {
 			const shiftClick = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
-			dispatch(actions.historyPushAction());
-
 			if (!shiftClick && !currentlySelected) {
 				if (containerRef.current) {
 					containerRef.current.focus();
