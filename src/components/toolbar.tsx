@@ -13,8 +13,6 @@ export const Toolbar: React.FC<{}> = () => {
 	const state = useStateContext();
 	const { connections } = useContext(ConnectionContext);
 
-	// const [zoom, setZoom] = useState(100);
-
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		dispatch(actions.changeNameAction(e.target.value));
 	};
@@ -64,24 +62,6 @@ export const Toolbar: React.FC<{}> = () => {
 		}
 	};
 
-	// const handleUndo = () => {
-	// 	dispatch(actions.historyUndoAction());
-	// };
-
-	// const handleRedo = () => {
-	// 	dispatch(actions.historyRedoAction());
-	// };
-
-	// const onChangeZoom: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-	// 	const newZoom = parseInt(e.target.value);
-	// 	setZoom(newZoom);
-	// 	const canvas = document.getElementById('module-canvas');
-	// 	if (canvas) {
-	// 		console.log(canvas);
-	// 		canvas.style.transform = `scale(${newZoom / 100})`;
-	// 	}
-	// };
-
 	return (
 		<nav>
 			<section>
@@ -100,7 +80,6 @@ export const Toolbar: React.FC<{}> = () => {
 				</label>
 			</section>
 			<section>
-				{/* <AddModule /> */}
 				<Record />
 			</section>
 		</nav>
