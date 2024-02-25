@@ -11,6 +11,7 @@ import { ConnectionContextProvider } from '../contexts/connection';
 import { IAction } from '../state/actions';
 import { Connections } from './connections';
 import { MidiContextProvider } from '../contexts/midi';
+import { IModule } from '../state/types/module';
 
 const ContextWrapper: React.FC<
 	React.PropsWithChildren<{ state: IState; dispatch: React.Dispatch<IAction> }>
@@ -37,7 +38,10 @@ export const Kitchen: React.FC = () => {
 						Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2)) -
 						Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2))
 				)
-				.map(([moduleKey]) => state.modules[moduleKey]),
+				.map(([moduleKey, position]): [IModule, [number, number]] => [
+					state.modules[moduleKey],
+					position
+				]),
 		[state.modulePositions]
 	);
 
@@ -46,7 +50,7 @@ export const Kitchen: React.FC = () => {
 			<Toolbar />
 			<ModuleCanvasBackdrop drawOnTop={false}>
 				<KeyHandler />
-				<ModuleCanvas modules={sortedModules} />
+				<ModuleCanvas modulesWithPosition={sortedModules} />
 				<Connections />
 			</ModuleCanvasBackdrop>
 		</ContextWrapper>
