@@ -1,3 +1,5 @@
+import { Position } from '../types/state';
+
 export enum SelectionDragType {
 	DRAG_START,
 	DRAG_CONTINUE,
@@ -7,13 +9,13 @@ export enum SelectionDragType {
 export type ISelectionDrag = {
 	type: 'SelectionDrag';
 	payload: {
-		position: [number, number];
+		position: Position;
 		type: SelectionDragType;
 	};
 };
 
 export const selectionDragStartAction = (
-	position: [number, number]
+	position: Position
 ): ISelectionDrag => ({
 	type: 'SelectionDrag',
 	payload: {
@@ -23,7 +25,7 @@ export const selectionDragStartAction = (
 });
 
 export const selectionDragContinueAction = (
-	position: [number, number]
+	position: Position
 ): ISelectionDrag => ({
 	type: 'SelectionDrag',
 	payload: {
@@ -32,9 +34,7 @@ export const selectionDragContinueAction = (
 	}
 });
 
-export const selectionDragEndAction = (
-	position: [number, number]
-): ISelectionDrag => ({
+export const selectionDragEndAction = (position: Position): ISelectionDrag => ({
 	type: 'SelectionDrag',
 	payload: {
 		type: SelectionDragType.DRAG_END,

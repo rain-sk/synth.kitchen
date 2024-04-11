@@ -2,9 +2,10 @@ import React from 'react';
 
 import { Module } from './module';
 import { IModule } from '../state/types/module';
+import { Position } from '../state/types/state';
 
 export const ModuleCanvas: React.FC<{
-	modulesWithPosition: [IModule, [number, number]][];
+	modulesWithPosition: [IModule, Position][];
 }> = ({ modulesWithPosition }) => (
 	<>
 		<section id="module-canvas" role="tree" aria-multiselectable>

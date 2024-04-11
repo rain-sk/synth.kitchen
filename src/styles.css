@@ -160,14 +160,17 @@ main {
 	width: 1.2rem;
 	height: 1.2rem;
 	margin: 0;
+	border-radius: 0.6rem;
 }
 
 .connector:first-child {
 	margin-right: 1rem;
+	margin-left: -2.2rem;
 }
 
 .connector:last-child {
 	margin-left: 1rem;
+	margin-right: -2.2rem;
 }
 
 .numparam,

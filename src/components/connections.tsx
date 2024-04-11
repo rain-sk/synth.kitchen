@@ -1,12 +1,36 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
-import { ConnectionContext, connectorKey } from '../contexts/connection';
+import {
+	ConnectionContext,
+	connectorButton,
+	connectorKey,
+	IInput,
+	IOutput
+} from '../contexts/connection';
 import { useStateContext } from '../hooks/use-state-context';
-import { INVALID_POSITION } from '../state/types/state';
+import { INVALID_POSITION, Position } from '../state/types/state';
 import { useEffectOnce } from '../hooks/use-effect-once';
 import { queueAnimationCallback } from '../utils/animation';
 
-const coordinates = (connectorKey: string, offsetTop: number) => {
-	const connector = document.getElementById(connectorKey);
+const _ = {
+	root: document.getElementById('root'),
+	main: document.getElementById('main')
+};
+
+const root = () => {
+	if (!_.root) {
+		_.root = document.getElementById('root');
+	}
+	return _.root as HTMLDivElement;
+};
+const main = () => {
+	if (!_.main) {
+		_.main = document.getElementById('main');
+	}
+	return _.main as HTMLElement;
+};
+
+const coordinates = (connectorKey: string, offsetTop: number): Position => {
+	const connector = connectorButton(connectorKey);
 	if (!connector) {
 		return INVALID_POSITION;
 	}
@@ -18,21 +42,85 @@ const coordinates = (connectorKey: string, offsetTop: number) => {
 	];
 };
 
+const equals = (position1: Position, position2: Position) => {
+	return position1[0] === position2[0] && position1[1] === position2[1];
+};
+
+type Segment = [Position, Position];
+type Path = Segment[];
+
+enum ConnectionDrawMode {
+	DIRECT,
+	STEPPED
+}
+
+const connectionToPath =
+	(mode: ConnectionDrawMode) =>
+	([output, input]: [IOutput, IInput]): Path => {
+		const outputPosition = coordinates(
+			connectorKey(output),
+			main().offsetTop ?? 0
+		);
+		const inputPosition = coordinates(
+			connectorKey(input),
+			main().offsetTop ?? 0
+		);
+
+		switch (mode) {
+			case ConnectionDrawMode.DIRECT:
+				return [[outputPosition, inputPosition]];
+
+			case ConnectionDrawMode.STEPPED:
+			default: {
+				const path: Path = [];
+				if (
+					Math.sqrt(
+						Math.pow(inputPosition[0] - outputPosition[0], 2) +
+							Math.pow(inputPosition[1] - outputPosition[1], 2)
+					) < 200
+				) {
+					return [[outputPosition, inputPosition]];
+				}
+
+				const addSegment = (start: Position, end: Position): Position => {
+					const dx = end[0] - start[0];
+					const dy = end[1] - start[1];
+					console.log({ dx, dy });
+					if (equals(start, outputPosition)) {
+						const endx = start[0] + 25;
+						const endy = start[1];
+						path.push([start, [endx, endy]]);
+						return [endx, endy];
+					}
+					let startPosition = start;
+					let endPosition = end;
+
+					path.push([startPosition, endPosition]);
+					return endPosition;
+				};
+
+				let previousEndPosition = addSegment(outputPosition, inputPosition);
+				while (previousEndPosition != inputPosition) {
+					previousEndPosition = addSegment(previousEndPosition, inputPosition);
+				}
+
+				return path;
+			}
+		}
+	};
+
 const devicePixelRatio = window.devicePixelRatio || 1;
 
-const resizeCanvas = (
-	canvas: HTMLCanvasElement,
-	width: number,
-	height: number
-) => {
-	canvas.width = width;
-	canvas.height = height;
+const resizeCanvas = (canvas: HTMLCanvasElement) => {
+	const rect = main().getBoundingClientRect();
+
+	canvas.width = rect.width;
+	canvas.height = rect.height;
 };
 
 export const Connections: React.FC = () => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
-	const mainRef = useRef(document.getElementById('main'));
 
 	const { modules, modulePositions } = useStateContext();
 	const { connectionCount, connections } = useContext(ConnectionContext);
@@ -55,31 +143,32 @@ export const Connections: React.FC = () => {
 					canvasRef.current.height
 				);
 
-				var rect = canvasRef.current.getBoundingClientRect();
-
-				resizeCanvas(canvasRef.current, rect.width, rect.height);
+				resizeCanvas(canvasRef.current);
 
 				const connectionsToDraw = [...connections.values()].map(
-					// todo: filter out off-screen connections
-					([output, input]) => [
-						coordinates(connectorKey(output), mainRef.current?.offsetTop ?? 0),
-						coordinates(connectorKey(input), mainRef.current?.offsetTop ?? 0)
-					]
+					connectionToPath(ConnectionDrawMode.STEPPED)
 				);
-
-				connectionsToDraw.forEach(([[outputX, outputY], [inputX, inputY]]) => {
-					context2d.beginPath();
-					context2d.lineWidth = 4;
-					context2d.moveTo(outputX, outputY);
-					context2d.lineTo(inputX, inputY);
-					context2d.stroke();
+				connectionsToDraw.forEach((connection) => {
+					const startPosition = connection[0][0];
+					const endPosition = connection[connection.length - 1][1];
 
 					context2d.beginPath();
-					context2d.arc(outputX, outputY, 5, 0, 2 * Math.PI);
+					context2d.arc(startPosition[0], startPosition[1], 5, 0, 2 * Math.PI);
 					context2d.fill();
 
+					connection.forEach((path) => {
+						const [outputX, outputY] = path[0];
+						const [inputX, inputY] = path[1];
+
+						context2d.beginPath();
+						context2d.lineWidth = 4;
+						context2d.moveTo(outputX, outputY);
+						context2d.lineTo(inputX, inputY);
+						context2d.stroke();
+					});
+
 					context2d.beginPath();
-					context2d.arc(inputX, inputY, 5, 0, 2 * Math.PI);
+					context2d.arc(endPosition[0], endPosition[1], 5, 0, 2 * Math.PI);
 					context2d.fill();
 				});
 			}
@@ -88,31 +177,26 @@ export const Connections: React.FC = () => {
 	);
 
 	const onResize = useCallback(() => {
-		if (!mainRef.current) {
-			mainRef.current = document.getElementById('main');
-		}
-
-		const width = mainRef.current ? mainRef.current.offsetWidth : 0;
-		const height = mainRef.current ? mainRef.current.offsetHeight : 0;
+		const m = main();
+		const width = m.offsetWidth;
+		const height = m.offsetHeight;
 
 		if (canvasRef.current && contextRef.current) {
 			contextRef.current.clearRect(0, 0, width, height);
 			contextRef.current.clearRect(0, 0, width, height);
-			resizeCanvas(canvasRef.current, width, height);
+			resizeCanvas(canvasRef.current);
 		}
 
 		drawConnections();
 	}, []);
 
 	useEffectOnce(() => {
-		const parent = document.getElementById('root');
-		const main = document.getElementsByTagName('main')[0];
-		(parent as any).addEventListener('resize', onResize, false);
-		(main as any).addEventListener('scroll', onResize, false);
+		root().addEventListener('resize', onResize, false);
+		main().addEventListener('scroll', onResize, false);
 		onResize();
 		return () => {
-			(parent as any).removeEventListener('resize', onResize, false);
-			(main as any).removeEventListener('scroll', onResize, false);
+			root().removeEventListener('resize', onResize, false);
+			main().removeEventListener('scroll', onResize, false);
 		};
 	});
 

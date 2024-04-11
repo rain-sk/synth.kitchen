@@ -3,7 +3,7 @@ import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
 import { ModuleCanvas } from './module-canvas';
 import { reducer } from '../state';
-import { IState, initialState } from '../state/types/state';
+import { IState, Position, initialState } from '../state/types/state';
 import { Toolbar } from './toolbar';
 import { StateContext } from '../contexts/state';
 import { DispatchContext } from '../contexts/dispatch';
@@ -38,7 +38,7 @@ export const Kitchen: React.FC = () => {
 						Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2)) -
 						Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2))
 				)
-				.map(([moduleKey, position]): [IModule, [number, number]] => [
+				.map(([moduleKey, position]): [IModule, Position] => [
 					state.modules[moduleKey],
 					position
 				]),

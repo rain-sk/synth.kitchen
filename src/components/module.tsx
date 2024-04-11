@@ -18,7 +18,7 @@ import { GainModule } from './modules/gain';
 import { GateModule } from './modules/gate';
 import { LimiterModule } from './modules/limiter';
 import { MidiClockModule } from './modules/midi-clock';
-import { Modifier } from '../state/types/state';
+import { Modifier, Position } from '../state/types/state';
 import { NoiseModule } from './modules/noise';
 import { OscillatorModule } from './modules/oscillator';
 import { OutputModule } from './modules/output';
@@ -30,16 +30,16 @@ import { VcaModule } from './modules/vca';
 
 const useDragAndDrop = (
 	moduleKey: string,
-	initialPosition: [number, number],
+	initialPosition: Position,
 	containerRef: React.MutableRefObject<HTMLElement | null>
 ): [
 	boolean,
 	(e: ReactMouseEvent<HTMLDivElement>) => void,
-	(position: [number, number]) => void
+	(position: Position) => void
 ] => {
 	const dispatch = useDispatchContext();
 	const updateModulePosition = useCallback(
-		(position: [number, number]) => {
+		(position: Position) => {
 			dispatch(actions.updateModulePositionAction(moduleKey, position));
 		},
 		[dispatch, moduleKey]
@@ -47,7 +47,7 @@ const useDragAndDrop = (
 
 	const moveContainerRef = (
 		containerRef: React.MutableRefObject<HTMLElement | null>,
-		position: [number, number]
+		position: Position
 	) =>
 		queueAnimation(() => {
 			if (containerRef.current) {
@@ -79,7 +79,7 @@ const useDragAndDrop = (
 		} else {
 			const x = e.clientX - dragOffset.current.x;
 			const y = e.clientY - dragOffset.current.y;
-			const newPosition: [number, number] = [x, y];
+			const newPosition: Position = [x, y];
 
 			moveContainerRef(containerRef, newPosition);
 
@@ -110,7 +110,7 @@ const useDragAndDrop = (
 		}
 	};
 
-	const { current: setPosition } = useRef((newPosition: [number, number]) => {
+	const { current: setPosition } = useRef((newPosition: Position) => {
 		position.current = newPosition;
 		moveContainerRef(containerRef, newPosition);
 	});
@@ -158,7 +158,7 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 
 export const Module: React.FunctionComponent<{
 	module: IModule;
-	position: [number, number];
+	position: Position;
 }> = ({ module, position }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const dispatch = useDispatchContext();

@@ -1,14 +1,16 @@
+import { Position } from '../types/state';
+
 export type IUpdateModulePosition = {
 	type: 'UpdateModulePosition';
 	payload: {
 		moduleKey: string;
-		position: [number, number];
+		position: Position;
 	};
 };
 
 export const updateModulePositionAction = (
 	moduleKey: string,
-	position: [number, number]
+	position: Position
 ): IUpdateModulePosition => ({
 	type: 'UpdateModulePosition',
 	payload: {

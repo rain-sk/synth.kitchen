@@ -11,17 +11,33 @@ import { useStateContext } from '../hooks/use-state-context';
 // import { useDispatchContext } from '../hooks/use-dispatch-context';
 // import { historyPushAction } from '../state/actions/history';
 
-type IOutput = IIo;
-type IInput = IIo | IParameter;
-type IConnector = IOutput | IInput;
+export type IOutput = IIo;
+export type IInput = IIo | IParameter;
+export type IConnector = IOutput | IInput;
 
 type IConnectorInfo = [IConnector, Set<string>];
 
 const connections = new Map<string, [IOutput, IInput]>();
 const connectors = new Map<string, IConnectorInfo>();
+const connectorButtons = new Map<string, HTMLButtonElement>();
+
+export const connectorInfo = (key?: string) =>
+	key && connectors.has(key) ? connectors.get(key) : undefined;
 
 export const connectorKey = (connector: IConnector) =>
 	'type' in connector ? ioKey(connector) : paramKey(connector);
+
+export const connectorButton = (key: string) => {
+	if (!connectorButtons.has(key)) {
+		const button = document.getElementById(key);
+		if (button) {
+			connectorButtons.set(key, button as HTMLButtonElement);
+		} else {
+			throw new Error(`connector with key '${key}' not found`);
+		}
+	}
+	return connectorButtons.get(key) as HTMLButtonElement | undefined;
+};
 
 const connectionKey = (output: IOutput, input: IInput) => {
 	if (!('type' in output) || output.type === IoType.input) {
@@ -66,9 +82,6 @@ const connectOrDisconnect = (output: IOutput, input: IInput) => {
 
 	return connections.size;
 };
-
-export const connectorInfo = (key?: string) =>
-	key && connectors.has(key) ? connectors.get(key) : undefined;
 
 type IConnectionContext = {
 	activeConnectorKey?: string;
@@ -187,6 +200,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 			});
 
 			connectors.delete(key);
+			connectorButtons.delete(key);
 
 			setConnectorCount(connectors.size);
 			setConnectionCount(connections.size);

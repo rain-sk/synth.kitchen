@@ -1,16 +1,17 @@
 import { ModuleType } from '../types/module';
+import { Position } from '../types/state';
 
 export type IAddModule = {
 	type: 'AddModule';
 	payload: {
 		type: ModuleType;
-		position?: [number, number];
+		position?: Position;
 	};
 };
 
 export const addModuleAction = (
 	type: ModuleType,
-	position?: [number, number]
+	position?: Position
 ): IAddModule => ({
 	type: 'AddModule',
 	payload: {

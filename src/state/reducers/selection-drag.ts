@@ -1,4 +1,4 @@
-import { INVALID_POSITION, IState, Modifier } from '../types/state';
+import { INVALID_POSITION, IState, Modifier, Position } from '../types/state';
 import { ISelectionDrag, SelectionDragType } from '../actions/selection-drag';
 import { IModule } from '../types/module';
 
@@ -32,10 +32,10 @@ const rectContainsOtherRect = (
 };
 
 const modulesInRange = (
-	mouseDragStartPosition: [number, number],
-	currentMousePosition: [number, number],
+	mouseDragStartPosition: Position,
+	currentMousePosition: Position,
 	modules: Record<string, IModule>,
-	modulePositions: Record<string, [number, number]>
+	modulePositions: Record<string, Position>
 ): Set<string> => {
 	const moduleKeysInRange = new Set<string>();
 

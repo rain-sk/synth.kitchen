@@ -9,15 +9,16 @@ export enum Modifier {
 	SHIFT = 1 << 0
 }
 
-export const INVALID_POSITION: [number, number] = [-1, -1];
+export type Position = [number, number];
+export const INVALID_POSITION: Position = [-1, -1];
 
 export type IState = IPatch & {
 	heldModifiers: Modifier;
 	isKeyMovementEnabled: boolean;
 	modules: Record<string, IModule>;
-	modulePositions: Record<string, [number, number]>;
-	mouseDragStartPosition: [number, number];
-	mouseDragPosition: [number, number];
+	modulePositions: Record<string, Position>;
+	mouseDragStartPosition: Position;
+	mouseDragPosition: Position;
 	patchHistory: IPatch[];
 	patchHistoryOffset: number;
 	selectedModuleKeys: Set<string>;

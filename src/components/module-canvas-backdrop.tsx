@@ -10,13 +10,13 @@ import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 
 import { actions } from '../state/actions';
-import { INVALID_POSITION } from '../state/types/state';
+import { INVALID_POSITION, Position } from '../state/types/state';
 import { AddModule } from './add-module';
 
 const positionFromMouseEvent = (
 	e: MouseEvent,
 	scrollableElement: HTMLElement
-): [number, number] => [
+): Position => [
 	e.clientX + scrollableElement.scrollLeft,
 	e.clientY + scrollableElement.scrollTop
 ];

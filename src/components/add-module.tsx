@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { actions } from '../state/actions';
 import { ModuleType } from '../state/types/module';
-import { INVALID_POSITION } from '../state/types/state';
+import { INVALID_POSITION, Position } from '../state/types/state';
 
 const controlModules: ModuleType[] = [
 	'CLOCK',
@@ -22,9 +22,7 @@ const effectModules: ModuleType[] = [
 	'VCA'
 ];
 
-export const AddModule: React.FC<{ position?: [number, number] }> = ({
-	position
-}) => {
+export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
 	const dispatch = useDispatchContext();
 
 	const handleAddModule = useCallback(
