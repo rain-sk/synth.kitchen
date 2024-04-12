@@ -16,6 +16,10 @@ body,
 	color: #000;
 }
 
+h1 {
+	color: #fff;
+}
+
 #root {
 	position: relative;
 }
@@ -221,6 +225,7 @@ main {
 	display: flex;
 	align-items: center;
 	padding: 0 0.5rem;
+	color: #fff;
 }
 
 input[type='file'] {
