@@ -95,6 +95,7 @@ type IConnectionContext = {
 	registerConnector: (connector: IConnector) => void;
 	unregisterConnector: (connector: IConnector) => void;
 	clickConnector: (connector: IConnector) => void;
+	deactivateConnector: () => void;
 };
 
 export const ConnectionContext = React.createContext<IConnectionContext>({
@@ -107,7 +108,8 @@ export const ConnectionContext = React.createContext<IConnectionContext>({
 	highlightOutputs: false,
 	registerConnector: () => {},
 	unregisterConnector: () => {},
-	clickConnector: () => {}
+	clickConnector: () => {},
+	deactivateConnector: () => {}
 });
 
 export const ConnectionContextProvider: React.FunctionComponent<{
@@ -208,6 +210,10 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 		[setConnectorCount]
 	);
 
+	const deactivateConnector = useCallback(() => {
+		setActiveConnectorKey(undefined);
+	}, []);
+
 	const clickConnector = useCallback(
 		(clicked: IConnector) => {
 			const active = connectorInfo(activeConnectorKey);
@@ -279,7 +285,8 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 				highlightOutputs: activeConnectorIsInput,
 				registerConnector,
 				unregisterConnector,
-				clickConnector
+				clickConnector,
+				deactivateConnector
 			}}
 		>
 			{children}

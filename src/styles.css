@@ -1,5 +1,5 @@
 body {
-	background: #2b2630;
+	background: #525947;
 	-webkit-user-select: none; /* Safari */
 	user-select: none;
 	word-wrap: break-word;
@@ -13,7 +13,7 @@ body,
 	display: block;
 	width: 100vw;
 	height: 100vh;
-	color: #fff;
+	color: #000;
 }
 
 #root {
@@ -37,7 +37,7 @@ nav {
 	top: 0;
 	left: 0;
 	right: 0;
-	background: #1d1921;
+	background: #4f4658;
 	height: 2.5rem;
 	padding: 0.33rem 0;
 	display: flex;
@@ -90,11 +90,11 @@ main {
 }
 
 .module {
-	background: #4f4658;
+	background: #aad96c;
 	position: absolute;
 	display: flexbox;
 	cursor: move;
-	border: 1px solid rgba(255, 255, 255, 0.25);
+	border: 4px solid black;
 	border-radius: 3px;
 	padding: 1rem;
 	transition: border linear 100ms;
@@ -106,15 +106,15 @@ main {
 }
 
 .module .active {
-	background-color: yellow;
+	background-color: #d9cc6c;
 }
 
 .module .connected {
-	background-color: red;
+	background-color: #525947;
 }
 
 .module .highlight {
-	background-color: green;
+	background-color: #aad96c;
 }
 
 #module-canvas > .module {
@@ -122,11 +122,11 @@ main {
 }
 
 .module.selected {
-	border: 1px solid rgba(255, 255, 255, 1);
+	border: 4px solid #c66cd9;
 }
 
 .module.selection_pending {
-	border: 1px dashed rgba(255, 255, 255, 0.75);
+	border: 4px dashed #c66cd9dd;
 }
 
 .module.selected,
@@ -156,21 +156,41 @@ main {
 }
 
 .connector {
-	display: block;
+	position: relative;
 	width: 1.2rem;
 	height: 1.2rem;
 	margin: 0;
 	border-radius: 0.6rem;
+	background-color: #b9ffce;
+	border: 1px solid #4f4658;
+}
+
+.connector:hover:before {
+	content: '';
+	position: absolute;
+	top: -50%;
+	left: -50%;
+	width: 200%;
+	height: 200%;
+	border-radius: 50%;
+	display: block;
+	background: rgb(63, 94, 251);
+	background: radial-gradient(circle, #b9ffce 0%, #7aa888 100%);
+	border: 1px solid #4f4658;
+}
+
+.connector.active:hover::before {
+	display: none;
 }
 
 .connector:first-child {
-	margin-right: 1rem;
-	margin-left: -2.2rem;
+	margin-right: calc(1rem + 4px);
+	margin-left: calc(-2.2rem - 4px);
 }
 
 .connector:last-child {
-	margin-left: 1rem;
-	margin-right: -2.2rem;
+	margin-left: calc(1rem + 4px);
+	margin-right: calc(-2.2rem - 4px);
 }
 
 .numparam,

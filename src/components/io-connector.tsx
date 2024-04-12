@@ -39,6 +39,7 @@ export const IoConnector: React.FunctionComponent<{
 
 	const isInput = type === IoType.input;
 	const isActive = activeConnectorKey === connectorKey;
+
 	const isConnectedToActiveConnector =
 		connectedToActiveConnector.includes(connectorKey);
 	const highlight = !isActive && (isInput ? highlightInputs : highlightOutputs);
@@ -50,8 +51,9 @@ export const IoConnector: React.FunctionComponent<{
 
 	return (
 		<span className="io">
-			{!isInput && <label htmlFor={connectorKey}>{name}</label>}
+			{!isInput && <p>{name}</p>}
 			<button
+				aria-label={name}
 				aria-roledescription={roleDescription}
 				id={connectorKey}
 				type="button"
@@ -66,7 +68,7 @@ export const IoConnector: React.FunctionComponent<{
 						: ''
 				}`}
 			/>
-			{isInput && <label htmlFor={connectorKey}>{name}</label>}
+			{isInput && <p>{name}</p>}
 		</span>
 	);
 };

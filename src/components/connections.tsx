@@ -29,7 +29,7 @@ const main = () => {
 	return _.main as HTMLElement;
 };
 
-const coordinates = (connectorKey: string, offsetTop: number): Position => {
+const position = (connectorKey: string): Position => {
 	const connector = connectorButton(connectorKey);
 	if (!connector) {
 		return INVALID_POSITION;
@@ -38,7 +38,7 @@ const coordinates = (connectorKey: string, offsetTop: number): Position => {
 	const rect = connector.getBoundingClientRect();
 	return [
 		rect.left + rect.width / 2 + window.pageXOffset,
-		rect.top + rect.height / 2 + window.pageYOffset - offsetTop
+		rect.top + rect.height / 2 + window.pageYOffset - main().offsetTop
 	];
 };
 
@@ -57,14 +57,8 @@ enum ConnectionDrawMode {
 const connectionToPath =
 	(mode: ConnectionDrawMode) =>
 	([output, input]: [IOutput, IInput]): Path => {
-		const outputPosition = coordinates(
-			connectorKey(output),
-			main().offsetTop ?? 0
-		);
-		const inputPosition = coordinates(
-			connectorKey(input),
-			main().offsetTop ?? 0
-		);
+		const outputPosition = position(connectorKey(output));
+		const inputPosition = position(connectorKey(input));
 
 		switch (mode) {
 			case ConnectionDrawMode.DIRECT:
@@ -83,9 +77,9 @@ const connectionToPath =
 				}
 
 				const addSegment = (start: Position, end: Position): Position => {
-					const dx = end[0] - start[0];
-					const dy = end[1] - start[1];
-					console.log({ dx, dy });
+					// const dx = end[0] - start[0];
+					// const dy = end[1] - start[1];
+					// console.log({ dx, dy });
 					if (equals(start, outputPosition)) {
 						const endx = start[0] + 25;
 						const endy = start[1];
@@ -121,9 +115,11 @@ const resizeCanvas = (canvas: HTMLCanvasElement) => {
 export const Connections: React.FC = () => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
+	const mousePositionRef = useRef<Position>(INVALID_POSITION);
 
 	const { modules, modulePositions } = useStateContext();
-	const { connectionCount, connections } = useContext(ConnectionContext);
+	const { connectionCount, connections, activeConnectorKey } =
+		useContext(ConnectionContext);
 
 	const drawConnections = useCallback(
 		queueAnimationCallback(() => {
@@ -146,8 +142,15 @@ export const Connections: React.FC = () => {
 				resizeCanvas(canvasRef.current);
 
 				const connectionsToDraw = [...connections.values()].map(
-					connectionToPath(ConnectionDrawMode.STEPPED)
+					connectionToPath(ConnectionDrawMode.DIRECT)
 				);
+
+				if (activeConnectorKey) {
+					connectionsToDraw.push([
+						[mousePositionRef.current, position(activeConnectorKey)]
+					]);
+				}
+
 				connectionsToDraw.forEach((connection) => {
 					const startPosition = connection[0][0];
 					const endPosition = connection[connection.length - 1][1];
@@ -173,8 +176,50 @@ export const Connections: React.FC = () => {
 				});
 			}
 		}),
-		[]
+		[activeConnectorKey]
 	);
+
+	const onMouseMove = useCallback(
+		(e: MouseEvent) => {
+			if (e.target === main()) {
+				mousePositionRef.current = [e.offsetX, e.offsetY];
+			} else {
+				const mainRect = main().getBoundingClientRect();
+				const targetRect = (e.target as HTMLElement).getBoundingClientRect();
+
+				const mousex = e.offsetX + targetRect.left - mainRect.left;
+				const mousey = e.offsetY + targetRect.top - mainRect.top;
+
+				mousePositionRef.current = [mousex, mousey];
+			}
+			drawConnections();
+		},
+		[drawConnections]
+	);
+
+	const activeListenerRef = useRef(false);
+	useEffect(() => {
+		if (activeConnectorKey && !activeListenerRef.current) {
+			activeListenerRef.current = true;
+			mousePositionRef.current = position(activeConnectorKey);
+			main().addEventListener('mousemove', onMouseMove);
+		} else if (!activeConnectorKey) {
+			activeListenerRef.current = false;
+			mousePositionRef.current = INVALID_POSITION;
+			main().removeEventListener('mousemove', onMouseMove);
+		}
+
+		drawConnections();
+
+		return () => {
+			if (activeListenerRef.current) {
+				activeListenerRef.current = false;
+				main().removeEventListener('mousemove', onMouseMove);
+			}
+		};
+	}, [activeConnectorKey, drawConnections]);
+
+	useEffect(drawConnections, [activeConnectorKey]);
 
 	const onResize = useCallback(() => {
 		const m = main();
@@ -188,7 +233,7 @@ export const Connections: React.FC = () => {
 		}
 
 		drawConnections();
-	}, []);
+	}, [drawConnections]);
 
 	useEffectOnce(() => {
 		root().addEventListener('resize', onResize, false);
