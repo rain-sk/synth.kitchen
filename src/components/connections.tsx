@@ -155,8 +155,13 @@ export const Connections: React.FC = () => {
 					const startPosition = connection[0][0];
 					const endPosition = connection[connection.length - 1][1];
 
+					context2d.fillStyle = '#000';
 					context2d.beginPath();
 					context2d.arc(startPosition[0], startPosition[1], 5, 0, 2 * Math.PI);
+					context2d.fill();
+
+					context2d.beginPath();
+					context2d.arc(endPosition[0], endPosition[1], 5, 0, 2 * Math.PI);
 					context2d.fill();
 
 					connection.forEach((path) => {
@@ -164,14 +169,27 @@ export const Connections: React.FC = () => {
 						const [inputX, inputY] = path[1];
 
 						context2d.beginPath();
-						context2d.lineWidth = 4;
+						context2d.strokeStyle = '#000';
+						context2d.lineWidth = 5;
+						context2d.moveTo(outputX, outputY);
+						context2d.lineTo(inputX, inputY);
+						context2d.stroke();
+
+						context2d.beginPath();
+						context2d.strokeStyle = '#b9ffce';
+						context2d.lineWidth = 3;
 						context2d.moveTo(outputX, outputY);
 						context2d.lineTo(inputX, inputY);
 						context2d.stroke();
 					});
 
+					context2d.fillStyle = '#b9ffce';
 					context2d.beginPath();
-					context2d.arc(endPosition[0], endPosition[1], 5, 0, 2 * Math.PI);
+					context2d.arc(startPosition[0], startPosition[1], 3, 0, 2 * Math.PI);
+					context2d.fill();
+
+					context2d.beginPath();
+					context2d.arc(endPosition[0], endPosition[1], 3, 0, 2 * Math.PI);
 					context2d.fill();
 				});
 			}
