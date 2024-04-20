@@ -12,6 +12,7 @@ export type ModuleType =
 	| 'NOISE'
 	| 'OSCILLATOR'
 	| 'OUTPUT'
+	| 'PAN'
 	| 'SEQUENCER'
 	| 'VCA';
 
@@ -46,6 +47,9 @@ export interface IModuleState extends Record<ModuleType, any> {
 		frequency: number;
 		detune: number;
 		waveform: TOscillatorType;
+	};
+	PAN: {
+		pan: number;
 	};
 	SEQUENCER: {
 		steps: number;

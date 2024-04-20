@@ -27,6 +27,7 @@ import { SequencerModule } from './modules/sequencer';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 import { VcaModule } from './modules/vca';
+import { PanModule } from './modules/pan';
 
 const useDragAndDrop = (
 	moduleKey: string,
@@ -144,6 +145,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 			return <OscillatorModule module={module as IModule<'OSCILLATOR'>} />;
 		case 'OUTPUT':
 			return <OutputModule module={module as IModule<'OUTPUT'>} />;
+		case 'PAN':
+			return <PanModule module={module as IModule<'PAN'>} />;
 		case 'SEQUENCER':
 			return <SequencerModule module={module as IModule<'SEQUENCER'>} />;
 		case 'VCA':

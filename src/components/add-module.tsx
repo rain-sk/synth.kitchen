@@ -19,7 +19,8 @@ const effectModules: ModuleType[] = [
 	'FILTER',
 	'GAIN',
 	'LIMITER',
-	'VCA'
+	'VCA',
+	'PAN'
 ];
 
 export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
