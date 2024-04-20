@@ -30,6 +30,42 @@ const initSequencer = (
 ) => {
 	sequencerRef.current = new SequencerNode();
 	if (state) {
+		sequencerRef.current.steps.setValueAtTime(
+			state.steps,
+			audioContext.currentTime
+		);
+		sequencerRef.current.step0.setValueAtTime(
+			state.step0,
+			audioContext.currentTime
+		);
+		sequencerRef.current.step1.setValueAtTime(
+			state.step1,
+			audioContext.currentTime
+		);
+		sequencerRef.current.step2.setValueAtTime(
+			state.step2,
+			audioContext.currentTime
+		);
+		sequencerRef.current.step3.setValueAtTime(
+			state.step3,
+			audioContext.currentTime
+		);
+		sequencerRef.current.step4.setValueAtTime(
+			state.step4,
+			audioContext.currentTime
+		);
+		sequencerRef.current.step5.setValueAtTime(
+			state.step5,
+			audioContext.currentTime
+		);
+		sequencerRef.current.step6.setValueAtTime(
+			state.step6,
+			audioContext.currentTime
+		);
+		sequencerRef.current.step7.setValueAtTime(
+			state.step7,
+			audioContext.currentTime
+		);
 		return state;
 	} else {
 		return sequencerStateFromNode(sequencerRef.current);

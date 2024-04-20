@@ -19,6 +19,7 @@ const initGate = (
 ) => {
 	gateRef.current = new GateNode();
 	if (state) {
+		gateRef.current.gate.setValueAtTime(state.gate, audioContext.currentTime);
 		return state;
 	} else {
 		return gateStateFromNode(gateRef.current);

@@ -21,6 +21,11 @@ const initMidiClock = (
 ) => {
 	clockRef.current = new MidiClockNode();
 	if (state) {
+		try {
+			clockRef.current.setInput(state.input);
+		} catch (e) {
+			console.error(e);
+		}
 		return state;
 	} else {
 		return clockStateFromNode(clockRef.current);

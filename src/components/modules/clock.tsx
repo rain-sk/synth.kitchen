@@ -19,6 +19,10 @@ const initClock = (
 ) => {
 	clockRef.current = new ClockNode();
 	if (state) {
+		clockRef.current.tempo.setValueAtTime(
+			state.tempo,
+			audioContext.currentTime
+		);
 		return state;
 	} else {
 		return clockStateFromNode(clockRef.current);
