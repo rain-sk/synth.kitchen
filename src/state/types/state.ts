@@ -1,8 +1,8 @@
+import { IInput, IOutput } from '../../contexts/connection';
 import { randomName } from '../../utils/random-name';
 import { IIo } from './io';
 import { IModule } from './module';
 import { IParameter } from './parameter';
-import { IPatch } from './patch';
 
 export enum Modifier {
 	NONE = 0,
@@ -12,20 +12,19 @@ export enum Modifier {
 export type Position = [number, number];
 export const INVALID_POSITION: Position = [-1, -1];
 
-export type IState = IPatch & {
+export type IState = {
+	name: string;
+	modules: Record<string, IModule>;
 	heldModifiers: Modifier;
 	isKeyMovementEnabled: boolean;
-	modules: Record<string, IModule>;
 	modulePositions: Record<string, Position>;
 	mouseDragStartPosition: Position;
 	mouseDragPosition: Position;
-	patchHistory: IPatch[];
-	patchHistoryOffset: number;
 	selectedModuleKeys: Set<string>;
 	selectionPending: boolean;
 	parameters: Record<string, IParameter>;
 	io: Record<string, IIo>;
-	connections: Record<string, boolean>;
+	connectionsToLoad?: Record<string, [IOutput, IInput]>;
 };
 
 export const blankState = (): IState => ({
@@ -45,13 +44,10 @@ export const blankState = (): IState => ({
 	mouseDragStartPosition: INVALID_POSITION,
 	mouseDragPosition: INVALID_POSITION,
 	name: randomName(),
-	patchHistory: [],
-	patchHistoryOffset: -1,
 	selectedModuleKeys: new Set(),
 	selectionPending: false,
 	parameters: {},
-	io: {},
-	connections: {}
+	io: {}
 });
 
 export const initialState: IState = blankState();

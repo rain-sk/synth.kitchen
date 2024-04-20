@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { actions } from '../state/actions';
-import { IPatch } from '../state/types/patch';
+import { ISerializedPatch } from '../state/types/serialized-patch';
 import { KeyCode } from '../constants/key';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
@@ -21,9 +21,10 @@ export const Toolbar: React.FC<{}> = () => {
 	const onSave = () => {
 		const tempAnchor = document.createElement('a');
 
-		const patch: IPatch = {
-			modules: state.modules,
+		const patch: ISerializedPatch = {
 			name: state.name,
+			modules: state.modules,
+			modulePositions: state.modulePositions,
 			connections: Object.fromEntries(connections.entries())
 		};
 
@@ -46,8 +47,15 @@ export const Toolbar: React.FC<{}> = () => {
 		}
 		const reader = new FileReader();
 		reader.onload = (e) => {
-			dispatch(actions.loadPatchAction({ modules: {}, name: '' }));
-			const patch = JSON.parse((e.target as any).result) as IPatch;
+			dispatch(
+				actions.loadPatchAction({
+					name: '',
+					modules: {},
+					modulePositions: {},
+					connections: {}
+				})
+			);
+			const patch = JSON.parse((e.target as any).result) as ISerializedPatch;
 			setTimeout(() => {
 				dispatch(actions.loadPatchAction(patch));
 			}, 100);

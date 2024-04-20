@@ -1,13 +1,13 @@
-import { IPatch } from '../types/patch';
+import { ISerializedPatch } from '../types/serialized-patch';
 
 export type ILoadPatch = {
 	type: 'LoadPatch';
 	payload: {
-		patch: IPatch;
+		patch: ISerializedPatch;
 	};
 };
 
-export const loadPatchAction = (patch: IPatch): ILoadPatch => ({
+export const loadPatchAction = (patch: ISerializedPatch): ILoadPatch => ({
 	type: 'LoadPatch',
 	payload: {
 		patch
