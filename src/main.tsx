@@ -9,16 +9,20 @@ import { Kitchen } from './components/kitchen';
 import './reset.css';
 import './styles.css';
 
-Promise.all([initAudio(), initMidi()]).then(() => {
-	if (audio.initialized && midi.initialized) {
-		ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-			<React.StrictMode>
-				<Kitchen />
-			</React.StrictMode>
-		);
-	} else {
-		alert(
-			"You're using an unsupported browser. Please try again with Firefox, etc."
-		);
-	}
-});
+initAudio()
+	.then(() => initMidi())
+	.then(() => {
+		if (audio.initialized && midi.initialized) {
+			ReactDOM.createRoot(
+				document.getElementById('root') as HTMLElement
+			).render(
+				<React.StrictMode>
+					<Kitchen />
+				</React.StrictMode>
+			);
+		} else {
+			alert(
+				"You're using an unsupported browser. Please try again with Firefox, etc."
+			);
+		}
+	});

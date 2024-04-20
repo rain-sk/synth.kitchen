@@ -6,6 +6,8 @@ export const midi = {
 };
 
 export const initMidi = async () => {
+	const status = document.getElementById('status');
+	status && (status.innerText = 'starting midi');
 	return WebMidi.enable()
 		.catch((err: string) => {
 			midi.setupError = err;

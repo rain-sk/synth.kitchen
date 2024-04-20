@@ -31,6 +31,11 @@ export const MidiContextProvider: React.FC<React.PropsWithChildren> = ({
 		WebMidi.addListener('connected', onPort);
 		WebMidi.addListener('disconnected', onPort);
 		WebMidi.addListener('portschanged', onPort);
+		return () => {
+			WebMidi.removeListener('connected');
+			WebMidi.removeListener('disconnected');
+			WebMidi.removeListener('portschanged');
+		};
 	});
 
 	return (
