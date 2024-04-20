@@ -35,7 +35,8 @@ export const NumberBox: React.FunctionComponent<{
 				return;
 			}
 
-			const negative = string[0] === '-';
+			const negative =
+				string[0] === '-' || (string[0] === '0' && string[1] === '-');
 
 			if (
 				string.length === 1 &&
