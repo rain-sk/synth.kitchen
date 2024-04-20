@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 
 import { actions } from '../state/actions';
 import { ISerializedPatch } from '../state/types/serialized-patch';
@@ -11,16 +11,13 @@ import { Record } from './record';
 export const Toolbar: React.FC<{}> = () => {
 	const dispatch = useDispatchContext();
 	const state = useStateContext();
-	const { connections } = useContext(ConnectionContext);
+	const { connections, connectionCount } = useContext(ConnectionContext);
 
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		dispatch(actions.changeNameAction(e.target.value));
 	};
 
-	// https://code.tutsplus.com/tutorials/how-to-save-a-file-with-javascript--cms-41105
-	const onSave = () => {
-		const tempAnchor = document.createElement('a');
-
+	const onSave = useCallback(() => {
 		const patch: ISerializedPatch = {
 			name: state.name,
 			modules: state.modules,
@@ -28,16 +25,20 @@ export const Toolbar: React.FC<{}> = () => {
 			connections: Object.fromEntries(connections.entries())
 		};
 
-		const blob = new Blob([JSON.stringify(patch)], {
-			type: 'text/json'
-		});
+		// https://code.tutsplus.com/tutorials/how-to-save-a-file-with-javascript--cms-41105
+		{
+			const a = document.createElement('a');
+			const blob = new Blob([JSON.stringify(patch)], {
+				type: 'text/json'
+			});
 
-		tempAnchor.setAttribute('href', URL.createObjectURL(blob));
-		tempAnchor.setAttribute('download', `${state.name}.json`);
-		tempAnchor.click();
+			a.setAttribute('href', URL.createObjectURL(blob));
+			a.setAttribute('download', `${state.name}.json`);
+			a.click();
 
-		URL.revokeObjectURL(tempAnchor.href);
-	};
+			URL.revokeObjectURL(a.href);
+		}
+	}, [state.name, state.modules, state.modulePositions, connectionCount]);
 
 	// https://researchhubs.com/post/computing/javascript/open-a-local-file-with-javascript.html
 	const onLoad = (e: React.ChangeEvent<HTMLInputElement>) => {
