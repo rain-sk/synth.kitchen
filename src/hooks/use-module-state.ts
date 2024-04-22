@@ -13,7 +13,7 @@ export const useModuleState = <T extends ModuleType>(
 
 	useEffect(() => {
 		if (state) {
-			dispatch(actions.updateModuleStateAction(moduleKey, state));
+			dispatch(actions.updateModuleAction(moduleKey, { state }));
 		}
 	}, [state, moduleKey]);
 

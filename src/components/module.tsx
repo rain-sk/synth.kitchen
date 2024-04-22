@@ -28,6 +28,7 @@ import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 import { VcaModule } from './modules/vca';
 import { PanModule } from './modules/pan';
+import { ModuleHeader } from './module-header';
 
 const useDragAndDrop = (
 	moduleKey: string,
@@ -117,10 +118,6 @@ const useDragAndDrop = (
 	});
 
 	return [isDragging, startDragging, setPosition];
-};
-
-const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
-	return <h2>{module.name}</h2>;
 };
 
 const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {

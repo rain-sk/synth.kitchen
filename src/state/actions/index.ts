@@ -26,10 +26,7 @@ import {
 	IUpdateModulePosition,
 	updateModulePositionAction
 } from './update-module-position';
-import {
-	IUpdateModuleState,
-	updateModuleStateAction
-} from './update-module-state';
+import { IUpdateModule, updateModuleAction } from './update-module';
 
 export type IAction =
 	| IAddModule
@@ -41,7 +38,7 @@ export type IAction =
 	| ISelectionDrag
 	| ISelectModule
 	| IUpdateModulePosition
-	| IUpdateModuleState;
+	| IUpdateModule;
 
 export const actions = {
 	addModuleAction,
@@ -58,5 +55,5 @@ export const actions = {
 	selectModuleAction,
 	selectSingleModuleAction,
 	updateModulePositionAction,
-	updateModuleStateAction
+	updateModuleAction
 };

@@ -1,7 +1,7 @@
 import { IState } from '../types/state';
-import { IUpdateModuleState } from '../actions/update-module-state';
+import { IUpdateModule } from '../actions/update-module';
 
-export const updateModuleState: React.Reducer<IState, IUpdateModuleState> = (
+export const updateModule: React.Reducer<IState, IUpdateModule> = (
 	state,
 	action
 ) => ({
@@ -10,7 +10,7 @@ export const updateModuleState: React.Reducer<IState, IUpdateModuleState> = (
 		...state.modules,
 		[action.payload.moduleKey]: {
 			...state.modules[action.payload.moduleKey],
-			state: action.payload.state
+			...action.payload.update
 		}
 	}
 });

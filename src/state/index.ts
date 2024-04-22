@@ -33,8 +33,8 @@ export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 			case 'UpdateModulePosition': {
 				return reducers.updateModulePosition(state, action);
 			}
-			case 'UpdateModuleState': {
-				return reducers.updateModuleState(state, action);
+			case 'UpdateModule': {
+				return reducers.updateModule(state, action);
 			}
 			default: {
 				return state;
