@@ -165,6 +165,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 		queueAnimation(clearSelection);
 
 		document.body.removeEventListener('mouseup', onMouseUp);
+		document.body.removeEventListener('mouseleave', onMouseUp);
 		document.body.removeEventListener('mousemove', onDrag);
 	}, []);
 
@@ -179,6 +180,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 		dispatch(actions.selectionDragStartAction(position));
 
 		document.body.addEventListener('mouseup', onMouseUp);
+		document.body.addEventListener('mouseleave', onMouseUp);
 		document.body.addEventListener('mousemove', onDrag);
 
 		onDrag(e.nativeEvent);

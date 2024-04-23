@@ -104,10 +104,12 @@ const useDragAndDrop = (
 			const onMouseUp = () => {
 				stopDragging();
 				document.body.removeEventListener('mouseup', onMouseUp);
+				document.body.removeEventListener('mouseleave', onMouseUp);
 				document.body.removeEventListener('mousemove', onDrag.current);
 			};
 
 			document.body.addEventListener('mouseup', onMouseUp);
+			document.body.addEventListener('mouseleave', onMouseUp);
 			document.body.addEventListener('mousemove', onDrag.current);
 		}
 	};
