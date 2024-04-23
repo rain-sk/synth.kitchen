@@ -45,7 +45,9 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 			if (e.key === 'Escape') {
 				cancel();
 			} else if (e.key === 'Enter') {
-				dispatch(actions.updateModuleAction(module.moduleKey, { name }));
+				dispatch(
+					actions.updateModuleAction(module.moduleKey, { name: name.trim() })
+				);
 				setEdit(false);
 			}
 		},
