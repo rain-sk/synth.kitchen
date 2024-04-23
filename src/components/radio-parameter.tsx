@@ -16,10 +16,20 @@ export const RadioParameter: React.FunctionComponent<{
 		[commitValueCallback]
 	);
 
+	const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLSelectElement>) => {
+		e.stopPropagation();
+	}, []);
+
 	return (
 		<section className="radioparam">
 			<label htmlFor={id}>{name}</label>
-			<select name={id} id={id} value={value} onChange={onChange}>
+			<select
+				name={id}
+				id={id}
+				value={value}
+				onChange={onChange}
+				onKeyDown={onKeyDown}
+			>
 				{options.map((option) => (
 					<option key={option} value={option}>
 						{option}
