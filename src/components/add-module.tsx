@@ -6,6 +6,7 @@ import { INVALID_POSITION, Position } from '../state/types/state';
 
 const controlModules: ModuleType[] = [
 	'CLOCK',
+	'MIDI_CC',
 	'MIDI_CLOCK',
 	'MIDI_TRIGGER',
 	'GATE',

@@ -4,16 +4,16 @@ import {
 	IAudioWorkletNode
 } from 'standardized-audio-context';
 import { audioContext } from '../context';
-import { NoteMessageEvent, PortEvent, WebMidi } from 'webmidi';
+import { ControlChangeMessageEvent, PortEvent, WebMidi } from 'webmidi';
 import { midi } from '../../midi';
 
-export class MidiTriggerNode {
+export class MidiCcNode {
 	private _node = new (AudioWorkletNode as any)(
 		audioContext,
-		'midi-clock'
+		'midi-cc'
 	) as IAudioWorkletNode<IAudioContext>;
 	private _inputName = '';
-	private _note: 'all' | number = 'all';
+	private _cc: number = 32;
 
 	constructor() {
 		if (midi.initialized) {
@@ -28,9 +28,6 @@ export class MidiTriggerNode {
 
 	disconnect = () => {
 		setTimeout(() => {
-			this._node.parameters
-				.get('active')
-				?.setValueAtTime(0, audioContext.currentTime);
 			this._node = null as any;
 		}, 10);
 	};
@@ -41,8 +38,16 @@ export class MidiTriggerNode {
 		return this._inputName;
 	}
 
-	get note() {
-		return this._note;
+	get cc() {
+		return this._cc;
+	}
+
+	get max() {
+		return this.node().parameters.get('max')?.value ?? 1;
+	}
+
+	get min() {
+		return this.node().parameters.get('min')?.value ?? 0;
 	}
 
 	get input() {
@@ -68,16 +73,28 @@ export class MidiTriggerNode {
 		}
 
 		if (oldInput) {
-			oldInput.removeListener('noteon', this.onTrigger);
+			oldInput.removeListener('controlchange', this.onCC);
 		}
 
 		if (this.input) {
-			this.input.addListener('noteon', this.onTrigger);
+			this.input.addListener('controlchange', this.onCC);
 		}
 	};
 
-	setNote = (note: 'all' | number) => {
-		this._note = note;
+	setCC = (cc: number) => {
+		this._cc = cc;
+	};
+
+	setMax = (max: number) => {
+		this.node()
+			.parameters.get('max')
+			?.setTargetAtTime(max, audioContext.currentTime, 0.03);
+	};
+
+	setMin = (min: number) => {
+		this.node()
+			.parameters.get('min')
+			?.setTargetAtTime(min, audioContext.currentTime, 0.03);
 	};
 
 	onConnected = (e: PortEvent) => {
@@ -92,9 +109,21 @@ export class MidiTriggerNode {
 		}
 	};
 
-	onTrigger = (e: NoteMessageEvent) => {
-		if (this._note === 'all' || this._note === e.note.number) {
-			this.node().port.postMessage('tick');
+	onCC = (e: ControlChangeMessageEvent) => {
+		if (this.node() && this._cc === e.controller.number) {
+			let newValue = 127;
+
+			if (typeof e.value === 'number' && e.rawValue !== undefined) {
+				newValue = e.rawValue;
+			} else if (typeof e.rawValue === 'boolean') {
+				newValue = e.value ? 127 : 0;
+			} else {
+				newValue = 0;
+			}
+
+			this.node()
+				.parameters.get('value')
+				?.setTargetAtTime(newValue, audioContext.currentTime, 0.03);
 		}
 	};
 }

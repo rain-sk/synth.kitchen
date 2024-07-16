@@ -3,6 +3,7 @@ import adsr from './adsr.js?url';
 import clock from './clock.js?url';
 import gate from './gate.js?url';
 import limiter from './limiter.js?url';
+import midiCc from './midi-cc.js?url';
 import midiClock from './midi-clock.js?url';
 import noise from './noise.js?url';
 import sequencer from './sequencer.js?url';
@@ -12,6 +13,7 @@ export const processors = [
 	clock,
 	gate,
 	limiter,
+	midiCc,
 	midiClock,
 	noise,
 	sequencer

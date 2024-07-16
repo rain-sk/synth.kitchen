@@ -6,17 +6,20 @@ import { ParameterConnector } from './parameter-connector';
 export const NumberParameter: React.FunctionComponent<{
 	moduleKey: string;
 	name: string;
-	paramAccessor: () => IAudioParam;
+	paramAccessor?: () => IAudioParam;
 	value: number;
 	commitValueCallback: (newValue: number) => void;
 }> = ({ moduleKey, paramAccessor, name, value, commitValueCallback }) => {
 	return (
 		<section className="numparam">
-			<ParameterConnector
-				moduleKey={moduleKey}
-				name={name}
-				accessor={paramAccessor}
-			/>
+			{paramAccessor && (
+				<ParameterConnector
+					moduleKey={moduleKey}
+					name={name}
+					accessor={paramAccessor}
+				/>
+			)}
+
 			<NumberBox
 				name={name}
 				value={value}

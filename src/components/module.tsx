@@ -30,6 +30,7 @@ import { useStateContext } from '../hooks/use-state-context';
 import { VcaModule } from './modules/vca';
 import { PanModule } from './modules/pan';
 import { ModuleHeader } from './module-header';
+import { MidiCcModule } from './modules/midi-cc';
 
 const useDragAndDrop = (
 	moduleKey: string,
@@ -127,6 +128,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 	switch (module.type) {
 		case 'CLOCK':
 			return <ClockModule module={module as IModule<'CLOCK'>} />;
+		case 'MIDI_CC':
+			return <MidiCcModule module={module as IModule<'MIDI_CC'>} />;
 		case 'MIDI_CLOCK':
 			return <MidiClockModule module={module as IModule<'MIDI_CLOCK'>} />;
 		case 'MIDI_TRIGGER':

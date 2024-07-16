@@ -2,6 +2,7 @@ import { TBiquadFilterType, TOscillatorType } from 'standardized-audio-context';
 
 export type ModuleType =
 	| 'CLOCK'
+	| 'MIDI_CC'
 	| 'MIDI_CLOCK'
 	| 'MIDI_TRIGGER'
 	| 'DELAY'
@@ -19,6 +20,7 @@ export type ModuleType =
 
 export interface IModuleState extends Record<ModuleType, any> {
 	CLOCK: { tempo: number };
+	MIDI_CC: { input: string; cc: number; min: number; max: number };
 	MIDI_CLOCK: { input: string };
 	MIDI_TRIGGER: { input: string; note: 'all' | number };
 	GAIN: {
