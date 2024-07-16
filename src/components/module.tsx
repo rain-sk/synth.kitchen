@@ -18,6 +18,7 @@ import { GainModule } from './modules/gain';
 import { GateModule } from './modules/gate';
 import { LimiterModule } from './modules/limiter';
 import { MidiClockModule } from './modules/midi-clock';
+import { MidiTriggerModule } from './modules/midi-trigger';
 import { Modifier, Position } from '../state/types/state';
 import { NoiseModule } from './modules/noise';
 import { OscillatorModule } from './modules/oscillator';
@@ -128,6 +129,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 			return <ClockModule module={module as IModule<'CLOCK'>} />;
 		case 'MIDI_CLOCK':
 			return <MidiClockModule module={module as IModule<'MIDI_CLOCK'>} />;
+		case 'MIDI_TRIGGER':
+			return <MidiTriggerModule module={module as IModule<'MIDI_TRIGGER'>} />;
 		case 'DELAY':
 			return <DelayModule module={module as IModule<'DELAY'>} />;
 		case 'FILTER':
