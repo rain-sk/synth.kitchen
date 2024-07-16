@@ -10,22 +10,16 @@ class MidiClock extends AudioWorkletProcessor {
 		return [{ name: 'active', defaultValue: 1, minValue: 0, maxValue: 1 }];
 	}
 
-	tick = -1;
 	tickNext = false;
 
 	constructor() {
 		super();
 		this.port.onmessage = (event) => {
-			if (event.data === 'tick' && this.tick >= 0) {
-				this.tick = (this.tick + 1) % 24;
-				if (this.tick === 0) {
-					this.tickNext = true;
-				}
+			if (event.data === 'tick') {
+				this.tickNext = true;
 			} else if (event.data === 'start') {
-				this.tick = 0;
 				this.tickNext = true;
 			} else if (event.data === 'stop') {
-				this.tick = -1;
 				this.tickNext = false;
 			}
 		};

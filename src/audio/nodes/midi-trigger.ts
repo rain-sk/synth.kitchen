@@ -4,7 +4,7 @@ import {
 	IAudioWorkletNode
 } from 'standardized-audio-context';
 import { audioContext } from '../context';
-import { PortEvent, WebMidi } from 'webmidi';
+import { NoteMessageEvent, PortEvent, WebMidi } from 'webmidi';
 import { midi } from '../../midi';
 
 export class MidiTriggerNode {
@@ -13,6 +13,7 @@ export class MidiTriggerNode {
 		'midi-clock'
 	) as IAudioWorkletNode<IAudioContext>;
 	private _inputName = '';
+	private _note: 'all' | number = 'all';
 
 	constructor() {
 		if (midi.initialized) {
@@ -38,6 +39,10 @@ export class MidiTriggerNode {
 
 	get inputName() {
 		return this._inputName;
+	}
+
+	get note() {
+		return this._note;
 	}
 
 	get input() {
@@ -75,6 +80,10 @@ export class MidiTriggerNode {
 		}
 	};
 
+	setNote = (note: 'all' | number) => {
+		this._note = note;
+	};
+
 	onConnected = (e: PortEvent) => {
 		if (e.port.type === 'input' && !this.input) {
 			this.setInput(e.port.name);
@@ -87,8 +96,10 @@ export class MidiTriggerNode {
 		}
 	};
 
-	onTrigger = () => {
-		this.node().port.postMessage('tick');
+	onTrigger = (e: NoteMessageEvent) => {
+		if (this._note === 'all' || this._note === e.note.number) {
+			this.node().port.postMessage('tick');
+		}
 	};
 
 	onStart = () => {

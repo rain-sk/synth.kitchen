@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useRef } from 'react';
 
-import { MidiClockNode } from '../../audio/nodes/midi-clock';
+import { MidiTriggerNode } from '../../audio/nodes/midi-trigger';
 
 import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
@@ -9,17 +9,26 @@ import { useEffectOnce } from '../../hooks/use-effect-once';
 import { RadioParameter } from '../radio-parameter';
 import { MidiContext } from '../../contexts/midi';
 
+const noteOptions = (() => {
+	const options = ['all'];
+	for (let i = 0; i < 128; i++) {
+		options.push(String(i));
+	}
+	return options;
+})();
+
 const clockStateFromNode = (
-	clock: MidiClockNode
+	clock: MidiTriggerNode
 ): IModuleState['MIDI_TRIGGER'] => ({
-	input: clock.inputName
+	input: clock.inputName,
+	note: clock.note
 });
 
 const initMidiTrigger = (
-	triggerRef: React.MutableRefObject<MidiClockNode | undefined>,
+	triggerRef: React.MutableRefObject<MidiTriggerNode | undefined>,
 	state?: IModuleState['MIDI_TRIGGER']
 ) => {
-	triggerRef.current = new MidiClockNode();
+	triggerRef.current = new MidiTriggerNode();
 	if (state) {
 		try {
 			triggerRef.current.setInput(state.input);
@@ -37,7 +46,7 @@ export const MidiTriggerModule: React.FC<{
 }> = ({ module }) => {
 	const { inputs } = useContext(MidiContext);
 
-	const triggerRef = useRef<MidiClockNode>();
+	const triggerRef = useRef<MidiTriggerNode>();
 	const [state, setState] = useModuleState<'MIDI_TRIGGER'>(
 		() => initMidiTrigger(triggerRef, module.state) as any,
 		module.moduleKey
@@ -67,6 +76,30 @@ export const MidiTriggerModule: React.FC<{
 		[state]
 	);
 
+	const commitNoteChange = useCallback(
+		(note: string) => {
+			if (triggerRef.current) {
+				if (note === 'all') {
+					triggerRef.current.setNote(note);
+
+					setState({
+						...state,
+						note
+					});
+				} else {
+					const num = Number(note);
+					triggerRef.current.setNote(Number(num));
+
+					setState({
+						...state,
+						note: num
+					});
+				}
+			}
+		},
+		[state]
+	);
+
 	return enabled ? (
 		<>
 			<IoConnectors
@@ -76,13 +109,22 @@ export const MidiTriggerModule: React.FC<{
 			/>
 			<section>
 				{inputs.length > 0 ? (
-					<RadioParameter
-						moduleKey={module.moduleKey}
-						name="input"
-						options={inputs.map((input) => input.name)}
-						value={triggerRef.current?.inputName as any}
-						commitValueCallback={commitInputChange}
-					/>
+					<>
+						<RadioParameter
+							moduleKey={module.moduleKey}
+							name="input"
+							options={inputs.map((input) => input.name)}
+							value={triggerRef.current?.inputName as any}
+							commitValueCallback={commitInputChange}
+						/>
+						<RadioParameter
+							moduleKey={module.moduleKey}
+							name="note"
+							options={noteOptions}
+							value={triggerRef.current?.note as any}
+							commitValueCallback={commitNoteChange}
+						/>
+					</>
 				) : (
 					<p>no inputs available</p>
 				)}

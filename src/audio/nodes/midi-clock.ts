@@ -13,6 +13,7 @@ export class MidiClockNode {
 		'midi-clock'
 	) as IAudioWorkletNode<IAudioContext>;
 	private _inputName = '';
+	private _tick = -1;
 
 	constructor() {
 		if (midi.initialized) {
@@ -88,7 +89,13 @@ export class MidiClockNode {
 	};
 
 	onClock = () => {
-		this.node().port.postMessage('tick');
+		if (this._tick >= 0) {
+			if (this._tick === 0) {
+				this.node().port.postMessage('tick');
+			}
+
+			this._tick = (this._tick + 1) % 24;
+		}
 	};
 
 	onStart = () => {
