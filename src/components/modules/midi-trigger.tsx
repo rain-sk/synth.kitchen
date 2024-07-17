@@ -32,6 +32,7 @@ const initMidiTrigger = (
 	if (state) {
 		try {
 			triggerRef.current.setInput(state.input);
+			triggerRef.current.setNote(state.note);
 		} catch (e) {
 			console.error(e);
 		}
