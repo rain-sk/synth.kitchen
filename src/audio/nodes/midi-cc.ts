@@ -23,6 +23,8 @@ export class MidiCcNode {
 			if (WebMidi.inputs.length === 1) {
 				this.setInput(WebMidi.inputs[0].name);
 			}
+
+			this.handleCCValue(0);
 		}
 	}
 
@@ -109,21 +111,21 @@ export class MidiCcNode {
 		}
 	};
 
+	handleCCValue = (value: number) => {
+		this.node()
+			.parameters.get('value')
+			?.setTargetAtTime(value, audioContext.currentTime, 0.03);
+	};
+
 	onCC = (e: ControlChangeMessageEvent) => {
 		if (this.node() && this._cc === e.controller.number) {
-			let newValue = 127;
-
 			if (typeof e.value === 'number' && e.rawValue !== undefined) {
-				newValue = e.rawValue;
+				this.handleCCValue(e.rawValue);
 			} else if (typeof e.rawValue === 'boolean') {
-				newValue = e.value ? 127 : 0;
+				this.handleCCValue(e.value ? 127 : 0);
 			} else {
-				newValue = 0;
+				this.handleCCValue(0);
 			}
-
-			this.node()
-				.parameters.get('value')
-				?.setTargetAtTime(newValue, audioContext.currentTime, 0.03);
 		}
 	};
 }
