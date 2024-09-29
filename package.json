@@ -1,18 +1,18 @@
 {
 	"name": "synth.kitchen",
-	"version": "0.2.2",
+	"version": "0.3.0",
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"extendable-media-recorder": "^9.1.9",
-		"extendable-media-recorder-wav-encoder": "^7.0.104",
+		"extendable-media-recorder": "^9.2.11",
+		"extendable-media-recorder-wav-encoder": "^7.0.115",
 		"hhmmss": "^1.0.0",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
 		"server-name-gen": "^1.0.2",
-		"standardized-audio-context": "^25.3.64",
-		"uuid": "^9.0.1",
-		"webmidi": "^3.1.8"
+		"standardized-audio-context": "^25.3.77",
+		"uuid": "^10.0.0",
+		"webmidi": "^3.1.11"
 	},
 	"scripts": {
 		"build": "tsc && vite build",
@@ -22,11 +22,11 @@
 		"preview": "vite preview"
 	},
 	"devDependencies": {
-		"@types/react": "^18.2.58",
-		"@types/react-dom": "^18.2.19",
-		"@vitejs/plugin-react": "^4.2.1",
-		"concurrently": "^8.2.1",
-		"typescript": "^5.3.3",
-		"vite": "^5.1.4"
+		"@types/react": "^18.3.0",
+		"@types/react-dom": "^18.3.0",
+		"@vitejs/plugin-react": "^4.3.1",
+		"concurrently": "^9.0.1",
+		"typescript": "^5.6.2",
+		"vite": "^5.4.8"
 	}
 }

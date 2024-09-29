@@ -18,7 +18,7 @@ Done:
 
 TODO:
 
-- [ ] newly-added modules are positioned "meaningfully" (try to avoid overlaps, aim for the center of the viewport)
+- [x] newly-added modules are positioned "meaningfully" (try to avoid overlaps, aim for the center of the viewport)
 - [ ] modify the existing selection properly when using shift+drag
 - [ ] scroll when dragging a module past the edge of the viewport
 - [ ] infinite-scroll zoomable module canvas
@@ -47,7 +47,7 @@ Done:
 
 TODO:
 
-- [ ] modules can be renamed
+- [x] modules can be renamed
 - [ ] modules look nice
 - [ ] sequencer is cool
 - [ ] modules have colors and can be re-colored
@@ -73,10 +73,10 @@ Done:
 
 TODO:
 
-- [ ] export/import files including connection state
+- [x] export/import files including connection state
 - [ ] catch and handle parse errors
 - [ ] catch and handle a potentially-malformed state
-- [ ] ability define custom modules based on sub-patches
+- [ ] ability to define custom modules based on sub-patches
 
 ### MIDI
 
@@ -96,5 +96,5 @@ Done:
 
 TODO:
 
-- [ ] sync with external MIDI clocks
+- [x] sync with external MIDI clocks
 - [ ] Ableton Link support
