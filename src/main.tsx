@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { audio, initAudio } from './audio';
-import { initMidi, midi } from './midi';
+import { initMidi } from './midi';
 
 import { Kitchen } from './components/kitchen';
 
@@ -14,15 +14,15 @@ initAudio()
 	.then(() => {
 		if (audio.initialized) {
 			ReactDOM.createRoot(
-				document.getElementById('root') as HTMLElement
+				document.getElementById('root') as HTMLElement,
 			).render(
 				<React.StrictMode>
 					<Kitchen />
-				</React.StrictMode>
+				</React.StrictMode>,
 			);
 		} else {
 			alert(
-				"You're using an unsupported browser. Please try again with Firefox, etc."
+				"You're using an unsupported browser. Please try again with Firefox, etc.",
 			);
 		}
 	});
