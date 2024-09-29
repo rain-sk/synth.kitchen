@@ -3,16 +3,20 @@ import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { actions } from '../state/actions';
 import { ModuleType } from '../state/types/module';
 import { INVALID_POSITION, Position } from '../state/types/state';
+import { midi } from '../midi';
 
-const controlModules: ModuleType[] = [
-	'CLOCK',
-	'MIDI_CC',
-	'MIDI_CLOCK',
-	'MIDI_TRIGGER',
-	'GATE',
-	'ENVELOPE',
-	'SEQUENCER'
-];
+const controlModules = (): ModuleType[] =>
+	midi.initialized
+		? [
+				'CLOCK',
+				'MIDI_CC',
+				'MIDI_CLOCK',
+				'MIDI_TRIGGER',
+				'GATE',
+				'ENVELOPE',
+				'SEQUENCER'
+		  ]
+		: ['CLOCK', 'GATE', 'ENVELOPE', 'SEQUENCER'];
 
 const soundModules: ModuleType[] = ['OSCILLATOR', 'NOISE'];
 
@@ -58,7 +62,7 @@ export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
 		>
 			<option value="">add module</option>
 			<optgroup label="Control">
-				{controlModules.map((type) => (
+				{controlModules().map((type) => (
 					<option
 						key={type}
 						value={type}

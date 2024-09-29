@@ -12,7 +12,7 @@ import './styles.css';
 initAudio()
 	.then(() => initMidi())
 	.then(() => {
-		if (audio.initialized && midi.initialized) {
+		if (audio.initialized) {
 			ReactDOM.createRoot(
 				document.getElementById('root') as HTMLElement
 			).render(

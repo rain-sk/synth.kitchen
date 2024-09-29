@@ -14,8 +14,9 @@ export const initMidi = async () => {
 		})
 		.then(() => {
 			if (midi.setupError) {
-				alert(midi.setupError);
+				console.error(midi.setupError);
+			} else {
+				midi.initialized = true;
 			}
-			midi.initialized = true;
 		});
 };
