@@ -10,10 +10,22 @@ export const KeyHandler: React.FC = () => {
 	const dispatch = useDispatchContext();
 
 	const { current: onKeyDown } = useRef((e: KeyboardEvent) => {
+		if (e.keyCode === KeyCode.A) {
+			if (
+				!document.activeElement ||
+				document.activeElement.nodeName !== 'INPUT'
+			) {
+				e.preventDefault();
+
+				dispatch(actions.keyDownAction(e.keyCode));
+			}
+			return;
+		}
+
 		const handleMovement =
 			e.keyCode in keyCodeMovementMap && selectedModuleKeys.size > 0;
-		const handleSelection = e.keyCode === KeyCode.A;
-		if (handleMovement || handleSelection) {
+
+		if (handleMovement) {
 			e.preventDefault();
 		}
 
