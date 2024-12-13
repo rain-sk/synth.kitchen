@@ -1,14 +1,14 @@
-import { IState } from '../types/state';
+import { IState, Modifier } from '../types/state';
 import { IKeyboardEvent, KeyboardEventType } from '../actions/keyboard-event';
 import {
 	KeyCode,
 	keyCodeModifierMap,
-	keyCodeMovementMap
+	keyCodeMovementMap,
 } from '../../constants/key';
 
 export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 	state,
-	action
+	action,
 ) => {
 	const { type, keyCode } = action.payload;
 
@@ -19,13 +19,13 @@ export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 			case KeyboardEventType.KEY_DOWN: {
 				return {
 					...state,
-					heldModifiers: state.heldModifiers | modifier
+					heldModifiers: state.heldModifiers | modifier,
 				};
 			}
 			case KeyboardEventType.KEY_UP: {
 				return {
 					...state,
-					heldModifiers: state.heldModifiers & ~modifier
+					heldModifiers: state.heldModifiers & ~modifier,
 				};
 			}
 		}
@@ -43,9 +43,9 @@ export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 					moduleKey,
 					state.selectedModuleKeys.has(moduleKey)
 						? [position[0] + deltaX, position[1] + deltaY]
-						: position
-				])
-			)
+						: position,
+				]),
+			),
 		};
 	} else if (
 		(keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) &&
@@ -56,15 +56,26 @@ export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
 			modules: Object.fromEntries(
 				Object.entries(state.modules).filter(
 					([moduleKey]) =>
-						!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0'
-				)
+						!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
+				),
 			),
 			modulePositions: Object.fromEntries(
 				Object.entries(state.modulePositions).filter(
 					([moduleKey]) =>
-						!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0'
-				)
-			)
+						!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
+				),
+			),
+		};
+	} else if (
+		keyCode === KeyCode.A &&
+		((state.heldModifiers & Modifier.SPECIAL) === Modifier.SPECIAL ||
+			(state.heldModifiers & Modifier.CONTROL) === Modifier.CONTROL)
+	) {
+		return {
+			...state,
+			selectedModuleKeys: new Set([
+				...Object.values(state.modules).map((module) => module.moduleKey),
+			]),
 		};
 	} else {
 		// console.log(type, keyCode);

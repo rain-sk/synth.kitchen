@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import { keyCodeMovementMap } from '../constants/key';
+import { KeyCode, keyCodeMovementMap } from '../constants/key';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 import { actions } from '../state/actions';
@@ -10,7 +10,10 @@ export const KeyHandler: React.FC = () => {
 	const dispatch = useDispatchContext();
 
 	const { current: onKeyDown } = useRef((e: KeyboardEvent) => {
-		if (e.keyCode in keyCodeMovementMap && selectedModuleKeys.size > 0) {
+		const handleMovement =
+			e.keyCode in keyCodeMovementMap && selectedModuleKeys.size > 0;
+		const handleSelection = e.keyCode === KeyCode.A;
+		if (handleMovement || handleSelection) {
 			e.preventDefault();
 		}
 

@@ -6,7 +6,9 @@ import { IParameter } from './parameter';
 
 export enum Modifier {
 	NONE = 0,
-	SHIFT = 1 << 0
+	SHIFT = 1 << 0,
+	SPECIAL = 1 << 1,
+	CONTROL = 1 << 2,
 }
 
 export type Position = [number, number];
@@ -35,11 +37,11 @@ export const blankState = (): IState => ({
 			name: 'output',
 			moduleKey: '0',
 			type: 'OUTPUT',
-			state: { gain: 0.45 }
-		}
+			state: { gain: 0.45 },
+		},
 	},
 	modulePositions: {
-		'0': [50, 50]
+		'0': [50, 50],
 	},
 	mouseDragStartPosition: INVALID_POSITION,
 	mouseDragPosition: INVALID_POSITION,
@@ -47,7 +49,7 @@ export const blankState = (): IState => ({
 	selectedModuleKeys: new Set(),
 	selectionPending: false,
 	parameters: {},
-	io: {}
+	io: {},
 });
 
 export const initialState: IState = blankState();
