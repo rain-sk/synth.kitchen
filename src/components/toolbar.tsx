@@ -7,6 +7,7 @@ import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { useStateContext } from '../hooks/use-state-context';
 import { ConnectionContext } from '../contexts/connection';
 import { Record } from './record';
+import { deselectAllModulesAction } from '../state/actions/select-module';
 
 export const Toolbar: React.FC<{}> = () => {
 	const dispatch = useDispatchContext();
@@ -22,14 +23,14 @@ export const Toolbar: React.FC<{}> = () => {
 			name: state.name,
 			modules: state.modules,
 			modulePositions: state.modulePositions,
-			connections: Object.fromEntries(connections.entries())
+			connections: Object.fromEntries(connections.entries()),
 		};
 
 		// https://code.tutsplus.com/tutorials/how-to-save-a-file-with-javascript--cms-41105
 		{
 			const a = document.createElement('a');
 			const blob = new Blob([JSON.stringify(patch)], {
-				type: 'text/json'
+				type: 'text/json',
 			});
 
 			a.setAttribute('href', URL.createObjectURL(blob));
@@ -53,8 +54,8 @@ export const Toolbar: React.FC<{}> = () => {
 					name: '',
 					modules: {},
 					modulePositions: {},
-					connections: {}
-				})
+					connections: {},
+				}),
 			);
 			const patch = JSON.parse((e.target as any).result) as ISerializedPatch;
 			setTimeout(() => {
@@ -71,6 +72,10 @@ export const Toolbar: React.FC<{}> = () => {
 		}
 	};
 
+	const handleFocus = useCallback(() => {
+		dispatch(deselectAllModulesAction());
+	}, [dispatch]);
+
 	return (
 		<nav>
 			<section>
@@ -79,6 +84,7 @@ export const Toolbar: React.FC<{}> = () => {
 					type="text"
 					value={state.name}
 					onChange={handleNameChange}
+					onFocus={handleFocus}
 				/>
 				<button type="button" onClick={onSave}>
 					save

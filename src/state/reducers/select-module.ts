@@ -3,21 +3,27 @@ import { IState } from '../types/state';
 
 export const selectModule: React.Reducer<IState, ISelectModule> = (
 	state,
-	action
+	action,
 ) => {
 	const { moduleKey, type } = action.payload;
 	const { selectedModuleKeys } = state;
 
-	const moduleIsSelected = selectedModuleKeys.has(moduleKey);
+	const moduleIsSelected = moduleKey && selectedModuleKeys.has(moduleKey);
 
 	switch (type) {
+		case SelectModuleType.DESELECT_ALL: {
+			return {
+				...state,
+				selectedModuleKeys: new Set(),
+			};
+		}
 		case SelectModuleType.DESELECT: {
 			return moduleIsSelected
 				? {
 						...state,
 						selectedModuleKeys: new Set(
-							[...selectedModuleKeys].filter((key) => key != moduleKey)
-						)
+							[...selectedModuleKeys].filter((key) => key != moduleKey),
+						),
 				  }
 				: state;
 		}
@@ -26,7 +32,7 @@ export const selectModule: React.Reducer<IState, ISelectModule> = (
 				? state
 				: {
 						...state,
-						selectedModuleKeys: new Set([...selectedModuleKeys, moduleKey])
+						selectedModuleKeys: new Set([...selectedModuleKeys, moduleKey]),
 				  };
 		}
 		case SelectModuleType.SELECT_SINGLE: {
@@ -34,7 +40,7 @@ export const selectModule: React.Reducer<IState, ISelectModule> = (
 				? state
 				: {
 						...state,
-						selectedModuleKeys: new Set([moduleKey])
+						selectedModuleKeys: new Set([moduleKey]),
 				  };
 		}
 	}
