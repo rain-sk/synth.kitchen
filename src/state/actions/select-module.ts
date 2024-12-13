@@ -13,7 +13,7 @@ export type ISelectModule = {
 				type: SelectModuleType;
 		  }
 		| {
-				moduleKey: undefined;
+				moduleKey?: undefined;
 				type: SelectModuleType.DESELECT_ALL;
 		  };
 };
