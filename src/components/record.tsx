@@ -1,14 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-	IMediaRecorder,
-	MediaRecorder,
-	register
-} from 'extendable-media-recorder';
-import { connect } from 'extendable-media-recorder-wav-encoder';
+import { IMediaRecorder, MediaRecorder } from 'extendable-media-recorder';
 import hhmmss from 'hhmmss';
 
 import { audioContext, resampling } from '../audio/context';
-import { useEffectOnce } from '../hooks/use-effect-once';
 import { useStateContext } from '../hooks/use-state-context';
 
 export const Record: React.FC = () => {
@@ -16,18 +10,10 @@ export const Record: React.FC = () => {
 	const mediaRecorder = useRef<IMediaRecorder>();
 	const chunks = useRef<Blob[]>();
 
-	const [loaded, setLoaded] = useState(false);
 	const [recording, setRecording] = useState(false);
 
 	const recordingStartTimeRef = useRef(0);
 	const [recordingTime, setRecordingTime] = useState(0);
-
-	useEffectOnce(() => {
-		(async () => {
-			await register(await connect());
-			setLoaded(true);
-		})();
-	});
 
 	let timerCallback: any;
 	timerCallback = useCallback(() => {
@@ -48,13 +34,13 @@ export const Record: React.FC = () => {
 		recordingStartTimeRef.current = audioContext.currentTime;
 		const streamDestination = audioContext.createMediaStreamDestination();
 		mediaRecorder.current = new MediaRecorder(streamDestination.stream, {
-			mimeType: 'audio/wav'
+			mimeType: 'audio/wav',
 		});
 		chunks.current = [];
 		mediaRecorder.current.ondataavailable = (chunk: BlobEvent) => {
 			chunks.current?.push(chunk.data);
 			setRecordingTime(
-				audioContext.currentTime - recordingStartTimeRef.current
+				audioContext.currentTime - recordingStartTimeRef.current,
 			);
 		};
 		resampling.connect(streamDestination);
@@ -68,7 +54,7 @@ export const Record: React.FC = () => {
 			setRecordingTime(0);
 			mediaRecorder.current.onstop = () => {
 				const blob = new Blob(chunks.current, {
-					type: 'audio/wav'
+					type: 'audio/wav',
 				});
 				chunks.current = undefined;
 
@@ -83,11 +69,9 @@ export const Record: React.FC = () => {
 		}
 	}, [recording, setRecording]);
 
-	return loaded ? (
-		<>
-			<button type="button" onClick={recording ? handleStop : handleRecord}>
-				{recording ? `stop (${hhmmss(recordingTime)})` : 'record'}
-			</button>
-		</>
-	) : null;
+	return (
+		<button type="button" onClick={recording ? handleStop : handleRecord}>
+			{recording ? `stop (${hhmmss(recordingTime)})` : 'record'}
+		</button>
+	);
 };

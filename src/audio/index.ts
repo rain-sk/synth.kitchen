@@ -1,8 +1,10 @@
+import { connect } from 'extendable-media-recorder-wav-encoder';
 import { audioContext } from './context';
 import { initAudioProcessors } from './processors';
+import { register } from 'extendable-media-recorder';
 
 export const audio = {
-	initialized: false
+	initialized: false,
 };
 
 const resumeAudioContext = new Promise<void>((resolve) => {
@@ -36,6 +38,7 @@ const resumeAudioContext = new Promise<void>((resolve) => {
 });
 
 export const initAudio = async () => {
+	await register(await connect());
 	return resumeAudioContext.then(initAudioProcessors(audioContext)).then(() => {
 		audio.initialized = true;
 	});
