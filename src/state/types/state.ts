@@ -1,4 +1,5 @@
 import { IInput, IOutput } from '../../contexts/connection';
+import { randomId } from '../../utils/random-id';
 import { randomName } from '../../utils/random-name';
 import { IIo } from './io';
 import { IModule } from './module';
@@ -16,6 +17,7 @@ export const INVALID_POSITION: Position = [-1, -1];
 
 export type IState = {
 	name: string;
+	id: string;
 	modules: Record<string, IModule>;
 	heldModifiers: Modifier;
 	isKeyMovementEnabled: boolean;
@@ -30,6 +32,7 @@ export type IState = {
 };
 
 export const blankState = (): IState => ({
+	id: randomId(),
 	heldModifiers: Modifier.NONE,
 	isKeyMovementEnabled: true,
 	modules: {

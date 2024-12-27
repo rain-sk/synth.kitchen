@@ -8,17 +8,36 @@ import { useStateContext } from '../hooks/use-state-context';
 import { ConnectionContext } from '../contexts/connection';
 import { Record } from './record';
 import { deselectAllModulesAction } from '../state/actions/select-module';
+import { useApi } from '../hooks/use-api';
 
 export const Toolbar: React.FC<{}> = () => {
 	const dispatch = useDispatchContext();
 	const state = useStateContext();
 	const { connections, connectionCount } = useContext(ConnectionContext);
+	const { savePatch } = useApi();
 
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		dispatch(actions.changeNameAction(e.target.value));
 	};
 
 	const onSave = useCallback(() => {
+		const patch: ISerializedPatch = {
+			id: state.id,
+			name: state.name,
+			modules: state.modules,
+			modulePositions: state.modulePositions,
+			connections: Object.fromEntries(connections.entries()),
+		};
+		savePatch(patch);
+	}, [
+		state.name,
+		state.modules,
+		state.modulePositions,
+		connectionCount,
+		savePatch,
+	]);
+
+	const onDownload = useCallback(() => {
 		const patch: ISerializedPatch = {
 			name: state.name,
 			modules: state.modules,
@@ -88,6 +107,9 @@ export const Toolbar: React.FC<{}> = () => {
 				/>
 				<button type="button" onClick={onSave}>
 					save
+				</button>
+				<button type="button" onClick={onDownload}>
+					download
 				</button>
 				<label id="load" tabIndex={0} onKeyDown={handleLoadKeyDown}>
 					load
