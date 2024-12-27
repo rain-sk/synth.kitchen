@@ -24,6 +24,15 @@ const resumeAudioContext = new Promise<void>((resolve) => {
 		}
 	};
 	startButton?.addEventListener('click', init);
+
+	const keyInit = (e: KeyboardEvent) => {
+		if (e.key === ' ' || e.key === 'Enter') {
+			document.removeEventListener('keydown', keyInit, false);
+			init();
+		}
+	};
+
+	document.addEventListener('keydown', keyInit, false);
 });
 
 export const initAudio = async () => {
