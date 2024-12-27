@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { apiToken } from '../utils/token';
 import { bearerPrefix } from '../utils/bearer-prefix';
 import { ISerializedPatch } from '../state/types/serialized-patch';

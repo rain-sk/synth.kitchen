@@ -39,6 +39,7 @@ export const Toolbar: React.FC<{}> = () => {
 
 	const onDownload = useCallback(() => {
 		const patch: ISerializedPatch = {
+			id: state.id,
 			name: state.name,
 			modules: state.modules,
 			modulePositions: state.modulePositions,
@@ -70,6 +71,7 @@ export const Toolbar: React.FC<{}> = () => {
 		reader.onload = (e) => {
 			dispatch(
 				actions.loadPatchAction({
+					id: '',
 					name: '',
 					modules: {},
 					modulePositions: {},
