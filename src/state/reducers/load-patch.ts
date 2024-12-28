@@ -1,11 +1,14 @@
 import { INVALID_POSITION, IState } from '../types/state';
 import { ILoadPatch } from '../actions/load-patch';
+import { randomId } from '../../utils/random-id';
 
 export const loadPatch: React.Reducer<IState, ILoadPatch> = (state, action) => {
-	const { name, modules, modulePositions, connections } = action.payload.patch;
+	const { id, name, modules, modulePositions, connections } =
+		action.payload.patch;
 
 	return {
 		...state,
+		id: id ?? randomId(),
 		name,
 		modules,
 		modulePositions,
@@ -13,6 +16,6 @@ export const loadPatch: React.Reducer<IState, ILoadPatch> = (state, action) => {
 		mouseDragPosition: INVALID_POSITION,
 		mouseDragStartPosition: INVALID_POSITION,
 		selectionPending: false,
-		connectionsToLoad: connections
+		connectionsToLoad: connections,
 	};
 };
