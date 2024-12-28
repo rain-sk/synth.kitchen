@@ -10,10 +10,7 @@ import { Record } from './record';
 import { deselectAllModulesAction } from '../state/actions/select-module';
 import { useApi } from '../hooks/use-api';
 import { PatchLoader } from './patch-loader';
-import { SaveToDisk } from './svg/save-to-disk';
-import { OpenFromDisk } from './svg/open-from-disk';
-import { SaveToCloud } from './svg/save-to-cloud';
-import { OpenFromCloud } from './svg/open-from-cloud';
+import { SaveToDisk, OpenFromDisk, SaveToCloud, OpenFromCloud } from './svg';
 
 export const Toolbar: React.FC<{}> = () => {
 	const dispatch = useDispatchContext();
