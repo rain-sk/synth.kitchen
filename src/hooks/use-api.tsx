@@ -14,7 +14,7 @@ type TokenResponse = {
 	dtable_name: string;
 };
 
-type RowData = {
+export type DatabasePatch = {
 	ID: string;
 	Name: string;
 	Patch: string;
@@ -77,7 +77,7 @@ export const useApi = () => {
 				return;
 			}
 
-			const data: { rows: RowData[] } = await getPatches().then(
+			const data: { rows: DatabasePatch[] } = await getPatches().then(
 				(res) => res && res.json(),
 			);
 
