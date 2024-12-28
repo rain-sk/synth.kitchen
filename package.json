@@ -9,6 +9,7 @@
 		"hhmmss": "^1.0.0",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
+		"react-modal": "^3.16.3",
 		"server-name-gen": "^1.0.2",
 		"standardized-audio-context": "^25.3.77",
 		"uuid": "^10.0.0",
@@ -24,6 +25,7 @@
 	"devDependencies": {
 		"@types/react": "^18.3.0",
 		"@types/react-dom": "^18.3.0",
+		"@types/react-modal": "^3.16.3",
 		"@vitejs/plugin-react": "^4.3.1",
 		"concurrently": "^9.0.1",
 		"typescript": "^5.6.2",
