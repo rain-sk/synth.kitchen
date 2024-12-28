@@ -236,3 +236,8 @@ main {
 input[type='file'] {
 	display: none;
 }
+
+.ReactModalPortal {
+	position: relative;
+	z-index: 30;
+}
