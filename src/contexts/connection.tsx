@@ -113,8 +113,6 @@ export const ConnectionContext = React.createContext<IConnectionContext>({
 export const ConnectionContextProvider: React.FunctionComponent<{
 	children: React.ReactNode;
 }> = ({ children }) => {
-	// const dispatch = useDispatchContext();
-
 	const [activeConnectorKey, setActiveConnectorKey] = useState<string>();
 
 	const [connectorCount, setConnectorCount] = useState(0);
@@ -235,15 +233,6 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 						? connectOrDisconnect(activeConnector, clicked)
 						: connectOrDisconnect(clicked as IOutput, activeConnector),
 				);
-				// dispatch(
-				// 	historyPushAction(
-				// 		Object.fromEntries(
-				// 			Object.entries(connections).map(([key, [output, input]]) => {
-				// 				return [key, [connectorKey(output), connectorKey(input)]];
-				// 			})
-				// 		)
-				// 	)
-				// );
 			}
 		},
 		[activeConnectorKey, setActiveConnectorKey, setConnectionCount],

@@ -5,7 +5,7 @@ import { useDispatchContext } from './use-dispatch-context';
 
 export const useModuleState = <T extends ModuleType>(
 	init: IModuleState[T] | (() => IModuleState[T]),
-	moduleKey: string
+	moduleKey: string,
 ): [IModuleState[T], React.Dispatch<React.SetStateAction<IModuleState[T]>>] => {
 	const [state, setState] = useState(init);
 
@@ -15,7 +15,7 @@ export const useModuleState = <T extends ModuleType>(
 		if (state) {
 			dispatch(actions.updateModuleAction(moduleKey, { state }));
 		}
-	}, [state, moduleKey]);
+	}, [dispatch, moduleKey, state]);
 
 	return [state, setState];
 };

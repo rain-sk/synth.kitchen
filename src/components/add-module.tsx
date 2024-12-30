@@ -14,7 +14,7 @@ const controlModules = (): ModuleType[] =>
 				'MIDI_TRIGGER',
 				'GATE',
 				'ENVELOPE',
-				'SEQUENCER'
+				'SEQUENCER',
 		  ]
 		: ['CLOCK', 'GATE', 'ENVELOPE', 'SEQUENCER'];
 
@@ -26,7 +26,7 @@ const effectModules: ModuleType[] = [
 	'GAIN',
 	'LIMITER',
 	'VCA',
-	'PAN'
+	'PAN',
 ];
 
 export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
@@ -39,7 +39,7 @@ export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
 				dispatch(actions.addModuleAction(moduleType as ModuleType, position));
 			}
 		},
-		[position]
+		[dispatch, position],
 	);
 
 	return (
@@ -55,7 +55,7 @@ export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
 							left: position[0],
 							top: position[1] - 40,
 							transform: 'translate(-50%, -50%)',
-							transition: 'all .001s ease'
+							transition: 'all .001s ease',
 					  }
 					: {}
 			}

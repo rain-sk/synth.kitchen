@@ -26,7 +26,7 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 			dispatch(actions.enableKeyMovementAction());
 			editingRef.current = false;
 		}
-	}, [edit, name]);
+	}, [dispatch, edit, name]);
 
 	const cancel = useCallback(() => {
 		setEdit(false);
@@ -37,7 +37,7 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 		(e: React.ChangeEvent<HTMLInputElement>) => {
 			setName(e.target.value);
 		},
-		[setName]
+		[setName],
 	);
 
 	const handleKeyDown = useCallback(
@@ -46,12 +46,12 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 				cancel();
 			} else if (e.key === 'Enter') {
 				dispatch(
-					actions.updateModuleAction(module.moduleKey, { name: name.trim() })
+					actions.updateModuleAction(module.moduleKey, { name: name.trim() }),
 				);
 				setEdit(false);
 			}
 		},
-		[module.moduleKey, setEdit, cancel, name]
+		[cancel, dispatch, module.moduleKey, name, setEdit],
 	);
 
 	return (

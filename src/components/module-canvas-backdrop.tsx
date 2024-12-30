@@ -3,7 +3,7 @@ import React, {
 	useCallback,
 	useEffect,
 	useRef,
-	useState
+	useState,
 } from 'react';
 import { queueAnimation } from '../utils/animation';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
@@ -15,10 +15,10 @@ import { AddModule } from './add-module';
 
 const positionFromMouseEvent = (
 	e: MouseEvent,
-	scrollableElement: HTMLElement
+	scrollableElement: HTMLElement,
 ): Position => [
 	e.clientX + scrollableElement.scrollLeft,
-	e.clientY + scrollableElement.scrollTop
+	e.clientY + scrollableElement.scrollTop,
 ];
 
 export const ModuleCanvasBackdrop: React.FC<{
@@ -33,7 +33,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 	const selection = useRef({
 		element: undefined as HTMLDivElement | undefined,
 		start: INVALID_POSITION,
-		end: INVALID_POSITION
+		end: INVALID_POSITION,
 	});
 	const isInitialized = () =>
 		!!container.current && !!spacer.current && !!selection.current.element;
@@ -67,7 +67,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 				selection.current.element.style.left = `${Math.min(xStart, xEnd)}px`;
 				selection.current.element.style.top = `calc(${Math.min(
 					yStart,
-					yEnd
+					yEnd,
 				)}px - 2.5rem)`;
 				selection.current.element.style.width = `${Math.abs(xEnd - xStart)}px`;
 				selection.current.element.style.height = `${Math.abs(yEnd - yStart)}px`;
@@ -137,54 +137,63 @@ export const ModuleCanvasBackdrop: React.FC<{
 		}
 	}, [initialized, onResize]);
 
-	const onDrag = useCallback((e: MouseEvent) => {
-		selection.current.end = positionFromMouseEvent(
-			e,
-			container.current as HTMLElement
-		);
+	const onDrag = useCallback(
+		(e: MouseEvent) => {
+			selection.current.end = positionFromMouseEvent(
+				e,
+				container.current as HTMLElement,
+			);
 
-		queueAnimation(drawSelection);
+			queueAnimation(drawSelection);
 
-		dispatch(actions.selectionDragContinueAction(selection.current.end));
-	}, []);
+			dispatch(actions.selectionDragContinueAction(selection.current.end));
+		},
+		[dispatch],
+	);
 
-	const onMouseUp = useCallback((e: MouseEvent) => {
-		dispatch(
-			actions.selectionDragEndAction(
-				positionFromMouseEvent(e, container.current as HTMLElement)
-			)
-		);
+	const onMouseUp = useCallback(
+		(e: MouseEvent) => {
+			dispatch(
+				actions.selectionDragEndAction(
+					positionFromMouseEvent(e, container.current as HTMLElement),
+				),
+			);
 
-		if (
-			Math.abs(selection.current.start[0] - selection.current.end[0]) < 5 &&
-			Math.abs(selection.current.start[1] - selection.current.end[1]) < 5
-		) {
-			setDeviceButtonPosition(selection.current.start);
-		}
+			if (
+				Math.abs(selection.current.start[0] - selection.current.end[0]) < 5 &&
+				Math.abs(selection.current.start[1] - selection.current.end[1]) < 5
+			) {
+				setDeviceButtonPosition(selection.current.start);
+			}
 
-		queueAnimation(clearSelection);
+			queueAnimation(clearSelection);
 
-		document.body.removeEventListener('mouseup', onMouseUp);
-		document.body.removeEventListener('mouseleave', onMouseUp);
-		document.body.removeEventListener('mousemove', onDrag);
-	}, []);
+			document.body.removeEventListener('mouseup', onMouseUp);
+			document.body.removeEventListener('mouseleave', onMouseUp);
+			document.body.removeEventListener('mousemove', onDrag);
+		},
+		[dispatch],
+	);
 
-	const onMouseDown = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
-		const position = positionFromMouseEvent(
-			e.nativeEvent,
-			container.current as HTMLElement
-		);
+	const onMouseDown = useCallback(
+		(e: ReactMouseEvent<HTMLDivElement>) => {
+			const position = positionFromMouseEvent(
+				e.nativeEvent,
+				container.current as HTMLElement,
+			);
 
-		selection.current.start = position;
+			selection.current.start = position;
 
-		dispatch(actions.selectionDragStartAction(position));
+			dispatch(actions.selectionDragStartAction(position));
 
-		document.body.addEventListener('mouseup', onMouseUp);
-		document.body.addEventListener('mouseleave', onMouseUp);
-		document.body.addEventListener('mousemove', onDrag);
+			document.body.addEventListener('mouseup', onMouseUp);
+			document.body.addEventListener('mouseleave', onMouseUp);
+			document.body.addEventListener('mousemove', onDrag);
 
-		onDrag(e.nativeEvent);
-	}, []);
+			onDrag(e.nativeEvent);
+		},
+		[dispatch],
+	);
 
 	return (
 		<main

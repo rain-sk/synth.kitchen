@@ -69,7 +69,7 @@ export const NumberBox: React.FunctionComponent<{
 		commitValueCallback(valueToCommit());
 		setTempValue();
 		dispatch(actions.enableKeyMovementAction());
-	}, [commitValueCallback, valueToCommit, setTempValue, dispatch]);
+	}, [commitValueCallback, dispatch, setTempValue, valueToCommit]);
 
 	const onKeyDown = useCallback(
 		(e: React.KeyboardEvent<HTMLInputElement>) => {
