@@ -1,4 +1,4 @@
-export const OpenFromCloud = () => (
+export const OpenFromCloudSvg = () => (
 	<svg
 		width="25px"
 		height="25px"

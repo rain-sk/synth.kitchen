@@ -1,4 +1,4 @@
-export const SaveToCloud = () => (
+export const SaveToCloudSvg = () => (
 	<svg
 		role="presentation"
 		width="25px"

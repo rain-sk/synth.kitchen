@@ -1,4 +1,4 @@
-export const SaveToDisk = () => (
+export const SaveToDiskSvg = () => (
 	<svg
 		role="presentation"
 		width="25px"

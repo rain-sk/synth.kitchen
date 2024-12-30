@@ -1,6 +1,6 @@
-import { OpenFromCloud } from './open-from-cloud';
-import { OpenFromDisk } from './open-from-disk';
-import { SaveToCloud } from './save-to-cloud';
-import { SaveToDisk } from './save-to-disk';
+import { OpenFromCloudSvg } from './open-from-cloud';
+import { OpenFromDiskSvg } from './open-from-disk';
+import { SaveToCloudSvg } from './save-to-cloud';
+import { SaveToDiskSvg } from './save-to-disk';
 
-export { OpenFromCloud, OpenFromDisk, SaveToCloud, SaveToDisk };
+export { OpenFromCloudSvg, OpenFromDiskSvg, SaveToCloudSvg, SaveToDiskSvg };

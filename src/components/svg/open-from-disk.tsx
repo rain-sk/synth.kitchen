@@ -1,4 +1,4 @@
-export const OpenFromDisk = () => (
+export const OpenFromDiskSvg = () => (
 	<svg
 		role="presentation"
 		width="25px"
