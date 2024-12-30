@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { audio, initAudio } from './audio';
 import { initMidi } from './midi';
 
-import { Kitchen } from './components/kitchen';
+import { SynthKitchen } from './app';
 
 import './reset.css';
 import './styles.css';
@@ -17,7 +17,7 @@ initAudio()
 				document.getElementById('root') as HTMLElement,
 			).render(
 				<React.StrictMode>
-					<Kitchen />
+					<SynthKitchen />
 				</React.StrictMode>,
 			);
 		} else {
