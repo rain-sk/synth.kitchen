@@ -5,7 +5,6 @@ import { MidiTriggerNode } from '../../audio/nodes/midi-trigger';
 import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
-import { useEffectOnce } from '../../hooks/use-effect-once';
 import { RadioParameter } from '../radio-parameter';
 import { MidiContext } from '../../contexts/midi';
 
@@ -18,15 +17,15 @@ const noteOptions = (() => {
 })();
 
 const clockStateFromNode = (
-	clock: MidiTriggerNode
+	clock: MidiTriggerNode,
 ): IModuleState['MIDI_TRIGGER'] => ({
 	input: clock.inputName,
-	note: clock.note
+	note: clock.note,
 });
 
 const initMidiTrigger = (
 	triggerRef: React.MutableRefObject<MidiTriggerNode | undefined>,
-	state?: IModuleState['MIDI_TRIGGER']
+	state?: IModuleState['MIDI_TRIGGER'],
 ) => {
 	triggerRef.current = new MidiTriggerNode();
 	if (state) {
@@ -48,20 +47,17 @@ export const MidiTriggerModule: React.FC<{
 	const { inputs } = useContext(MidiContext);
 
 	const triggerRef = useRef<MidiTriggerNode>();
-	const [state, setState] = useModuleState<'MIDI_TRIGGER'>(
-		() => initMidiTrigger(triggerRef, module.state) as any,
-		module.moduleKey
+	const [state, setState] = useModuleState<'MIDI_TRIGGER', MidiTriggerNode>(
+		triggerRef,
+		module,
+		() => initMidiTrigger(triggerRef, module.state),
 	);
 
-	useEffectOnce(() => () => {
-		triggerRef.current?.disconnect();
-	});
-
-	const enabled = state != undefined && triggerRef.current;
+	const enabled = state != undefined;
 
 	const output = useCallback(
 		() => triggerRef.current?.node() as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitInputChange = useCallback(
@@ -70,11 +66,11 @@ export const MidiTriggerModule: React.FC<{
 				triggerRef.current.setInput(input);
 				setState({
 					...state,
-					input
+					input,
 				});
 			}
 		},
-		[state]
+		[state],
 	);
 
 	const commitNoteChange = useCallback(
@@ -85,7 +81,7 @@ export const MidiTriggerModule: React.FC<{
 
 					setState({
 						...state,
-						note
+						note,
 					});
 				} else {
 					const num = Number(note);
@@ -93,12 +89,12 @@ export const MidiTriggerModule: React.FC<{
 
 					setState({
 						...state,
-						note: num
+						note: num,
 					});
 				}
 			}
 		},
-		[state]
+		[state],
 	);
 
 	return enabled ? (

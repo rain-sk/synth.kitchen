@@ -1,10 +1,9 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-
-import { useEffectOnce } from '../hooks/use-effect-once';
-
 import { IAudioContext, IAudioNode } from 'standardized-audio-context';
+
 import { IoType, ioKey } from '../state/types/io';
 import { ConnectionContext } from '../contexts/connection';
+import { useEffectOnce } from '../hooks/use-effect-once';
 
 export const IoConnector: React.FunctionComponent<{
 	name: string;
@@ -22,7 +21,7 @@ export const IoConnector: React.FunctionComponent<{
 		highlightInputs,
 		highlightOutputs,
 		registerConnector,
-		unregisterConnector
+		unregisterConnector,
 	} = useContext(ConnectionContext);
 
 	useEffectOnce(() => {
@@ -46,7 +45,7 @@ export const IoConnector: React.FunctionComponent<{
 
 	const roleDescription = useMemo(
 		() => `${isInput ? 'input' : 'output'} connector`,
-		[isInput]
+		[isInput],
 	);
 
 	return (

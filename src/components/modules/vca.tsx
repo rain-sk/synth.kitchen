@@ -7,7 +7,6 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { VcaNode } from '../../audio/nodes/vca';
-import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
 	gate: Math.round(node.gate.value * 10000) / 10000,
@@ -15,28 +14,28 @@ const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
 	decay: Math.round(node.decay.value * 100) / 100,
 	sustain: Math.round(node.sustain.value * 100) / 100,
 	release: Math.round(node.release.value * 100) / 100,
-	peak: Math.round(node.peak.value * 100) / 100
+	peak: Math.round(node.peak.value * 100) / 100,
 });
 
 const initVca = (
 	vcaRef: React.MutableRefObject<VcaNode | undefined>,
-	state?: IModuleState['VCA']
+	state?: IModuleState['VCA'],
 ) => {
 	vcaRef.current = new VcaNode();
 	if (state) {
 		vcaRef.current.gate.setValueAtTime(state.gate, audioContext.currentTime);
 		vcaRef.current.attack.setValueAtTime(
 			state.attack,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		vcaRef.current.decay.setValueAtTime(state.decay, audioContext.currentTime);
 		vcaRef.current.sustain.setValueAtTime(
 			state.sustain,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		vcaRef.current.release.setValueAtTime(
 			state.release,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		vcaRef.current.peak.setValueAtTime(state.peak, audioContext.currentTime);
 		return state;
@@ -47,22 +46,17 @@ const initVca = (
 
 export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 	const vcaRef = useRef<VcaNode>();
-	const [state, setState] = useModuleState<'VCA'>(
-		() => initVca(vcaRef, module.state),
-		module.moduleKey
+	const [state, setState] = useModuleState<'VCA', VcaNode>(vcaRef, module, () =>
+		initVca(vcaRef, module.state),
 	);
 
 	const enabled = state != undefined;
-
-	useEffectOnce(() => () => {
-		vcaRef.current?.disconnect();
-	});
 
 	const input = useCallback(() => vcaRef.current?.gain() as any, [enabled]);
 
 	const sync = useCallback(
 		() => vcaRef.current?.sync().node() as any,
-		[enabled]
+		[enabled],
 	);
 
 	const output = useCallback(() => vcaRef.current?.gain() as any, [enabled]);
@@ -71,114 +65,114 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 		(gate: number) => {
 			vcaRef.current?.gate.linearRampToValueAtTime(
 				gate,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				gate
+				gate,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const gateAccessor = useCallback(
 		() => vcaRef.current?.gate as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitAttackChange = useCallback(
 		(attack: number) => {
 			vcaRef.current?.attack.linearRampToValueAtTime(
 				attack,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				attack
+				attack,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const attackAccessor = useCallback(
 		() => vcaRef.current?.attack as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitDecayChange = useCallback(
 		(decay: number) => {
 			vcaRef.current?.decay.linearRampToValueAtTime(
 				decay,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				decay
+				decay,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const decayAccessor = useCallback(
 		() => vcaRef.current?.decay as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitSustainChange = useCallback(
 		(sustain: number) => {
 			vcaRef.current?.sustain.linearRampToValueAtTime(
 				sustain,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				sustain
+				sustain,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const sustainAccessor = useCallback(
 		() => vcaRef.current?.sustain as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitReleaseChange = useCallback(
 		(release: number) => {
 			vcaRef.current?.release.linearRampToValueAtTime(
 				release,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				release
+				release,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const releaseAccessor = useCallback(
 		() => vcaRef.current?.release as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitPeakChange = useCallback(
 		(peak: number) => {
 			vcaRef.current?.peak.linearRampToValueAtTime(
 				peak,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				peak
+				peak,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const peakAccessor = useCallback(
 		() => vcaRef.current?.peak as any,
-		[enabled]
+		[enabled],
 	);
 
 	return enabled ? (

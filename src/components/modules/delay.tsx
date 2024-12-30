@@ -9,20 +9,20 @@ import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 
 const delayStateFromNode = (
-	node: IDelayNode<IAudioContext>
+	node: IDelayNode<IAudioContext>,
 ): IModuleState['DELAY'] => ({
-	delayTime: node.delayTime.value
+	delayTime: node.delayTime.value,
 });
 
 const initDelay = (
 	delayRef: React.MutableRefObject<IDelayNode<IAudioContext> | undefined>,
-	state?: IModuleState['DELAY']
+	state?: IModuleState['DELAY'],
 ) => {
 	delayRef.current = audioContext.createDelay();
 	if (state) {
 		delayRef.current.delayTime.setValueAtTime(
 			state.delayTime,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		return state;
 	} else {
@@ -31,12 +31,13 @@ const initDelay = (
 };
 
 export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
-	module
+	module,
 }) => {
 	const delayRef = useRef<IDelayNode<IAudioContext>>();
-	const [state, setState] = useModuleState<'DELAY'>(
+	const [state, setState] = useModuleState<'DELAY', IDelayNode<IAudioContext>>(
+		delayRef,
+		module,
 		() => initDelay(delayRef, module.state),
-		module.moduleKey
 	);
 
 	const enabled = !!state;
@@ -49,19 +50,19 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 		(delayTime: number) => {
 			delayRef.current?.delayTime.linearRampToValueAtTime(
 				delayTime,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				delayTime
+				delayTime,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const delayTimeAccessor = useCallback(
 		() => delayRef.current?.delayTime as any,
-		[enabled]
+		[enabled],
 	);
 
 	return enabled ? (

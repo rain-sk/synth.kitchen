@@ -4,16 +4,15 @@ import {
 	connectorButton,
 	connectorKey,
 	IInput,
-	IOutput
+	IOutput,
 } from '../contexts/connection';
 import { useStateContext } from '../hooks/use-state-context';
 import { INVALID_POSITION, Position } from '../state/types/state';
-import { useEffectOnce } from '../hooks/use-effect-once';
 import { queueAnimationCallback } from '../utils/animation';
 
 const _ = {
 	root: document.getElementById('root'),
-	main: document.getElementById('main')
+	main: document.getElementById('main'),
 };
 
 const root = () => {
@@ -38,7 +37,7 @@ const position = (connectorKey: string): Position => {
 	const rect = connector.getBoundingClientRect();
 	return [
 		rect.left + rect.width / 2 + window.pageXOffset,
-		rect.top + rect.height / 2 + window.pageYOffset - main().offsetTop
+		rect.top + rect.height / 2 + window.pageYOffset - main().offsetTop,
 	];
 };
 
@@ -51,7 +50,7 @@ type Path = Segment[];
 
 enum ConnectionDrawMode {
 	DIRECT,
-	STEPPED
+	STEPPED,
 }
 
 const connectionToPath =
@@ -70,7 +69,7 @@ const connectionToPath =
 				if (
 					Math.sqrt(
 						Math.pow(inputPosition[0] - outputPosition[0], 2) +
-							Math.pow(inputPosition[1] - outputPosition[1], 2)
+							Math.pow(inputPosition[1] - outputPosition[1], 2),
 					) < 200
 				) {
 					return [[outputPosition, inputPosition]];
@@ -136,18 +135,18 @@ export const Connections: React.FC = () => {
 					0,
 					0,
 					canvasRef.current.width,
-					canvasRef.current.height
+					canvasRef.current.height,
 				);
 
 				resizeCanvas(canvasRef.current);
 
 				const connectionsToDraw = [...connections.values()].map(
-					connectionToPath(ConnectionDrawMode.DIRECT)
+					connectionToPath(ConnectionDrawMode.DIRECT),
 				);
 
 				if (activeConnectorKey) {
 					connectionsToDraw.push([
-						[mousePositionRef.current, position(activeConnectorKey)]
+						[mousePositionRef.current, position(activeConnectorKey)],
 					]);
 				}
 
@@ -194,7 +193,7 @@ export const Connections: React.FC = () => {
 				});
 			}
 		}),
-		[activeConnectorKey]
+		[activeConnectorKey],
 	);
 
 	const onMouseMove = useCallback(
@@ -212,7 +211,7 @@ export const Connections: React.FC = () => {
 			}
 			drawConnections();
 		},
-		[drawConnections]
+		[drawConnections],
 	);
 
 	const activeListenerRef = useRef(false);
@@ -253,7 +252,7 @@ export const Connections: React.FC = () => {
 		drawConnections();
 	}, [drawConnections]);
 
-	useEffectOnce(() => {
+	useEffect(() => {
 		root().addEventListener('resize', onResize, false);
 		main().addEventListener('scroll', onResize, false);
 		onResize();
@@ -261,7 +260,7 @@ export const Connections: React.FC = () => {
 			root().removeEventListener('resize', onResize, false);
 			main().removeEventListener('scroll', onResize, false);
 		};
-	});
+	}, []);
 
 	useEffect(onResize, [connectionCount, modules, modulePositions]);
 

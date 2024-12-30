@@ -9,14 +9,14 @@ import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 
 const gainStateFromNode = (
-	node: IGainNode<IAudioContext>
+	node: IGainNode<IAudioContext>,
 ): IModuleState['GAIN'] => ({
-	gain: node.gain.value
+	gain: node.gain.value,
 });
 
 const initGain = (
 	gainRef: React.MutableRefObject<IGainNode<IAudioContext> | undefined>,
-	state?: IModuleState['GAIN']
+	state?: IModuleState['GAIN'],
 ) => {
 	gainRef.current = audioContext.createGain();
 	if (state) {
@@ -28,12 +28,13 @@ const initGain = (
 };
 
 export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
-	module
+	module,
 }) => {
 	const gainRef = useRef<IGainNode<IAudioContext>>();
-	const [state, setState] = useModuleState<'GAIN'>(
+	const [state, setState] = useModuleState<'GAIN', IGainNode<IAudioContext>>(
+		gainRef,
+		module,
 		() => initGain(gainRef, module.state),
-		module.moduleKey
 	);
 
 	const enabled = state != undefined;
@@ -46,19 +47,19 @@ export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 		(gain: number) => {
 			gainRef.current?.gain.linearRampToValueAtTime(
 				gain,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				gain
+				gain,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const gainAccessor = useCallback(
 		() => gainRef.current?.gain as any,
-		[enabled]
+		[enabled],
 	);
 
 	return enabled ? (

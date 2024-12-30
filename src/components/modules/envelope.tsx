@@ -6,49 +6,48 @@ import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
-import { useEffectOnce } from '../../hooks/use-effect-once';
 import { EnvelopeNode } from '../../audio/nodes/envelope';
 
 const envelopeStateFromNode = (
-	node: EnvelopeNode
+	node: EnvelopeNode,
 ): IModuleState['ENVELOPE'] => ({
 	gate: Math.round(node.gate.value * 10000) / 10000,
 	attack: Math.round(node.attack.value * 100) / 100,
 	decay: Math.round(node.decay.value * 100) / 100,
 	sustain: Math.round(node.sustain.value * 100) / 100,
 	release: Math.round(node.release.value * 100) / 100,
-	peak: Math.round(node.peak.value * 100) / 100
+	peak: Math.round(node.peak.value * 100) / 100,
 });
 
 const initEnvelope = (
 	envelopeRef: React.MutableRefObject<EnvelopeNode | undefined>,
-	state?: IModuleState['ENVELOPE']
+	state?: IModuleState['ENVELOPE'],
 ) => {
 	envelopeRef.current = new EnvelopeNode();
 	if (state) {
 		envelopeRef.current.gate.setValueAtTime(
 			state.gate,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		envelopeRef.current.attack.setValueAtTime(
 			state.attack,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		envelopeRef.current.decay.setValueAtTime(
 			state.decay,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		envelopeRef.current.sustain.setValueAtTime(
 			state.sustain,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		envelopeRef.current.release.setValueAtTime(
 			state.release,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		envelopeRef.current.peak.setValueAtTime(
 			state.peak,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		return state;
 	} else {
@@ -57,142 +56,139 @@ const initEnvelope = (
 };
 
 export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
-	module
+	module,
 }) => {
 	const envelopeRef = useRef<EnvelopeNode>();
-	const [state, setState] = useModuleState<'ENVELOPE'>(
+	const [state, setState] = useModuleState<'ENVELOPE', EnvelopeNode>(
+		envelopeRef,
+		module,
 		() => initEnvelope(envelopeRef, module.state),
-		module.moduleKey
 	);
 
 	const enabled = state != undefined;
 
-	useEffectOnce(() => () => {
-		envelopeRef.current?.disconnect();
-	});
-
 	const sync = useCallback(
 		() => envelopeRef.current?.sync().node() as any,
-		[enabled]
+		[enabled],
 	);
 
 	const output = useCallback(
 		() => envelopeRef.current?.gain() as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitGateChange = useCallback(
 		(gate: number) => {
 			envelopeRef.current?.gate.linearRampToValueAtTime(
 				gate,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				gate
+				gate,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const gateAccessor = useCallback(
 		() => envelopeRef.current?.gate as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitAttackChange = useCallback(
 		(attack: number) => {
 			envelopeRef.current?.attack.linearRampToValueAtTime(
 				attack,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				attack
+				attack,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const attackAccessor = useCallback(
 		() => envelopeRef.current?.attack as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitDecayChange = useCallback(
 		(decay: number) => {
 			envelopeRef.current?.decay.linearRampToValueAtTime(
 				decay,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				decay
+				decay,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const decayAccessor = useCallback(
 		() => envelopeRef.current?.decay as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitSustainChange = useCallback(
 		(sustain: number) => {
 			envelopeRef.current?.sustain.linearRampToValueAtTime(
 				sustain,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				sustain
+				sustain,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const sustainAccessor = useCallback(
 		() => envelopeRef.current?.sustain as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitReleaseChange = useCallback(
 		(release: number) => {
 			envelopeRef.current?.release.linearRampToValueAtTime(
 				release,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				release
+				release,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const releaseAccessor = useCallback(
 		() => envelopeRef.current?.release as any,
-		[enabled]
+		[enabled],
 	);
 
 	const commitPeakChange = useCallback(
 		(peak: number) => {
 			envelopeRef.current?.peak.linearRampToValueAtTime(
 				peak,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				peak
+				peak,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const peakAccessor = useCallback(
 		() => envelopeRef.current?.peak as any,
-		[enabled]
+		[enabled],
 	);
 
 	return enabled ? (

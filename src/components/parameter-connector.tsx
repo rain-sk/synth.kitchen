@@ -1,12 +1,11 @@
-import React, { useCallback, useContext, useState } from 'react';
-import { useEffectOnce } from '../hooks/use-effect-once';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { IParameter, paramKey } from '../state/types/parameter';
 import { ConnectionContext } from '../contexts/connection';
 
 export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	moduleKey,
 	name,
-	accessor
+	accessor,
 }) => {
 	const [connectorKey] = useState(() => paramKey({ moduleKey, name }));
 
@@ -16,16 +15,16 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 		clickConnector,
 		highlightInputs,
 		registerConnector,
-		unregisterConnector
+		unregisterConnector,
 	} = useContext(ConnectionContext);
 
-	useEffectOnce(() => {
+	useEffect(() => {
 		registerConnector({ moduleKey, name, accessor });
 
 		return () => {
 			unregisterConnector({ moduleKey, name, accessor });
 		};
-	});
+	}, []);
 
 	const onClick = useCallback(() => {
 		clickConnector({ moduleKey, name, accessor });

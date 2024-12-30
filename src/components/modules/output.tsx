@@ -10,12 +10,12 @@ import { IoConnectors } from '../io-connectors';
 import { OutputNode } from '../../audio/nodes/output';
 
 const outputStateFromNode = (node: OutputNode): IModuleState['OUTPUT'] => ({
-	gain: node.gain.value
+	gain: node.gain.value,
 });
 
 const initOutput = (
 	outputRef: React.MutableRefObject<OutputNode | undefined>,
-	state?: IModuleState['OUTPUT']
+	state?: IModuleState['OUTPUT'],
 ) => {
 	outputRef.current = new OutputNode();
 	if (state) {
@@ -27,36 +27,37 @@ const initOutput = (
 };
 
 export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
-	module
+	module,
 }) => {
 	const outputRef = useRef<OutputNode>();
-	const [state, setState] = useModuleState<'OUTPUT'>(
+	const [state, setState] = useModuleState<'OUTPUT', OutputNode>(
+		outputRef,
+		module,
 		() => initOutput(outputRef, module.state),
-		module.moduleKey
 	);
+
+	const enabled = state != undefined;
 
 	const commitGainChange = useCallback(
 		(gain: number) => {
 			outputRef.current?.gain.linearRampToValueAtTime(
 				gain,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				gain
+				gain,
 			});
 		},
-		[outputRef, setState, state]
+		[outputRef, setState, state],
 	);
 
 	const gainAccessor = useCallback(() => {
 		return outputRef.current?.gain as IAudioParam;
-	}, []);
+	}, [enabled]);
 
 	const speaker = outputRef.current?.speaker as any;
 	const resampling = outputRef.current?.resampling as any;
-
-	const enabled = state != undefined && outputRef.current;
 
 	return enabled ? (
 		<>

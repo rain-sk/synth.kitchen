@@ -2,12 +2,11 @@ import React, { useCallback, useRef } from 'react';
 import {
 	IAudioContext,
 	IAudioParam,
-	IOscillatorNode
+	IOscillatorNode,
 } from 'standardized-audio-context';
 
 import { audioContext } from '../../audio/context';
 
-import { useEffectOnce } from '../../hooks/use-effect-once';
 import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 
@@ -16,81 +15,74 @@ import { IoConnectors } from '../io-connectors';
 import { RadioParameter } from '../radio-parameter';
 
 const oscillatorStateFromNode = (
-	node: IOscillatorNode<IAudioContext>
+	node: IOscillatorNode<IAudioContext>,
 ): IModuleState['OSCILLATOR'] => ({
 	frequency: node.frequency.value,
 	detune: node.detune.value,
-	waveform: node.type
+	waveform: node.type,
 });
 
 const initOscillator = (
 	oscillatorRef: React.MutableRefObject<
 		IOscillatorNode<IAudioContext> | undefined
 	>,
-	state?: IModuleState['OSCILLATOR']
+	state?: IModuleState['OSCILLATOR'],
 ) => {
 	oscillatorRef.current = audioContext.createOscillator();
 
 	if (state) {
 		oscillatorRef.current.detune.setValueAtTime(
 			state.detune,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		oscillatorRef.current.frequency.setValueAtTime(
 			state.frequency,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		oscillatorRef.current.type = state.waveform;
 	} else {
 		state = oscillatorStateFromNode(oscillatorRef.current);
 	}
 
+	oscillatorRef.current.start();
 	return state;
 };
 
 export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
-	module
+	module,
 }) => {
 	const oscillatorRef = useRef<IOscillatorNode<IAudioContext>>();
-	const [state, setState] = useModuleState<'OSCILLATOR'>(
-		() => initOscillator(oscillatorRef, module.state),
-		module.moduleKey
-	);
-
-	useEffectOnce(() => {
-		oscillatorRef.current?.start();
-
-		return () => {
-			oscillatorRef.current?.stop();
-		};
-	});
+	const [state, setState] = useModuleState<
+		'OSCILLATOR',
+		IOscillatorNode<IAudioContext>
+	>(oscillatorRef, module, () => initOscillator(oscillatorRef, module.state));
 
 	const commitFrequencyChange = useCallback(
 		(frequency: number) => {
 			oscillatorRef.current?.frequency.linearRampToValueAtTime(
 				frequency,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				frequency
+				frequency,
 			});
 		},
-		[oscillatorRef.current, audioContext, state]
+		[state],
 	);
 
 	const commitDetuneChange = useCallback(
 		(detune: number) => {
 			oscillatorRef.current?.detune.linearRampToValueAtTime(
 				detune,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				detune
+				detune,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const commitWaveformChange = useCallback(
@@ -100,21 +92,21 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 				oscillatorRef.current.type = waveform;
 				setState({
 					...state,
-					waveform
+					waveform,
 				});
 			}
 		},
-		[audioContext, state]
+		[state],
 	);
+
+	const enabled = state != undefined;
 
 	const frequencyAccessor = useCallback(() => {
 		return oscillatorRef.current?.frequency as IAudioParam;
-	}, []);
+	}, [enabled]);
 	const detuneAccessor = useCallback(() => {
 		return oscillatorRef.current?.detune as IAudioParam;
-	}, []);
-
-	const enabled = state != undefined && oscillatorRef.current;
+	}, [enabled]);
 
 	const output = useCallback(() => oscillatorRef.current as any, [enabled]);
 

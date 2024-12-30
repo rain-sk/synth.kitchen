@@ -7,15 +7,14 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { audioContext } from '../../audio/context';
-import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const gateStateFromNode = (gate: GateNode): IModuleState['GATE'] => ({
-	gate: gate.gate.value
+	gate: gate.gate.value,
 });
 
 const initGate = (
 	gateRef: React.MutableRefObject<GateNode | undefined>,
-	state?: IModuleState['GATE']
+	state?: IModuleState['GATE'],
 ) => {
 	gateRef.current = new GateNode();
 	if (state) {
@@ -27,37 +26,34 @@ const initGate = (
 };
 
 export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
-	module
+	module,
 }) => {
 	const gateRef = useRef<GateNode>();
-	const [state, setState] = useModuleState<'GATE'>(
-		() => initGate(gateRef, module.state) as any,
-		module.moduleKey
+	const [state, setState] = useModuleState<'GATE', GateNode>(
+		gateRef,
+		module,
+		() => initGate(gateRef, module.state),
 	);
-
-	useEffectOnce(() => () => {
-		gateRef.current?.disconnect();
-	});
 
 	const commitGateChange = useCallback(
 		(gate: number) => {
 			gateRef.current?.gate.linearRampToValueAtTime(
 				gate,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				gate
+				gate,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
-	const enabled = state != undefined && gateRef.current;
+	const enabled = state != undefined;
 
 	const gateAccessor = useCallback(
 		() => gateRef.current?.gate as any,
-		[enabled]
+		[enabled],
 	);
 
 	const sync = useCallback(() => gateRef.current?.node() as any, [enabled]);

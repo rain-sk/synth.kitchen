@@ -1,15 +1,14 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import { LimiterNode } from '../../audio/nodes/limiter';
 
 import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
-import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const initLimiter = (
 	limiterRef: React.MutableRefObject<LimiterNode | undefined>,
-	state?: IModuleState['LIMITER']
+	state?: IModuleState['LIMITER'],
 ) => {
 	limiterRef.current = new LimiterNode();
 	if (state) {
@@ -20,22 +19,20 @@ const initLimiter = (
 };
 
 export const LimiterModule: React.FC<{ module: IModule<'LIMITER'> }> = ({
-	module
+	module,
 }) => {
 	const limiterRef = useRef<LimiterNode>();
-	const [state] = useModuleState<'LIMITER'>(
+	const [state] = useModuleState<'LIMITER', LimiterNode>(
+		limiterRef,
+		module,
 		() => initLimiter(limiterRef, module.state),
-		module.moduleKey
 	);
 
-	useEffectOnce(() => () => {
-		limiterRef.current?.disconnect();
-	});
+	const enabled = state != undefined;
 
-	const enabled = state != undefined && limiterRef.current;
+	const input = useCallback(() => limiterRef.current as any, [enabled]);
 
-	const input = limiterRef.current?.input as any;
-	const output = limiterRef.current?.output as any;
+	const output = useCallback(() => limiterRef.current as any, [enabled]);
 
 	return enabled ? (
 		<IoConnectors

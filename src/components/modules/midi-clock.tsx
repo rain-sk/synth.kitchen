@@ -5,19 +5,18 @@ import { MidiClockNode } from '../../audio/nodes/midi-clock';
 import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
-import { useEffectOnce } from '../../hooks/use-effect-once';
 import { RadioParameter } from '../radio-parameter';
 import { MidiContext } from '../../contexts/midi';
 
 const clockStateFromNode = (
-	clock: MidiClockNode
+	clock: MidiClockNode,
 ): IModuleState['MIDI_CLOCK'] => ({
-	input: clock.inputName
+	input: clock.inputName,
 });
 
 const initMidiClock = (
 	clockRef: React.MutableRefObject<MidiClockNode | undefined>,
-	state?: IModuleState['MIDI_CLOCK']
+	state?: IModuleState['MIDI_CLOCK'],
 ) => {
 	clockRef.current = new MidiClockNode();
 	if (state) {
@@ -33,21 +32,18 @@ const initMidiClock = (
 };
 
 export const MidiClockModule: React.FC<{ module: IModule<'MIDI_CLOCK'> }> = ({
-	module
+	module,
 }) => {
 	const { inputs } = useContext(MidiContext);
 
 	const clockRef = useRef<MidiClockNode>();
-	const [state, setState] = useModuleState<'MIDI_CLOCK'>(
-		() => initMidiClock(clockRef, module.state) as any,
-		module.moduleKey
+	const [state, setState] = useModuleState<'MIDI_CLOCK', MidiClockNode>(
+		clockRef,
+		module,
+		() => initMidiClock(clockRef, module.state),
 	);
 
-	useEffectOnce(() => () => {
-		clockRef.current?.disconnect();
-	});
-
-	const enabled = state != undefined && clockRef.current;
+	const enabled = state != undefined;
 
 	const output = useCallback(() => clockRef.current?.node() as any, [enabled]);
 
@@ -57,11 +53,11 @@ export const MidiClockModule: React.FC<{ module: IModule<'MIDI_CLOCK'> }> = ({
 				clockRef.current.setInput(input);
 				setState({
 					...state,
-					input
+					input,
 				});
 			}
 		},
-		[state]
+		[state],
 	);
 
 	return enabled ? (

@@ -4,7 +4,7 @@ import {
 	IAudioContext,
 	IAudioParam,
 	IBiquadFilterNode,
-	TBiquadFilterType
+	TBiquadFilterType,
 } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
 import { useModuleState } from '../../hooks/use-module-state';
@@ -15,31 +15,31 @@ import { NumberParameter } from '../number-parameter';
 import { RadioParameter } from '../radio-parameter';
 
 const filterStateFromNode = (
-	filter: IBiquadFilterNode<IAudioContext>
+	filter: IBiquadFilterNode<IAudioContext>,
 ): IModuleState['FILTER'] => ({
 	frequency: filter.frequency.value,
 	detune: filter.detune.value,
 	Q: filter.Q.value,
 	gain: filter.gain.value,
-	type: filter.type
+	type: filter.type,
 });
 
 const initFilter = (
 	filterRef: React.MutableRefObject<
 		IBiquadFilterNode<IAudioContext> | undefined
 	>,
-	state?: IModuleState['FILTER']
+	state?: IModuleState['FILTER'],
 ) => {
 	filterRef.current = audioContext.createBiquadFilter();
 
 	if (state) {
 		filterRef.current.frequency.setValueAtTime(
 			state.frequency,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		filterRef.current.detune.setValueAtTime(
 			state.detune,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		filterRef.current.Q.setValueAtTime(state.Q, audioContext.currentTime);
 		filterRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
@@ -51,40 +51,40 @@ const initFilter = (
 };
 
 export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
-	module
+	module,
 }) => {
 	const filterRef = useRef<IBiquadFilterNode<IAudioContext>>();
-	const [state, setState] = useModuleState<'FILTER'>(
-		() => initFilter(filterRef, module.state),
-		module.moduleKey
-	);
+	const [state, setState] = useModuleState<
+		'FILTER',
+		IBiquadFilterNode<IAudioContext>
+	>(filterRef, module, () => initFilter(filterRef, module.state));
 
 	const commitFrequencyChange = useCallback(
 		(frequency: number) => {
 			filterRef.current?.frequency.linearRampToValueAtTime(
 				frequency,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				frequency
+				frequency,
 			});
 		},
-		[filterRef.current, audioContext, state]
+		[state],
 	);
 
 	const commitDetuneChange = useCallback(
 		(detune: number) => {
 			filterRef.current?.detune.linearRampToValueAtTime(
 				detune,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				detune
+				detune,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const commitTypeChange = useCallback(
@@ -93,11 +93,11 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 				filterRef.current.type = type as TBiquadFilterType;
 				setState({
 					...state,
-					type: type as TBiquadFilterType
+					type: type as TBiquadFilterType,
 				});
 			}
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const commitQChange = useCallback(
@@ -105,43 +105,43 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 			filterRef.current?.Q.linearRampToValueAtTime(Q, audioContext.currentTime);
 			setState({
 				...state,
-				Q
+				Q,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const commitGainChange = useCallback(
 		(gain: number) => {
 			filterRef.current?.gain.linearRampToValueAtTime(
 				gain,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				gain
+				gain,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
+
+	const enabled = state != undefined;
 
 	const frequencyAccessor = useCallback(() => {
 		return filterRef.current?.frequency as IAudioParam;
-	}, []);
+	}, [enabled]);
 
 	const detuneAccessor = useCallback(() => {
 		return filterRef.current?.detune as IAudioParam;
-	}, []);
+	}, [enabled]);
 
 	const qAccessor = useCallback(() => {
 		return filterRef.current?.Q as IAudioParam;
-	}, []);
+	}, [enabled]);
 
 	const gainAccessor = useCallback(() => {
 		return filterRef.current?.gain as IAudioParam;
-	}, []);
-
-	const enabled = state != undefined;
+	}, [enabled]);
 
 	const input = useCallback(() => filterRef.current as any, [enabled]);
 
@@ -168,7 +168,7 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 						'lowpass',
 						'lowshelf',
 						'notch',
-						'peaking'
+						'peaking',
 					]}
 					commitValueCallback={commitTypeChange}
 				/>

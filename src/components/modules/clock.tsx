@@ -7,21 +7,20 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { audioContext } from '../../audio/context';
-import { useEffectOnce } from '../../hooks/use-effect-once';
 
 const clockStateFromNode = (clock: ClockNode): IModuleState['CLOCK'] => ({
-	tempo: clock.tempo.value
+	tempo: clock.tempo.value,
 });
 
 const initClock = (
 	clockRef: React.MutableRefObject<ClockNode | undefined>,
-	state?: IModuleState['CLOCK']
-) => {
+	state?: IModuleState['CLOCK'],
+): IModuleState['CLOCK'] => {
 	clockRef.current = new ClockNode();
 	if (state) {
 		clockRef.current.tempo.setValueAtTime(
 			state.tempo,
-			audioContext.currentTime
+			audioContext.currentTime,
 		);
 		return state;
 	} else {
@@ -30,37 +29,34 @@ const initClock = (
 };
 
 export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
-	module
+	module,
 }) => {
 	const clockRef = useRef<ClockNode>();
-	const [state, setState] = useModuleState<'CLOCK'>(
-		() => initClock(clockRef, module.state) as any,
-		module.moduleKey
+	const [state, setState] = useModuleState<'CLOCK', ClockNode>(
+		clockRef,
+		module,
+		() => initClock(clockRef, module.state),
 	);
-
-	useEffectOnce(() => () => {
-		clockRef.current?.disconnect();
-	});
 
 	const commitTempoChange = useCallback(
 		(tempo: number) => {
 			clockRef.current?.tempo.linearRampToValueAtTime(
 				tempo,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				tempo
+				tempo,
 			});
 		},
-		[audioContext, state]
+		[state],
 	);
 
 	const enabled = state != undefined && clockRef.current;
 
 	const tempoAccessor = useCallback(
 		() => clockRef.current?.tempo as any,
-		[enabled]
+		[enabled],
 	);
 
 	const sync = useCallback(() => clockRef.current?.node() as any, [enabled]);

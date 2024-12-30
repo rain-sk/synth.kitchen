@@ -5,7 +5,6 @@ import { MidiCcNode } from '../../audio/nodes/midi-cc';
 import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
-import { useEffectOnce } from '../../hooks/use-effect-once';
 import { RadioParameter } from '../radio-parameter';
 import { MidiContext } from '../../contexts/midi';
 import { NumberParameter } from '../number-parameter';
@@ -14,12 +13,12 @@ const midiCcStateFromNode = (node: MidiCcNode): IModuleState['MIDI_CC'] => ({
 	input: node.inputName,
 	cc: node.cc,
 	max: node.max,
-	min: node.min
+	min: node.min,
 });
 
 const initMidiTrigger = (
 	ccRef: React.MutableRefObject<MidiCcNode | undefined>,
-	state?: IModuleState['MIDI_CC']
+	state?: IModuleState['MIDI_CC'],
 ) => {
 	ccRef.current = new MidiCcNode();
 	if (state) {
@@ -43,16 +42,13 @@ export const MidiCcModule: React.FC<{
 	const { inputs } = useContext(MidiContext);
 
 	const ccRef = useRef<MidiCcNode>();
-	const [state, setState] = useModuleState<'MIDI_CC'>(
-		() => initMidiTrigger(ccRef, module.state) as any,
-		module.moduleKey
+	const [state, setState] = useModuleState<'MIDI_CC', MidiCcNode>(
+		ccRef,
+		module,
+		() => initMidiTrigger(ccRef, module.state),
 	);
 
-	useEffectOnce(() => () => {
-		ccRef.current?.disconnect();
-	});
-
-	const enabled = state != undefined && ccRef.current;
+	const enabled = state != undefined;
 
 	const output = useCallback(() => ccRef.current?.node() as any, [enabled]);
 
@@ -62,11 +58,11 @@ export const MidiCcModule: React.FC<{
 				ccRef.current.setInput(input);
 				setState({
 					...state,
-					input
+					input,
 				});
 			}
 		},
-		[state]
+		[state],
 	);
 
 	const commitCcChange = useCallback(
@@ -76,11 +72,11 @@ export const MidiCcModule: React.FC<{
 
 				setState({
 					...state,
-					cc
+					cc,
 				});
 			}
 		},
-		[state]
+		[state],
 	);
 
 	const commitMaxChange = useCallback(
@@ -90,11 +86,11 @@ export const MidiCcModule: React.FC<{
 
 				setState({
 					...state,
-					max
+					max,
 				});
 			}
 		},
-		[state]
+		[state],
 	);
 
 	const commitMinChange = useCallback(
@@ -104,11 +100,11 @@ export const MidiCcModule: React.FC<{
 
 				setState({
 					...state,
-					min
+					min,
 				});
 			}
 		},
-		[state]
+		[state],
 	);
 
 	return enabled ? (

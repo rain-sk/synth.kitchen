@@ -1,6 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Input, Output, PortEvent, WebMidi } from 'webmidi';
-import { useEffectOnce } from '../hooks/use-effect-once';
 
 interface IMidiContext {
 	inputs: Input[];
@@ -9,11 +8,11 @@ interface IMidiContext {
 
 export const MidiContext = React.createContext<IMidiContext>({
 	inputs: [],
-	outputs: []
+	outputs: [],
 });
 
 export const MidiContextProvider: React.FC<React.PropsWithChildren> = ({
-	children
+	children,
 }) => {
 	const [inputs, setInputs] = useState<Input[]>(() => WebMidi.inputs);
 
@@ -27,7 +26,7 @@ export const MidiContextProvider: React.FC<React.PropsWithChildren> = ({
 		}
 	}, []);
 
-	useEffectOnce(() => {
+	useEffect(() => {
 		WebMidi.addListener('connected', onPort);
 		WebMidi.addListener('disconnected', onPort);
 		WebMidi.addListener('portschanged', onPort);
@@ -36,7 +35,7 @@ export const MidiContextProvider: React.FC<React.PropsWithChildren> = ({
 			WebMidi.removeListener('disconnected');
 			WebMidi.removeListener('portschanged');
 		};
-	});
+	}, []);
 
 	return (
 		<MidiContext.Provider value={{ inputs, outputs }}>

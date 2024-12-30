@@ -9,14 +9,14 @@ import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 
 const panStateFromNode = (
-	node: IStereoPannerNode<IAudioContext>
+	node: IStereoPannerNode<IAudioContext>,
 ): IModuleState['PAN'] => ({
-	pan: node.pan.value
+	pan: node.pan.value,
 });
 
 const initPan = (
 	panRef: React.MutableRefObject<IStereoPannerNode<IAudioContext> | undefined>,
-	state?: IModuleState['PAN']
+	state?: IModuleState['PAN'],
 ) => {
 	panRef.current = audioContext.createStereoPanner();
 	if (state) {
@@ -29,10 +29,10 @@ const initPan = (
 
 export const PanModule: React.FC<{ module: IModule<'PAN'> }> = ({ module }) => {
 	const panRef = useRef<IStereoPannerNode<IAudioContext>>();
-	const [state, setState] = useModuleState<'PAN'>(
-		() => initPan(panRef, module.state),
-		module.moduleKey
-	);
+	const [state, setState] = useModuleState<
+		'PAN',
+		IStereoPannerNode<IAudioContext>
+	>(panRef, module, () => initPan(panRef, module.state));
 
 	const enabled = state != undefined;
 
@@ -44,14 +44,14 @@ export const PanModule: React.FC<{ module: IModule<'PAN'> }> = ({ module }) => {
 		(pan: number) => {
 			panRef.current?.pan.linearRampToValueAtTime(
 				pan,
-				audioContext.currentTime
+				audioContext.currentTime,
 			);
 			setState({
 				...state,
-				pan
+				pan,
 			});
 		},
-		[audioContext, state]
+		[audioContext, state],
 	);
 
 	const panAccessor = useCallback(() => panRef.current?.pan as any, [enabled]);
