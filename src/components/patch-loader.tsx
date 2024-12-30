@@ -1,13 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import ReactModal from 'react-modal';
+
 import { DatabasePatch, useApi } from '../hooks/use-api';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
 import { loadPatchAction } from '../state/actions/load-patch';
-import ReactModal from 'react-modal';
+import { useStateContext } from '../hooks/use-state-context';
+import { cancelLoadFromCloudAction } from '../state/actions/cancel-load-from-cloud';
 
-export const PatchLoader: React.FC<{
-	loadingFromCloud: boolean;
-	setLoadingFromCloud: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ loadingFromCloud, setLoadingFromCloud }) => {
+const root = document.getElementById('root');
+
+export const PatchLoader: React.FC = () => {
+	const { loadingFromCloud } = useStateContext();
 	const dispatch = useDispatchContext();
 
 	const [patches, setPatches] = useState<DatabasePatch[]>([]);
@@ -23,16 +26,14 @@ export const PatchLoader: React.FC<{
 	const open = useCallback(
 		(patch: DatabasePatch) => () => {
 			dispatch(loadPatchAction(JSON.parse(patch.Patch)));
-			setLoadingFromCloud(false);
 		},
-		[dispatch, loadPatchAction, setLoadingFromCloud],
+		[dispatch, loadPatchAction],
 	);
 
 	const onClose = useCallback(() => {
-		setLoadingFromCloud(false);
-	}, [setLoadingFromCloud]);
+		dispatch(cancelLoadFromCloudAction());
+	}, [dispatch]);
 
-	const root = document.getElementById('root');
 	return root ? (
 		<ReactModal isOpen={loadingFromCloud} appElement={root}>
 			<button type="button" aria-label="close" onClick={onClose}>

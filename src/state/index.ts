@@ -9,6 +9,9 @@ export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 			case 'AddModule': {
 				return reducers.addModule(state, action);
 			}
+			case 'CancelLoadFromCloud': {
+				return reducers.cancelLoadFromCloud(state, action);
+			}
 			case 'ChangeName': {
 				return reducers.changeName(state, action);
 			}
@@ -20,6 +23,9 @@ export const reducer: React.Reducer<IState, IAction> = (state, action) =>
 			}
 			case 'KeyboardEvent': {
 				return reducers.keyboardEvent(state, action);
+			}
+			case 'LoadFromCloud': {
+				return reducers.loadFromCloud(state, action);
 			}
 			case 'LoadPatch': {
 				return reducers.loadPatch(state, action);

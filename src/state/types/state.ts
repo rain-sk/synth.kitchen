@@ -29,6 +29,7 @@ export type IState = {
 	parameters: Record<string, IParameter>;
 	io: Record<string, IIo>;
 	connectionsToLoad?: Record<string, [IOutput, IInput]>;
+	loadingFromCloud: boolean;
 };
 
 export const blankState = (): IState => ({
@@ -53,6 +54,7 @@ export const blankState = (): IState => ({
 	selectionPending: false,
 	parameters: {},
 	io: {},
+	loadingFromCloud: false,
 });
 
 export const initialState: IState = blankState();

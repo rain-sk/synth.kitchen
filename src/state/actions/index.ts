@@ -2,11 +2,11 @@ import { addModuleAction, IAddModule } from './add-module';
 import { changeNameAction, IChangeName } from './change-name';
 import {
 	IDisableKeyMovement,
-	disableKeyMovementAction
+	disableKeyMovementAction,
 } from './disable-key-movement';
 import {
 	IEnableKeyMovement,
-	enableKeyMovementAction
+	enableKeyMovementAction,
 } from './enable-key-movement';
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
 import { ILoadPatch, loadPatchAction } from './load-patch';
@@ -14,26 +14,33 @@ import {
 	deselectModuleAction,
 	ISelectModule,
 	selectModuleAction,
-	selectSingleModuleAction
+	selectSingleModuleAction,
 } from './select-module';
 import {
 	ISelectionDrag,
 	selectionDragContinueAction,
 	selectionDragEndAction,
-	selectionDragStartAction
+	selectionDragStartAction,
 } from './selection-drag';
 import {
 	IUpdateModulePosition,
-	updateModulePositionAction
+	updateModulePositionAction,
 } from './update-module-position';
 import { IUpdateModule, updateModuleAction } from './update-module';
+import { ILoadFromCloud, loadFromCloudAction } from './load-from-cloud';
+import {
+	cancelLoadFromCloudAction,
+	ICancelLoadFromCloud,
+} from './cancel-load-from-cloud';
 
 export type IAction =
 	| IAddModule
+	| ICancelLoadFromCloud
 	| IChangeName
 	| IDisableKeyMovement
 	| IEnableKeyMovement
 	| IKeyboardEvent
+	| ILoadFromCloud
 	| ILoadPatch
 	| ISelectionDrag
 	| ISelectModule
@@ -42,12 +49,14 @@ export type IAction =
 
 export const actions = {
 	addModuleAction,
+	cancelLoadFromCloudAction,
 	changeNameAction,
 	deselectModuleAction,
 	disableKeyMovementAction,
 	enableKeyMovementAction,
 	keyDownAction,
 	keyUpAction,
+	loadFromCloudAction,
 	loadPatchAction,
 	selectionDragContinueAction,
 	selectionDragEndAction,
@@ -55,5 +64,5 @@ export const actions = {
 	selectModuleAction,
 	selectSingleModuleAction,
 	updateModulePositionAction,
-	updateModuleAction
+	updateModuleAction,
 };

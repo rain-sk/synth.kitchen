@@ -15,7 +15,8 @@ export const loadPatch: React.Reducer<IState, ILoadPatch> = (state, action) => {
 		selectedModuleKeys: new Set(),
 		mouseDragPosition: INVALID_POSITION,
 		mouseDragStartPosition: INVALID_POSITION,
-		selectionPending: false,
 		connectionsToLoad: connections,
+		selectionPending: false,
+		loadingFromCloud: false,
 	};
 };

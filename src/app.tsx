@@ -8,6 +8,7 @@ import { ConnectionContextProvider } from './contexts/connection';
 import { IAction } from './state/actions';
 import { MidiContextProvider } from './contexts/midi';
 import { PatchEditor } from './components/patch-editor';
+import { PatchLoader } from './components/patch-loader';
 
 const ContextWrapper: React.FC<
 	React.PropsWithChildren<{ state: IState; dispatch: React.Dispatch<IAction> }>
@@ -29,6 +30,7 @@ export const SynthKitchen: React.FC = () => {
 		<ContextWrapper state={state} dispatch={dispatch}>
 			<Toolbar />
 			<PatchEditor />
+			<PatchLoader />
 		</ContextWrapper>
 	);
 };
