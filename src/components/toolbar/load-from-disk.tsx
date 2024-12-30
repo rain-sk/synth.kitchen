@@ -1,6 +1,6 @@
 import { KeyCode } from '../../constants/key';
 import { useDispatchContext } from '../../hooks/use-dispatch-context';
-import { loadPatchAction } from '../../state/actions/load-patch';
+import { actions } from '../../state/actions';
 import { ISerializedPatch } from '../../state/types/serialized-patch';
 import { OpenFromDiskSvg } from '../svg';
 
@@ -16,7 +16,7 @@ export const LoadFromDisk = () => {
 		const reader = new FileReader();
 		reader.onload = (e) => {
 			dispatch(
-				loadPatchAction({
+				actions.loadPatchAction({
 					id: '',
 					name: '',
 					modules: {},
@@ -26,7 +26,7 @@ export const LoadFromDisk = () => {
 			);
 			const patch = JSON.parse((e.target as any).result) as ISerializedPatch;
 			setTimeout(() => {
-				dispatch(loadPatchAction(patch));
+				dispatch(actions.loadPatchAction(patch));
 			}, 100);
 		};
 		reader.readAsText(file);

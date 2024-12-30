@@ -13,14 +13,14 @@ export const addModule: React.Reducer<IState, IAddModule> = (state, action) => {
 			[moduleKey]: {
 				name: randomName(action.payload.type.toLocaleLowerCase()),
 				moduleKey,
-				type: action.payload.type
-			}
+				type: action.payload.type,
+			},
 		},
 		modulePositions: {
 			...state.modulePositions,
 			[moduleKey]: action.payload.position
 				? action.payload.position
-				: [Math.round(Math.random() * 800), Math.round(Math.random() * 400)]
-		}
+				: [Math.round(Math.random() * 800), Math.round(Math.random() * 400)],
+		},
 	};
 };

@@ -3,13 +3,11 @@ import React, {
 	useEffect,
 	useMemo,
 	useRef,
-	useState
+	useState,
 } from 'react';
 import { IIo, IoType, ioKey } from '../state/types/io';
 import { IParameter, paramKey } from '../state/types/parameter';
 import { useStateContext } from '../hooks/use-state-context';
-// import { useDispatchContext } from '../hooks/use-dispatch-context';
-// import { historyPushAction } from '../state/actions/history';
 
 export type IOutput = IIo;
 export type IInput = IIo | IParameter;
@@ -109,7 +107,7 @@ export const ConnectionContext = React.createContext<IConnectionContext>({
 	registerConnector: () => {},
 	unregisterConnector: () => {},
 	clickConnector: () => {},
-	deactivateConnector: () => {}
+	deactivateConnector: () => {},
 });
 
 export const ConnectionContextProvider: React.FunctionComponent<{
@@ -144,13 +142,13 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 									connectorInfo(connectorKey(output)) &&
 									connectorInfo(connectorKey(input))
 								);
-							}
-						)
+							},
+						),
 					);
 					connectionsToLoadRef.current = Object.fromEntries(
 						Object.entries(connectionsToLoadRef.current).filter(([key]) => {
 							return !toLoad[key];
-						})
+						}),
 					);
 
 					Object.values(toLoad).forEach(([output, input]) => {
@@ -182,7 +180,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 
 			setConnectorCount(connectors.size);
 		},
-		[setConnectorCount]
+		[setConnectorCount],
 	);
 
 	const unregisterConnector = useCallback(
@@ -207,7 +205,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 			setConnectorCount(connectors.size);
 			setConnectionCount(connections.size);
 		},
-		[setConnectorCount]
+		[setConnectorCount],
 	);
 
 	const deactivateConnector = useCallback(() => {
@@ -235,7 +233,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 				setConnectionCount(
 					activeConnectorIsOutput
 						? connectOrDisconnect(activeConnector, clicked)
-						: connectOrDisconnect(clicked as IOutput, activeConnector)
+						: connectOrDisconnect(clicked as IOutput, activeConnector),
 				);
 				// dispatch(
 				// 	historyPushAction(
@@ -248,7 +246,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 				// );
 			}
 		},
-		[activeConnectorKey, setActiveConnectorKey, setConnectionCount]
+		[activeConnectorKey, setActiveConnectorKey, setConnectionCount],
 	);
 
 	const activeConnector = connectorInfo(activeConnectorKey);
@@ -268,7 +266,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 		return [...activeConnector[1]]
 			.map((key) => connections.get(key) as [IIo, IInput])
 			.map(([output, input]) =>
-				activeConnectorIsOutput ? connectorKey(input) : connectorKey(output)
+				activeConnectorIsOutput ? connectorKey(input) : connectorKey(output),
 			);
 	}, [activeConnectorKey]);
 
@@ -286,7 +284,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 				registerConnector,
 				unregisterConnector,
 				clickConnector,
-				deactivateConnector
+				deactivateConnector,
 			}}
 		>
 			{children}

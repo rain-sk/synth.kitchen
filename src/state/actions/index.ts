@@ -11,6 +11,7 @@ import {
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
 import { ILoadPatch, loadPatchAction } from './load-patch';
 import {
+	deselectAllModulesAction,
 	deselectModuleAction,
 	ISelectModule,
 	selectModuleAction,
@@ -51,6 +52,7 @@ export const actions = {
 	addModuleAction,
 	cancelLoadFromCloudAction,
 	changeNameAction,
+	deselectAllModulesAction,
 	deselectModuleAction,
 	disableKeyMovementAction,
 	enableKeyMovementAction,

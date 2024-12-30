@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatchContext } from '../hooks/use-dispatch-context';
-import { disableKeyMovementAction } from '../state/actions/disable-key-movement';
-import { enableKeyMovementAction } from '../state/actions/enable-key-movement';
+import { actions } from '../state/actions';
 import { randomId } from '../utils/random-id';
 
 export const NumberBox: React.FunctionComponent<{
@@ -20,11 +19,11 @@ export const NumberBox: React.FunctionComponent<{
 
 	const onFocus = useCallback(
 		(e: React.FocusEvent<HTMLInputElement>) => {
-			dispatch(disableKeyMovementAction());
+			dispatch(actions.disableKeyMovementAction());
 			setTempValue(`${value}`);
 			e.target.select();
 		},
-		[dispatch, disableKeyMovementAction, setTempValue, value]
+		[dispatch, setTempValue, value],
 	);
 
 	const onChange = useCallback(
@@ -53,7 +52,7 @@ export const NumberBox: React.FunctionComponent<{
 			if (indexOfFirstDecimal > -1) {
 				onlyNumeric = `${onlyNumeric.slice(
 					0,
-					indexOfFirstDecimal
+					indexOfFirstDecimal,
 				)}.${onlyNumeric.slice(indexOfFirstDecimal).replace(/[^\d]/g, '')}`;
 			}
 
@@ -63,20 +62,14 @@ export const NumberBox: React.FunctionComponent<{
 
 			setTempValue(isNaN(newValue) ? tempValue : onlyNumeric);
 		},
-		[setTempValue, tempValue]
+		[setTempValue, tempValue],
 	);
 
 	const onBlur = useCallback(() => {
 		commitValueCallback(valueToCommit());
 		setTempValue();
-		dispatch(enableKeyMovementAction());
-	}, [
-		commitValueCallback,
-		valueToCommit,
-		setTempValue,
-		dispatch,
-		enableKeyMovementAction
-	]);
+		dispatch(actions.enableKeyMovementAction());
+	}, [commitValueCallback, valueToCommit, setTempValue, dispatch]);
 
 	const onKeyDown = useCallback(
 		(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -94,7 +87,7 @@ export const NumberBox: React.FunctionComponent<{
 				setTimeout(() => (e.target as any).select(), 1);
 			}
 		},
-		[commitValueCallback, valueToCommit, setTempValue, value]
+		[commitValueCallback, valueToCommit, setTempValue, value],
 	);
 
 	return (
