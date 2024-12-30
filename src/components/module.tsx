@@ -4,7 +4,7 @@ import React, {
 	useEffect,
 	useMemo,
 	useRef,
-	useState
+	useState,
 } from 'react';
 
 import { actions } from '../state/actions';
@@ -35,23 +35,23 @@ import { MidiCcModule } from './modules/midi-cc';
 const useDragAndDrop = (
 	moduleKey: string,
 	initialPosition: Position,
-	containerRef: React.MutableRefObject<HTMLElement | null>
-): [
-	boolean,
-	(e: ReactMouseEvent<HTMLDivElement>) => void,
-	(position: Position) => void
-] => {
+	containerRef: React.MutableRefObject<HTMLElement | null>,
+): {
+	isDragging: boolean;
+	startDragging: (e: ReactMouseEvent<HTMLDivElement>) => void;
+	setPosition: (position: Position) => void;
+} => {
 	const dispatch = useDispatchContext();
 	const updateModulePosition = useCallback(
 		(position: Position) => {
 			dispatch(actions.updateModulePositionAction(moduleKey, position));
 		},
-		[dispatch, moduleKey]
+		[dispatch, moduleKey],
 	);
 
 	const moveContainerRef = (
 		containerRef: React.MutableRefObject<HTMLElement | null>,
-		position: Position
+		position: Position,
 	) =>
 		queueAnimation(() => {
 			if (containerRef.current) {
@@ -121,7 +121,7 @@ const useDragAndDrop = (
 		moveContainerRef(containerRef, newPosition);
 	});
 
-	return [isDragging, startDragging, setPosition];
+	return { isDragging, startDragging, setPosition };
 };
 
 const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
@@ -173,10 +173,10 @@ export const Module: React.FunctionComponent<{
 	const { selectedModuleKeys, selectionPending, heldModifiers } =
 		useStateContext();
 
-	const [isDragging, startDragging, setPosition] = useDragAndDrop(
+	const { isDragging, startDragging, setPosition } = useDragAndDrop(
 		module.moduleKey,
 		position,
-		containerRef
+		containerRef,
 	);
 
 	useEffect(() => {
@@ -187,7 +187,7 @@ export const Module: React.FunctionComponent<{
 
 	const currentlySelected = useMemo(
 		() => selectedModuleKeys.has(module.moduleKey),
-		[selectedModuleKeys, module.moduleKey]
+		[module.moduleKey, selectedModuleKeys],
 	);
 
 	const selectionStateString = useMemo(
@@ -197,7 +197,7 @@ export const Module: React.FunctionComponent<{
 					? ' selection_pending'
 					: ' selected'
 				: ' unselected',
-		[currentlySelected, selectionPending]
+		[currentlySelected, selectionPending],
 	);
 
 	const draggingStateString = isDragging ? ' dragging' : '';
@@ -228,9 +228,9 @@ export const Module: React.FunctionComponent<{
 			currentlySelected,
 			dispatch,
 			module.moduleKey,
+			selectedModuleKeys,
 			startDragging,
-			selectedModuleKeys
-		]
+		],
 	);
 
 	return (
