@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import { LimiterNode } from '../../audio/nodes/limiter';
 
@@ -21,11 +21,9 @@ const initLimiter = (
 export const LimiterModule: React.FC<{ module: IModule<'LIMITER'> }> = ({
 	module,
 }) => {
-	const limiterRef = useRef<LimiterNode>();
-	const [state] = useModuleState<'LIMITER', LimiterNode>(
-		limiterRef,
+	const [limiterRef, state] = useModuleState<'LIMITER', LimiterNode>(
 		module,
-		() => initLimiter(limiterRef, module.state),
+		(ref) => () => initLimiter(ref, module.state),
 	);
 
 	const enabled = state != undefined;

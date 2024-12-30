@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { actions } from '../state/actions';
 import { IModule, IModuleState, ModuleType } from '../state/types/module';
 import { useDispatchContext } from './use-dispatch-context';
@@ -20,12 +20,18 @@ const disconnectRef = <NodeType>(
 };
 
 export const useModuleState = <T extends ModuleType, NodeType>(
-	ref: React.MutableRefObject<NodeType | undefined>,
 	module: IModule,
-	init: () => IModuleState[T],
+	init: (
+		ref: React.MutableRefObject<NodeType | undefined>,
+	) => () => IModuleState[T],
 	cleanup?: () => void,
-): [IModuleState[T], React.Dispatch<React.SetStateAction<IModuleState[T]>>] => {
-	const [state, setState] = useState(init);
+): [
+	React.MutableRefObject<NodeType | undefined>,
+	IModuleState[T],
+	React.Dispatch<React.SetStateAction<IModuleState[T]>>,
+] => {
+	const ref = useRef<NodeType>();
+	const [state, setState] = useState(init(ref));
 
 	useEffectOnce(() => () => {
 		disconnectRef(ref);
@@ -42,5 +48,5 @@ export const useModuleState = <T extends ModuleType, NodeType>(
 		}
 	}, [dispatch, module.moduleKey, state]);
 
-	return [state, setState];
+	return [ref, state, setState];
 };

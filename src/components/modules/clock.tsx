@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import { ClockNode } from '../../audio/nodes/clock';
 
@@ -31,11 +31,9 @@ const initClock = (
 export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 	module,
 }) => {
-	const clockRef = useRef<ClockNode>();
-	const [state, setState] = useModuleState<'CLOCK', ClockNode>(
-		clockRef,
+	const [clockRef, state, setState] = useModuleState<'CLOCK', ClockNode>(
 		module,
-		() => initClock(clockRef, module.state),
+		(ref) => () => initClock(ref, module.state),
 	);
 
 	const commitTempoChange = useCallback(
@@ -52,7 +50,7 @@ export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 		[state],
 	);
 
-	const enabled = state != undefined && clockRef.current;
+	const enabled = state != undefined;
 
 	const tempoAccessor = useCallback(
 		() => clockRef.current?.tempo as any,

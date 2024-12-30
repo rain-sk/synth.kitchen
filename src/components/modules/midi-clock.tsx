@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useRef } from 'react';
+import React, { useCallback, useContext } from 'react';
 
 import { MidiClockNode } from '../../audio/nodes/midi-clock';
 
@@ -36,12 +36,10 @@ export const MidiClockModule: React.FC<{ module: IModule<'MIDI_CLOCK'> }> = ({
 }) => {
 	const { inputs } = useContext(MidiContext);
 
-	const clockRef = useRef<MidiClockNode>();
-	const [state, setState] = useModuleState<'MIDI_CLOCK', MidiClockNode>(
-		clockRef,
-		module,
-		() => initMidiClock(clockRef, module.state),
-	);
+	const [clockRef, state, setState] = useModuleState<
+		'MIDI_CLOCK',
+		MidiClockNode
+	>(module, (ref) => () => initMidiClock(ref, module.state));
 
 	const enabled = state != undefined;
 

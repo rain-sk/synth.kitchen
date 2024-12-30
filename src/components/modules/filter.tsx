@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import {
 	IAudioContext,
@@ -53,11 +53,12 @@ const initFilter = (
 export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 	module,
 }) => {
-	const filterRef = useRef<IBiquadFilterNode<IAudioContext>>();
-	const [state, setState] = useModuleState<
+	const [filterRef, state, setState] = useModuleState<
 		'FILTER',
 		IBiquadFilterNode<IAudioContext>
-	>(filterRef, module, () => initFilter(filterRef, module.state));
+	>(module, (ref) => () => initFilter(ref, module.state));
+
+	const enabled = state !== undefined;
 
 	const commitFrequencyChange = useCallback(
 		(frequency: number) => {
@@ -124,8 +125,6 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 		},
 		[state],
 	);
-
-	const enabled = state != undefined;
 
 	const frequencyAccessor = useCallback(() => {
 		return filterRef.current?.frequency as IAudioParam;

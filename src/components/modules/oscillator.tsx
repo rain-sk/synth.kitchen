@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import {
 	IAudioContext,
 	IAudioParam,
@@ -51,11 +51,10 @@ const initOscillator = (
 export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 	module,
 }) => {
-	const oscillatorRef = useRef<IOscillatorNode<IAudioContext>>();
-	const [state, setState] = useModuleState<
+	const [oscillatorRef, state, setState] = useModuleState<
 		'OSCILLATOR',
 		IOscillatorNode<IAudioContext>
-	>(oscillatorRef, module, () => initOscillator(oscillatorRef, module.state));
+	>(module, (ref) => () => initOscillator(ref, module.state));
 
 	const commitFrequencyChange = useCallback(
 		(frequency: number) => {

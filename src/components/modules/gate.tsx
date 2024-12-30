@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import { GateNode } from '../../audio/nodes/gate';
 
@@ -28,12 +28,12 @@ const initGate = (
 export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
 	module,
 }) => {
-	const gateRef = useRef<GateNode>();
-	const [state, setState] = useModuleState<'GATE', GateNode>(
-		gateRef,
+	const [gateRef, state, setState] = useModuleState<'GATE', GateNode>(
 		module,
-		() => initGate(gateRef, module.state),
+		(ref) => () => initGate(ref, module.state),
 	);
+
+	const enabled = state !== undefined;
 
 	const commitGateChange = useCallback(
 		(gate: number) => {
@@ -48,8 +48,6 @@ export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
 		},
 		[state],
 	);
-
-	const enabled = state != undefined;
 
 	const gateAccessor = useCallback(
 		() => gateRef.current?.gate as any,

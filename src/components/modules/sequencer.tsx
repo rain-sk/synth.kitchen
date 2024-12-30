@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import { SequencerNode } from '../../audio/nodes/sequencer';
 
@@ -74,12 +74,10 @@ const initSequencer = (
 export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 	module,
 }) => {
-	const sequencerRef = useRef<SequencerNode>();
-	const [state, setState] = useModuleState<'SEQUENCER', SequencerNode>(
-		sequencerRef,
-		module,
-		() => initSequencer(sequencerRef, module.state),
-	);
+	const [sequencerRef, state, setState] = useModuleState<
+		'SEQUENCER',
+		SequencerNode
+	>(module, (ref) => () => initSequencer(ref, module.state));
 
 	const commitStepsChange = useCallback(
 		(steps: number) => {

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useRef } from 'react';
+import React, { useCallback, useContext } from 'react';
 
 import { MidiCcNode } from '../../audio/nodes/midi-cc';
 
@@ -41,11 +41,9 @@ export const MidiCcModule: React.FC<{
 }> = ({ module }) => {
 	const { inputs } = useContext(MidiContext);
 
-	const ccRef = useRef<MidiCcNode>();
-	const [state, setState] = useModuleState<'MIDI_CC', MidiCcNode>(
-		ccRef,
+	const [ccRef, state, setState] = useModuleState<'MIDI_CC', MidiCcNode>(
 		module,
-		() => initMidiTrigger(ccRef, module.state),
+		(ref) => () => initMidiTrigger(ref, module.state),
 	);
 
 	const enabled = state != undefined;

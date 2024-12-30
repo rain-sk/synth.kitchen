@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import { NoiseNode } from '../../audio/nodes/noise';
 
@@ -21,9 +21,9 @@ const initNoise = (
 export const NoiseModule: React.FC<{ module: IModule<'NOISE'> }> = ({
 	module,
 }) => {
-	const noiseRef = useRef<NoiseNode>();
-	const [state] = useModuleState<'NOISE', NoiseNode>(noiseRef, module, () =>
-		initNoise(noiseRef, module.state),
+	const [noiseRef, state] = useModuleState<'NOISE', NoiseNode>(
+		module,
+		(ref) => () => initNoise(ref, module.state),
 	);
 
 	const enabled = state != undefined;

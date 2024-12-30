@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import { audioContext } from '../../audio/context';
 import { useModuleState } from '../../hooks/use-module-state';
@@ -45,9 +45,9 @@ const initVca = (
 };
 
 export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
-	const vcaRef = useRef<VcaNode>();
-	const [state, setState] = useModuleState<'VCA', VcaNode>(vcaRef, module, () =>
-		initVca(vcaRef, module.state),
+	const [vcaRef, state, setState] = useModuleState<'VCA', VcaNode>(
+		module,
+		(ref) => () => initVca(ref, module.state),
 	);
 
 	const enabled = state != undefined;

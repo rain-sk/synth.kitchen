@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import { audioContext } from '../../audio/context';
 import { useModuleState } from '../../hooks/use-module-state';
@@ -58,12 +58,10 @@ const initEnvelope = (
 export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 	module,
 }) => {
-	const envelopeRef = useRef<EnvelopeNode>();
-	const [state, setState] = useModuleState<'ENVELOPE', EnvelopeNode>(
-		envelopeRef,
-		module,
-		() => initEnvelope(envelopeRef, module.state),
-	);
+	const [envelopeRef, state, setState] = useModuleState<
+		'ENVELOPE',
+		EnvelopeNode
+	>(module, (ref) => () => initEnvelope(ref, module.state));
 
 	const enabled = state != undefined;
 

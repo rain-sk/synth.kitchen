@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import { IAudioContext, IDelayNode } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
@@ -33,14 +33,12 @@ const initDelay = (
 export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 	module,
 }) => {
-	const delayRef = useRef<IDelayNode<IAudioContext>>();
-	const [state, setState] = useModuleState<'DELAY', IDelayNode<IAudioContext>>(
-		delayRef,
-		module,
-		() => initDelay(delayRef, module.state),
-	);
+	const [delayRef, state, setState] = useModuleState<
+		'DELAY',
+		IDelayNode<IAudioContext>
+	>(module, (ref) => () => initDelay(ref, module.state));
 
-	const enabled = !!state;
+	const enabled = state !== undefined;
 
 	const input = useCallback(() => delayRef.current as any, [enabled]);
 

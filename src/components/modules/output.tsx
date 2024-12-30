@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import { IAudioParam } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
@@ -29,11 +29,9 @@ const initOutput = (
 export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 	module,
 }) => {
-	const outputRef = useRef<OutputNode>();
-	const [state, setState] = useModuleState<'OUTPUT', OutputNode>(
-		outputRef,
+	const [outputRef, state, setState] = useModuleState<'OUTPUT', OutputNode>(
 		module,
-		() => initOutput(outputRef, module.state),
+		(ref) => () => initOutput(ref, module.state),
 	);
 
 	const enabled = state != undefined;

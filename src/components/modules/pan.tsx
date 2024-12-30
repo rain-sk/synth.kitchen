@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import { IAudioContext, IStereoPannerNode } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
@@ -28,11 +28,10 @@ const initPan = (
 };
 
 export const PanModule: React.FC<{ module: IModule<'PAN'> }> = ({ module }) => {
-	const panRef = useRef<IStereoPannerNode<IAudioContext>>();
-	const [state, setState] = useModuleState<
+	const [panRef, state, setState] = useModuleState<
 		'PAN',
 		IStereoPannerNode<IAudioContext>
-	>(panRef, module, () => initPan(panRef, module.state));
+	>(module, (ref) => () => initPan(ref, module.state));
 
 	const enabled = state != undefined;
 
