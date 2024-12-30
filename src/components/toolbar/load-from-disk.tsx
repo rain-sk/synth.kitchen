@@ -47,7 +47,7 @@ export const LoadFromDisk = () => {
 		<label id="load" tabIndex={0} onKeyDown={handleLoadKeyDown}>
 			<span className="visually-hidden">open from disk</span>
 			<OpenFromDiskSvg />
-			<input type="file" onChange={onUpload} accept="text/json" />
+			<input type="file" onChange={onUpload} accept="application/json" />
 		</label>
 	);
 };
