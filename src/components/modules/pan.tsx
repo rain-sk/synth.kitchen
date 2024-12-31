@@ -7,6 +7,7 @@ import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const panStateFromNode = (
 	node: IStereoPannerNode<IAudioContext>,
@@ -18,7 +19,10 @@ const initPan = (
 	panRef: React.MutableRefObject<IStereoPannerNode<IAudioContext> | undefined>,
 	state?: IModuleState['PAN'],
 ) => {
-	panRef.current = audioContext.createStereoPanner();
+	if (!panRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		panRef.current.pan.setValueAtTime(state.pan, audioContext.currentTime);
 		return state;
@@ -28,10 +32,11 @@ const initPan = (
 };
 
 export const PanModule: React.FC<{ module: IModule<'PAN'> }> = ({ module }) => {
-	const [panRef, state, setState] = useModuleState<
+	const panRef = useNodeRef(() => audioContext.createStereoPanner());
+	const [state, setState] = useModuleState<
 		'PAN',
 		IStereoPannerNode<IAudioContext>
-	>(module, (ref) => () => initPan(ref, module.state));
+	>(panRef, module, () => initPan(panRef, module.state));
 
 	const enabled = state != undefined;
 

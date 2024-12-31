@@ -5,12 +5,16 @@ import { NoiseNode } from '../../audio/nodes/noise';
 import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const initNoise = (
 	noiseRef: React.MutableRefObject<NoiseNode | undefined>,
 	state?: IModuleState['NOISE'],
 ) => {
-	noiseRef.current = new NoiseNode();
+	if (!noiseRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		return state;
 	} else {
@@ -21,9 +25,9 @@ const initNoise = (
 export const NoiseModule: React.FC<{ module: IModule<'NOISE'> }> = ({
 	module,
 }) => {
-	const [noiseRef, state] = useModuleState<'NOISE', NoiseNode>(
-		module,
-		(ref) => () => initNoise(ref, module.state),
+	const noiseRef = useNodeRef(() => new NoiseNode());
+	const [state] = useModuleState<'NOISE', NoiseNode>(noiseRef, module, () =>
+		initNoise(noiseRef, module.state),
 	);
 
 	const enabled = state != undefined;

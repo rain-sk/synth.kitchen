@@ -13,6 +13,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { RadioParameter } from '../radio-parameter';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const filterStateFromNode = (
 	filter: IBiquadFilterNode<IAudioContext>,
@@ -30,7 +31,9 @@ const initFilter = (
 	>,
 	state?: IModuleState['FILTER'],
 ) => {
-	filterRef.current = audioContext.createBiquadFilter();
+	if (!filterRef.current) {
+		throw Error('uninitialized ref');
+	}
 
 	if (state) {
 		filterRef.current.frequency.setValueAtTime(
@@ -53,10 +56,11 @@ const initFilter = (
 export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 	module,
 }) => {
-	const [filterRef, state, setState] = useModuleState<
+	const filterRef = useNodeRef(() => audioContext.createBiquadFilter());
+	const [state, setState] = useModuleState<
 		'FILTER',
 		IBiquadFilterNode<IAudioContext>
-	>(module, (ref) => () => initFilter(ref, module.state));
+	>(filterRef, module, () => initFilter(filterRef, module.state));
 
 	const enabled = state !== undefined;
 

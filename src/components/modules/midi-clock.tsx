@@ -7,6 +7,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { RadioParameter } from '../radio-parameter';
 import { MidiContext } from '../../contexts/midi';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const clockStateFromNode = (
 	clock: MidiClockNode,
@@ -18,7 +19,10 @@ const initMidiClock = (
 	clockRef: React.MutableRefObject<MidiClockNode | undefined>,
 	state?: IModuleState['MIDI_CLOCK'],
 ) => {
-	clockRef.current = new MidiClockNode();
+	if (!clockRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		try {
 			clockRef.current.setInput(state.input);
@@ -36,10 +40,12 @@ export const MidiClockModule: React.FC<{ module: IModule<'MIDI_CLOCK'> }> = ({
 }) => {
 	const { inputs } = useContext(MidiContext);
 
-	const [clockRef, state, setState] = useModuleState<
-		'MIDI_CLOCK',
-		MidiClockNode
-	>(module, (ref) => () => initMidiClock(ref, module.state));
+	const clockRef = useNodeRef(() => new MidiClockNode());
+	const [state, setState] = useModuleState<'MIDI_CLOCK', MidiClockNode>(
+		clockRef,
+		module,
+		() => initMidiClock(clockRef, module.state),
+	);
 
 	const enabled = state != undefined;
 

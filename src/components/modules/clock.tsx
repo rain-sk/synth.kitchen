@@ -7,6 +7,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { audioContext } from '../../audio/context';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const clockStateFromNode = (clock: ClockNode): IModuleState['CLOCK'] => ({
 	tempo: clock.tempo.value,
@@ -16,7 +17,10 @@ const initClock = (
 	clockRef: React.MutableRefObject<ClockNode | undefined>,
 	state?: IModuleState['CLOCK'],
 ): IModuleState['CLOCK'] => {
-	clockRef.current = new ClockNode();
+	if (!clockRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		clockRef.current.tempo.setValueAtTime(
 			state.tempo,
@@ -31,9 +35,11 @@ const initClock = (
 export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 	module,
 }) => {
-	const [clockRef, state, setState] = useModuleState<'CLOCK', ClockNode>(
+	const clockRef = useNodeRef(() => new ClockNode());
+	const [state, setState] = useModuleState<'CLOCK', ClockNode>(
+		clockRef,
 		module,
-		(ref) => () => initClock(ref, module.state),
+		() => initClock(clockRef, module.state),
 	);
 
 	const commitTempoChange = useCallback(

@@ -7,6 +7,7 @@ import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const delayStateFromNode = (
 	node: IDelayNode<IAudioContext>,
@@ -18,7 +19,10 @@ const initDelay = (
 	delayRef: React.MutableRefObject<IDelayNode<IAudioContext> | undefined>,
 	state?: IModuleState['DELAY'],
 ) => {
-	delayRef.current = audioContext.createDelay();
+	if (!delayRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		delayRef.current.delayTime.setValueAtTime(
 			state.delayTime,
@@ -33,10 +37,12 @@ const initDelay = (
 export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 	module,
 }) => {
-	const [delayRef, state, setState] = useModuleState<
-		'DELAY',
-		IDelayNode<IAudioContext>
-	>(module, (ref) => () => initDelay(ref, module.state));
+	const delayRef = useNodeRef(() => audioContext.createDelay());
+	const [state, setState] = useModuleState<'DELAY', IDelayNode<IAudioContext>>(
+		delayRef,
+		module,
+		() => initDelay(delayRef, module.state),
+	);
 
 	const enabled = state !== undefined;
 

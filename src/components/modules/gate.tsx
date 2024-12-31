@@ -7,6 +7,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { audioContext } from '../../audio/context';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const gateStateFromNode = (gate: GateNode): IModuleState['GATE'] => ({
 	gate: gate.gate.value,
@@ -16,7 +17,10 @@ const initGate = (
 	gateRef: React.MutableRefObject<GateNode | undefined>,
 	state?: IModuleState['GATE'],
 ) => {
-	gateRef.current = new GateNode();
+	if (!gateRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		gateRef.current.gate.setValueAtTime(state.gate, audioContext.currentTime);
 		return state;
@@ -28,9 +32,11 @@ const initGate = (
 export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
 	module,
 }) => {
-	const [gateRef, state, setState] = useModuleState<'GATE', GateNode>(
+	const gateRef = useNodeRef(() => new GateNode());
+	const [state, setState] = useModuleState<'GATE', GateNode>(
+		gateRef,
 		module,
-		(ref) => () => initGate(ref, module.state),
+		() => initGate(gateRef, module.state),
 	);
 
 	const enabled = state !== undefined;

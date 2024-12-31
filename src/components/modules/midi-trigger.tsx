@@ -7,6 +7,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { RadioParameter } from '../radio-parameter';
 import { MidiContext } from '../../contexts/midi';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const noteOptions = (() => {
 	const options = ['all'];
@@ -27,7 +28,10 @@ const initMidiTrigger = (
 	triggerRef: React.MutableRefObject<MidiTriggerNode | undefined>,
 	state?: IModuleState['MIDI_TRIGGER'],
 ) => {
-	triggerRef.current = new MidiTriggerNode();
+	if (!triggerRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		try {
 			triggerRef.current.setInput(state.input);
@@ -46,10 +50,12 @@ export const MidiTriggerModule: React.FC<{
 }> = ({ module }) => {
 	const { inputs } = useContext(MidiContext);
 
-	const [triggerRef, state, setState] = useModuleState<
-		'MIDI_TRIGGER',
-		MidiTriggerNode
-	>(module, (ref) => () => initMidiTrigger(ref, module.state));
+	const triggerRef = useNodeRef(() => new MidiTriggerNode());
+	const [state, setState] = useModuleState<'MIDI_TRIGGER', MidiTriggerNode>(
+		triggerRef,
+		module,
+		() => initMidiTrigger(triggerRef, module.state),
+	);
 
 	const enabled = state != undefined;
 

@@ -7,6 +7,7 @@ import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const gainStateFromNode = (
 	node: IGainNode<IAudioContext>,
@@ -18,7 +19,10 @@ const initGain = (
 	gainRef: React.MutableRefObject<IGainNode<IAudioContext> | undefined>,
 	state?: IModuleState['GAIN'],
 ) => {
-	gainRef.current = audioContext.createGain();
+	if (!gainRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		gainRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
 		return state;
@@ -30,10 +34,12 @@ const initGain = (
 export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 	module,
 }) => {
-	const [gainRef, state, setState] = useModuleState<
-		'GAIN',
-		IGainNode<IAudioContext>
-	>(module, (ref) => () => initGain(ref, module.state));
+	const gainRef = useNodeRef(() => audioContext.createGain());
+	const [state, setState] = useModuleState<'GAIN', IGainNode<IAudioContext>>(
+		gainRef,
+		module,
+		() => initGain(gainRef, module.state),
+	);
 
 	const enabled = state !== undefined;
 

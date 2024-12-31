@@ -8,6 +8,7 @@ import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { IAudioParam } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const sequencerStateFromNode = (
 	sequencer: SequencerNode,
@@ -27,7 +28,10 @@ const initSequencer = (
 	sequencerRef: React.MutableRefObject<SequencerNode | undefined>,
 	state?: IModuleState['SEQUENCER'],
 ) => {
-	sequencerRef.current = new SequencerNode();
+	if (!sequencerRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		sequencerRef.current.steps.setValueAtTime(
 			state.steps,
@@ -74,10 +78,12 @@ const initSequencer = (
 export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 	module,
 }) => {
-	const [sequencerRef, state, setState] = useModuleState<
-		'SEQUENCER',
-		SequencerNode
-	>(module, (ref) => () => initSequencer(ref, module.state));
+	const sequencerRef = useNodeRef(() => new SequencerNode());
+	const [state, setState] = useModuleState<'SEQUENCER', SequencerNode>(
+		sequencerRef,
+		module,
+		() => initSequencer(sequencerRef, module.state),
+	);
 
 	const commitStepsChange = useCallback(
 		(steps: number) => {

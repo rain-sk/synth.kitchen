@@ -7,6 +7,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { VcaNode } from '../../audio/nodes/vca';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
 	gate: Math.round(node.gate.value * 10000) / 10000,
@@ -21,7 +22,10 @@ const initVca = (
 	vcaRef: React.MutableRefObject<VcaNode | undefined>,
 	state?: IModuleState['VCA'],
 ) => {
-	vcaRef.current = new VcaNode();
+	if (!vcaRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		vcaRef.current.gate.setValueAtTime(state.gate, audioContext.currentTime);
 		vcaRef.current.attack.setValueAtTime(
@@ -45,9 +49,9 @@ const initVca = (
 };
 
 export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
-	const [vcaRef, state, setState] = useModuleState<'VCA', VcaNode>(
-		module,
-		(ref) => () => initVca(ref, module.state),
+	const vcaRef = useNodeRef(() => new VcaNode());
+	const [state, setState] = useModuleState<'VCA', VcaNode>(vcaRef, module, () =>
+		initVca(vcaRef, module.state),
 	);
 
 	const enabled = state != undefined;

@@ -8,6 +8,7 @@ import { IoConnectors } from '../io-connectors';
 import { RadioParameter } from '../radio-parameter';
 import { MidiContext } from '../../contexts/midi';
 import { NumberParameter } from '../number-parameter';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const midiCcStateFromNode = (node: MidiCcNode): IModuleState['MIDI_CC'] => ({
 	input: node.inputName,
@@ -20,7 +21,10 @@ const initMidiTrigger = (
 	ccRef: React.MutableRefObject<MidiCcNode | undefined>,
 	state?: IModuleState['MIDI_CC'],
 ) => {
-	ccRef.current = new MidiCcNode();
+	if (!ccRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		try {
 			ccRef.current.setCC(state.cc);
@@ -41,9 +45,11 @@ export const MidiCcModule: React.FC<{
 }> = ({ module }) => {
 	const { inputs } = useContext(MidiContext);
 
-	const [ccRef, state, setState] = useModuleState<'MIDI_CC', MidiCcNode>(
+	const ccRef = useNodeRef(() => new MidiCcNode());
+	const [state, setState] = useModuleState<'MIDI_CC', MidiCcNode>(
+		ccRef,
 		module,
-		(ref) => () => initMidiTrigger(ref, module.state),
+		() => initMidiTrigger(ccRef, module.state),
 	);
 
 	const enabled = state != undefined;

@@ -13,6 +13,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { NumberParameter } from '../number-parameter';
 import { IoConnectors } from '../io-connectors';
 import { RadioParameter } from '../radio-parameter';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const oscillatorStateFromNode = (
 	node: IOscillatorNode<IAudioContext>,
@@ -28,7 +29,9 @@ const initOscillator = (
 	>,
 	state?: IModuleState['OSCILLATOR'],
 ) => {
-	oscillatorRef.current = audioContext.createOscillator();
+	if (!oscillatorRef.current) {
+		throw Error('uninitialized ref');
+	}
 
 	if (state) {
 		oscillatorRef.current.detune.setValueAtTime(
@@ -51,10 +54,11 @@ const initOscillator = (
 export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 	module,
 }) => {
-	const [oscillatorRef, state, setState] = useModuleState<
+	const oscillatorRef = useNodeRef(() => audioContext.createOscillator());
+	const [state, setState] = useModuleState<
 		'OSCILLATOR',
 		IOscillatorNode<IAudioContext>
-	>(module, (ref) => () => initOscillator(ref, module.state));
+	>(oscillatorRef, module, () => initOscillator(oscillatorRef, module.state));
 
 	const commitFrequencyChange = useCallback(
 		(frequency: number) => {

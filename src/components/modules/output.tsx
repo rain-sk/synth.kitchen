@@ -8,6 +8,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { NumberParameter } from '../number-parameter';
 import { IoConnectors } from '../io-connectors';
 import { OutputNode } from '../../audio/nodes/output';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const outputStateFromNode = (node: OutputNode): IModuleState['OUTPUT'] => ({
 	gain: node.gain.value,
@@ -17,7 +18,10 @@ const initOutput = (
 	outputRef: React.MutableRefObject<OutputNode | undefined>,
 	state?: IModuleState['OUTPUT'],
 ) => {
-	outputRef.current = new OutputNode();
+	if (!outputRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		outputRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
 		return state;
@@ -29,9 +33,11 @@ const initOutput = (
 export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 	module,
 }) => {
-	const [outputRef, state, setState] = useModuleState<'OUTPUT', OutputNode>(
+	const outputRef = useNodeRef(() => new OutputNode());
+	const [state, setState] = useModuleState<'OUTPUT', OutputNode>(
+		outputRef,
 		module,
-		(ref) => () => initOutput(ref, module.state),
+		() => initOutput(outputRef, module.state),
 	);
 
 	const enabled = state != undefined;

@@ -5,12 +5,16 @@ import { LimiterNode } from '../../audio/nodes/limiter';
 import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const initLimiter = (
 	limiterRef: React.MutableRefObject<LimiterNode | undefined>,
 	state?: IModuleState['LIMITER'],
 ) => {
-	limiterRef.current = new LimiterNode();
+	if (!limiterRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		return state;
 	} else {
@@ -21,9 +25,11 @@ const initLimiter = (
 export const LimiterModule: React.FC<{ module: IModule<'LIMITER'> }> = ({
 	module,
 }) => {
-	const [limiterRef, state] = useModuleState<'LIMITER', LimiterNode>(
+	const limiterRef = useNodeRef(() => new LimiterNode());
+	const [state] = useModuleState<'LIMITER', LimiterNode>(
+		limiterRef,
 		module,
-		(ref) => () => initLimiter(ref, module.state),
+		() => initLimiter(limiterRef, module.state),
 	);
 
 	const enabled = state != undefined;

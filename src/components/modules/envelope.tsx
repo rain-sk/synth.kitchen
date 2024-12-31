@@ -7,6 +7,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { EnvelopeNode } from '../../audio/nodes/envelope';
+import { useNodeRef } from '../../hooks/use-node-ref';
 
 const envelopeStateFromNode = (
 	node: EnvelopeNode,
@@ -23,7 +24,10 @@ const initEnvelope = (
 	envelopeRef: React.MutableRefObject<EnvelopeNode | undefined>,
 	state?: IModuleState['ENVELOPE'],
 ) => {
-	envelopeRef.current = new EnvelopeNode();
+	if (!envelopeRef.current) {
+		throw Error('uninitialized ref');
+	}
+
 	if (state) {
 		envelopeRef.current.gate.setValueAtTime(
 			state.gate,
@@ -58,10 +62,12 @@ const initEnvelope = (
 export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 	module,
 }) => {
-	const [envelopeRef, state, setState] = useModuleState<
-		'ENVELOPE',
-		EnvelopeNode
-	>(module, (ref) => () => initEnvelope(ref, module.state));
+	const envelopeRef = useNodeRef(() => new EnvelopeNode());
+	const [state, setState] = useModuleState<'ENVELOPE', EnvelopeNode>(
+		envelopeRef,
+		module,
+		() => initEnvelope(envelopeRef, module.state),
+	);
 
 	const enabled = state != undefined;
 
