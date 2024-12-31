@@ -118,7 +118,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 	const [connectorCount, setConnectorCount] = useState(0);
 	const [connectionCount, setConnectionCount] = useState(0);
 
-	const { connectionsToLoad } = useStateContext() as any;
+	const { connectionsToLoad } = useStateContext();
 	const connectionsToLoadRef = useRef<Record<string, [IOutput, IInput]>>();
 	useEffect(() => {
 		if (
