@@ -1,7 +1,7 @@
 import {
 	IAudioContext,
 	IAudioParam,
-	IGainNode
+	IGainNode,
 } from 'standardized-audio-context';
 import { audioContext } from '../context';
 import { AdsrNode } from './adsr';
@@ -26,9 +26,6 @@ export class VcaNode {
 			this._adsr.node().disconnect(this._adsrPeak);
 			this._adsrPeak.disconnect(this._signalGain.gain);
 			this._adsr.disconnect();
-			this._adsr = null as any;
-			this._adsrPeak = null as any;
-			this._signalGain = null as any;
 		}, 10);
 	};
 

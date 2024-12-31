@@ -1,7 +1,7 @@
 import {
 	IAudioContext,
 	IAudioParam,
-	IGainNode
+	IGainNode,
 } from 'standardized-audio-context';
 import { audioContext } from '../context';
 import { AdsrNode } from './adsr';
@@ -22,9 +22,6 @@ export class EnvelopeNode {
 			this._gate.node().disconnect(this._adsr.node());
 			this._adsr.node().disconnect(this._gain);
 			this._adsr.disconnect();
-			this._adsr = null as any;
-			this._gain = null as any;
-			this._gate = null as any;
 		}, 10);
 	};
 

@@ -1,20 +1,19 @@
 import {
-	AudioWorkletNode,
 	IAudioContext,
 	IAudioParam,
-	IAudioWorkletNode
+	IAudioWorkletNode,
 } from 'standardized-audio-context';
 import { audioContext } from '../context';
+import { audioWorkletNodeFactory } from './audio-worklet-node-factory';
 
 export class SequencerNode {
-	private _node = new (AudioWorkletNode as any)(audioContext, 'sequencer');
+	private _node = audioWorkletNodeFactory('sequencer');
 
 	disconnect = () => {
 		setTimeout(() => {
 			this._node.parameters
 				.get('active')
 				?.setValueAtTime(0, audioContext.currentTime);
-			this._node = null as any;
 		}, 10);
 	};
 

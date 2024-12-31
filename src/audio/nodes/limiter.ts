@@ -1,18 +1,12 @@
-import {
-	AudioWorkletNode,
-	IAudioContext,
-	IAudioWorkletNode
-} from 'standardized-audio-context';
-import { audioContext } from '../context';
+import { IAudioContext, IAudioWorkletNode } from 'standardized-audio-context';
+import { audioWorkletNodeFactory } from './audio-worklet-node-factory';
 
 export class LimiterNode {
-	private _node = new (AudioWorkletNode as any)(audioContext, 'limiter');
+	private _node = audioWorkletNodeFactory('limiter');
 
 	disconnect = () => {
 		setTimeout(() => {
 			this._node.disconnect();
-
-			this._node = null as any;
 		}, 10);
 	};
 

@@ -1,17 +1,11 @@
-import {
-	AudioWorkletNode,
-	IAudioContext,
-	IAudioWorkletNode
-} from 'standardized-audio-context';
+import { IAudioContext, IAudioWorkletNode } from 'standardized-audio-context';
 import { audioContext } from '../context';
 import { NoteMessageEvent, PortEvent, WebMidi } from 'webmidi';
 import { midi } from '../../midi';
+import { audioWorkletNodeFactory } from './audio-worklet-node-factory';
 
 export class MidiTriggerNode {
-	private _node = new (AudioWorkletNode as any)(
-		audioContext,
-		'midi-clock'
-	) as IAudioWorkletNode<IAudioContext>;
+	private _node = audioWorkletNodeFactory('midi-clock');
 	private _inputName = '';
 	private _note: 'all' | number = 'all';
 

@@ -1,12 +1,9 @@
-import {
-	AudioWorkletNode,
-	IAudioContext,
-	IAudioWorkletNode
-} from 'standardized-audio-context';
+import { IAudioContext, IAudioWorkletNode } from 'standardized-audio-context';
 import { audioContext } from '../context';
+import { audioWorkletNodeFactory } from './audio-worklet-node-factory';
 
 export class NoiseNode {
-	private _node = new (AudioWorkletNode as any)(audioContext, 'noise');
+	private _node = audioWorkletNodeFactory('noise');
 
 	disconnect = () => {
 		setTimeout(() => {
