@@ -49,7 +49,7 @@ export const MidiClockModule: React.FC<{ module: IModule<'MIDI_CLOCK'> }> = ({
 
 	const enabled = state != undefined;
 
-	const output = useCallback(() => clockRef.current?.node() as any, [enabled]);
+	const output = useCallback(() => clockRef.current.node(), [enabled]);
 
 	const commitInputChange = useCallback(
 		(input: string) => {
@@ -77,7 +77,7 @@ export const MidiClockModule: React.FC<{ module: IModule<'MIDI_CLOCK'> }> = ({
 						moduleKey={module.moduleKey}
 						name="input"
 						options={inputs.map((input) => input.name)}
-						value={clockRef.current?.inputName as any}
+						value={clockRef.current.inputName}
 						commitValueCallback={commitInputChange}
 					/>
 				) : (

@@ -43,13 +43,13 @@ export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 
 	const enabled = state !== undefined;
 
-	const input = useCallback(() => gainRef.current as any, [enabled]);
+	const input = useCallback(() => gainRef.current, [enabled]);
 
-	const output = useCallback(() => gainRef.current as any, [enabled]);
+	const output = useCallback(() => gainRef.current, [enabled]);
 
 	const commitGainChange = useCallback(
 		(gain: number) => {
-			gainRef.current?.gain.linearRampToValueAtTime(
+			gainRef.current.gain.linearRampToValueAtTime(
 				gain,
 				audioContext.currentTime,
 			);
@@ -61,10 +61,7 @@ export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 		[state],
 	);
 
-	const gainAccessor = useCallback(
-		() => gainRef.current?.gain as any,
-		[enabled],
-	);
+	const gainAccessor = useCallback(() => gainRef.current.gain, [enabled]);
 
 	return enabled ? (
 		<>

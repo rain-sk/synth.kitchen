@@ -59,10 +59,7 @@ export const MidiTriggerModule: React.FC<{
 
 	const enabled = state != undefined;
 
-	const output = useCallback(
-		() => triggerRef.current?.node() as any,
-		[enabled],
-	);
+	const output = useCallback(() => triggerRef.current.node(), [enabled]);
 
 	const commitInputChange = useCallback(
 		(input: string) => {
@@ -115,14 +112,14 @@ export const MidiTriggerModule: React.FC<{
 							moduleKey={module.moduleKey}
 							name="input"
 							options={inputs.map((input) => input.name)}
-							value={triggerRef.current?.inputName as any}
+							value={triggerRef.current.inputName}
 							commitValueCallback={commitInputChange}
 						/>
 						<RadioParameter
 							moduleKey={module.moduleKey}
 							name="note"
 							options={noteOptions}
-							value={triggerRef.current?.note as any}
+							value={`${triggerRef.current.note}`}
 							commitValueCallback={commitNoteChange}
 						/>
 					</>

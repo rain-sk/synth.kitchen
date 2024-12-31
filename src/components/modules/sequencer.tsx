@@ -88,7 +88,7 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 	const commitStepsChange = useCallback(
 		(steps: number) => {
 			steps = Math.floor(Math.max(2, Math.min(8, steps)));
-			sequencerRef.current?.steps.linearRampToValueAtTime(
+			sequencerRef.current.steps.linearRampToValueAtTime(
 				steps,
 				audioContext.currentTime,
 			);
@@ -102,7 +102,7 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const commitStep0Change = useCallback(
 		(step0: number) => {
-			sequencerRef.current?.step0.linearRampToValueAtTime(
+			sequencerRef.current.step0.linearRampToValueAtTime(
 				step0,
 				audioContext.currentTime,
 			);
@@ -116,7 +116,7 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const commitStep1Change = useCallback(
 		(step1: number) => {
-			sequencerRef.current?.step1.linearRampToValueAtTime(
+			sequencerRef.current.step1.linearRampToValueAtTime(
 				step1,
 				audioContext.currentTime,
 			);
@@ -130,7 +130,7 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const commitStep2Change = useCallback(
 		(step2: number) => {
-			sequencerRef.current?.step2.linearRampToValueAtTime(
+			sequencerRef.current.step2.linearRampToValueAtTime(
 				step2,
 				audioContext.currentTime,
 			);
@@ -144,7 +144,7 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const commitStep3Change = useCallback(
 		(step3: number) => {
-			sequencerRef.current?.step3.linearRampToValueAtTime(
+			sequencerRef.current.step3.linearRampToValueAtTime(
 				step3,
 				audioContext.currentTime,
 			);
@@ -158,7 +158,7 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const commitStep4Change = useCallback(
 		(step4: number) => {
-			sequencerRef.current?.step4.linearRampToValueAtTime(
+			sequencerRef.current.step4.linearRampToValueAtTime(
 				step4,
 				audioContext.currentTime,
 			);
@@ -172,7 +172,7 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const commitStep5Change = useCallback(
 		(step5: number) => {
-			sequencerRef.current?.step5.linearRampToValueAtTime(
+			sequencerRef.current.step5.linearRampToValueAtTime(
 				step5,
 				audioContext.currentTime,
 			);
@@ -186,7 +186,7 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const commitStep6Change = useCallback(
 		(step6: number) => {
-			sequencerRef.current?.step6.linearRampToValueAtTime(
+			sequencerRef.current.step6.linearRampToValueAtTime(
 				step6,
 				audioContext.currentTime,
 			);
@@ -200,7 +200,7 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const commitStep7Change = useCallback(
 		(step7: number) => {
-			sequencerRef.current?.step7.linearRampToValueAtTime(
+			sequencerRef.current.step7.linearRampToValueAtTime(
 				step7,
 				audioContext.currentTime,
 			);
@@ -214,58 +214,52 @@ export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
 
 	const enabled = state != undefined;
 
-	const clock = useCallback(
-		() => sequencerRef.current?.node() as any,
-		[enabled],
-	);
+	const clock = useCallback(() => sequencerRef.current.node(), [enabled]);
 
-	const output = useCallback(
-		() => sequencerRef.current?.node() as any,
-		[enabled],
-	);
+	const output = useCallback(() => sequencerRef.current.node(), [enabled]);
 
 	const stepsAccessor = useCallback(
-		() => sequencerRef.current?.steps as IAudioParam,
+		() => sequencerRef.current.steps as IAudioParam,
 		[enabled],
 	);
 
 	const step0Accessor = useCallback(
-		() => sequencerRef.current?.step0 as any as IAudioParam,
+		() => sequencerRef.current.step0 as IAudioParam,
 		[enabled],
 	);
 
 	const step1Accessor = useCallback(
-		() => sequencerRef.current?.step1 as any as IAudioParam,
+		() => sequencerRef.current.step1 as IAudioParam,
 		[enabled],
 	);
 
 	const step2Accessor = useCallback(
-		() => sequencerRef.current?.step2 as any as IAudioParam,
+		() => sequencerRef.current.step2 as IAudioParam,
 		[enabled],
 	);
 
 	const step3Accessor = useCallback(
-		() => sequencerRef.current?.step3 as any as IAudioParam,
+		() => sequencerRef.current.step3 as IAudioParam,
 		[enabled],
 	);
 
 	const step4Accessor = useCallback(
-		() => sequencerRef.current?.step4 as any as IAudioParam,
+		() => sequencerRef.current.step4 as IAudioParam,
 		[enabled],
 	);
 
 	const step5Accessor = useCallback(
-		() => sequencerRef.current?.step5 as any as IAudioParam,
+		() => sequencerRef.current.step5 as IAudioParam,
 		[enabled],
 	);
 
 	const step6Accessor = useCallback(
-		() => sequencerRef.current?.step6 as any as IAudioParam,
+		() => sequencerRef.current.step6 as IAudioParam,
 		[enabled],
 	);
 
 	const step7Accessor = useCallback(
-		() => sequencerRef.current?.step7 as any as IAudioParam,
+		() => sequencerRef.current.step7 as IAudioParam,
 		[enabled],
 	);
 

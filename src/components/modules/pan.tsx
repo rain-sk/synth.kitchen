@@ -40,16 +40,13 @@ export const PanModule: React.FC<{ module: IModule<'PAN'> }> = ({ module }) => {
 
 	const enabled = state != undefined;
 
-	const input = useCallback(() => panRef.current as any, [enabled]);
+	const input = useCallback(() => panRef.current, [enabled]);
 
-	const output = useCallback(() => panRef.current as any, [enabled]);
+	const output = useCallback(() => panRef.current, [enabled]);
 
 	const commitPanChange = useCallback(
 		(pan: number) => {
-			panRef.current?.pan.linearRampToValueAtTime(
-				pan,
-				audioContext.currentTime,
-			);
+			panRef.current.pan.linearRampToValueAtTime(pan, audioContext.currentTime);
 			setState({
 				...state,
 				pan,
@@ -58,7 +55,7 @@ export const PanModule: React.FC<{ module: IModule<'PAN'> }> = ({ module }) => {
 		[audioContext, state],
 	);
 
-	const panAccessor = useCallback(() => panRef.current?.pan as any, [enabled]);
+	const panAccessor = useCallback(() => panRef.current.pan, [enabled]);
 
 	return enabled ? (
 		<>

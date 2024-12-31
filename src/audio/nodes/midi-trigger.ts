@@ -25,7 +25,6 @@ export class MidiTriggerNode {
 			this._node.parameters
 				.get('active')
 				?.setValueAtTime(0, audioContext.currentTime);
-			this._node = null as any;
 		}, 10);
 	};
 

@@ -66,7 +66,7 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 
 	const commitFrequencyChange = useCallback(
 		(frequency: number) => {
-			filterRef.current?.frequency.linearRampToValueAtTime(
+			filterRef.current.frequency.linearRampToValueAtTime(
 				frequency,
 				audioContext.currentTime,
 			);
@@ -80,7 +80,7 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 
 	const commitDetuneChange = useCallback(
 		(detune: number) => {
-			filterRef.current?.detune.linearRampToValueAtTime(
+			filterRef.current.detune.linearRampToValueAtTime(
 				detune,
 				audioContext.currentTime,
 			);
@@ -107,7 +107,7 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 
 	const commitQChange = useCallback(
 		(Q: number) => {
-			filterRef.current?.Q.linearRampToValueAtTime(Q, audioContext.currentTime);
+			filterRef.current.Q.linearRampToValueAtTime(Q, audioContext.currentTime);
 			setState({
 				...state,
 				Q,
@@ -118,7 +118,7 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 
 	const commitGainChange = useCallback(
 		(gain: number) => {
-			filterRef.current?.gain.linearRampToValueAtTime(
+			filterRef.current.gain.linearRampToValueAtTime(
 				gain,
 				audioContext.currentTime,
 			);
@@ -131,24 +131,24 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 	);
 
 	const frequencyAccessor = useCallback(() => {
-		return filterRef.current?.frequency as IAudioParam;
+		return filterRef.current.frequency as IAudioParam;
 	}, [enabled]);
 
 	const detuneAccessor = useCallback(() => {
-		return filterRef.current?.detune as IAudioParam;
+		return filterRef.current.detune as IAudioParam;
 	}, [enabled]);
 
 	const qAccessor = useCallback(() => {
-		return filterRef.current?.Q as IAudioParam;
+		return filterRef.current.Q as IAudioParam;
 	}, [enabled]);
 
 	const gainAccessor = useCallback(() => {
-		return filterRef.current?.gain as IAudioParam;
+		return filterRef.current.gain as IAudioParam;
 	}, [enabled]);
 
-	const input = useCallback(() => filterRef.current as any, [enabled]);
+	const input = useCallback(() => filterRef.current, [enabled]);
 
-	const output = useCallback(() => filterRef.current as any, [enabled]);
+	const output = useCallback(() => filterRef.current, [enabled]);
 
 	return enabled ? (
 		<>

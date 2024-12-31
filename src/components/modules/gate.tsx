@@ -43,7 +43,7 @@ export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
 
 	const commitGateChange = useCallback(
 		(gate: number) => {
-			gateRef.current?.gate.linearRampToValueAtTime(
+			gateRef.current.gate.linearRampToValueAtTime(
 				gate,
 				audioContext.currentTime,
 			);
@@ -55,14 +55,11 @@ export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
 		[state],
 	);
 
-	const gateAccessor = useCallback(
-		() => gateRef.current?.gate as any,
-		[enabled],
-	);
+	const gateAccessor = useCallback(() => gateRef.current.gate, [enabled]);
 
-	const sync = useCallback(() => gateRef.current?.node() as any, [enabled]);
+	const sync = useCallback(() => gateRef.current.node(), [enabled]);
 
-	const output = useCallback(() => gateRef.current?.node() as any, [enabled]);
+	const output = useCallback(() => gateRef.current.node(), [enabled]);
 
 	return enabled ? (
 		<>

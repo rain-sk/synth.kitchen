@@ -44,7 +44,7 @@ export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 
 	const commitTempoChange = useCallback(
 		(tempo: number) => {
-			clockRef.current?.tempo.linearRampToValueAtTime(
+			clockRef.current.tempo.linearRampToValueAtTime(
 				tempo,
 				audioContext.currentTime,
 			);
@@ -58,14 +58,11 @@ export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 
 	const enabled = state != undefined;
 
-	const tempoAccessor = useCallback(
-		() => clockRef.current?.tempo as any,
-		[enabled],
-	);
+	const tempoAccessor = useCallback(() => clockRef.current.tempo, [enabled]);
 
-	const sync = useCallback(() => clockRef.current?.node() as any, [enabled]);
+	const sync = useCallback(() => clockRef.current.node(), [enabled]);
 
-	const output = useCallback(() => clockRef.current?.node() as any, [enabled]);
+	const output = useCallback(() => clockRef.current.node(), [enabled]);
 
 	return enabled ? (
 		<>

@@ -32,7 +32,7 @@ export const NoiseModule: React.FC<{ module: IModule<'NOISE'> }> = ({
 
 	const enabled = state != undefined;
 
-	const output = useCallback(() => noiseRef.current?.node() as any, [enabled]);
+	const output = useCallback(() => noiseRef.current.node(), [enabled]);
 
 	return enabled ? (
 		<IoConnectors

@@ -21,7 +21,7 @@ const disconnectRef = <NodeType>(
 };
 
 export const useModuleState = <T extends ModuleType, NodeType>(
-	ref: React.MutableRefObject<NodeType | undefined>,
+	ref: React.MutableRefObject<NodeType>,
 	module: IModule,
 	init: () => IModuleState[T],
 ): [IModuleState[T], React.Dispatch<React.SetStateAction<IModuleState[T]>>] => {

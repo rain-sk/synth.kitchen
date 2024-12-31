@@ -2,7 +2,7 @@ import {
 	IAudioContext,
 	IAudioNode,
 	IAudioParam,
-	IGainNode
+	IGainNode,
 } from 'standardized-audio-context';
 import { audioContext, resampling } from '../context';
 import { LimiterNode } from './limiter';
@@ -19,14 +19,9 @@ export class OutputNode {
 	}
 
 	disconnect = () => {
-		setTimeout(() => {
-			this._gain.disconnect(this._limiter.input());
-			this._limiter.output().disconnect(this._delay);
-			this._limiter.disconnect();
-			this._gain = null as any;
-			this._delay = null as any;
-			this._limiter = null as any;
-		}, 10);
+		this._gain.disconnect(this._limiter.input());
+		this._limiter.output().disconnect(this._delay);
+		this._limiter.disconnect();
 	};
 
 	speaker = (): IGainNode<IAudioContext> => this._gain;

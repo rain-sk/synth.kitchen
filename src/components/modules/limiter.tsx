@@ -34,9 +34,9 @@ export const LimiterModule: React.FC<{ module: IModule<'LIMITER'> }> = ({
 
 	const enabled = state != undefined;
 
-	const input = useCallback(() => limiterRef.current as any, [enabled]);
+	const input = useCallback(() => limiterRef.current.input(), [enabled]);
 
-	const output = useCallback(() => limiterRef.current as any, [enabled]);
+	const output = useCallback(() => limiterRef.current.output(), [enabled]);
 
 	return enabled ? (
 		<IoConnectors

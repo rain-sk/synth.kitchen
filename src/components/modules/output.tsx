@@ -44,7 +44,7 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 
 	const commitGainChange = useCallback(
 		(gain: number) => {
-			outputRef.current?.gain.linearRampToValueAtTime(
+			outputRef.current.gain.linearRampToValueAtTime(
 				gain,
 				audioContext.currentTime,
 			);
@@ -57,11 +57,11 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 	);
 
 	const gainAccessor = useCallback(() => {
-		return outputRef.current?.gain as IAudioParam;
+		return outputRef.current.gain as IAudioParam;
 	}, [enabled]);
 
-	const speaker = outputRef.current?.speaker as any;
-	const resampling = outputRef.current?.resampling as any;
+	const speaker = outputRef.current.speaker as any;
+	const resampling = outputRef.current.resampling as any;
 
 	return enabled ? (
 		<>

@@ -62,7 +62,7 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 
 	const commitFrequencyChange = useCallback(
 		(frequency: number) => {
-			oscillatorRef.current?.frequency.linearRampToValueAtTime(
+			oscillatorRef.current.frequency.linearRampToValueAtTime(
 				frequency,
 				audioContext.currentTime,
 			);
@@ -76,7 +76,7 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 
 	const commitDetuneChange = useCallback(
 		(detune: number) => {
-			oscillatorRef.current?.detune.linearRampToValueAtTime(
+			oscillatorRef.current.detune.linearRampToValueAtTime(
 				detune,
 				audioContext.currentTime,
 			);
@@ -105,13 +105,13 @@ export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
 	const enabled = state != undefined;
 
 	const frequencyAccessor = useCallback(() => {
-		return oscillatorRef.current?.frequency as IAudioParam;
+		return oscillatorRef.current.frequency as IAudioParam;
 	}, [enabled]);
 	const detuneAccessor = useCallback(() => {
-		return oscillatorRef.current?.detune as IAudioParam;
+		return oscillatorRef.current.detune as IAudioParam;
 	}, [enabled]);
 
-	const output = useCallback(() => oscillatorRef.current as any, [enabled]);
+	const output = useCallback(() => oscillatorRef.current, [enabled]);
 
 	return enabled ? (
 		<>

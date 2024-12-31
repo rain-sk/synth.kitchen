@@ -71,19 +71,13 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 
 	const enabled = state != undefined;
 
-	const sync = useCallback(
-		() => envelopeRef.current?.sync().node() as any,
-		[enabled],
-	);
+	const sync = useCallback(() => envelopeRef.current.sync().node(), [enabled]);
 
-	const output = useCallback(
-		() => envelopeRef.current?.gain() as any,
-		[enabled],
-	);
+	const output = useCallback(() => envelopeRef.current.gain(), [enabled]);
 
 	const commitGateChange = useCallback(
 		(gate: number) => {
-			envelopeRef.current?.gate.linearRampToValueAtTime(
+			envelopeRef.current.gate.linearRampToValueAtTime(
 				gate,
 				audioContext.currentTime,
 			);
@@ -95,14 +89,11 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		[state],
 	);
 
-	const gateAccessor = useCallback(
-		() => envelopeRef.current?.gate as any,
-		[enabled],
-	);
+	const gateAccessor = useCallback(() => envelopeRef.current.gate, [enabled]);
 
 	const commitAttackChange = useCallback(
 		(attack: number) => {
-			envelopeRef.current?.attack.linearRampToValueAtTime(
+			envelopeRef.current.attack.linearRampToValueAtTime(
 				attack,
 				audioContext.currentTime,
 			);
@@ -115,13 +106,13 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 	);
 
 	const attackAccessor = useCallback(
-		() => envelopeRef.current?.attack as any,
+		() => envelopeRef.current.attack,
 		[enabled],
 	);
 
 	const commitDecayChange = useCallback(
 		(decay: number) => {
-			envelopeRef.current?.decay.linearRampToValueAtTime(
+			envelopeRef.current.decay.linearRampToValueAtTime(
 				decay,
 				audioContext.currentTime,
 			);
@@ -133,14 +124,11 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		[state],
 	);
 
-	const decayAccessor = useCallback(
-		() => envelopeRef.current?.decay as any,
-		[enabled],
-	);
+	const decayAccessor = useCallback(() => envelopeRef.current.decay, [enabled]);
 
 	const commitSustainChange = useCallback(
 		(sustain: number) => {
-			envelopeRef.current?.sustain.linearRampToValueAtTime(
+			envelopeRef.current.sustain.linearRampToValueAtTime(
 				sustain,
 				audioContext.currentTime,
 			);
@@ -153,13 +141,13 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 	);
 
 	const sustainAccessor = useCallback(
-		() => envelopeRef.current?.sustain as any,
+		() => envelopeRef.current.sustain,
 		[enabled],
 	);
 
 	const commitReleaseChange = useCallback(
 		(release: number) => {
-			envelopeRef.current?.release.linearRampToValueAtTime(
+			envelopeRef.current.release.linearRampToValueAtTime(
 				release,
 				audioContext.currentTime,
 			);
@@ -172,13 +160,13 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 	);
 
 	const releaseAccessor = useCallback(
-		() => envelopeRef.current?.release as any,
+		() => envelopeRef.current.release,
 		[enabled],
 	);
 
 	const commitPeakChange = useCallback(
 		(peak: number) => {
-			envelopeRef.current?.peak.linearRampToValueAtTime(
+			envelopeRef.current.peak.linearRampToValueAtTime(
 				peak,
 				audioContext.currentTime,
 			);
@@ -190,10 +178,7 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		[state],
 	);
 
-	const peakAccessor = useCallback(
-		() => envelopeRef.current?.peak as any,
-		[enabled],
-	);
+	const peakAccessor = useCallback(() => envelopeRef.current.peak, [enabled]);
 
 	return enabled ? (
 		<>

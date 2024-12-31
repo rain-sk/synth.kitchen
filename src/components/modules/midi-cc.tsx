@@ -54,7 +54,7 @@ export const MidiCcModule: React.FC<{
 
 	const enabled = state != undefined;
 
-	const output = useCallback(() => ccRef.current?.node() as any, [enabled]);
+	const output = useCallback(() => ccRef.current.node(), [enabled]);
 
 	const commitInputChange = useCallback(
 		(input: string) => {
@@ -125,25 +125,25 @@ export const MidiCcModule: React.FC<{
 							moduleKey={module.moduleKey}
 							name="input"
 							options={inputs.map((input) => input.name)}
-							value={ccRef.current?.inputName as any}
+							value={ccRef.current.inputName}
 							commitValueCallback={commitInputChange}
 						/>
 						<NumberParameter
 							moduleKey={module.moduleKey}
 							name="cc"
-							value={ccRef.current?.cc as any}
+							value={ccRef.current.cc}
 							commitValueCallback={commitCcChange}
 						/>
 						<NumberParameter
 							moduleKey={module.moduleKey}
 							name="max"
-							value={ccRef.current?.max as any}
+							value={ccRef.current.max}
 							commitValueCallback={commitMaxChange}
 						/>
 						<NumberParameter
 							moduleKey={module.moduleKey}
 							name="min"
-							value={ccRef.current?.min as any}
+							value={ccRef.current.min}
 							commitValueCallback={commitMinChange}
 						/>
 					</>

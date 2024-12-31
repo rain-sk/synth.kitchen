@@ -46,13 +46,13 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 
 	const enabled = state !== undefined;
 
-	const input = useCallback(() => delayRef.current as any, [enabled]);
+	const input = useCallback(() => delayRef.current, [enabled]);
 
-	const output = useCallback(() => delayRef.current as any, [enabled]);
+	const output = useCallback(() => delayRef.current, [enabled]);
 
 	const commitTimeChange = useCallback(
 		(delayTime: number) => {
-			delayRef.current?.delayTime.linearRampToValueAtTime(
+			delayRef.current.delayTime.linearRampToValueAtTime(
 				delayTime,
 				audioContext.currentTime,
 			);
@@ -65,7 +65,7 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 	);
 
 	const delayTimeAccessor = useCallback(
-		() => delayRef.current?.delayTime as any,
+		() => delayRef.current.delayTime,
 		[enabled],
 	);
 

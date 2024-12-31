@@ -22,12 +22,6 @@ export class MidiCcNode {
 		}
 	}
 
-	disconnect = () => {
-		setTimeout(() => {
-			this._node = null as any;
-		}, 10);
-	};
-
 	node = (): IAudioWorkletNode<IAudioContext> => this._node;
 
 	get inputName() {
