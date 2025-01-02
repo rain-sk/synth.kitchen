@@ -22,7 +22,7 @@ const positionFromMouseEvent = (
 ];
 
 export const ModuleCanvasBackdrop: React.FC<{
-	drawOnTop: boolean;
+	drawOnTop?: boolean;
 	children: React.ReactNode;
 }> = ({ children }) => {
 	const { modules, modulePositions, selectedModuleKeys, dispatch } =
