@@ -10,27 +10,27 @@ import React, {
 import { actions } from '../../../state/actions';
 import { IModule } from '../../../state/types/module';
 
-import { ClockModule } from '../modules/clock';
-import { DelayModule } from '../modules/delay';
-import { EnvelopeModule } from '../modules/envelope';
-import { FilterModule } from '../modules/filter';
-import { GainModule } from '../modules/gain';
-import { GateModule } from '../modules/gate';
-import { LimiterModule } from '../modules/limiter';
-import { MidiClockModule } from '../modules/midi-clock';
-import { MidiTriggerModule } from '../modules/midi-trigger';
+import { ClockModule } from './clock';
+import { DelayModule } from './delay';
+import { EnvelopeModule } from './envelope';
+import { FilterModule } from './filter';
+import { GainModule } from './gain';
+import { GateModule } from './gate';
+import { LimiterModule } from './limiter';
+import { MidiClockModule } from './midi-clock';
+import { MidiTriggerModule } from './midi-trigger';
 import { Modifier, Position } from '../../../state/types/state';
-import { NoiseModule } from '../modules/noise';
-import { OscillatorModule } from '../modules/oscillator';
-import { OutputModule } from '../modules/output';
+import { NoiseModule } from './noise';
+import { OscillatorModule } from './oscillator';
+import { OutputModule } from './output';
 import { queueAnimation } from '../../../utils/animation';
-import { SequencerModule } from '../modules/sequencer';
+import { SequencerModule } from './sequencer';
 import { useDispatchContext } from '../../../hooks/use-dispatch-context';
 import { useStateContext } from '../../../hooks/use-state-context';
-import { VcaModule } from '../modules/vca';
-import { PanModule } from '../modules/pan';
-import { ModuleHeader } from './module-header';
-import { MidiCcModule } from '../modules/midi-cc';
+import { VcaModule } from './vca';
+import { PanModule } from './pan';
+import { ModuleHeader } from '../module-components/module-header';
+import { MidiCcModule } from './midi-cc';
 
 const useDragAndDrop = (
 	moduleKey: string,

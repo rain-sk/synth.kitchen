@@ -8,10 +8,9 @@ import {
 import { audioContext } from '../../../audio/context';
 
 import { IModule, IModuleState } from '../../../state/types/module';
-
-import { NumberParameter } from '../editor/number-parameter';
-import { IoConnectors } from '../editor/io-connectors';
-import { RadioParameter } from '../editor/radio-parameter';
+import { NumberParameter } from '../module-components/number-parameter';
+import { IoConnectors } from '../module-components/io-connectors';
+import { RadioParameter } from '../module-components/radio-parameter';
 import { useNode } from '../../../hooks/use-node';
 
 const oscillatorStateFromNode = (

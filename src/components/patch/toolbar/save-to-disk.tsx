@@ -2,7 +2,7 @@ import { useCallback, useContext } from 'react';
 import { ISerializedPatch } from '../../../state/types/serialized-patch';
 import { useStateContext } from '../../../hooks/use-state-context';
 import { ConnectionContext } from '../../../contexts/connection';
-import { SaveToDiskSvg } from '../../svg';
+import { SaveToDiskSvg } from './svg';
 
 export const SaveToDisk = () => {
 	const { id, name, modules, modulePositions } = useStateContext();

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
-import { KeyHandler } from '../key-handler';
+import { KeyHandler } from './key-handler';
 import { ModuleCanvas } from './module-canvas';
 import { Connections } from './connections';
 import { useStateContext } from '../../../hooks/use-state-context';

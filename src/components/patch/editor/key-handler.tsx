@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-
-import { KeyCode, keyCodeMovementMap } from '../../constants/key';
-import { useDispatchContext } from '../../hooks/use-dispatch-context';
-import { useStateContext } from '../../hooks/use-state-context';
-import { actions } from '../../state/actions';
+import { useStateContext } from '../../../hooks/use-state-context';
+import { useDispatchContext } from '../../../hooks/use-dispatch-context';
+import { KeyCode, keyCodeMovementMap } from '../../../constants/key';
+import { actions } from '../../../state/actions';
 
 export const KeyHandler: React.FC = () => {
 	const { selectedModuleKeys } = useStateContext();

@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
+import { IAudioParam } from 'standardized-audio-context';
+
+import { audioContext } from '../../../audio/context';
 
 import { SequencerNode } from '../../../audio/nodes/sequencer';
-
 import { IModule, IModuleState } from '../../../state/types/module';
-import { IoConnectors } from '../editor/io-connectors';
-import { NumberParameter } from '../editor/number-parameter';
-import { IAudioParam } from 'standardized-audio-context';
-import { audioContext } from '../../../audio/context';
+import { IoConnectors } from '../module-components/io-connectors';
+import { NumberParameter } from '../module-components/number-parameter';
 import { useNode } from '../../../hooks/use-node';
 
 const sequencerStateFromNode = (

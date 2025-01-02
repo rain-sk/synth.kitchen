@@ -2,11 +2,11 @@ import React, { useCallback, useContext } from 'react';
 
 import { MidiCcNode } from '../../../audio/nodes/midi-cc';
 
-import { IModule, IModuleState } from '../../../state/types/module';
-import { IoConnectors } from '../editor/io-connectors';
-import { RadioParameter } from '../editor/radio-parameter';
 import { MidiContext } from '../../../contexts/midi';
-import { NumberParameter } from '../editor/number-parameter';
+import { IModule, IModuleState } from '../../../state/types/module';
+import { IoConnectors } from '../module-components/io-connectors';
+import { RadioParameter } from '../module-components/radio-parameter';
+import { NumberParameter } from '../module-components/number-parameter';
 import { useNode } from '../../../hooks/use-node';
 
 const midiCcStateFromNode = (node: MidiCcNode): IModuleState['MIDI_CC'] => ({

@@ -3,7 +3,7 @@ import { KeyCode } from '../../../constants/key';
 import { useDispatchContext } from '../../../hooks/use-dispatch-context';
 import { actions } from '../../../state/actions';
 import { ISerializedPatch } from '../../../state/types/serialized-patch';
-import { OpenFromDiskSvg } from '../../svg';
+import { OpenFromDiskSvg } from './svg';
 
 export const LoadFromDisk = () => {
 	const dispatch = useDispatchContext();

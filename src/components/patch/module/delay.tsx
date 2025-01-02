@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
-
 import { IAudioContext, IDelayNode } from 'standardized-audio-context';
+
 import { audioContext } from '../../../audio/context';
 
 import { IModule, IModuleState } from '../../../state/types/module';
-import { IoConnectors } from '../editor/io-connectors';
-import { NumberParameter } from '../editor/number-parameter';
+import { IoConnectors } from '../module-components/io-connectors';
+import { NumberParameter } from '../module-components/number-parameter';
 import { useNode } from '../../../hooks/use-node';
 
 const delayStateFromNode = (

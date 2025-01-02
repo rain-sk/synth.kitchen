@@ -3,8 +3,8 @@ import React, { useCallback } from 'react';
 import { GateNode } from '../../../audio/nodes/gate';
 
 import { IModule, IModuleState } from '../../../state/types/module';
-import { IoConnectors } from '../editor/io-connectors';
-import { NumberParameter } from '../editor/number-parameter';
+import { IoConnectors } from '../module-components/io-connectors';
+import { NumberParameter } from '../module-components/number-parameter';
 import { audioContext } from '../../../audio/context';
 import { useNode } from '../../../hooks/use-node';
 

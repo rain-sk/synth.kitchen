@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { LimiterNode } from '../../../audio/nodes/limiter';
 
 import { IModule } from '../../../state/types/module';
-import { IoConnectors } from '../editor/io-connectors';
+import { IoConnectors } from '../module-components/io-connectors';
 import { useNode } from '../../../hooks/use-node';
 
 const initLimiter = () => ({});

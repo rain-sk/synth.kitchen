@@ -1,5 +1,6 @@
 import React from 'react';
 import { IAudioParam } from 'standardized-audio-context';
+
 import { NumberBox } from './number-box';
 import { ParameterConnector } from './parameter-connector';
 

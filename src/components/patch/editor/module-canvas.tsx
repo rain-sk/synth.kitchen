@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Module } from './module';
+import { Module } from '../module';
 import { IModule } from '../../../state/types/module';
 import { Position } from '../../../state/types/state';
 

@@ -3,8 +3,8 @@ import React, { useCallback, useContext } from 'react';
 import { MidiClockNode } from '../../../audio/nodes/midi-clock';
 
 import { IModule, IModuleState } from '../../../state/types/module';
-import { IoConnectors } from '../editor/io-connectors';
-import { RadioParameter } from '../editor/radio-parameter';
+import { IoConnectors } from '../module-components/io-connectors';
+import { RadioParameter } from '../module-components/radio-parameter';
 import { MidiContext } from '../../../contexts/midi';
 import { useNode } from '../../../hooks/use-node';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Record } from '../editor/record';
+import { Record } from './record';
 import { SaveToCloud } from './save-to-cloud';
 import { PatchNameField } from './patch-name-field';
 import { LoadFromCloud } from './load-from-cloud';

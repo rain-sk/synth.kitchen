@@ -3,12 +3,14 @@ import React, { useCallback } from 'react';
 import { audioContext } from '../../../audio/context';
 
 import { IModule, IModuleState } from '../../../state/types/module';
-import { IoConnectors } from '../editor/io-connectors';
-import { NumberParameter } from '../editor/number-parameter';
-import { VcaNode } from '../../../audio/nodes/vca';
+import { IoConnectors } from '../module-components/io-connectors';
+import { NumberParameter } from '../module-components/number-parameter';
+import { EnvelopeNode } from '../../../audio/nodes/envelope';
 import { useNode } from '../../../hooks/use-node';
 
-const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
+const envelopeStateFromNode = (
+	node: EnvelopeNode,
+): IModuleState['ENVELOPE'] => ({
 	gate: Math.round(node.gate.value * 10000) / 10000,
 	attack: Math.round(node.attack.value * 100) / 100,
 	decay: Math.round(node.decay.value * 100) / 100,
@@ -17,30 +19,33 @@ const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
 	peak: Math.round(node.peak.value * 100) / 100,
 });
 
-const initVca = (vca: VcaNode, state?: IModuleState['VCA']) => {
+const initEnvelope = (
+	envelope: EnvelopeNode,
+	state?: IModuleState['ENVELOPE'],
+) => {
 	if (state) {
-		vca.gate.setValueAtTime(state.gate, audioContext.currentTime);
-		vca.attack.setValueAtTime(state.attack, audioContext.currentTime);
-		vca.decay.setValueAtTime(state.decay, audioContext.currentTime);
-		vca.sustain.setValueAtTime(state.sustain, audioContext.currentTime);
-		vca.release.setValueAtTime(state.release, audioContext.currentTime);
-		vca.peak.setValueAtTime(state.peak, audioContext.currentTime);
+		envelope.gate.setValueAtTime(state.gate, audioContext.currentTime);
+		envelope.attack.setValueAtTime(state.attack, audioContext.currentTime);
+		envelope.decay.setValueAtTime(state.decay, audioContext.currentTime);
+		envelope.sustain.setValueAtTime(state.sustain, audioContext.currentTime);
+		envelope.release.setValueAtTime(state.release, audioContext.currentTime);
+		envelope.peak.setValueAtTime(state.peak, audioContext.currentTime);
 		return state;
 	} else {
-		return vcaStateFromNode(vca);
+		return envelopeStateFromNode(envelope);
 	}
 };
 
-export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
-	const { node, state, setState } = useNode<VcaNode, 'VCA'>(
+export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
+	module,
+}) => {
+	const { node, state, setState } = useNode<EnvelopeNode, 'ENVELOPE'>(
 		module,
-		initVca,
-		() => new VcaNode(),
+		initEnvelope,
+		() => new EnvelopeNode(),
 	);
 
 	const enabled = state != undefined;
-
-	const input = useCallback(() => node.gain(), [enabled]);
 
 	const sync = useCallback(() => node.sync().node(), [enabled]);
 
@@ -128,7 +133,7 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 		<>
 			<IoConnectors
 				moduleKey={module.moduleKey}
-				inputAccessors={{ input, sync }}
+				inputAccessors={{ sync }}
 				outputAccessors={{ output }}
 			/>
 
