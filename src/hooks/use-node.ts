@@ -3,8 +3,8 @@ import {
 	IModule,
 	IModuleState,
 	ModuleType as Type,
-} from '../state/types/module';
-import { patchActions } from '../state/actions';
+} from '../patch/state/types/module';
+import { patchActions } from '../patch/state/actions';
 import { usePatch } from './use-patch';
 
 export const useNode = <NodeType, ModuleType extends Type>(

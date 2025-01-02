@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { patchActions } from '../state/actions';
-import { IModule, IModuleState, ModuleType } from '../state/types/module';
+import { patchActions } from '../patch/state/actions';
+import { IModule, IModuleState, ModuleType } from '../patch/state/types/module';
 import { useEffectOnce } from './use-effect-once';
 import { usePatch } from './use-patch';
 

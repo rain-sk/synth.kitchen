@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import { audio, initAudio } from './audio';
-import { initMidi } from './midi';
+import { audio, initAudio } from './patch/audio';
+import { initMidi } from './patch/midi';
 
 import { SynthKitchen } from './app';
 

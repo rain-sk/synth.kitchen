@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { apiToken } from '../utils/token';
 import { bearerPrefix } from '../utils/bearer-prefix';
-import { ISerializedPatch } from '../state/types/serialized-patch';
+import { ISerializedPatch } from '../patch/state/types/serialized-patch';
 
 type TokenResponse = {
 	app_name: string;

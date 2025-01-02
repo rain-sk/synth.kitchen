@@ -1,13 +1,13 @@
 import React, { useReducer } from 'react';
-import { reducer } from './state';
-import { blankPatch, IPatchState } from './state/types/state';
-import { ConnectionContextProvider } from './contexts/connection';
-import { IPatchAction } from './state/actions';
-import { MidiContextProvider } from './contexts/midi';
-import { Toolbar } from './components/patch/toolbar';
-import { PatchEditor } from './components/patch/editor/patch-editor';
-import { PatchLoader } from './components/patch/editor/patch-loader';
-import { PatchContext } from './contexts/patch';
+import { reducer } from './patch/state';
+import { blankPatch, IPatchState } from './patch/state/types/patch';
+import { ConnectionContextProvider } from './patch/contexts/connection';
+import { IPatchAction } from './patch/state/actions';
+import { MidiContextProvider } from './patch/contexts/midi';
+import { Toolbar } from './patch/components/toolbar';
+import { PatchEditor } from './patch/components/editor/patch-editor';
+import { PatchLoader } from './patch/components/editor/patch-loader';
+import { PatchContext } from './patch/contexts/patch';
 
 const ContextWrapper: React.FC<
 	React.PropsWithChildren<{

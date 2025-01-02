@@ -1,4 +1,9 @@
-import { Modifier } from '../state/types/state';
+export enum Modifier {
+	NONE = 0,
+	SHIFT = 1 << 0,
+	SPECIAL = 1 << 1,
+	CONTROL = 1 << 2,
+}
 
 export enum KeyCode {
 	BACKSPACE = 8,
