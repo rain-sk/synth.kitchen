@@ -1,4 +1,4 @@
-import { IInput, IIo, IOutput } from './io';
+import { IInput, IIo, IOutput } from './connection';
 import { IModule } from './module';
 import { IParameter } from './parameter';
 import { Modifier } from '../../../constants/key';

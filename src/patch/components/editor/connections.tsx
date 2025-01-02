@@ -7,7 +7,7 @@ import {
 import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { queueAnimationCallback } from '../../../utils/animation';
 import { PatchContext } from '../../contexts/patch';
-import { IInput, IOutput } from '../../state/types/io';
+import { IInput, IOutput } from '../../state/types/connection';
 
 const _ = {
 	root: document.getElementById('root'),

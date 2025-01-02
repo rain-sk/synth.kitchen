@@ -1,7 +1,7 @@
 import React from 'react';
 import { IAudioContext, IAudioNode } from 'standardized-audio-context';
 import { IoConnector } from './io-connector';
-import { IoType } from '../../state/types/io';
+import { IoType } from '../../state/types/connection';
 
 export const IoConnectors: React.FunctionComponent<{
 	moduleKey: string;

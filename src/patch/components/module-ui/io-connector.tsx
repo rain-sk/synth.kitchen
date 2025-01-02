@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { IAudioContext, IAudioNode } from 'standardized-audio-context';
 
-import { IoType, ioKey } from '../../state/types/io';
+import { IoType, ioKey } from '../../state/types/connection';
 import { ConnectionContext } from '../../contexts/connection';
 import { useEffectOnce } from '../../../utils/use-effect-once';
 

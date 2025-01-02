@@ -14,7 +14,7 @@ import {
 	IOutput,
 	IoType,
 	ioKey,
-} from '../state/types/io';
+} from '../state/types/connection';
 import { paramKey } from '../state/types/parameter';
 import { PatchContext } from './patch';
 
