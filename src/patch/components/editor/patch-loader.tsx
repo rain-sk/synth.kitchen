@@ -22,7 +22,18 @@ export const PatchLoader: React.FC = () => {
 
 	const open = useCallback(
 		(patch: DatabasePatch) => () => {
-			dispatch(patchActions.loadPatchAction(JSON.parse(patch.Patch)));
+			dispatch(
+				patchActions.loadPatchAction({
+					id: '',
+					name: '',
+					modules: {},
+					modulePositions: {},
+					connections: {},
+				}),
+			);
+			setTimeout(() => {
+				dispatch(patchActions.loadPatchAction(JSON.parse(patch.Patch)));
+			}, 100);
 		},
 		[dispatch],
 	);
