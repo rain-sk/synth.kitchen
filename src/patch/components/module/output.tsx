@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { IAudioParam } from 'standardized-audio-context';
 
 import { audioContext } from '../../audio/context';
 
@@ -45,11 +44,11 @@ export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 	);
 
 	const gainAccessor = useCallback(() => {
-		return node.gain as IAudioParam;
+		return node.gain;
 	}, [enabled]);
 
-	const speaker = node.speaker as any;
-	const resampling = node.resampling as any;
+	const speaker = node.speaker;
+	const resampling = node.resampling;
 
 	return enabled ? (
 		<>
