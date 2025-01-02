@@ -2,52 +2,40 @@ import React, { useCallback } from 'react';
 
 import { ClockNode } from '../../audio/nodes/clock';
 
-import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { audioContext } from '../../audio/context';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const clockStateFromNode = (clock: ClockNode): IModuleState['CLOCK'] => ({
 	tempo: clock.tempo.value,
 });
 
 const initClock = (
-	clockRef: React.MutableRefObject<ClockNode | undefined>,
+	clock: ClockNode,
 	state?: IModuleState['CLOCK'],
 ): IModuleState['CLOCK'] => {
-	if (!clockRef.current) {
-		throw Error('uninitialized ref');
-	}
-
 	if (state) {
-		clockRef.current.tempo.setValueAtTime(
-			state.tempo,
-			audioContext.currentTime,
-		);
+		clock.tempo.setValueAtTime(state.tempo, audioContext.currentTime);
 		return state;
 	} else {
-		return clockStateFromNode(clockRef.current);
+		return clockStateFromNode(clock);
 	}
 };
 
 export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 	module,
 }) => {
-	const clockRef = useNodeRef(() => new ClockNode());
-	const [state, setState] = useModuleState<'CLOCK', ClockNode>(
-		clockRef,
+	const { node, state, setState } = useNode<ClockNode, 'CLOCK'>(
 		module,
-		() => initClock(clockRef, module.state),
+		initClock,
+		() => new ClockNode(),
 	);
 
 	const commitTempoChange = useCallback(
 		(tempo: number) => {
-			clockRef.current.tempo.linearRampToValueAtTime(
-				tempo,
-				audioContext.currentTime,
-			);
+			node.tempo.linearRampToValueAtTime(tempo, audioContext.currentTime);
 			setState({
 				...state,
 				tempo,
@@ -58,11 +46,11 @@ export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 
 	const enabled = state != undefined;
 
-	const tempoAccessor = useCallback(() => clockRef.current.tempo, [enabled]);
+	const tempoAccessor = useCallback(() => node.tempo, [enabled]);
 
-	const sync = useCallback(() => clockRef.current.node(), [enabled]);
+	const sync = useCallback(() => node.node(), [enabled]);
 
-	const output = useCallback(() => clockRef.current.node(), [enabled]);
+	const output = useCallback(() => node.node(), [enabled]);
 
 	return enabled ? (
 		<>
