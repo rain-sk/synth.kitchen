@@ -5,8 +5,8 @@ import { audioContext } from '../../audio';
 
 import { SequencerNode } from '../../audio/nodes/sequencer';
 import { IModule, IModuleState } from '../../state/types/module';
-import { IoConnectors } from '../module-components/io-connectors';
-import { NumberParameter } from '../module-components/number-parameter';
+import { IoConnectors } from '../module-ui/io-connectors';
+import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
 const sequencerStateFromNode = (

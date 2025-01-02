@@ -28,7 +28,7 @@ import { queueAnimation } from '../../../utils/animation';
 import { SequencerModule } from './sequencer';
 import { VcaModule } from './vca';
 import { PanModule } from './pan';
-import { ModuleHeader } from '../module-components/module-header';
+import { ModuleHeader } from '../module-ui/module-header';
 import { MidiCcModule } from './midi-cc';
 import { Modifier } from '../../../constants/key';
 import { PatchContext } from '../../contexts/patch';

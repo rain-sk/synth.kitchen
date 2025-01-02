@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { NoiseNode } from '../../audio/nodes/noise';
 
-import { IoConnectors } from '../module-components/io-connectors';
+import { IoConnectors } from '../module-ui/io-connectors';
 import { IModule } from '../../state/types/module';
 import { useNode } from './use-node';
 

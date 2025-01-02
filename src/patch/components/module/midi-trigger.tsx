@@ -3,8 +3,8 @@ import React, { useCallback, useContext } from 'react';
 import { MidiTriggerNode } from '../../audio/nodes/midi-trigger';
 
 import { IModule, IModuleState } from '../../state/types/module';
-import { IoConnectors } from '../module-components/io-connectors';
-import { RadioParameter } from '../module-components/radio-parameter';
+import { IoConnectors } from '../module-ui/io-connectors';
+import { RadioParameter } from '../module-ui/radio-parameter';
 import { MidiContext } from '../../contexts/midi';
 import { useNode } from './use-node';
 

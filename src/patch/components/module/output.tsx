@@ -4,8 +4,8 @@ import { audioContext } from '../../audio';
 
 import { OutputNode } from '../../audio/nodes/output';
 import { IModule, IModuleState } from '../../state/types/module';
-import { NumberParameter } from '../module-components/number-parameter';
-import { IoConnectors } from '../module-components/io-connectors';
+import { NumberParameter } from '../module-ui/number-parameter';
+import { IoConnectors } from '../module-ui/io-connectors';
 import { useNode } from './use-node';
 
 const outputStateFromNode = (node: OutputNode): IModuleState['OUTPUT'] => ({
