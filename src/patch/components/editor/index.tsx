@@ -3,13 +3,13 @@ import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
 import { ModuleCanvas } from './module-canvas';
 import { Connections } from './connections';
-import { blankPatch } from '../../state/types/patch';
-import { reducer } from '../../state';
+import { blankPatch } from '../../state';
 import { PatchContextProvider } from '../../contexts/patch';
 import { ConnectionContextProvider } from '../../contexts/connection';
 import { MidiContextProvider } from '../../contexts/midi';
 import { Toolbar } from '../toolbar';
 import { PatchLoader } from './patch-loader';
+import { reducer } from '../../state/reducers';
 
 export const PatchEditor: React.FC = () => {
 	const [state, dispatch] = useReducer(reducer, blankPatch());

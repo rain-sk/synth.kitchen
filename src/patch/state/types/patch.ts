@@ -1,5 +1,3 @@
-import { randomId } from '../../../utils/random-id';
-import { randomName } from '../../../utils/random-name';
 import { IInput, IIo, IOutput } from './io';
 import { IModule } from './module';
 import { IParameter } from './parameter';
@@ -24,28 +22,3 @@ export type IPatchState = {
 	connectionsToLoad?: Record<string, [IOutput, IInput]>;
 	loadingFromCloud: boolean;
 };
-
-export const blankPatch = (): IPatchState => ({
-	id: randomId(),
-	heldModifiers: Modifier.NONE,
-	isKeyMovementEnabled: true,
-	modules: {
-		'0': {
-			name: 'output',
-			moduleKey: '0',
-			type: 'OUTPUT',
-			state: { gain: 0.45 },
-		},
-	},
-	modulePositions: {
-		'0': [50, 50],
-	},
-	mouseDragStartPosition: INVALID_POSITION,
-	mouseDragPosition: INVALID_POSITION,
-	name: randomName(),
-	selectedModuleKeys: new Set(),
-	selectionPending: false,
-	parameters: {},
-	io: {},
-	loadingFromCloud: false,
-});

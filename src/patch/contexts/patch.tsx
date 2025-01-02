@@ -1,6 +1,7 @@
 import React from 'react';
-import { blankPatch, IPatchState } from '../state/types/patch';
+import { IPatchState } from '../state/types/patch';
 import { IPatchAction } from '../state/actions';
+import { blankPatch } from '../state';
 
 type PatchContextValue = IPatchState & {
 	dispatch: React.Dispatch<IPatchAction>;
