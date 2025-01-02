@@ -2,12 +2,11 @@ import React, { useCallback } from 'react';
 
 import { IAudioContext, IDelayNode } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
-import { useModuleState } from '../../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const delayStateFromNode = (
 	node: IDelayNode<IAudioContext>,
@@ -16,43 +15,35 @@ const delayStateFromNode = (
 });
 
 const initDelay = (
-	delayRef: React.MutableRefObject<IDelayNode<IAudioContext> | undefined>,
+	delay: IDelayNode<IAudioContext>,
 	state?: IModuleState['DELAY'],
 ) => {
-	if (!delayRef.current) {
-		throw Error('uninitialized ref');
-	}
-
 	if (state) {
-		delayRef.current.delayTime.setValueAtTime(
-			state.delayTime,
-			audioContext.currentTime,
-		);
+		delay.delayTime.setValueAtTime(state.delayTime, audioContext.currentTime);
 		return state;
 	} else {
-		return delayStateFromNode(delayRef.current);
+		return delayStateFromNode(delay);
 	}
 };
 
 export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 	module,
 }) => {
-	const delayRef = useNodeRef(() => audioContext.createDelay());
-	const [state, setState] = useModuleState<'DELAY', IDelayNode<IAudioContext>>(
-		delayRef,
+	const { node, state, setState } = useNode<IDelayNode<IAudioContext>, 'DELAY'>(
 		module,
-		() => initDelay(delayRef, module.state),
+		initDelay,
+		() => audioContext.createDelay(179.99999999999),
 	);
 
 	const enabled = state !== undefined;
 
-	const input = useCallback(() => delayRef.current, [enabled]);
+	const input = useCallback(() => node, [enabled]);
 
-	const output = useCallback(() => delayRef.current, [enabled]);
+	const output = useCallback(() => node, [enabled]);
 
 	const commitTimeChange = useCallback(
 		(delayTime: number) => {
-			delayRef.current.delayTime.linearRampToValueAtTime(
+			node.delayTime.linearRampToValueAtTime(
 				delayTime,
 				audioContext.currentTime,
 			);
@@ -64,10 +55,7 @@ export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
 		[state],
 	);
 
-	const delayTimeAccessor = useCallback(
-		() => delayRef.current.delayTime,
-		[enabled],
-	);
+	const delayTimeAccessor = useCallback(() => node.delayTime, [enabled]);
 
 	return enabled ? (
 		<>
