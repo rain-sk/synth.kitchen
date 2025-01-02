@@ -1,11 +1,11 @@
 import { useCallback, useContext } from 'react';
 import { ISerializedPatch } from '../../../state/types/serialized-patch';
-import { useStateContext } from '../../../hooks/use-state-context';
 import { ConnectionContext } from '../../../contexts/connection';
 import { SaveToDiskSvg } from './svg';
+import { usePatch } from '../../../hooks/use-patch';
 
 export const SaveToDisk = () => {
-	const { id, name, modules, modulePositions } = useStateContext();
+	const { id, name, modules, modulePositions } = usePatch();
 	const { connections, connectionCount } = useContext(ConnectionContext);
 
 	const onDownload = useCallback(() => {

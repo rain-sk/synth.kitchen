@@ -3,10 +3,10 @@ import { IMediaRecorder, MediaRecorder } from 'extendable-media-recorder';
 import hhmmss from 'hhmmss';
 
 import { audioContext, resampling } from '../../../audio/context';
-import { useStateContext } from '../../../hooks/use-state-context';
+import { usePatch } from '../../../hooks/use-patch';
 
 export const Record: React.FC = () => {
-	const state = useStateContext();
+	const state = usePatch();
 	const mediaRecorder = useRef<IMediaRecorder>();
 	const chunks = useRef<Blob[]>();
 

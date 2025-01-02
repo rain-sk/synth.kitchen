@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import { OpenFromCloudSvg } from './svg';
-import { useDispatchContext } from '../../../hooks/use-dispatch-context';
 import { patchActions } from '../../../state/actions';
+import { usePatch } from '../../../hooks/use-patch';
 
 export const LoadFromCloud: React.FC = () => {
-	const dispatch = useDispatchContext();
+	const { dispatch } = usePatch();
 
 	const onLoad = useCallback(() => {
 		dispatch(patchActions.loadFromCloudAction());

@@ -1,14 +1,13 @@
 import React, { useReducer } from 'react';
 import { reducer } from './state';
-import { IPatchState, initialState } from './state/types/state';
-import { StateContext } from './contexts/state';
-import { DispatchContext } from './contexts/dispatch';
+import { blankPatch, IPatchState } from './state/types/state';
 import { ConnectionContextProvider } from './contexts/connection';
 import { IPatchAction } from './state/actions';
 import { MidiContextProvider } from './contexts/midi';
 import { Toolbar } from './components/patch/toolbar';
 import { PatchEditor } from './components/patch/editor/patch-editor';
 import { PatchLoader } from './components/patch/editor/patch-loader';
+import { PatchContext } from './contexts/patch';
 
 const ContextWrapper: React.FC<
 	React.PropsWithChildren<{
@@ -17,18 +16,16 @@ const ContextWrapper: React.FC<
 	}>
 > = ({ children, state, dispatch }) => {
 	return (
-		<StateContext.Provider value={state}>
-			<DispatchContext.Provider value={dispatch}>
-				<ConnectionContextProvider>
-					<MidiContextProvider>{children}</MidiContextProvider>
-				</ConnectionContextProvider>
-			</DispatchContext.Provider>
-		</StateContext.Provider>
+		<PatchContext.Provider value={{ ...state, dispatch }}>
+			<ConnectionContextProvider>
+				<MidiContextProvider>{children}</MidiContextProvider>
+			</ConnectionContextProvider>
+		</PatchContext.Provider>
 	);
 };
 
 export const SynthKitchen: React.FC = () => {
-	const [state, dispatch] = useReducer(reducer, initialState);
+	const [state, dispatch] = useReducer(reducer, blankPatch());
 	return (
 		<ContextWrapper state={state} dispatch={dispatch}>
 			<Toolbar />

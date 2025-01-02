@@ -6,9 +6,9 @@ import {
 	IInput,
 	IOutput,
 } from '../../../contexts/connection';
-import { useStateContext } from '../../../hooks/use-state-context';
 import { INVALID_POSITION, Position } from '../../../state/types/state';
 import { queueAnimationCallback } from '../../../utils/animation';
+import { usePatch } from '../../../hooks/use-patch';
 
 const _ = {
 	root: document.getElementById('root'),
@@ -116,7 +116,7 @@ export const Connections: React.FC = () => {
 	const contextRef = useRef<CanvasRenderingContext2D>();
 	const mousePositionRef = useRef<Position>(INVALID_POSITION);
 
-	const { modules, modulePositions } = useStateContext();
+	const { modules, modulePositions } = usePatch();
 	const { connectionCount, connections, activeConnectorKey } =
 		useContext(ConnectionContext);
 

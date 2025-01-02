@@ -25,12 +25,11 @@ import { OscillatorModule } from './oscillator';
 import { OutputModule } from './output';
 import { queueAnimation } from '../../../utils/animation';
 import { SequencerModule } from './sequencer';
-import { useDispatchContext } from '../../../hooks/use-dispatch-context';
-import { useStateContext } from '../../../hooks/use-state-context';
 import { VcaModule } from './vca';
 import { PanModule } from './pan';
 import { ModuleHeader } from '../module-components/module-header';
 import { MidiCcModule } from './midi-cc';
+import { usePatch } from '../../../hooks/use-patch';
 
 const useDragAndDrop = (
 	moduleKey: string,
@@ -41,7 +40,7 @@ const useDragAndDrop = (
 	startDragging: (e: ReactMouseEvent<HTMLDivElement>) => void;
 	setPosition: (position: Position) => void;
 } => {
-	const dispatch = useDispatchContext();
+	const { dispatch } = usePatch();
 	const updateModulePosition = useCallback(
 		(position: Position) => {
 			dispatch(patchActions.updateModulePositionAction(moduleKey, position));
@@ -169,9 +168,8 @@ export const Module: React.FunctionComponent<{
 	position: Position;
 }> = ({ module, position }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const dispatch = useDispatchContext();
-	const { selectedModuleKeys, selectionPending, heldModifiers } =
-		useStateContext();
+	const { selectedModuleKeys, selectionPending, heldModifiers, dispatch } =
+		usePatch();
 
 	const { isDragging, startDragging, setPosition } = useDragAndDrop(
 		module.moduleKey,

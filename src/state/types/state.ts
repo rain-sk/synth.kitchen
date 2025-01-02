@@ -56,5 +56,3 @@ export const blankPatch = (): IPatchState => ({
 	io: {},
 	loadingFromCloud: false,
 });
-
-export const initialState: IPatchState = blankPatch();

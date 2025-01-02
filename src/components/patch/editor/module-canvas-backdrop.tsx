@@ -6,12 +6,11 @@ import React, {
 	useState,
 } from 'react';
 import { queueAnimation } from '../../../utils/animation';
-import { useDispatchContext } from '../../../hooks/use-dispatch-context';
-import { useStateContext } from '../../../hooks/use-state-context';
 
 import { patchActions } from '../../../state/actions';
 import { INVALID_POSITION, Position } from '../../../state/types/state';
 import { AddModule } from './add-module';
+import { usePatch } from '../../../hooks/use-patch';
 
 const positionFromMouseEvent = (
 	e: MouseEvent,
@@ -25,8 +24,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 	drawOnTop: boolean;
 	children: React.ReactNode;
 }> = ({ children }) => {
-	const { modules, modulePositions, selectedModuleKeys } = useStateContext();
-	const dispatch = useDispatchContext();
+	const { modules, modulePositions, selectedModuleKeys, dispatch } = usePatch();
 
 	const container = useRef(undefined as HTMLElement | undefined);
 	const spacer = useRef(undefined as HTMLDivElement | undefined);

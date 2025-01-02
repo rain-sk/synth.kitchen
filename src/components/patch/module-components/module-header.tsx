@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatchContext } from '../../../hooks/use-dispatch-context';
 import { IModule } from '../../../state/types/module';
 import { patchActions } from '../../../state/actions';
+import { usePatch } from '../../../hooks/use-patch';
 
 export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
-	const dispatch = useDispatchContext();
+	const { dispatch } = usePatch();
 
 	const editRef = useRef<HTMLInputElement>(null);
 

@@ -3,12 +3,12 @@ import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
 import { ModuleCanvas } from './module-canvas';
 import { Connections } from './connections';
-import { useStateContext } from '../../../hooks/use-state-context';
 import { IModule } from '../../../state/types/module';
 import { Position } from '../../../state/types/state';
+import { usePatch } from '../../../hooks/use-patch';
 
 export const PatchEditor: React.FC = () => {
-	const { modulePositions, modules } = useStateContext();
+	const { modulePositions, modules } = usePatch();
 
 	const sortedModules = useMemo(
 		() =>

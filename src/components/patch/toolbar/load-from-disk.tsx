@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { KeyCode } from '../../../constants/key';
-import { useDispatchContext } from '../../../hooks/use-dispatch-context';
 import { patchActions } from '../../../state/actions';
 import { ISerializedPatch } from '../../../state/types/serialized-patch';
 import { OpenFromDiskSvg } from './svg';
+import { usePatch } from '../../../hooks/use-patch';
 
 export const LoadFromDisk = () => {
-	const dispatch = useDispatchContext();
+	const { dispatch } = usePatch();
 
 	// https://researchhubs.com/post/computing/javascript/open-a-local-file-with-javascript.html
 	const onUpload = useCallback(

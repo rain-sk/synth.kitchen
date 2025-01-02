@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { IIo, IoType, ioKey } from '../state/types/io';
 import { IParameter, paramKey } from '../state/types/parameter';
-import { useStateContext } from '../hooks/use-state-context';
+import { usePatch } from '../hooks/use-patch';
 
 export type IOutput = IIo;
 export type IInput = IIo | IParameter;
@@ -118,7 +118,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 	const [connectorCount, setConnectorCount] = useState(0);
 	const [connectionCount, setConnectionCount] = useState(0);
 
-	const { connectionsToLoad } = useStateContext();
+	const { connectionsToLoad } = usePatch();
 	const connectionsToLoadRef = useRef<Record<string, [IOutput, IInput]>>();
 	useEffect(() => {
 		if (

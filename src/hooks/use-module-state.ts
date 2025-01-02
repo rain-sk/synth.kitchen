@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { patchActions } from '../state/actions';
 import { IModule, IModuleState, ModuleType } from '../state/types/module';
-import { useDispatchContext } from './use-dispatch-context';
 import { useEffectOnce } from './use-effect-once';
+import { usePatch } from './use-patch';
 
 const disconnectRef = <NodeType>(
 	ref: React.MutableRefObject<NodeType | undefined>,
@@ -31,7 +31,7 @@ export const useModuleState = <T extends ModuleType, NodeType>(
 		disconnectRef(ref);
 	});
 
-	const dispatch = useDispatchContext();
+	const { dispatch } = usePatch();
 
 	useEffect(() => {
 		if (state) {

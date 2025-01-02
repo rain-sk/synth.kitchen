@@ -4,8 +4,8 @@ import {
 	IModuleState,
 	ModuleType as Type,
 } from '../state/types/module';
-import { useDispatchContext } from './use-dispatch-context';
 import { patchActions } from '../state/actions';
+import { usePatch } from './use-patch';
 
 export const useNode = <NodeType, ModuleType extends Type>(
 	module: IModule,
@@ -27,7 +27,7 @@ export const useNode = <NodeType, ModuleType extends Type>(
 		),
 	);
 
-	const dispatch = useDispatchContext();
+	const { dispatch } = usePatch();
 
 	useEffect(() => {
 		if (state) {
