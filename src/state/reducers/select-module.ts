@@ -1,7 +1,7 @@
 import { ISelectModule, SelectModuleType } from '../actions/select-module';
-import { IState } from '../types/state';
+import { IPatchState } from '../types/state';
 
-export const selectModule: React.Reducer<IState, ISelectModule> = (
+export const selectModule: React.Reducer<IPatchState, ISelectModule> = (
 	state,
 	action,
 ) => {

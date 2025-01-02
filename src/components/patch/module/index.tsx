@@ -7,7 +7,7 @@ import React, {
 	useState,
 } from 'react';
 
-import { actions } from '../../../state/actions';
+import { patchActions } from '../../../state/actions';
 import { IModule } from '../../../state/types/module';
 
 import { ClockModule } from './clock';
@@ -44,7 +44,7 @@ const useDragAndDrop = (
 	const dispatch = useDispatchContext();
 	const updateModulePosition = useCallback(
 		(position: Position) => {
-			dispatch(actions.updateModulePositionAction(moduleKey, position));
+			dispatch(patchActions.updateModulePositionAction(moduleKey, position));
 		},
 		[dispatch, moduleKey],
 	);
@@ -203,7 +203,7 @@ export const Module: React.FunctionComponent<{
 	const draggingStateString = isDragging ? ' dragging' : '';
 
 	const onFocus = useCallback(() => {
-		dispatch(actions.selectSingleModuleAction(module.moduleKey));
+		dispatch(patchActions.selectSingleModuleAction(module.moduleKey));
 	}, [dispatch, module.moduleKey]);
 
 	const onMouseDown = useCallback(
@@ -214,12 +214,12 @@ export const Module: React.FunctionComponent<{
 				if (containerRef.current) {
 					containerRef.current.focus();
 				} else {
-					dispatch(actions.selectSingleModuleAction(module.moduleKey));
+					dispatch(patchActions.selectSingleModuleAction(module.moduleKey));
 				}
 			} else if (shiftClick && currentlySelected) {
-				dispatch(actions.deselectModuleAction(module.moduleKey));
+				dispatch(patchActions.deselectModuleAction(module.moduleKey));
 			} else if (shiftClick && !currentlySelected) {
-				dispatch(actions.selectModuleAction(module.moduleKey));
+				dispatch(patchActions.selectModuleAction(module.moduleKey));
 			}
 
 			startDragging(e);

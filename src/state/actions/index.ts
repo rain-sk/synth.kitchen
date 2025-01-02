@@ -34,7 +34,7 @@ import {
 	ICancelLoadFromCloud,
 } from './cancel-load-from-cloud';
 
-export type IAction =
+export type IPatchAction =
 	| IAddModule
 	| ICancelLoadFromCloud
 	| IChangeName
@@ -48,7 +48,7 @@ export type IAction =
 	| IUpdateModulePosition
 	| IUpdateModule;
 
-export const actions = {
+export const patchActions = {
 	addModuleAction,
 	cancelLoadFromCloudAction,
 	changeNameAction,

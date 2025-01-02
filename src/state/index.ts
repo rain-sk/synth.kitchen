@@ -1,46 +1,49 @@
 import React from 'react';
-import { IAction } from './actions';
-import { reducers } from './reducers';
-import { IState } from './types/state';
+import { IPatchAction } from './actions';
+import { patchReducers } from './reducers';
+import { IPatchState } from './types/state';
 
-export const reducer: React.Reducer<IState, IAction> = (state, action) =>
+export const reducer: React.Reducer<IPatchState, IPatchAction> = (
+	state,
+	action,
+) =>
 	(() => {
 		switch (action.type) {
 			case 'AddModule': {
-				return reducers.addModule(state, action);
+				return patchReducers.addModule(state, action);
 			}
 			case 'CancelLoadFromCloud': {
-				return reducers.cancelLoadFromCloud(state, action);
+				return patchReducers.cancelLoadFromCloud(state, action);
 			}
 			case 'ChangeName': {
-				return reducers.changeName(state, action);
+				return patchReducers.changeName(state, action);
 			}
 			case 'DisableKeyMovement': {
-				return reducers.disableKeyMovement(state, action);
+				return patchReducers.disableKeyMovement(state, action);
 			}
 			case 'EnableKeyMovement': {
-				return reducers.enableKeyMovement(state, action);
+				return patchReducers.enableKeyMovement(state, action);
 			}
 			case 'KeyboardEvent': {
-				return reducers.keyboardEvent(state, action);
+				return patchReducers.keyboardEvent(state, action);
 			}
 			case 'LoadFromCloud': {
-				return reducers.loadFromCloud(state, action);
+				return patchReducers.loadFromCloud(state, action);
 			}
 			case 'LoadPatch': {
-				return reducers.loadPatch(state, action);
+				return patchReducers.loadPatch(state, action);
 			}
 			case 'SelectionDrag': {
-				return reducers.selectionDrag(state, action);
+				return patchReducers.selectionDrag(state, action);
 			}
 			case 'SelectModule': {
-				return reducers.selectModule(state, action);
+				return patchReducers.selectModule(state, action);
 			}
 			case 'UpdateModulePosition': {
-				return reducers.updateModulePosition(state, action);
+				return patchReducers.updateModulePosition(state, action);
 			}
 			case 'UpdateModule': {
-				return reducers.updateModule(state, action);
+				return patchReducers.updateModule(state, action);
 			}
 			default: {
 				return state;

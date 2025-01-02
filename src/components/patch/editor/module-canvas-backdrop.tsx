@@ -9,7 +9,7 @@ import { queueAnimation } from '../../../utils/animation';
 import { useDispatchContext } from '../../../hooks/use-dispatch-context';
 import { useStateContext } from '../../../hooks/use-state-context';
 
-import { actions } from '../../../state/actions';
+import { patchActions } from '../../../state/actions';
 import { INVALID_POSITION, Position } from '../../../state/types/state';
 import { AddModule } from './add-module';
 
@@ -146,7 +146,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 
 			queueAnimation(drawSelection);
 
-			dispatch(actions.selectionDragContinueAction(selection.current.end));
+			dispatch(patchActions.selectionDragContinueAction(selection.current.end));
 		},
 		[dispatch],
 	);
@@ -154,7 +154,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 	const onMouseUp = useCallback(
 		(e: MouseEvent) => {
 			dispatch(
-				actions.selectionDragEndAction(
+				patchActions.selectionDragEndAction(
 					positionFromMouseEvent(e, container.current as HTMLElement),
 				),
 			);
@@ -184,7 +184,7 @@ export const ModuleCanvasBackdrop: React.FC<{
 
 			selection.current.start = position;
 
-			dispatch(actions.selectionDragStartAction(position));
+			dispatch(patchActions.selectionDragStartAction(position));
 
 			document.body.addEventListener('mouseup', onMouseUp);
 			document.body.addEventListener('mouseleave', onMouseUp);

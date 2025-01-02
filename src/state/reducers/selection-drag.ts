@@ -1,4 +1,9 @@
-import { INVALID_POSITION, IState, Modifier, Position } from '../types/state';
+import {
+	INVALID_POSITION,
+	IPatchState,
+	Modifier,
+	Position,
+} from '../types/state';
 import { ISelectionDrag, SelectionDragType } from '../actions/selection-drag';
 import { IModule } from '../types/module';
 
@@ -11,7 +16,7 @@ type IRectangle = {
 
 const rectContainsOtherRect = (
 	rect: IRectangle,
-	otherRect: IRectangle
+	otherRect: IRectangle,
 ): boolean => {
 	const rectLeft = rect.x;
 	const rectTop = rect.y;
@@ -35,7 +40,7 @@ const modulesInRange = (
 	mouseDragStartPosition: Position,
 	currentMousePosition: Position,
 	modules: Record<string, IModule>,
-	modulePositions: Record<string, Position>
+	modulePositions: Record<string, Position>,
 ): Set<string> => {
 	const moduleKeysInRange = new Set<string>();
 
@@ -43,7 +48,7 @@ const modulesInRange = (
 		x: Math.min(mouseDragStartPosition[0], currentMousePosition[0]),
 		y: Math.min(mouseDragStartPosition[1], currentMousePosition[1]),
 		width: Math.abs(mouseDragStartPosition[0] - currentMousePosition[0]),
-		height: Math.abs(mouseDragStartPosition[1] - currentMousePosition[1])
+		height: Math.abs(mouseDragStartPosition[1] - currentMousePosition[1]),
 	};
 
 	for (let moduleKey in modules) {
@@ -56,7 +61,7 @@ const modulesInRange = (
 			x: position[0],
 			y: position[1] + navElement.clientHeight,
 			width: moduleElement?.clientWidth ?? 0,
-			height: moduleElement?.clientHeight ?? 0
+			height: moduleElement?.clientHeight ?? 0,
 		};
 
 		if (rectContainsOtherRect(rect, moduleRect)) {
@@ -67,9 +72,9 @@ const modulesInRange = (
 	return moduleKeysInRange;
 };
 
-export const selectionDrag: React.Reducer<IState, ISelectionDrag> = (
+export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 	state,
-	action
+	action,
 ) => {
 	const { position } = action.payload;
 
@@ -82,7 +87,7 @@ export const selectionDrag: React.Reducer<IState, ISelectionDrag> = (
 				mouseDragStartPosition: position,
 				mouseDragPosition: position,
 				selectedModuleKeys: shift ? state.selectedModuleKeys : new Set(),
-				selectionPending: true
+				selectionPending: true,
 			};
 		}
 		case SelectionDragType.DRAG_CONTINUE: {
@@ -92,7 +97,7 @@ export const selectionDrag: React.Reducer<IState, ISelectionDrag> = (
 				mouseDragStartPosition,
 				position,
 				modules,
-				modulePositions
+				modulePositions,
 			);
 
 			const selectedModuleKeys =
@@ -103,7 +108,7 @@ export const selectionDrag: React.Reducer<IState, ISelectionDrag> = (
 			return {
 				...state,
 				mouseDragPosition: position,
-				selectedModuleKeys
+				selectedModuleKeys,
 			};
 		}
 		case SelectionDragType.DRAG_END: {
@@ -117,9 +122,9 @@ export const selectionDrag: React.Reducer<IState, ISelectionDrag> = (
 					mouseDragStartPosition,
 					position,
 					modules,
-					modulePositions
+					modulePositions,
 				),
-				selectionPending: false
+				selectionPending: false,
 			};
 		}
 	}

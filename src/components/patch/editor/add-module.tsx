@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDispatchContext } from '../../../hooks/use-dispatch-context';
-import { actions } from '../../../state/actions';
+import { patchActions } from '../../../state/actions';
 import { ModuleType } from '../../../state/types/module';
 import { INVALID_POSITION, Position } from '../../../state/types/state';
 import { midi } from '../../../midi';
@@ -36,7 +36,9 @@ export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
 		(e: React.ChangeEvent<HTMLSelectElement>) => {
 			const moduleType = e.target.value;
 			if (moduleType !== '') {
-				dispatch(actions.addModuleAction(moduleType as ModuleType, position));
+				dispatch(
+					patchActions.addModuleAction(moduleType as ModuleType, position),
+				);
 			}
 		},
 		[dispatch, position],

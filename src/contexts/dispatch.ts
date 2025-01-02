@@ -1,6 +1,6 @@
 import React from 'react';
-import { IAction } from '../state/actions';
+import { IPatchAction } from '../state/actions';
 
-export const DispatchContext = React.createContext<React.Dispatch<IAction>>(
-	() => {}
-);
+export const DispatchContext = React.createContext<
+	React.Dispatch<IPatchAction>
+>(() => {});

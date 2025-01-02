@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatchContext } from '../../../hooks/use-dispatch-context';
-import { actions } from '../../../state/actions';
+import { patchActions } from '../../../state/actions';
 import { randomId } from '../../../utils/random-id';
 
 export const NumberBox: React.FunctionComponent<{
@@ -19,7 +19,7 @@ export const NumberBox: React.FunctionComponent<{
 
 	const onFocus = useCallback(
 		(e: React.FocusEvent<HTMLInputElement>) => {
-			dispatch(actions.disableKeyMovementAction());
+			dispatch(patchActions.disableKeyMovementAction());
 			setTempValue(`${value}`);
 			e.target.select();
 		},
@@ -68,7 +68,7 @@ export const NumberBox: React.FunctionComponent<{
 	const onBlur = useCallback(() => {
 		commitValueCallback(valueToCommit());
 		setTempValue();
-		dispatch(actions.enableKeyMovementAction());
+		dispatch(patchActions.enableKeyMovementAction());
 	}, [commitValueCallback, dispatch, setTempValue, valueToCommit]);
 
 	const onKeyDown = useCallback(

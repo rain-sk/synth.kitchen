@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useStateContext } from '../../../hooks/use-state-context';
 import { useDispatchContext } from '../../../hooks/use-dispatch-context';
-import { actions } from '../../../state/actions';
+import { patchActions } from '../../../state/actions';
 
 export const PatchNameField = () => {
 	const { name } = useStateContext();
@@ -9,13 +9,13 @@ export const PatchNameField = () => {
 
 	const handleNameChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
-			dispatch(actions.changeNameAction(e.target.value));
+			dispatch(patchActions.changeNameAction(e.target.value));
 		},
 		[dispatch],
 	);
 
 	const handleFocus = useCallback(() => {
-		dispatch(actions.deselectAllModulesAction());
+		dispatch(patchActions.deselectAllModulesAction());
 	}, [dispatch]);
 
 	return (

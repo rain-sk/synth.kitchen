@@ -1,13 +1,13 @@
-import { IState } from '../types/state';
+import { IPatchState } from '../types/state';
 import { IUpdateModulePosition } from '../actions/update-module-position';
 
 export const updateModulePosition: React.Reducer<
-	IState,
+	IPatchState,
 	IUpdateModulePosition
 > = (state, action) => {
 	const {
 		moduleKey,
-		position: [x, y]
+		position: [x, y],
 	} = action.payload;
 	const [currentX, currentY] = state.modulePositions[moduleKey];
 
@@ -24,9 +24,9 @@ export const updateModulePosition: React.Reducer<
 				moduleKey,
 				selectedModuleKeys.has(moduleKey)
 					? [position[0] + deltaX, position[1] + deltaY]
-					: position
-			])
+					: position,
+			]),
 		),
-		selectedModuleKeys
+		selectedModuleKeys,
 	};
 };

@@ -1,8 +1,8 @@
 import { ICancelLoadFromCloud } from '../actions/cancel-load-from-cloud';
-import { IState } from '../types/state';
+import { IPatchState } from '../types/state';
 
 export const cancelLoadFromCloud: React.Reducer<
-	IState,
+	IPatchState,
 	ICancelLoadFromCloud
 > = (state) => ({
 	...state,

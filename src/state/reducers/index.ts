@@ -11,7 +11,7 @@ import { selectModule } from './select-module';
 import { updateModule } from './update-module';
 import { updateModulePosition } from './update-module-position';
 
-export const reducers = {
+export const patchReducers = {
 	addModule,
 	cancelLoadFromCloud,
 	changeName,

@@ -1,8 +1,11 @@
-import { INVALID_POSITION, IState } from '../types/state';
+import { INVALID_POSITION, IPatchState } from '../types/state';
 import { ILoadPatch } from '../actions/load-patch';
 import { randomId } from '../../utils/random-id';
 
-export const loadPatch: React.Reducer<IState, ILoadPatch> = (state, action) => {
+export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
+	state,
+	action,
+) => {
 	const { id, name, modules, modulePositions, connections } =
 		action.payload.patch;
 

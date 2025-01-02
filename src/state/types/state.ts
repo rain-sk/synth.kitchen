@@ -15,7 +15,7 @@ export enum Modifier {
 export type Position = [number, number];
 export const INVALID_POSITION: Position = [-1, -1];
 
-export type IState = {
+export type IPatchState = {
 	name: string;
 	id: string;
 	modules: Record<string, IModule>;
@@ -32,7 +32,7 @@ export type IState = {
 	loadingFromCloud: boolean;
 };
 
-export const blankState = (): IState => ({
+export const blankPatch = (): IPatchState => ({
 	id: randomId(),
 	heldModifiers: Modifier.NONE,
 	isKeyMovementEnabled: true,
@@ -57,4 +57,4 @@ export const blankState = (): IState => ({
 	loadingFromCloud: false,
 });
 
-export const initialState: IState = blankState();
+export const initialState: IPatchState = blankPatch();

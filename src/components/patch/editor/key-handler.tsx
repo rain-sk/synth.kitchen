@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useStateContext } from '../../../hooks/use-state-context';
 import { useDispatchContext } from '../../../hooks/use-dispatch-context';
 import { KeyCode, keyCodeMovementMap } from '../../../constants/key';
-import { actions } from '../../../state/actions';
+import { patchActions } from '../../../state/actions';
 
 export const KeyHandler: React.FC = () => {
 	const { selectedModuleKeys } = useStateContext();
@@ -16,7 +16,7 @@ export const KeyHandler: React.FC = () => {
 			) {
 				e.preventDefault();
 
-				dispatch(actions.keyDownAction(e.keyCode));
+				dispatch(patchActions.keyDownAction(e.keyCode));
 			}
 			return;
 		}
@@ -28,11 +28,11 @@ export const KeyHandler: React.FC = () => {
 			e.preventDefault();
 		}
 
-		dispatch(actions.keyDownAction(e.keyCode));
+		dispatch(patchActions.keyDownAction(e.keyCode));
 	});
 
 	const { current: onKeyUp } = useRef((e: KeyboardEvent) => {
-		dispatch(actions.keyUpAction(e.keyCode));
+		dispatch(patchActions.keyUpAction(e.keyCode));
 	});
 
 	useEffect(() => {

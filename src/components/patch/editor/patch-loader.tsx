@@ -3,7 +3,7 @@ import ReactModal from 'react-modal';
 
 import { DatabasePatch, useApi } from '../../../hooks/use-api';
 import { useDispatchContext } from '../../../hooks/use-dispatch-context';
-import { actions } from '../../../state/actions';
+import { patchActions } from '../../../state/actions';
 import { useStateContext } from '../../../hooks/use-state-context';
 
 const root = document.getElementById('root');
@@ -24,13 +24,13 @@ export const PatchLoader: React.FC = () => {
 
 	const open = useCallback(
 		(patch: DatabasePatch) => () => {
-			dispatch(actions.loadPatchAction(JSON.parse(patch.Patch)));
+			dispatch(patchActions.loadPatchAction(JSON.parse(patch.Patch)));
 		},
 		[dispatch],
 	);
 
 	const onClose = useCallback(() => {
-		dispatch(actions.cancelLoadFromCloudAction());
+		dispatch(patchActions.cancelLoadFromCloudAction());
 	}, [dispatch]);
 
 	return root ? (

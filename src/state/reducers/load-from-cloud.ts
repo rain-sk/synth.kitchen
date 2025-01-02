@@ -1,7 +1,7 @@
-import { IState } from '../types/state';
+import { IPatchState } from '../types/state';
 import { ILoadFromCloud } from '../actions/load-from-cloud';
 
-export const loadFromCloud: React.Reducer<IState, ILoadFromCloud> = (
+export const loadFromCloud: React.Reducer<IPatchState, ILoadFromCloud> = (
 	state,
 ) => ({
 	...state,

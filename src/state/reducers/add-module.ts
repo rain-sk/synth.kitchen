@@ -1,9 +1,12 @@
 import { IAddModule } from '../actions/add-module';
-import { IState } from '../types/state';
+import { IPatchState } from '../types/state';
 import { randomName } from '../../utils/random-name';
 import { randomId } from '../../utils/random-id';
 
-export const addModule: React.Reducer<IState, IAddModule> = (state, action) => {
+export const addModule: React.Reducer<IPatchState, IAddModule> = (
+	state,
+	action,
+) => {
 	const moduleKey = randomId();
 
 	return {

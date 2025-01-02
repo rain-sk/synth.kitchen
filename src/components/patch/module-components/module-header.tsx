@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatchContext } from '../../../hooks/use-dispatch-context';
 import { IModule } from '../../../state/types/module';
-import { actions } from '../../../state/actions';
+import { patchActions } from '../../../state/actions';
 
 export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 	const dispatch = useDispatchContext();
@@ -21,9 +21,9 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 			editingRef.current = true;
 			editRef.current?.focus();
 			editRef.current?.setSelectionRange(0, name.length);
-			dispatch(actions.disableKeyMovementAction());
+			dispatch(patchActions.disableKeyMovementAction());
 		} else if (!edit) {
-			dispatch(actions.enableKeyMovementAction());
+			dispatch(patchActions.enableKeyMovementAction());
 			editingRef.current = false;
 		}
 	}, [dispatch, edit, name]);
@@ -46,7 +46,9 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 				cancel();
 			} else if (e.key === 'Enter') {
 				dispatch(
-					actions.updateModuleAction(module.moduleKey, { name: name.trim() }),
+					patchActions.updateModuleAction(module.moduleKey, {
+						name: name.trim(),
+					}),
 				);
 				setEdit(false);
 			}

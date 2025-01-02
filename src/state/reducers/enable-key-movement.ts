@@ -1,10 +1,10 @@
 import { IEnableKeyMovement } from '../actions/enable-key-movement';
-import { IState } from '../types/state';
+import { IPatchState } from '../types/state';
 
-export const enableKeyMovement: React.Reducer<IState, IEnableKeyMovement> = (
-	state,
-	action
-) => ({
+export const enableKeyMovement: React.Reducer<
+	IPatchState,
+	IEnableKeyMovement
+> = (state, action) => ({
 	...state,
-	...action.payload
+	...action.payload,
 });

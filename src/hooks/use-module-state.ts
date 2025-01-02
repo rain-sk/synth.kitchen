@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { actions } from '../state/actions';
+import { patchActions } from '../state/actions';
 import { IModule, IModuleState, ModuleType } from '../state/types/module';
 import { useDispatchContext } from './use-dispatch-context';
 import { useEffectOnce } from './use-effect-once';
@@ -35,7 +35,7 @@ export const useModuleState = <T extends ModuleType, NodeType>(
 
 	useEffect(() => {
 		if (state) {
-			dispatch(actions.updateModuleAction(module.moduleKey, { state }));
+			dispatch(patchActions.updateModuleAction(module.moduleKey, { state }));
 		}
 	}, [dispatch, module.moduleKey, state]);
 

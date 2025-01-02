@@ -1,4 +1,4 @@
-import { IState, Modifier } from '../types/state';
+import { IPatchState, Modifier } from '../types/state';
 import { IKeyboardEvent, KeyboardEventType } from '../actions/keyboard-event';
 import {
 	KeyCode,
@@ -6,7 +6,7 @@ import {
 	keyCodeMovementMap,
 } from '../../constants/key';
 
-export const keyboardEvent: React.Reducer<IState, IKeyboardEvent> = (
+export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	state,
 	action,
 ) => {
