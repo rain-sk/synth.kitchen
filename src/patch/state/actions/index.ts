@@ -33,6 +33,10 @@ import {
 	cancelLoadFromCloudAction,
 	ICancelLoadFromCloud,
 } from './cancel-load-from-cloud';
+import {
+	ISetActiveConnectorKey,
+	setActiveConnectorKeyAction,
+} from './set-active-connector-key';
 
 export type IPatchAction =
 	| IAddModule
@@ -45,6 +49,7 @@ export type IPatchAction =
 	| ILoadPatch
 	| ISelectionDrag
 	| ISelectModule
+	| ISetActiveConnectorKey
 	| IUpdateModulePosition
 	| IUpdateModule;
 
@@ -65,6 +70,7 @@ export const patchActions = {
 	selectionDragStartAction,
 	selectModuleAction,
 	selectSingleModuleAction,
+	setActiveConnectorKeyAction,
 	updateModulePositionAction,
 	updateModuleAction,
 };

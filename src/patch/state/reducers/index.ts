@@ -13,6 +13,7 @@ import { selectionDrag } from './selection-drag';
 import { selectModule } from './select-module';
 import { updateModule } from './update-module';
 import { updateModulePosition } from './update-module-position';
+import { setActiveConnectorKey } from './set-active-connector-key';
 
 export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 	state,
@@ -49,6 +50,9 @@ export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 			}
 			case 'SelectModule': {
 				return selectModule(state, action);
+			}
+			case 'SetActiveConnectorKey': {
+				return setActiveConnectorKey(state, action);
 			}
 			case 'UpdateModulePosition': {
 				return updateModulePosition(state, action);

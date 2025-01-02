@@ -4,9 +4,11 @@ import { Modifier } from '../../constants/key';
 import { randomName } from '../../utils/random-name';
 
 export const blankPatch = (): IPatchState => ({
+	// patch info
 	id: randomId(),
-	heldModifiers: Modifier.NONE,
-	isKeyMovementEnabled: true,
+	name: randomName(),
+
+	// modules and parameters
 	modules: {
 		'0': {
 			name: 'output',
@@ -18,12 +20,23 @@ export const blankPatch = (): IPatchState => ({
 	modulePositions: {
 		'0': [50, 50],
 	},
+	selectedModuleKeys: new Set(),
+
+	// i/o
+	io: {},
+	parameters: {},
+	activeConnectorKey: undefined,
+
+	// mouse info
 	mouseDragStartPosition: INVALID_POSITION,
 	mouseDragPosition: INVALID_POSITION,
-	name: randomName(),
-	selectedModuleKeys: new Set(),
 	selectionPending: false,
-	parameters: {},
-	io: {},
+
+	// keyboard info
+	heldModifiers: Modifier.NONE,
+	isKeyMovementEnabled: true,
+
+	// misc
 	loadingFromCloud: false,
+	connectionsToLoad: undefined,
 });

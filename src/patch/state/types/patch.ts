@@ -7,18 +7,30 @@ export type Position = [number, number];
 export const INVALID_POSITION: Position = [-1, -1];
 
 export type IPatchState = {
-	name: string;
+	// patch info
 	id: string;
+	name: string;
+
+	// modules and parameters
 	modules: Record<string, IModule>;
-	heldModifiers: Modifier;
-	isKeyMovementEnabled: boolean;
 	modulePositions: Record<string, Position>;
+	selectedModuleKeys: Set<string>;
+
+	// i/o
+	io: Record<string, IIo>;
+	parameters: Record<string, IParameter>;
+	activeConnectorKey: string | undefined;
+
+	// mouse info
 	mouseDragStartPosition: Position;
 	mouseDragPosition: Position;
-	selectedModuleKeys: Set<string>;
 	selectionPending: boolean;
-	parameters: Record<string, IParameter>;
-	io: Record<string, IIo>;
-	connectionsToLoad?: Record<string, [IOutput, IInput]>;
+
+	// keyboard info
+	heldModifiers: Modifier;
+	isKeyMovementEnabled: boolean;
+
+	// misc.
 	loadingFromCloud: boolean;
+	connectionsToLoad?: Record<string, [IOutput, IInput]>;
 };

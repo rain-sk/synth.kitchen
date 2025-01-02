@@ -22,6 +22,7 @@ import {
 	doRegisterConnector,
 	doUnregisterConnector,
 } from '../state/connection';
+import { patchActions } from '../state/actions';
 
 type IConnectionContext = {
 	activeConnectorKey?: string;
@@ -51,12 +52,11 @@ export const ConnectionContext = React.createContext<IConnectionContext>({
 export const ConnectionContextProvider: React.FunctionComponent<{
 	children: React.ReactNode;
 }> = ({ children }) => {
-	const [activeConnectorKey, setActiveConnectorKey] = useState<string>();
-
 	const [connectorCount, setConnectorCount] = useState(0);
 	const [connectionCount, setConnectionCount] = useState(0);
 
-	const { connectionsToLoad } = useContext(PatchContext);
+	const { activeConnectorKey, connectionsToLoad, dispatch } =
+		useContext(PatchContext);
 	const connectionsToLoadRef = useRef<Record<string, [IOutput, IInput]>>();
 	useEffect(() => {
 		if (
@@ -132,7 +132,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 	);
 
 	const deactivateConnector = useCallback(() => {
-		setActiveConnectorKey(undefined);
+		dispatch(patchActions.setActiveConnectorKeyAction(undefined));
 	}, []);
 
 	const clickConnector = useCallback(
@@ -140,10 +140,12 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 			const active = connectorInfo(activeConnectorKey);
 
 			if (!active) {
-				setActiveConnectorKey(connectorKey(clicked));
+				dispatch(
+					patchActions.setActiveConnectorKeyAction(connectorKey(clicked)),
+				);
 				return;
 			}
-			setActiveConnectorKey(undefined);
+			dispatch(patchActions.setActiveConnectorKeyAction(undefined));
 
 			const activeConnector = active[0];
 
@@ -160,7 +162,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 				);
 			}
 		},
-		[activeConnectorKey, setActiveConnectorKey, setConnectionCount],
+		[activeConnectorKey, setConnectionCount],
 	);
 
 	const activeConnector = connectorInfo(activeConnectorKey);
