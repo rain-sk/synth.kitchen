@@ -3,10 +3,11 @@ import { ISerializedPatch } from '../../state/types/serialized-patch';
 import { ConnectionContext } from '../../contexts/connection';
 import { SaveToDiskSvg } from './svg';
 import { PatchContext } from '../../contexts/patch';
+import { connectionEntries } from '../../state/connection';
 
 export const SaveToDisk = () => {
 	const { id, name, modules, modulePositions } = useContext(PatchContext);
-	const { connections, connectionCount } = useContext(ConnectionContext);
+	const { connectionCount } = useContext(ConnectionContext);
 
 	const onDownload = useCallback(() => {
 		const patch: ISerializedPatch = {
@@ -14,7 +15,7 @@ export const SaveToDisk = () => {
 			name: name,
 			modules: modules,
 			modulePositions: modulePositions,
-			connections: Object.fromEntries(connections.entries()),
+			connections: connectionEntries(),
 		};
 
 		// https://code.tutsplus.com/tutorials/how-to-save-a-file-with-javascript--cms-41105

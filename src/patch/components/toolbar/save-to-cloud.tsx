@@ -4,10 +4,11 @@ import { ConnectionContext } from '../../contexts/connection';
 import { useApi } from '../../../api/use-api';
 import { SaveToCloudSvg } from './svg/save-to-cloud';
 import { PatchContext } from '../../contexts/patch';
+import { connectionEntries } from '../../state/connection';
 
 export const SaveToCloud = () => {
 	const { id, name, modules, modulePositions } = useContext(PatchContext);
-	const { connections, connectionCount } = useContext(ConnectionContext);
+	const { connectionCount } = useContext(ConnectionContext);
 
 	const { savePatch } = useApi();
 
@@ -17,7 +18,7 @@ export const SaveToCloud = () => {
 			name: name,
 			modules: modules,
 			modulePositions: modulePositions,
-			connections: Object.fromEntries(connections.entries()),
+			connections: connectionEntries(),
 		};
 		savePatch(patch);
 	}, [id, name, modules, modulePositions, connectionCount, savePatch]);

@@ -10,84 +10,21 @@ import {
 	IConnector,
 	IConnectorInfo,
 	IInput,
-	IIo,
 	IOutput,
 	IoType,
-	ioKey,
 } from '../state/types/connection';
-import { paramKey } from '../state/types/parameter';
 import { PatchContext } from './patch';
-
-const connections = new Map<string, [IOutput, IInput]>();
-const connectors = new Map<string, IConnectorInfo>();
-const connectorButtons = new Map<string, HTMLButtonElement>();
-
-export const connectorInfo = (key?: string) =>
-	key && connectors.has(key) ? connectors.get(key) : undefined;
-
-export const connectorKey = (connector: IConnector) =>
-	'type' in connector ? ioKey(connector) : paramKey(connector);
-
-export const connectorButton = (key: string) => {
-	if (!connectorButtons.has(key)) {
-		const button = document.getElementById(key);
-		if (button) {
-			connectorButtons.set(key, button as HTMLButtonElement);
-		} else {
-			throw new Error(`connector with key '${key}' not found`);
-		}
-	}
-	return connectorButtons.get(key) as HTMLButtonElement | undefined;
-};
-
-const connectionKey = (output: IOutput, input: IInput) => {
-	if (!('type' in output) || output.type === IoType.input) {
-		throw 'Invalid output';
-	}
-
-	if ('type' in input && input.type === IoType.output) {
-		throw 'Invalid input';
-	}
-
-	return `${connectorKey(output)}|${connectorKey(input)}`;
-};
-
-const connectOrDisconnect = (output: IOutput, input: IInput) => {
-	const outputInfo = connectorInfo(connectorKey(output));
-	const inputInfo = connectorInfo(connectorKey(input));
-
-	if (!outputInfo) {
-		throw 'Unregistered output';
-	}
-	if (!inputInfo) {
-		throw 'Unregistered info';
-	}
-
-	const key = connectionKey(output, input);
-
-	if (connections.has(key)) {
-		connections.delete(key);
-
-		outputInfo[1].delete(key);
-		inputInfo[1].delete(key);
-
-		output.accessor().disconnect(input.accessor() as any);
-	} else {
-		output.accessor().connect(input.accessor() as any);
-
-		outputInfo[1].add(key);
-		inputInfo[1].add(key);
-
-		connections.set(key, [output, input]);
-	}
-
-	return connections.size;
-};
+import {
+	connectionInfo,
+	connectOrDisconnect,
+	connectorInfo,
+	connectorKey,
+	doRegisterConnector,
+	doUnregisterConnector,
+} from '../state/connection';
 
 type IConnectionContext = {
 	activeConnectorKey?: string;
-	readonly connections: Map<string, [IOutput, IInput]>;
-	readonly connectors: Map<string, IConnectorInfo>;
 	connectedToActiveConnector: string[];
 	connectorCount: number;
 	connectionCount: number;
@@ -100,8 +37,6 @@ type IConnectionContext = {
 };
 
 export const ConnectionContext = React.createContext<IConnectionContext>({
-	connections: new Map<string, [IOutput, IInput]>(),
-	connectors: new Map<string, IConnectorInfo>(),
 	connectedToActiveConnector: [],
 	connectorCount: 0,
 	connectionCount: 0,
@@ -137,15 +72,23 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 
 				try {
 					const toLoad = Object.fromEntries(
-						Object.entries(connectionsToLoadRef.current).filter(
-							([, [output, input]]) => {
+						Object.entries(connectionsToLoadRef.current)
+							.filter(([, [output, input]]) => {
 								return (
 									connectorInfo(connectorKey(output)) &&
 									connectorInfo(connectorKey(input))
 								);
-							},
-						),
-					);
+							})
+							.map(([key, [output, input]]) => [
+								key,
+								[
+									(connectorInfo(connectorKey(output)) as IConnectorInfo)[0],
+									(connectorInfo(connectorKey(input)) as IConnectorInfo)[0],
+								],
+							]),
+					) as {
+						[key: string]: [IOutput, IInput];
+					};
 					connectionsToLoadRef.current = Object.fromEntries(
 						Object.entries(connectionsToLoadRef.current).filter(([key]) => {
 							return !toLoad[key];
@@ -153,10 +96,6 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 					);
 
 					Object.values(toLoad).forEach(([output, input]) => {
-						output = (
-							connectors.get(connectorKey(output)) as any
-						)[0] as IOutput;
-						input = (connectors.get(connectorKey(input)) as any)[0] as IInput;
 						setConnectionCount(connectOrDisconnect(output, input));
 					});
 
@@ -177,34 +116,17 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 
 	const registerConnector = useCallback(
 		(connector: IConnector) => {
-			connectors.set(connectorKey(connector), [connector, new Set<string>()]);
-
-			setConnectorCount(connectors.size);
+			setConnectorCount(doRegisterConnector(connector));
 		},
 		[setConnectorCount],
 	);
 
 	const unregisterConnector = useCallback(
 		(connector: IConnector) => {
-			const key = connectorKey(connector);
-			const info = connectorInfo(key);
-			if (!info) {
-				throw 'Unregistering connector which was not registered';
-			}
-
-			info[1].forEach((connectionKey) => {
-				const connection = connections.get(connectionKey);
-				if (connection) {
-					const [output, input] = connection;
-					connectOrDisconnect(output, input);
-				}
-			});
-
-			connectors.delete(key);
-			connectorButtons.delete(key);
-
-			setConnectorCount(connectors.size);
-			setConnectionCount(connections.size);
+			const { connectorCount, connectionCount } =
+				doUnregisterConnector(connector);
+			setConnectorCount(connectorCount);
+			setConnectionCount(connectionCount);
 		},
 		[setConnectorCount],
 	);
@@ -256,7 +178,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 		}
 
 		return [...activeConnector[1]]
-			.map((key) => connections.get(key) as [IIo, IInput])
+			.map((key) => connectionInfo(key))
 			.map(([output, input]) =>
 				activeConnectorIsOutput ? connectorKey(input) : connectorKey(output),
 			);
@@ -269,8 +191,6 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 				connectedToActiveConnector,
 				connectorCount,
 				connectionCount,
-				connectors,
-				connections,
 				highlightInputs: activeConnectorIsOutput,
 				highlightOutputs: activeConnectorIsInput,
 				registerConnector,

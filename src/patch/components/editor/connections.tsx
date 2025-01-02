@@ -1,13 +1,14 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
-import {
-	ConnectionContext,
-	connectorButton,
-	connectorKey,
-} from '../../contexts/connection';
+import { ConnectionContext } from '../../contexts/connection';
 import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { queueAnimationCallback } from '../../../utils/animation';
 import { PatchContext } from '../../contexts/patch';
 import { IInput, IOutput } from '../../state/types/connection';
+import {
+	connectionEntries,
+	connectorButton,
+	connectorKey,
+} from '../../state/connection';
 
 const _ = {
 	root: document.getElementById('root'),
@@ -46,12 +47,6 @@ const equals = (position1: Position, position2: Position) => {
 
 type Segment = [Position, Position];
 type Path = Segment[];
-
-enum ConnectionDrawMode {
-	DIRECT,
-	STEPPED,
-}
-
 const connectionToPath =
 	(mode: ConnectionDrawMode) =>
 	([output, input]: [IOutput, IInput]): Path => {
@@ -101,6 +96,11 @@ const connectionToPath =
 		}
 	};
 
+enum ConnectionDrawMode {
+	DIRECT,
+	STEPPED,
+}
+
 const devicePixelRatio = window.devicePixelRatio || 1;
 
 const resizeCanvas = (canvas: HTMLCanvasElement) => {
@@ -116,8 +116,7 @@ export const Connections: React.FC = () => {
 	const mousePositionRef = useRef<Position>(INVALID_POSITION);
 
 	const { modules, modulePositions } = useContext(PatchContext);
-	const { connectionCount, connections, activeConnectorKey } =
-		useContext(ConnectionContext);
+	const { connectionCount, activeConnectorKey } = useContext(ConnectionContext);
 
 	const drawConnections = useCallback(
 		queueAnimationCallback(() => {
@@ -139,7 +138,7 @@ export const Connections: React.FC = () => {
 
 				resizeCanvas(canvasRef.current);
 
-				const connectionsToDraw = [...connections.values()].map(
+				const connectionsToDraw = Object.values(connectionEntries()).map(
 					connectionToPath(ConnectionDrawMode.DIRECT),
 				);
 
