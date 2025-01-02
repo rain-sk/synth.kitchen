@@ -3,7 +3,7 @@ import { IAudioContext, IAudioNode } from 'standardized-audio-context';
 
 import { IoType, ioKey } from '../../state/types/io';
 import { ConnectionContext } from '../../contexts/connection';
-import { useEffectOnce } from '../../../hooks/use-effect-once';
+import { useEffectOnce } from '../../../utils/use-effect-once';
 
 export const IoConnector: React.FunctionComponent<{
 	name: string;

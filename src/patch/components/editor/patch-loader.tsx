@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 
-import { DatabasePatch, useApi } from '../../../hooks/use-api';
+import { DatabasePatch, useApi } from '../../../api/use-api';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 
