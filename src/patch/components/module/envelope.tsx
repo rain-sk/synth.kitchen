@@ -6,7 +6,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-components/io-connectors';
 import { NumberParameter } from '../module-components/number-parameter';
 import { EnvelopeNode } from '../../audio/nodes/envelope';
-import { useNode } from '../../../hooks/use-node';
+import { useNode } from './use-node';
 
 const envelopeStateFromNode = (
 	node: EnvelopeNode,

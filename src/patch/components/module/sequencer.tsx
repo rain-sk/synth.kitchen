@@ -7,7 +7,7 @@ import { SequencerNode } from '../../audio/nodes/sequencer';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-components/io-connectors';
 import { NumberParameter } from '../module-components/number-parameter';
-import { useNode } from '../../../hooks/use-node';
+import { useNode } from './use-node';
 
 const sequencerStateFromNode = (
 	sequencer: SequencerNode,

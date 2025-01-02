@@ -6,7 +6,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-components/io-connectors';
 import { NumberParameter } from '../module-components/number-parameter';
 import { audioContext } from '../../audio/context';
-import { useNode } from '../../../hooks/use-node';
+import { useNode } from './use-node';
 
 const gateStateFromNode = (gate: GateNode): IModuleState['GATE'] => ({
 	gate: gate.gate.value,

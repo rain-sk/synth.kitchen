@@ -6,7 +6,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-components/io-connectors';
 import { NumberParameter } from '../module-components/number-parameter';
 import { VcaNode } from '../../audio/nodes/vca';
-import { useNode } from '../../../hooks/use-node';
+import { useNode } from './use-node';
 
 const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
 	gate: Math.round(node.gate.value * 10000) / 10000,

@@ -3,9 +3,9 @@ import {
 	IModule,
 	IModuleState,
 	ModuleType as Type,
-} from '../patch/state/types/module';
-import { patchActions } from '../patch/state/actions';
-import { PatchContext } from '../patch/contexts/patch';
+} from '../../state/types/module';
+import { patchActions } from '../../state/actions';
+import { PatchContext } from '../../contexts/patch';
 
 export const useNode = <NodeType, ModuleType extends Type>(
 	module: IModule,

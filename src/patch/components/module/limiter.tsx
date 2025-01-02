@@ -4,7 +4,7 @@ import { LimiterNode } from '../../audio/nodes/limiter';
 
 import { IModule } from '../../state/types/module';
 import { IoConnectors } from '../module-components/io-connectors';
-import { useNode } from '../../../hooks/use-node';
+import { useNode } from './use-node';
 
 const initLimiter = () => ({});
 

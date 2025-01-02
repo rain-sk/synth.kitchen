@@ -6,7 +6,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-components/io-connectors';
 import { RadioParameter } from '../module-components/radio-parameter';
 import { MidiContext } from '../../contexts/midi';
-import { useNode } from '../../../hooks/use-node';
+import { useNode } from './use-node';
 
 const noteOptions = (() => {
 	const options = ['all'];

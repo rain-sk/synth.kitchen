@@ -11,7 +11,7 @@ import { IModule, IModuleState } from '../../state/types/module';
 import { NumberParameter } from '../module-components/number-parameter';
 import { IoConnectors } from '../module-components/io-connectors';
 import { RadioParameter } from '../module-components/radio-parameter';
-import { useNode } from '../../../hooks/use-node';
+import { useNode } from './use-node';
 
 const oscillatorStateFromNode = (
 	node: IOscillatorNode<IAudioContext>,

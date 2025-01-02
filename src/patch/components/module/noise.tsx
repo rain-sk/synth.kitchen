@@ -4,7 +4,7 @@ import { NoiseNode } from '../../audio/nodes/noise';
 
 import { IoConnectors } from '../module-components/io-connectors';
 import { IModule } from '../../state/types/module';
-import { useNode } from '../../../hooks/use-node';
+import { useNode } from './use-node';
 
 const initNoise = () => ({});
 
