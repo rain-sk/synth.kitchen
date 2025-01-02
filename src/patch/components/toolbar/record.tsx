@@ -8,7 +8,7 @@ import React, {
 import { IMediaRecorder, MediaRecorder } from 'extendable-media-recorder';
 import hhmmss from 'hhmmss';
 
-import { audioContext, resampling } from '../../audio/context';
+import { audioContext, resampling } from '../../audio';
 import { PatchContext } from '../../contexts/patch';
 
 export const Record: React.FC = () => {

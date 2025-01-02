@@ -1,7 +1,13 @@
+import { AudioContext } from 'standardized-audio-context';
 import { connect } from 'extendable-media-recorder-wav-encoder';
-import { audioContext } from './context';
+
 import { initAudioProcessors } from './processors';
 import { register } from 'extendable-media-recorder';
+
+export const audioContext = new AudioContext();
+
+export const resampling = audioContext.createDelay();
+resampling.delayTime.value = 256 / audioContext.sampleRate;
 
 export const audio = {
 	initialized: false,

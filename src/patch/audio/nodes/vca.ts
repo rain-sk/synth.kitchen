@@ -3,7 +3,7 @@ import {
 	IAudioParam,
 	IGainNode,
 } from 'standardized-audio-context';
-import { audioContext } from '../context';
+import { audioContext } from '../';
 import { AdsrNode } from './adsr';
 import { GateNode } from './gate';
 

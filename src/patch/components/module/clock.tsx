@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { audioContext } from '../../audio/context';
+import { audioContext } from '../../audio';
 import { ClockNode } from '../../audio/nodes/clock';
 
 import { IModule, IModuleState } from '../../state/types/module';

@@ -5,7 +5,7 @@ import {
 	IOscillatorNode,
 } from 'standardized-audio-context';
 
-import { audioContext } from '../../audio/context';
+import { audioContext } from '../../audio';
 
 import { IModule, IModuleState } from '../../state/types/module';
 import { NumberParameter } from '../module-components/number-parameter';

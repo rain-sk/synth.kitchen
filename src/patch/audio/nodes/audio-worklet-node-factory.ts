@@ -3,7 +3,7 @@ import {
 	IAudioContext,
 	IAudioWorkletNode,
 } from 'standardized-audio-context';
-import { audioContext } from '../context';
+import { audioContext } from '../';
 
 export const audioWorkletNodeFactory = (
 	id: string,

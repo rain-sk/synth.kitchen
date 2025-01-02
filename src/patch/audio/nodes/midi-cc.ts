@@ -1,5 +1,5 @@
 import { IAudioContext, IAudioWorkletNode } from 'standardized-audio-context';
-import { audioContext } from '../context';
+import { audioContext } from '../';
 import { ControlChangeMessageEvent, PortEvent, WebMidi } from 'webmidi';
 import { midi } from '../../midi';
 import { audioWorkletNodeFactory } from './audio-worklet-node-factory';
