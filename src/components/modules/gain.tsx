@@ -2,12 +2,11 @@ import React, { useCallback } from 'react';
 
 import { IAudioContext, IGainNode } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
-import { useModuleState } from '../../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const gainStateFromNode = (
 	node: IGainNode<IAudioContext>,
@@ -16,43 +15,35 @@ const gainStateFromNode = (
 });
 
 const initGain = (
-	gainRef: React.MutableRefObject<IGainNode<IAudioContext> | undefined>,
+	gain: IGainNode<IAudioContext>,
 	state?: IModuleState['GAIN'],
 ) => {
-	if (!gainRef.current) {
-		throw Error('uninitialized ref');
-	}
-
 	if (state) {
-		gainRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
+		gain.gain.setValueAtTime(state.gain, audioContext.currentTime);
 		return state;
 	} else {
-		return gainStateFromNode(gainRef.current);
+		return gainStateFromNode(gain);
 	}
 };
 
 export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 	module,
 }) => {
-	const gainRef = useNodeRef(() => audioContext.createGain());
-	const [state, setState] = useModuleState<'GAIN', IGainNode<IAudioContext>>(
-		gainRef,
+	const { node, state, setState } = useNode<IGainNode<IAudioContext>, 'GAIN'>(
 		module,
-		() => initGain(gainRef, module.state),
+		initGain,
+		() => audioContext.createGain(),
 	);
 
 	const enabled = state !== undefined;
 
-	const input = useCallback(() => gainRef.current, [enabled]);
+	const input = useCallback(() => node, [enabled]);
 
-	const output = useCallback(() => gainRef.current, [enabled]);
+	const output = useCallback(() => node, [enabled]);
 
 	const commitGainChange = useCallback(
 		(gain: number) => {
-			gainRef.current.gain.linearRampToValueAtTime(
-				gain,
-				audioContext.currentTime,
-			);
+			node.gain.linearRampToValueAtTime(gain, audioContext.currentTime);
 			setState({
 				...state,
 				gain,
@@ -61,7 +52,7 @@ export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
 		[state],
 	);
 
-	const gainAccessor = useCallback(() => gainRef.current.gain, [enabled]);
+	const gainAccessor = useCallback(() => node.gain, [enabled]);
 
 	return enabled ? (
 		<>

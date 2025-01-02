@@ -1,13 +1,12 @@
 import React, { useCallback } from 'react';
 
 import { audioContext } from '../../audio/context';
-import { useModuleState } from '../../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { VcaNode } from '../../audio/nodes/vca';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
 	gate: Math.round(node.gate.value * 10000) / 10000,
@@ -18,56 +17,38 @@ const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
 	peak: Math.round(node.peak.value * 100) / 100,
 });
 
-const initVca = (
-	vcaRef: React.MutableRefObject<VcaNode | undefined>,
-	state?: IModuleState['VCA'],
-) => {
-	if (!vcaRef.current) {
-		throw Error('uninitialized ref');
-	}
-
+const initVca = (vca: VcaNode, state?: IModuleState['VCA']) => {
 	if (state) {
-		vcaRef.current.gate.setValueAtTime(state.gate, audioContext.currentTime);
-		vcaRef.current.attack.setValueAtTime(
-			state.attack,
-			audioContext.currentTime,
-		);
-		vcaRef.current.decay.setValueAtTime(state.decay, audioContext.currentTime);
-		vcaRef.current.sustain.setValueAtTime(
-			state.sustain,
-			audioContext.currentTime,
-		);
-		vcaRef.current.release.setValueAtTime(
-			state.release,
-			audioContext.currentTime,
-		);
-		vcaRef.current.peak.setValueAtTime(state.peak, audioContext.currentTime);
+		vca.gate.setValueAtTime(state.gate, audioContext.currentTime);
+		vca.attack.setValueAtTime(state.attack, audioContext.currentTime);
+		vca.decay.setValueAtTime(state.decay, audioContext.currentTime);
+		vca.sustain.setValueAtTime(state.sustain, audioContext.currentTime);
+		vca.release.setValueAtTime(state.release, audioContext.currentTime);
+		vca.peak.setValueAtTime(state.peak, audioContext.currentTime);
 		return state;
 	} else {
-		return vcaStateFromNode(vcaRef.current);
+		return vcaStateFromNode(vca);
 	}
 };
 
 export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
-	const vcaRef = useNodeRef(() => new VcaNode());
-	const [state, setState] = useModuleState<'VCA', VcaNode>(vcaRef, module, () =>
-		initVca(vcaRef, module.state),
+	const { node, state, setState } = useNode<VcaNode, 'VCA'>(
+		module,
+		initVca,
+		() => new VcaNode(),
 	);
 
 	const enabled = state != undefined;
 
-	const input = useCallback(() => vcaRef.current.gain(), [enabled]);
+	const input = useCallback(() => node.gain(), [enabled]);
 
-	const sync = useCallback(() => vcaRef.current.sync().node(), [enabled]);
+	const sync = useCallback(() => node.sync().node(), [enabled]);
 
-	const output = useCallback(() => vcaRef.current.gain(), [enabled]);
+	const output = useCallback(() => node.gain(), [enabled]);
 
 	const commitGateChange = useCallback(
 		(gate: number) => {
-			vcaRef.current.gate.linearRampToValueAtTime(
-				gate,
-				audioContext.currentTime,
-			);
+			node.gate.linearRampToValueAtTime(gate, audioContext.currentTime);
 			setState({
 				...state,
 				gate,
@@ -76,14 +57,11 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 		[state],
 	);
 
-	const gateAccessor = useCallback(() => vcaRef.current.gate, [enabled]);
+	const gateAccessor = useCallback(() => node.gate, [enabled]);
 
 	const commitAttackChange = useCallback(
 		(attack: number) => {
-			vcaRef.current.attack.linearRampToValueAtTime(
-				attack,
-				audioContext.currentTime,
-			);
+			node.attack.linearRampToValueAtTime(attack, audioContext.currentTime);
 			setState({
 				...state,
 				attack,
@@ -92,14 +70,11 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 		[state],
 	);
 
-	const attackAccessor = useCallback(() => vcaRef.current.attack, [enabled]);
+	const attackAccessor = useCallback(() => node.attack, [enabled]);
 
 	const commitDecayChange = useCallback(
 		(decay: number) => {
-			vcaRef.current.decay.linearRampToValueAtTime(
-				decay,
-				audioContext.currentTime,
-			);
+			node.decay.linearRampToValueAtTime(decay, audioContext.currentTime);
 			setState({
 				...state,
 				decay,
@@ -108,14 +83,11 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 		[state],
 	);
 
-	const decayAccessor = useCallback(() => vcaRef.current.decay, [enabled]);
+	const decayAccessor = useCallback(() => node.decay, [enabled]);
 
 	const commitSustainChange = useCallback(
 		(sustain: number) => {
-			vcaRef.current.sustain.linearRampToValueAtTime(
-				sustain,
-				audioContext.currentTime,
-			);
+			node.sustain.linearRampToValueAtTime(sustain, audioContext.currentTime);
 			setState({
 				...state,
 				sustain,
@@ -124,14 +96,11 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 		[state],
 	);
 
-	const sustainAccessor = useCallback(() => vcaRef.current.sustain, [enabled]);
+	const sustainAccessor = useCallback(() => node.sustain, [enabled]);
 
 	const commitReleaseChange = useCallback(
 		(release: number) => {
-			vcaRef.current.release.linearRampToValueAtTime(
-				release,
-				audioContext.currentTime,
-			);
+			node.release.linearRampToValueAtTime(release, audioContext.currentTime);
 			setState({
 				...state,
 				release,
@@ -140,14 +109,11 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 		[state],
 	);
 
-	const releaseAccessor = useCallback(() => vcaRef.current.release, [enabled]);
+	const releaseAccessor = useCallback(() => node.release, [enabled]);
 
 	const commitPeakChange = useCallback(
 		(peak: number) => {
-			vcaRef.current.peak.linearRampToValueAtTime(
-				peak,
-				audioContext.currentTime,
-			);
+			node.peak.linearRampToValueAtTime(peak, audioContext.currentTime);
 			setState({
 				...state,
 				peak,
@@ -156,7 +122,7 @@ export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
 		[state],
 	);
 
-	const peakAccessor = useCallback(() => vcaRef.current.peak, [enabled]);
+	const peakAccessor = useCallback(() => node.peak, [enabled]);
 
 	return enabled ? (
 		<>

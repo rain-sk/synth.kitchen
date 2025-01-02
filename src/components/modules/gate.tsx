@@ -2,51 +2,39 @@ import React, { useCallback } from 'react';
 
 import { GateNode } from '../../audio/nodes/gate';
 
-import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { audioContext } from '../../audio/context';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const gateStateFromNode = (gate: GateNode): IModuleState['GATE'] => ({
 	gate: gate.gate.value,
 });
 
-const initGate = (
-	gateRef: React.MutableRefObject<GateNode | undefined>,
-	state?: IModuleState['GATE'],
-) => {
-	if (!gateRef.current) {
-		throw Error('uninitialized ref');
-	}
-
+const initGate = (gate: GateNode, state?: IModuleState['GATE']) => {
 	if (state) {
-		gateRef.current.gate.setValueAtTime(state.gate, audioContext.currentTime);
+		gate.gate.setValueAtTime(state.gate, audioContext.currentTime);
 		return state;
 	} else {
-		return gateStateFromNode(gateRef.current);
+		return gateStateFromNode(gate);
 	}
 };
 
 export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
 	module,
 }) => {
-	const gateRef = useNodeRef(() => new GateNode());
-	const [state, setState] = useModuleState<'GATE', GateNode>(
-		gateRef,
+	const { node, state, setState } = useNode<GateNode, 'GATE'>(
 		module,
-		() => initGate(gateRef, module.state),
+		initGate,
+		() => new GateNode(),
 	);
 
 	const enabled = state !== undefined;
 
 	const commitGateChange = useCallback(
 		(gate: number) => {
-			gateRef.current.gate.linearRampToValueAtTime(
-				gate,
-				audioContext.currentTime,
-			);
+			node.gate.linearRampToValueAtTime(gate, audioContext.currentTime);
 			setState({
 				...state,
 				gate,
@@ -55,11 +43,11 @@ export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
 		[state],
 	);
 
-	const gateAccessor = useCallback(() => gateRef.current.gate, [enabled]);
+	const gateAccessor = useCallback(() => node.gate, [enabled]);
 
-	const sync = useCallback(() => gateRef.current.node(), [enabled]);
+	const sync = useCallback(() => node.node(), [enabled]);
 
-	const output = useCallback(() => gateRef.current.node(), [enabled]);
+	const output = useCallback(() => node.node(), [enabled]);
 
 	return enabled ? (
 		<>

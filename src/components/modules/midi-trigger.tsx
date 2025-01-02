@@ -2,12 +2,11 @@ import React, { useCallback, useContext } from 'react';
 
 import { MidiTriggerNode } from '../../audio/nodes/midi-trigger';
 
-import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { RadioParameter } from '../radio-parameter';
 import { MidiContext } from '../../contexts/midi';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const noteOptions = (() => {
 	const options = ['all'];
@@ -17,7 +16,7 @@ const noteOptions = (() => {
 	return options;
 })();
 
-const clockStateFromNode = (
+const midiTriggerStateFromNode = (
 	clock: MidiTriggerNode,
 ): IModuleState['MIDI_TRIGGER'] => ({
 	input: clock.inputName,
@@ -25,23 +24,19 @@ const clockStateFromNode = (
 });
 
 const initMidiTrigger = (
-	triggerRef: React.MutableRefObject<MidiTriggerNode | undefined>,
+	trigger: MidiTriggerNode,
 	state?: IModuleState['MIDI_TRIGGER'],
 ) => {
-	if (!triggerRef.current) {
-		throw Error('uninitialized ref');
-	}
-
 	if (state) {
 		try {
-			triggerRef.current.setInput(state.input);
-			triggerRef.current.setNote(state.note);
+			trigger.setInput(state.input);
+			trigger.setNote(state.note);
 		} catch (e) {
 			console.error(e);
 		}
 		return state;
 	} else {
-		return clockStateFromNode(triggerRef.current);
+		return midiTriggerStateFromNode(trigger);
 	}
 };
 
@@ -50,21 +45,20 @@ export const MidiTriggerModule: React.FC<{
 }> = ({ module }) => {
 	const { inputs } = useContext(MidiContext);
 
-	const triggerRef = useNodeRef(() => new MidiTriggerNode());
-	const [state, setState] = useModuleState<'MIDI_TRIGGER', MidiTriggerNode>(
-		triggerRef,
+	const { node, state, setState } = useNode<MidiTriggerNode, 'MIDI_TRIGGER'>(
 		module,
-		() => initMidiTrigger(triggerRef, module.state),
+		initMidiTrigger,
+		() => new MidiTriggerNode(),
 	);
 
 	const enabled = state != undefined;
 
-	const output = useCallback(() => triggerRef.current.node(), [enabled]);
+	const output = useCallback(() => node.node(), [enabled]);
 
 	const commitInputChange = useCallback(
 		(input: string) => {
-			if (triggerRef.current) {
-				triggerRef.current.setInput(input);
+			if (node) {
+				node.setInput(input);
 				setState({
 					...state,
 					input,
@@ -76,9 +70,9 @@ export const MidiTriggerModule: React.FC<{
 
 	const commitNoteChange = useCallback(
 		(note: string) => {
-			if (triggerRef.current) {
+			if (node) {
 				if (note === 'all') {
-					triggerRef.current.setNote(note);
+					node.setNote(note);
 
 					setState({
 						...state,
@@ -86,7 +80,7 @@ export const MidiTriggerModule: React.FC<{
 					});
 				} else {
 					const num = Number(note);
-					triggerRef.current.setNote(Number(num));
+					node.setNote(Number(num));
 
 					setState({
 						...state,
@@ -112,14 +106,14 @@ export const MidiTriggerModule: React.FC<{
 							moduleKey={module.moduleKey}
 							name="input"
 							options={inputs.map((input) => input.name)}
-							value={triggerRef.current.inputName}
+							value={node.inputName}
 							commitValueCallback={commitInputChange}
 						/>
 						<RadioParameter
 							moduleKey={module.moduleKey}
 							name="note"
 							options={noteOptions}
-							value={`${triggerRef.current.note}`}
+							value={`${node.note}`}
 							commitValueCallback={commitNoteChange}
 						/>
 					</>

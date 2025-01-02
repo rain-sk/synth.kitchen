@@ -1,13 +1,12 @@
 import React, { useCallback } from 'react';
 
 import { audioContext } from '../../audio/context';
-import { useModuleState } from '../../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { EnvelopeNode } from '../../audio/nodes/envelope';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const envelopeStateFromNode = (
 	node: EnvelopeNode,
@@ -21,66 +20,40 @@ const envelopeStateFromNode = (
 });
 
 const initEnvelope = (
-	envelopeRef: React.MutableRefObject<EnvelopeNode | undefined>,
+	envelope: EnvelopeNode,
 	state?: IModuleState['ENVELOPE'],
 ) => {
-	if (!envelopeRef.current) {
-		throw Error('uninitialized ref');
-	}
-
 	if (state) {
-		envelopeRef.current.gate.setValueAtTime(
-			state.gate,
-			audioContext.currentTime,
-		);
-		envelopeRef.current.attack.setValueAtTime(
-			state.attack,
-			audioContext.currentTime,
-		);
-		envelopeRef.current.decay.setValueAtTime(
-			state.decay,
-			audioContext.currentTime,
-		);
-		envelopeRef.current.sustain.setValueAtTime(
-			state.sustain,
-			audioContext.currentTime,
-		);
-		envelopeRef.current.release.setValueAtTime(
-			state.release,
-			audioContext.currentTime,
-		);
-		envelopeRef.current.peak.setValueAtTime(
-			state.peak,
-			audioContext.currentTime,
-		);
+		envelope.gate.setValueAtTime(state.gate, audioContext.currentTime);
+		envelope.attack.setValueAtTime(state.attack, audioContext.currentTime);
+		envelope.decay.setValueAtTime(state.decay, audioContext.currentTime);
+		envelope.sustain.setValueAtTime(state.sustain, audioContext.currentTime);
+		envelope.release.setValueAtTime(state.release, audioContext.currentTime);
+		envelope.peak.setValueAtTime(state.peak, audioContext.currentTime);
 		return state;
 	} else {
-		return envelopeStateFromNode(envelopeRef.current);
+		return envelopeStateFromNode(envelope);
 	}
 };
 
 export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 	module,
 }) => {
-	const envelopeRef = useNodeRef(() => new EnvelopeNode());
-	const [state, setState] = useModuleState<'ENVELOPE', EnvelopeNode>(
-		envelopeRef,
+	const { node, state, setState } = useNode<EnvelopeNode, 'ENVELOPE'>(
 		module,
-		() => initEnvelope(envelopeRef, module.state),
+		initEnvelope,
+		() => new EnvelopeNode(),
 	);
 
 	const enabled = state != undefined;
 
-	const sync = useCallback(() => envelopeRef.current.sync().node(), [enabled]);
+	const sync = useCallback(() => node.sync().node(), [enabled]);
 
-	const output = useCallback(() => envelopeRef.current.gain(), [enabled]);
+	const output = useCallback(() => node.gain(), [enabled]);
 
 	const commitGateChange = useCallback(
 		(gate: number) => {
-			envelopeRef.current.gate.linearRampToValueAtTime(
-				gate,
-				audioContext.currentTime,
-			);
+			node.gate.linearRampToValueAtTime(gate, audioContext.currentTime);
 			setState({
 				...state,
 				gate,
@@ -89,14 +62,11 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		[state],
 	);
 
-	const gateAccessor = useCallback(() => envelopeRef.current.gate, [enabled]);
+	const gateAccessor = useCallback(() => node.gate, [enabled]);
 
 	const commitAttackChange = useCallback(
 		(attack: number) => {
-			envelopeRef.current.attack.linearRampToValueAtTime(
-				attack,
-				audioContext.currentTime,
-			);
+			node.attack.linearRampToValueAtTime(attack, audioContext.currentTime);
 			setState({
 				...state,
 				attack,
@@ -105,17 +75,11 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		[state],
 	);
 
-	const attackAccessor = useCallback(
-		() => envelopeRef.current.attack,
-		[enabled],
-	);
+	const attackAccessor = useCallback(() => node.attack, [enabled]);
 
 	const commitDecayChange = useCallback(
 		(decay: number) => {
-			envelopeRef.current.decay.linearRampToValueAtTime(
-				decay,
-				audioContext.currentTime,
-			);
+			node.decay.linearRampToValueAtTime(decay, audioContext.currentTime);
 			setState({
 				...state,
 				decay,
@@ -124,14 +88,11 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		[state],
 	);
 
-	const decayAccessor = useCallback(() => envelopeRef.current.decay, [enabled]);
+	const decayAccessor = useCallback(() => node.decay, [enabled]);
 
 	const commitSustainChange = useCallback(
 		(sustain: number) => {
-			envelopeRef.current.sustain.linearRampToValueAtTime(
-				sustain,
-				audioContext.currentTime,
-			);
+			node.sustain.linearRampToValueAtTime(sustain, audioContext.currentTime);
 			setState({
 				...state,
 				sustain,
@@ -140,17 +101,11 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		[state],
 	);
 
-	const sustainAccessor = useCallback(
-		() => envelopeRef.current.sustain,
-		[enabled],
-	);
+	const sustainAccessor = useCallback(() => node.sustain, [enabled]);
 
 	const commitReleaseChange = useCallback(
 		(release: number) => {
-			envelopeRef.current.release.linearRampToValueAtTime(
-				release,
-				audioContext.currentTime,
-			);
+			node.release.linearRampToValueAtTime(release, audioContext.currentTime);
 			setState({
 				...state,
 				release,
@@ -159,17 +114,11 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		[state],
 	);
 
-	const releaseAccessor = useCallback(
-		() => envelopeRef.current.release,
-		[enabled],
-	);
+	const releaseAccessor = useCallback(() => node.release, [enabled]);
 
 	const commitPeakChange = useCallback(
 		(peak: number) => {
-			envelopeRef.current.peak.linearRampToValueAtTime(
-				peak,
-				audioContext.currentTime,
-			);
+			node.peak.linearRampToValueAtTime(peak, audioContext.currentTime);
 			setState({
 				...state,
 				peak,
@@ -178,7 +127,7 @@ export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
 		[state],
 	);
 
-	const peakAccessor = useCallback(() => envelopeRef.current.peak, [enabled]);
+	const peakAccessor = useCallback(() => node.peak, [enabled]);
 
 	return enabled ? (
 		<>

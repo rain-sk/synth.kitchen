@@ -2,66 +2,54 @@ import React, { useCallback } from 'react';
 
 import { IAudioParam } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
-import { useModuleState } from '../../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../../state/types/module';
 import { NumberParameter } from '../number-parameter';
 import { IoConnectors } from '../io-connectors';
 import { OutputNode } from '../../audio/nodes/output';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const outputStateFromNode = (node: OutputNode): IModuleState['OUTPUT'] => ({
 	gain: node.gain.value,
 });
 
-const initOutput = (
-	outputRef: React.MutableRefObject<OutputNode | undefined>,
-	state?: IModuleState['OUTPUT'],
-) => {
-	if (!outputRef.current) {
-		throw Error('uninitialized ref');
-	}
-
+const initOutput = (output: OutputNode, state?: IModuleState['OUTPUT']) => {
 	if (state) {
-		outputRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
+		output.gain.setValueAtTime(state.gain, audioContext.currentTime);
 		return state;
 	} else {
-		return outputStateFromNode(outputRef.current);
+		return outputStateFromNode(output);
 	}
 };
 
 export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
 	module,
 }) => {
-	const outputRef = useNodeRef(() => new OutputNode());
-	const [state, setState] = useModuleState<'OUTPUT', OutputNode>(
-		outputRef,
+	const { node, state, setState } = useNode<OutputNode, 'OUTPUT'>(
 		module,
-		() => initOutput(outputRef, module.state),
+		initOutput,
+		() => new OutputNode(),
 	);
 
 	const enabled = state != undefined;
 
 	const commitGainChange = useCallback(
 		(gain: number) => {
-			outputRef.current.gain.linearRampToValueAtTime(
-				gain,
-				audioContext.currentTime,
-			);
+			node.gain.linearRampToValueAtTime(gain, audioContext.currentTime);
 			setState({
 				...state,
 				gain,
 			});
 		},
-		[outputRef, setState, state],
+		[setState, state],
 	);
 
 	const gainAccessor = useCallback(() => {
-		return outputRef.current.gain as IAudioParam;
+		return node.gain as IAudioParam;
 	}, [enabled]);
 
-	const speaker = outputRef.current.speaker as any;
-	const resampling = outputRef.current.resampling as any;
+	const speaker = node.speaker as any;
+	const resampling = node.resampling as any;
 
 	return enabled ? (
 		<>

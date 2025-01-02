@@ -2,13 +2,12 @@ import React, { useCallback, useContext } from 'react';
 
 import { MidiCcNode } from '../../audio/nodes/midi-cc';
 
-import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { RadioParameter } from '../radio-parameter';
 import { MidiContext } from '../../contexts/midi';
 import { NumberParameter } from '../number-parameter';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const midiCcStateFromNode = (node: MidiCcNode): IModuleState['MIDI_CC'] => ({
 	input: node.inputName,
@@ -17,26 +16,19 @@ const midiCcStateFromNode = (node: MidiCcNode): IModuleState['MIDI_CC'] => ({
 	min: node.min,
 });
 
-const initMidiTrigger = (
-	ccRef: React.MutableRefObject<MidiCcNode | undefined>,
-	state?: IModuleState['MIDI_CC'],
-) => {
-	if (!ccRef.current) {
-		throw Error('uninitialized ref');
-	}
-
+const initMidiCc = (cc: MidiCcNode, state?: IModuleState['MIDI_CC']) => {
 	if (state) {
 		try {
-			ccRef.current.setCC(state.cc);
-			ccRef.current.setInput(state.input);
-			ccRef.current.setMax(state.max);
-			ccRef.current.setMin(state.min);
+			cc.setCC(state.cc);
+			cc.setInput(state.input);
+			cc.setMax(state.max);
+			cc.setMin(state.min);
 		} catch (e) {
 			console.error(e);
 		}
 		return state;
 	} else {
-		return midiCcStateFromNode(ccRef.current);
+		return midiCcStateFromNode(cc);
 	}
 };
 
@@ -45,21 +37,20 @@ export const MidiCcModule: React.FC<{
 }> = ({ module }) => {
 	const { inputs } = useContext(MidiContext);
 
-	const ccRef = useNodeRef(() => new MidiCcNode());
-	const [state, setState] = useModuleState<'MIDI_CC', MidiCcNode>(
-		ccRef,
+	const { node, state, setState } = useNode<MidiCcNode, 'MIDI_CC'>(
 		module,
-		() => initMidiTrigger(ccRef, module.state),
+		initMidiCc,
+		() => new MidiCcNode(),
 	);
 
 	const enabled = state != undefined;
 
-	const output = useCallback(() => ccRef.current.node(), [enabled]);
+	const output = useCallback(() => node.node(), [enabled]);
 
 	const commitInputChange = useCallback(
 		(input: string) => {
-			if (ccRef.current) {
-				ccRef.current.setInput(input);
+			if (node) {
+				node.setInput(input);
 				setState({
 					...state,
 					input,
@@ -71,8 +62,8 @@ export const MidiCcModule: React.FC<{
 
 	const commitCcChange = useCallback(
 		(cc: number) => {
-			if (ccRef.current) {
-				ccRef.current.setCC(cc);
+			if (node) {
+				node.setCC(cc);
 
 				setState({
 					...state,
@@ -85,8 +76,8 @@ export const MidiCcModule: React.FC<{
 
 	const commitMaxChange = useCallback(
 		(max: number) => {
-			if (ccRef.current) {
-				ccRef.current.setMax(max);
+			if (node) {
+				node.setMax(max);
 
 				setState({
 					...state,
@@ -99,8 +90,8 @@ export const MidiCcModule: React.FC<{
 
 	const commitMinChange = useCallback(
 		(min: number) => {
-			if (ccRef.current) {
-				ccRef.current.setMin(min);
+			if (node) {
+				node.setMin(min);
 
 				setState({
 					...state,
@@ -125,25 +116,25 @@ export const MidiCcModule: React.FC<{
 							moduleKey={module.moduleKey}
 							name="input"
 							options={inputs.map((input) => input.name)}
-							value={ccRef.current.inputName}
+							value={node.inputName}
 							commitValueCallback={commitInputChange}
 						/>
 						<NumberParameter
 							moduleKey={module.moduleKey}
 							name="cc"
-							value={ccRef.current.cc}
+							value={node.cc}
 							commitValueCallback={commitCcChange}
 						/>
 						<NumberParameter
 							moduleKey={module.moduleKey}
 							name="max"
-							value={ccRef.current.max}
+							value={node.max}
 							commitValueCallback={commitMaxChange}
 						/>
 						<NumberParameter
 							moduleKey={module.moduleKey}
 							name="min"
-							value={ccRef.current.min}
+							value={node.min}
 							commitValueCallback={commitMinChange}
 						/>
 					</>

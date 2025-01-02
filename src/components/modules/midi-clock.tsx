@@ -2,12 +2,11 @@ import React, { useCallback, useContext } from 'react';
 
 import { MidiClockNode } from '../../audio/nodes/midi-clock';
 
-import { useModuleState } from '../../hooks/use-module-state';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { RadioParameter } from '../radio-parameter';
 import { MidiContext } from '../../contexts/midi';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const clockStateFromNode = (
 	clock: MidiClockNode,
@@ -16,22 +15,18 @@ const clockStateFromNode = (
 });
 
 const initMidiClock = (
-	clockRef: React.MutableRefObject<MidiClockNode | undefined>,
+	clock: MidiClockNode,
 	state?: IModuleState['MIDI_CLOCK'],
 ) => {
-	if (!clockRef.current) {
-		throw Error('uninitialized ref');
-	}
-
 	if (state) {
 		try {
-			clockRef.current.setInput(state.input);
+			clock.setInput(state.input);
 		} catch (e) {
 			console.error(e);
 		}
 		return state;
 	} else {
-		return clockStateFromNode(clockRef.current);
+		return clockStateFromNode(clock);
 	}
 };
 
@@ -39,22 +34,20 @@ export const MidiClockModule: React.FC<{ module: IModule<'MIDI_CLOCK'> }> = ({
 	module,
 }) => {
 	const { inputs } = useContext(MidiContext);
-
-	const clockRef = useNodeRef(() => new MidiClockNode());
-	const [state, setState] = useModuleState<'MIDI_CLOCK', MidiClockNode>(
-		clockRef,
+	const { node, state, setState } = useNode<MidiClockNode, 'MIDI_CLOCK'>(
 		module,
-		() => initMidiClock(clockRef, module.state),
+		initMidiClock,
+		() => new MidiClockNode(),
 	);
 
 	const enabled = state != undefined;
 
-	const output = useCallback(() => clockRef.current.node(), [enabled]);
+	const output = useCallback(() => node.node(), [enabled]);
 
 	const commitInputChange = useCallback(
 		(input: string) => {
-			if (clockRef.current) {
-				clockRef.current.setInput(input);
+			if (node) {
+				node.setInput(input);
 				setState({
 					...state,
 					input,
@@ -77,7 +70,7 @@ export const MidiClockModule: React.FC<{ module: IModule<'MIDI_CLOCK'> }> = ({
 						moduleKey={module.moduleKey}
 						name="input"
 						options={inputs.map((input) => input.name)}
-						value={clockRef.current.inputName}
+						value={node.inputName}
 						commitValueCallback={commitInputChange}
 					/>
 				) : (

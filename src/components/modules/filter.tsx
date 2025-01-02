@@ -7,13 +7,12 @@ import {
 	TBiquadFilterType,
 } from 'standardized-audio-context';
 import { audioContext } from '../../audio/context';
-import { useModuleState } from '../../hooks/use-module-state';
 
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
 import { NumberParameter } from '../number-parameter';
 import { RadioParameter } from '../radio-parameter';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
 const filterStateFromNode = (
 	filter: IBiquadFilterNode<IAudioContext>,
@@ -26,47 +25,34 @@ const filterStateFromNode = (
 });
 
 const initFilter = (
-	filterRef: React.MutableRefObject<
-		IBiquadFilterNode<IAudioContext> | undefined
-	>,
+	filter: IBiquadFilterNode<IAudioContext>,
 	state?: IModuleState['FILTER'],
 ) => {
-	if (!filterRef.current) {
-		throw Error('uninitialized ref');
-	}
-
 	if (state) {
-		filterRef.current.frequency.setValueAtTime(
-			state.frequency,
-			audioContext.currentTime,
-		);
-		filterRef.current.detune.setValueAtTime(
-			state.detune,
-			audioContext.currentTime,
-		);
-		filterRef.current.Q.setValueAtTime(state.Q, audioContext.currentTime);
-		filterRef.current.gain.setValueAtTime(state.gain, audioContext.currentTime);
-		filterRef.current.type = state.type;
+		filter.frequency.setValueAtTime(state.frequency, audioContext.currentTime);
+		filter.detune.setValueAtTime(state.detune, audioContext.currentTime);
+		filter.Q.setValueAtTime(state.Q, audioContext.currentTime);
+		filter.gain.setValueAtTime(state.gain, audioContext.currentTime);
+		filter.type = state.type;
 		return state;
 	} else {
-		return filterStateFromNode(filterRef.current);
+		return filterStateFromNode(filter);
 	}
 };
 
 export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 	module,
 }) => {
-	const filterRef = useNodeRef(() => audioContext.createBiquadFilter());
-	const [state, setState] = useModuleState<
-		'FILTER',
-		IBiquadFilterNode<IAudioContext>
-	>(filterRef, module, () => initFilter(filterRef, module.state));
+	const { node, state, setState } = useNode<
+		IBiquadFilterNode<IAudioContext>,
+		'FILTER'
+	>(module, initFilter, () => audioContext.createBiquadFilter());
 
 	const enabled = state !== undefined;
 
 	const commitFrequencyChange = useCallback(
 		(frequency: number) => {
-			filterRef.current.frequency.linearRampToValueAtTime(
+			node.frequency.linearRampToValueAtTime(
 				frequency,
 				audioContext.currentTime,
 			);
@@ -80,10 +66,7 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 
 	const commitDetuneChange = useCallback(
 		(detune: number) => {
-			filterRef.current.detune.linearRampToValueAtTime(
-				detune,
-				audioContext.currentTime,
-			);
+			node.detune.linearRampToValueAtTime(detune, audioContext.currentTime);
 			setState({
 				...state,
 				detune,
@@ -94,8 +77,8 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 
 	const commitTypeChange = useCallback(
 		(type: string) => {
-			if (filterRef.current) {
-				filterRef.current.type = type as TBiquadFilterType;
+			if (node) {
+				node.type = type as TBiquadFilterType;
 				setState({
 					...state,
 					type: type as TBiquadFilterType,
@@ -107,7 +90,7 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 
 	const commitQChange = useCallback(
 		(Q: number) => {
-			filterRef.current.Q.linearRampToValueAtTime(Q, audioContext.currentTime);
+			node.Q.linearRampToValueAtTime(Q, audioContext.currentTime);
 			setState({
 				...state,
 				Q,
@@ -118,10 +101,7 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 
 	const commitGainChange = useCallback(
 		(gain: number) => {
-			filterRef.current.gain.linearRampToValueAtTime(
-				gain,
-				audioContext.currentTime,
-			);
+			node.gain.linearRampToValueAtTime(gain, audioContext.currentTime);
 			setState({
 				...state,
 				gain,
@@ -131,24 +111,24 @@ export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
 	);
 
 	const frequencyAccessor = useCallback(() => {
-		return filterRef.current.frequency as IAudioParam;
+		return node.frequency as IAudioParam;
 	}, [enabled]);
 
 	const detuneAccessor = useCallback(() => {
-		return filterRef.current.detune as IAudioParam;
+		return node.detune as IAudioParam;
 	}, [enabled]);
 
 	const qAccessor = useCallback(() => {
-		return filterRef.current.Q as IAudioParam;
+		return node.Q as IAudioParam;
 	}, [enabled]);
 
 	const gainAccessor = useCallback(() => {
-		return filterRef.current.gain as IAudioParam;
+		return node.gain as IAudioParam;
 	}, [enabled]);
 
-	const input = useCallback(() => filterRef.current, [enabled]);
+	const input = useCallback(() => node, [enabled]);
 
-	const output = useCallback(() => filterRef.current, [enabled]);
+	const output = useCallback(() => node, [enabled]);
 
 	return enabled ? (
 		<>

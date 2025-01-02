@@ -2,37 +2,24 @@ import React, { useCallback } from 'react';
 
 import { NoiseNode } from '../../audio/nodes/noise';
 
-import { useModuleState } from '../../hooks/use-module-state';
-import { IModule, IModuleState } from '../../state/types/module';
+import { IModule } from '../../state/types/module';
 import { IoConnectors } from '../io-connectors';
-import { useNodeRef } from '../../hooks/use-node-ref';
+import { useNode } from '../../hooks/use-node';
 
-const initNoise = (
-	noiseRef: React.MutableRefObject<NoiseNode | undefined>,
-	state?: IModuleState['NOISE'],
-) => {
-	if (!noiseRef.current) {
-		throw Error('uninitialized ref');
-	}
-
-	if (state) {
-		return state;
-	} else {
-		return {};
-	}
-};
+const initNoise = () => ({});
 
 export const NoiseModule: React.FC<{ module: IModule<'NOISE'> }> = ({
 	module,
 }) => {
-	const noiseRef = useNodeRef(() => new NoiseNode());
-	const [state] = useModuleState<'NOISE', NoiseNode>(noiseRef, module, () =>
-		initNoise(noiseRef, module.state),
+	const { node, state } = useNode<NoiseNode, 'NOISE'>(
+		module,
+		initNoise,
+		() => new NoiseNode(),
 	);
 
 	const enabled = state != undefined;
 
-	const output = useCallback(() => noiseRef.current.node(), [enabled]);
+	const output = useCallback(() => node.node(), [enabled]);
 
 	return enabled ? (
 		<IoConnectors
