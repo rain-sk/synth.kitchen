@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import {
 	IModule,
 	IModuleState,
 	ModuleType as Type,
 } from '../patch/state/types/module';
 import { patchActions } from '../patch/state/actions';
-import { usePatch } from './use-patch';
+import { PatchContext } from '../patch/contexts/patch';
 
 export const useNode = <NodeType, ModuleType extends Type>(
 	module: IModule,
@@ -27,7 +27,7 @@ export const useNode = <NodeType, ModuleType extends Type>(
 		),
 	);
 
-	const { dispatch } = usePatch();
+	const { dispatch } = useContext(PatchContext);
 
 	useEffect(() => {
 		if (state) {

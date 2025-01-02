@@ -3,10 +3,10 @@ import { ISerializedPatch } from '../../state/types/serialized-patch';
 import { ConnectionContext } from '../../contexts/connection';
 import { useApi } from '../../../hooks/use-api';
 import { SaveToCloudSvg } from './svg/save-to-cloud';
-import { usePatch } from '../../../hooks/use-patch';
+import { PatchContext } from '../../contexts/patch';
 
 export const SaveToCloud = () => {
-	const { id, name, modules, modulePositions } = usePatch();
+	const { id, name, modules, modulePositions } = useContext(PatchContext);
 	const { connections, connectionCount } = useContext(ConnectionContext);
 
 	const { savePatch } = useApi();

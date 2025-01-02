@@ -1,6 +1,7 @@
 import React, {
 	MouseEvent as ReactMouseEvent,
 	useCallback,
+	useContext,
 	useEffect,
 	useRef,
 	useState,
@@ -10,7 +11,7 @@ import { queueAnimation } from '../../../utils/animation';
 import { patchActions } from '../../state/actions';
 import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { AddModule } from './add-module';
-import { usePatch } from '../../../hooks/use-patch';
+import { PatchContext } from '../../contexts/patch';
 
 const positionFromMouseEvent = (
 	e: MouseEvent,
@@ -24,7 +25,8 @@ export const ModuleCanvasBackdrop: React.FC<{
 	drawOnTop: boolean;
 	children: React.ReactNode;
 }> = ({ children }) => {
-	const { modules, modulePositions, selectedModuleKeys, dispatch } = usePatch();
+	const { modules, modulePositions, selectedModuleKeys, dispatch } =
+		useContext(PatchContext);
 
 	const container = useRef(undefined as HTMLElement | undefined);
 	const spacer = useRef(undefined as HTMLDivElement | undefined);

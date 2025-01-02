@@ -1,14 +1,14 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { patchActions } from '../../state/actions';
 import { randomId } from '../../../utils/random-id';
-import { usePatch } from '../../../hooks/use-patch';
+import { PatchContext } from '../../contexts/patch';
 
 export const NumberBox: React.FunctionComponent<{
 	name: string;
 	value: number;
 	commitValueCallback: (newValue: number) => void;
 }> = ({ name, value, commitValueCallback }) => {
-	const { dispatch } = usePatch();
+	const { dispatch } = useContext(PatchContext);
 
 	const [id] = useState(() => randomId());
 	const [tempValue, setTempValue] = useState<string | void>();

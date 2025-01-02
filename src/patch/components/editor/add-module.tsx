@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { patchActions } from '../../state/actions';
 import { ModuleType } from '../../state/types/module';
 import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { midi } from '../../midi';
-import { usePatch } from '../../../hooks/use-patch';
+import { PatchContext } from '../../contexts/patch';
 
 const controlModules = (): ModuleType[] =>
 	midi.initialized
@@ -30,7 +30,7 @@ const effectModules: ModuleType[] = [
 ];
 
 export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
-	const { dispatch } = usePatch();
+	const { dispatch } = useContext(PatchContext);
 
 	const handleAddModule = useCallback(
 		(e: React.ChangeEvent<HTMLSelectElement>) => {

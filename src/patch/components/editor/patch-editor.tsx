@@ -1,14 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
 import { ModuleCanvas } from './module-canvas';
 import { Connections } from './connections';
 import { IModule } from '../../state/types/module';
 import { Position } from '../../state/types/patch';
-import { usePatch } from '../../../hooks/use-patch';
+import { PatchContext } from '../../contexts/patch';
 
 export const PatchEditor: React.FC = () => {
-	const { modulePositions, modules } = usePatch();
+	const { modulePositions, modules } = useContext(PatchContext);
 
 	const sortedModules = useMemo(
 		() =>

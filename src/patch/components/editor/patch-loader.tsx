@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 
 import { DatabasePatch, useApi } from '../../../hooks/use-api';
 import { patchActions } from '../../state/actions';
-import { usePatch } from '../../../hooks/use-patch';
+import { PatchContext } from '../../contexts/patch';
 
 const root = document.getElementById('root');
 
 export const PatchLoader: React.FC = () => {
-	const { loadingFromCloud, dispatch } = usePatch();
+	const { loadingFromCloud, dispatch } = useContext(PatchContext);
 
 	const [patches, setPatches] = useState<DatabasePatch[]>([]);
 

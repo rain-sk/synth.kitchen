@@ -1,5 +1,6 @@
 import React, {
 	useCallback,
+	useContext,
 	useEffect,
 	useMemo,
 	useRef,
@@ -7,7 +8,7 @@ import React, {
 } from 'react';
 import { IIo, IoType, ioKey } from '../state/types/io';
 import { IParameter, paramKey } from '../state/types/parameter';
-import { usePatch } from '../../hooks/use-patch';
+import { PatchContext } from './patch';
 
 export type IOutput = IIo;
 export type IInput = IIo | IParameter;
@@ -118,7 +119,7 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 	const [connectorCount, setConnectorCount] = useState(0);
 	const [connectionCount, setConnectionCount] = useState(0);
 
-	const { connectionsToLoad } = usePatch();
+	const { connectionsToLoad } = useContext(PatchContext);
 	const connectionsToLoadRef = useRef<Record<string, [IOutput, IInput]>>();
 	useEffect(() => {
 		if (

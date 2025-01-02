@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { KeyCode, keyCodeMovementMap } from '../../../constants/key';
 import { patchActions } from '../../state/actions';
-import { usePatch } from '../../../hooks/use-patch';
+import { PatchContext } from '../../contexts/patch';
 
 export const KeyHandler: React.FC = () => {
-	const { selectedModuleKeys, dispatch } = usePatch();
+	const { selectedModuleKeys, dispatch } = useContext(PatchContext);
 
 	const { current: onKeyDown } = useRef((e: KeyboardEvent) => {
 		if (e.keyCode === KeyCode.A) {

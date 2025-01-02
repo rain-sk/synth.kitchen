@@ -1,6 +1,7 @@
 import React, {
 	MouseEvent as ReactMouseEvent,
 	useCallback,
+	useContext,
 	useEffect,
 	useMemo,
 	useRef,
@@ -29,8 +30,8 @@ import { VcaModule } from './vca';
 import { PanModule } from './pan';
 import { ModuleHeader } from '../module-components/module-header';
 import { MidiCcModule } from './midi-cc';
-import { usePatch } from '../../../hooks/use-patch';
 import { Modifier } from '../../../constants/key';
+import { PatchContext } from '../../contexts/patch';
 
 const useDragAndDrop = (
 	moduleKey: string,
@@ -41,7 +42,7 @@ const useDragAndDrop = (
 	startDragging: (e: ReactMouseEvent<HTMLDivElement>) => void;
 	setPosition: (position: Position) => void;
 } => {
-	const { dispatch } = usePatch();
+	const { dispatch } = useContext(PatchContext);
 	const updateModulePosition = useCallback(
 		(position: Position) => {
 			dispatch(patchActions.updateModulePositionAction(moduleKey, position));
@@ -170,7 +171,7 @@ export const Module: React.FunctionComponent<{
 }> = ({ module, position }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { selectedModuleKeys, selectionPending, heldModifiers, dispatch } =
-		usePatch();
+		useContext(PatchContext);
 
 	const { isDragging, startDragging, setPosition } = useDragAndDrop(
 		module.moduleKey,

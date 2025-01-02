@@ -1,12 +1,18 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
 import { IMediaRecorder, MediaRecorder } from 'extendable-media-recorder';
 import hhmmss from 'hhmmss';
 
 import { audioContext, resampling } from '../../audio/context';
-import { usePatch } from '../../../hooks/use-patch';
+import { PatchContext } from '../../contexts/patch';
 
 export const Record: React.FC = () => {
-	const state = usePatch();
+	const state = useContext(PatchContext);
 	const mediaRecorder = useRef<IMediaRecorder>();
 	const chunks = useRef<Blob[]>();
 

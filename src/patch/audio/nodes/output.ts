@@ -4,18 +4,17 @@ import {
 	IAudioParam,
 	IGainNode,
 } from 'standardized-audio-context';
-import { audioContext } from '../context';
+import { audioContext, resampling } from '../context';
 import { LimiterNode } from './limiter';
 
 export class OutputNode {
 	private _gain = audioContext.createGain();
-	private _delay = audioContext.createDelay();
+	private _delay = resampling;
 	private _limiter = new LimiterNode();
 
 	constructor() {
 		this._gain.connect(this._limiter.input());
 		this._limiter.output().connect(this._delay);
-		this._delay.delayTime.value = 256 / audioContext.sampleRate;
 		this._delay.connect(audioContext.destination);
 	}
 

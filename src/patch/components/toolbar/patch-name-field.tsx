@@ -1,9 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import { patchActions } from '../../state/actions';
-import { usePatch } from '../../../hooks/use-patch';
+import { PatchContext } from '../../contexts/patch';
 
 export const PatchNameField = () => {
-	const { name, dispatch } = usePatch();
+	const { name, dispatch } = useContext(PatchContext);
 
 	const handleNameChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
