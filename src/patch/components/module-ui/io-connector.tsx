@@ -1,9 +1,14 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { IAudioContext, IAudioNode } from 'standardized-audio-context';
 
 import { IoType, ioKey } from '../../state/types/connection';
 import { ConnectionContext } from '../../contexts/connection';
-import { useEffectOnce } from '../../../utils/use-effect-once';
 
 export const IoConnector: React.FunctionComponent<{
 	name: string;
@@ -24,13 +29,13 @@ export const IoConnector: React.FunctionComponent<{
 		unregisterConnector,
 	} = useContext(ConnectionContext);
 
-	useEffectOnce(() => {
+	useEffect(() => {
 		registerConnector({ moduleKey, channel, type, accessor });
 
 		return () => {
 			unregisterConnector({ moduleKey, channel, type, accessor });
 		};
-	});
+	}, []);
 
 	const onClick = useCallback(() => {
 		clickConnector({ moduleKey, type, channel, accessor });
