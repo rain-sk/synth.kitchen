@@ -1,4 +1,4 @@
-import { IInput, IOutput } from '../../contexts/connection';
+import { IInput, IOutput } from './io';
 import { IModule } from './module';
 import { Position } from './patch';
 

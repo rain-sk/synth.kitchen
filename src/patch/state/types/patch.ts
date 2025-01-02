@@ -1,7 +1,6 @@
-import { IInput, IOutput } from '../../contexts/connection';
 import { randomId } from '../../../utils/random-id';
 import { randomName } from '../../../utils/random-name';
-import { IIo } from './io';
+import { IInput, IIo, IOutput } from './io';
 import { IModule } from './module';
 import { IParameter } from './parameter';
 import { Modifier } from '../../../constants/key';

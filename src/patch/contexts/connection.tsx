@@ -6,15 +6,17 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import { IIo, IoType, ioKey } from '../state/types/io';
-import { IParameter, paramKey } from '../state/types/parameter';
+import {
+	IConnector,
+	IConnectorInfo,
+	IInput,
+	IIo,
+	IOutput,
+	IoType,
+	ioKey,
+} from '../state/types/io';
+import { paramKey } from '../state/types/parameter';
 import { PatchContext } from './patch';
-
-export type IOutput = IIo;
-export type IInput = IIo | IParameter;
-export type IConnector = IOutput | IInput;
-
-type IConnectorInfo = [IConnector, Set<string>];
 
 const connections = new Map<string, [IOutput, IInput]>();
 const connectors = new Map<string, IConnectorInfo>();
