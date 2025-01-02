@@ -1,14 +1,20 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo, useReducer } from 'react';
 import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
 import { ModuleCanvas } from './module-canvas';
 import { Connections } from './connections';
 import { IModule } from '../../state/types/module';
-import { Position } from '../../state/types/patch';
+import { blankPatch, Position } from '../../state/types/patch';
+import { reducer } from '../../state';
 import { PatchContext } from '../../contexts/patch';
+import { ConnectionContextProvider } from '../../contexts/connection';
+import { MidiContextProvider } from '../../contexts/midi';
+import { Toolbar } from '../toolbar';
+import { PatchLoader } from './patch-loader';
 
 export const PatchEditor: React.FC = () => {
-	const { modulePositions, modules } = useContext(PatchContext);
+	const [state, dispatch] = useReducer(reducer, blankPatch());
+	const { modulePositions, modules } = state;
 
 	const sortedModules = useMemo(
 		() =>
@@ -26,10 +32,18 @@ export const PatchEditor: React.FC = () => {
 	);
 
 	return (
-		<ModuleCanvasBackdrop drawOnTop={false}>
-			<KeyHandler />
-			<ModuleCanvas modulesWithPosition={sortedModules} />
-			<Connections />
-		</ModuleCanvasBackdrop>
+		<PatchContext.Provider value={{ ...state, dispatch }}>
+			<ConnectionContextProvider>
+				<MidiContextProvider>
+					<Toolbar />
+					<ModuleCanvasBackdrop drawOnTop={false}>
+						<KeyHandler />
+						<ModuleCanvas modulesWithPosition={sortedModules} />
+						<Connections />
+					</ModuleCanvasBackdrop>
+					<PatchLoader />
+				</MidiContextProvider>
+			</ConnectionContextProvider>
+		</PatchContext.Provider>
 	);
 };
