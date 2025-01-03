@@ -10,6 +10,7 @@ import { IAudioContext, IAudioNode } from 'standardized-audio-context';
 import { IoType, ioKey } from '../../state/types/connection';
 import { ConnectionContext } from '../../contexts/connection';
 import { PatchContext } from '../../contexts/patch';
+import { useConnectedToActiveConnector } from '../../hooks/useConnectedToActiveConnector';
 
 export const IoConnector: React.FunctionComponent<{
 	name: string;
@@ -22,13 +23,14 @@ export const IoConnector: React.FunctionComponent<{
 
 	const { activeConnectorKey } = useContext(PatchContext);
 	const {
-		connectedToActiveConnector,
 		clickConnector,
 		highlightInputs,
 		highlightOutputs,
 		registerConnector,
 		unregisterConnector,
 	} = useContext(ConnectionContext);
+	const connectedToActiveConnector =
+		useConnectedToActiveConnector(connectorKey);
 
 	useEffect(() => {
 		registerConnector({ moduleKey, channel, type, accessor });
@@ -45,8 +47,6 @@ export const IoConnector: React.FunctionComponent<{
 	const isInput = type === IoType.input;
 	const isActive = activeConnectorKey === connectorKey;
 
-	const isConnectedToActiveConnector =
-		connectedToActiveConnector.includes(connectorKey);
 	const highlight = !isActive && (isInput ? highlightInputs : highlightOutputs);
 
 	const roleDescription = useMemo(
@@ -66,7 +66,7 @@ export const IoConnector: React.FunctionComponent<{
 				className={`connector ${
 					isActive
 						? 'active'
-						: isConnectedToActiveConnector
+						: connectedToActiveConnector
 						? 'connected'
 						: highlight
 						? 'highlight'

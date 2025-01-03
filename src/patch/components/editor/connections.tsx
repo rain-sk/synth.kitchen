@@ -9,6 +9,7 @@ import {
 	connectorButton,
 	connectorKey,
 } from '../../state/connection';
+import { useConnectedToActiveConnectorState } from '../../hooks/useConnectedToActiveConnector';
 
 const _ = {
 	root: document.getElementById('root'),
@@ -118,6 +119,7 @@ export const Connections: React.FC = () => {
 	const { activeConnectorKey, modules, modulePositions } =
 		useContext(PatchContext);
 	const { connectionCount } = useContext(ConnectionContext);
+	useConnectedToActiveConnectorState(activeConnectorKey);
 
 	const drawConnections = useCallback(
 		queueAnimationCallback(() => {

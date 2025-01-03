@@ -14,6 +14,10 @@ export const PatchContext = React.createContext<PatchContextValue>({
 
 export const PatchContextProvider: React.FC<
 	React.PropsWithChildren<PatchContextValue>
-> = (props) => (
-	<PatchContext.Provider value={props}>{props.children}</PatchContext.Provider>
-);
+> = (props) => {
+	return (
+		<PatchContext.Provider value={props}>
+			{props.children}
+		</PatchContext.Provider>
+	);
+};

@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { IParameter, paramKey } from '../../state/types/parameter';
 import { ConnectionContext } from '../../contexts/connection';
 import { PatchContext } from '../../contexts/patch';
+import { useConnectedToActiveConnector } from '../../hooks/useConnectedToActiveConnector';
 
 export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	moduleKey,
@@ -12,12 +13,13 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 
 	const { activeConnectorKey } = useContext(PatchContext);
 	const {
-		connectedToActiveConnector,
 		clickConnector,
 		highlightInputs,
 		registerConnector,
 		unregisterConnector,
 	} = useContext(ConnectionContext);
+	const connectedToActiveConnector =
+		useConnectedToActiveConnector(connectorKey);
 
 	useEffect(() => {
 		registerConnector({ moduleKey, name, accessor });
@@ -32,8 +34,6 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	}, [clickConnector, moduleKey, name, accessor]);
 
 	const isActive = activeConnectorKey === connectorKey;
-	const isConnectedToActiveConnector =
-		connectedToActiveConnector.includes(connectorKey);
 	const highlight = highlightInputs;
 
 	return (
@@ -46,7 +46,7 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 			className={`connector ${
 				isActive
 					? 'active'
-					: isConnectedToActiveConnector
+					: connectedToActiveConnector
 					? 'connected'
 					: highlight
 					? 'highlight'
