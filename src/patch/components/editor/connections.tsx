@@ -1,15 +1,11 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 
-import { ConnectionContext } from '../../contexts/connection';
-import {
-	connectionEntries,
-	connectorButton,
-	connectorKey,
-} from '../../state/connection';
+import { connectorKey } from '../../state/connection';
 import { IInput, IOutput } from '../../state/types/connection';
 import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { PatchContext } from '../../contexts/patch';
 import { queueAnimationCallback } from '../../../utils/animation';
+import { DerivedConnectionStateContext } from '../../contexts/derived-connection-state';
 
 const _ = {
 	root: document.getElementById('root'),
@@ -29,13 +25,12 @@ const main = () => {
 	return _.main as HTMLElement;
 };
 
-const position = (connectorKey: string): Position => {
-	const connector = connectorButton(connectorKey);
-	if (!connector) {
+const position = (button: HTMLButtonElement): Position => {
+	if (!button) {
 		return INVALID_POSITION;
 	}
 
-	const rect = connector.getBoundingClientRect();
+	const rect = button.getBoundingClientRect();
 	return [
 		rect.left + rect.width / 2 + window.pageXOffset,
 		rect.top + rect.height / 2 + window.pageYOffset - main().offsetTop,
@@ -49,10 +44,13 @@ const equals = (position1: Position, position2: Position) => {
 type Segment = [Position, Position];
 type Path = Segment[];
 const connectionToPath =
-	(mode: ConnectionDrawMode) =>
+	(
+		mode: ConnectionDrawMode,
+		connectorButton: (key: string) => HTMLButtonElement,
+	) =>
 	([output, input]: [IOutput, IInput]): Path => {
-		const outputPosition = position(connectorKey(output));
-		const inputPosition = position(connectorKey(input));
+		const outputPosition = position(connectorButton(connectorKey(output)));
+		const inputPosition = position(connectorButton(connectorKey(input)));
 
 		switch (mode) {
 			case ConnectionDrawMode.DIRECT:
@@ -116,9 +114,10 @@ export const Connections: React.FC = () => {
 	const contextRef = useRef<CanvasRenderingContext2D>();
 	const mousePositionRef = useRef<Position>(INVALID_POSITION);
 
-	const { activeConnectorKey, modules, modulePositions } =
+	const { activeConnectorKey, modules, modulePositions, connections } =
 		useContext(PatchContext);
-	const { connectionCount } = useContext(ConnectionContext);
+
+	const { connectorButton } = useContext(DerivedConnectionStateContext);
 
 	const drawConnections = useCallback(
 		queueAnimationCallback(() => {
@@ -140,13 +139,16 @@ export const Connections: React.FC = () => {
 
 				resizeCanvas(canvasRef.current);
 
-				const connectionsToDraw = Object.values(connectionEntries()).map(
-					connectionToPath(ConnectionDrawMode.DIRECT),
+				const connectionsToDraw = Object.values(connections).map(
+					connectionToPath(ConnectionDrawMode.DIRECT, connectorButton),
 				);
 
 				if (activeConnectorKey) {
 					connectionsToDraw.push([
-						[mousePositionRef.current, position(activeConnectorKey)],
+						[
+							mousePositionRef.current,
+							position(connectorButton(activeConnectorKey)),
+						],
 					]);
 				}
 
@@ -193,7 +195,7 @@ export const Connections: React.FC = () => {
 				});
 			}
 		}),
-		[activeConnectorKey],
+		[activeConnectorKey, connectorButton],
 	);
 
 	const onMouseMove = useCallback(
@@ -218,7 +220,7 @@ export const Connections: React.FC = () => {
 	useEffect(() => {
 		if (activeConnectorKey && !activeListenerRef.current) {
 			activeListenerRef.current = true;
-			mousePositionRef.current = position(activeConnectorKey);
+			mousePositionRef.current = position(connectorButton(activeConnectorKey));
 			main().addEventListener('mousemove', onMouseMove);
 		} else if (!activeConnectorKey) {
 			activeListenerRef.current = false;
@@ -234,7 +236,7 @@ export const Connections: React.FC = () => {
 				main().removeEventListener('mousemove', onMouseMove);
 			}
 		};
-	}, [activeConnectorKey, drawConnections]);
+	}, [activeConnectorKey, drawConnections, connectorButton]);
 
 	useEffect(drawConnections, [activeConnectorKey]);
 
@@ -262,7 +264,7 @@ export const Connections: React.FC = () => {
 		};
 	}, []);
 
-	useEffect(onResize, [connectionCount, modules, modulePositions]);
+	useEffect(onResize, [connections, modules, modulePositions]);
 
 	return (
 		<canvas

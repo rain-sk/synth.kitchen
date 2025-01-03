@@ -14,6 +14,11 @@ import { selectModule } from './select-module';
 import { updateModule } from './update-module';
 import { updateModulePosition } from './update-module-position';
 import { setActiveConnectorKey } from './set-active-connector-key';
+import {
+	registerConnector,
+	unregisterConnector,
+} from './connector-registration';
+import { clickConnector } from './click-connector';
 
 export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 	state,
@@ -30,6 +35,9 @@ export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 			case 'ChangeName': {
 				return changeName(state, action);
 			}
+			case 'ClickConnector': {
+				return clickConnector(state, action);
+			}
 			case 'DisableKeyMovement': {
 				return disableKeyMovement(state, action);
 			}
@@ -45,6 +53,9 @@ export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 			case 'LoadPatch': {
 				return loadPatch(state, action);
 			}
+			case 'RegisterConnector': {
+				return registerConnector(state, action);
+			}
 			case 'SelectionDrag': {
 				return selectionDrag(state, action);
 			}
@@ -53,6 +64,9 @@ export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 			}
 			case 'SetActiveConnectorKey': {
 				return setActiveConnectorKey(state, action);
+			}
+			case 'UnregisterConnector': {
+				return unregisterConnector(state, action);
 			}
 			case 'UpdateModulePosition': {
 				return updateModulePosition(state, action);

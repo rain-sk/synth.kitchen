@@ -8,32 +8,21 @@ import {
 } from './types/connection';
 import { paramKey } from './types/parameter';
 
-const connections = new Map<string, [IOutput, IInput]>();
-const connectors = new Map<string, IConnectorInfo>();
-const connectorButtons = new Map<string, HTMLButtonElement>();
-
-export const connectionEntries = () =>
-	Object.fromEntries(connections.entries());
-
-export const connectorInfo = (key?: string) =>
-	key && connectors.has(key) ? connectors.get(key) : undefined;
+export const connectorInfo = (
+	connectors: Record<string, IConnectorInfo>,
+	key: string,
+) => {
+	const connector = connectors[key];
+	if (!connector) {
+		throw Error(`Info for connector with key ${key} not found`);
+	}
+	return connector;
+};
 
 export const connectorKey = (connector: IConnector) =>
 	'type' in connector ? ioKey(connector) : paramKey(connector);
 
-export const connectorButton = (key: string) => {
-	if (!connectorButtons.has(key)) {
-		const button = document.getElementById(key);
-		if (button) {
-			connectorButtons.set(key, button as HTMLButtonElement);
-		} else {
-			throw new Error(`connector with key '${key}' not found`);
-		}
-	}
-	return connectorButtons.get(key) as HTMLButtonElement | undefined;
-};
-
-const connectionKey = (output: IOutput, input: IInput) => {
+export const connectionKey = (output: IOutput, input: IInput) => {
 	if (!('type' in output) || output.type === IoType.input) {
 		throw 'Invalid output';
 	}
@@ -45,70 +34,105 @@ const connectionKey = (output: IOutput, input: IInput) => {
 	return `${connectorKey(output)}|${connectorKey(input)}`;
 };
 
-export const connectionInfo = (connectionKey: string): [IOutput, IInput] => {
-	const connection = connections.get(connectionKey);
+export const connectionInfo = (
+	connections: Record<string, [IOutput, IInput]>,
+	connectionKey: string,
+): [IOutput, IInput] => {
+	const connection = connections[connectionKey];
+
 	if (!connection) {
-		throw Error('no connection with the given key');
+		throw Error(`Connection with key ${connectionKey} not found`);
 	}
+
 	return connection;
 };
 
-export const connectOrDisconnect = (output: IOutput, input: IInput) => {
-	const outputInfo = connectorInfo(connectorKey(output));
-	const inputInfo = connectorInfo(connectorKey(input));
-
-	if (!outputInfo) {
-		throw 'Unregistered output';
-	}
-	if (!inputInfo) {
-		throw 'Unregistered info';
-	}
-
+export const connect = (
+	connections: Record<string, [IOutput, IInput]>,
+	connectors: Record<string, IConnectorInfo>,
+	output: IOutput,
+	input: IInput,
+): {
+	connections: Record<string, [IOutput, IInput]>;
+	connectors: Record<string, IConnectorInfo>;
+} => {
 	const key = connectionKey(output, input);
 
-	if (connections.has(key)) {
-		connections.delete(key);
+	const outputKey = connectorKey(output);
+	const inputKey = connectorKey(input);
+	const outputInfo = connectorInfo(connectors, outputKey);
+	const inputInfo = connectorInfo(connectors, inputKey);
 
-		outputInfo[1].delete(key);
-		inputInfo[1].delete(key);
-
-		output.accessor().disconnect(input.accessor() as any);
-	} else {
+	try {
 		output.accessor().connect(input.accessor() as any);
+	} catch (e) {}
 
-		outputInfo[1].add(key);
-		inputInfo[1].add(key);
-
-		connections.set(key, [output, input]);
-	}
-
-	return connections.size;
-};
-
-export const doRegisterConnector = (connector: IConnector) => {
-	connectors.set(connectorKey(connector), [connector, new Set<string>()]);
-
-	return connectors.size;
-};
-
-export const doUnregisterConnector = (connector: IConnector) => {
-	const key = connectorKey(connector);
-	const info = connectorInfo(key);
-
-	if (!info) {
-		throw 'Unregistering connector which was not registered';
-	}
-
-	info[1].forEach((connectionKey) => {
-		const [output, input] = connectionInfo(connectionKey);
-		connectOrDisconnect(output, input);
-	});
-
-	connectors.delete(key);
-	connectorButtons.delete(key);
+	const outputConnections = new Set([...outputInfo[1], key]);
+	const inputConnections = new Set([...inputInfo[1], key]);
 
 	return {
-		connectorCount: connectors.size,
-		connectionCount: connections.size,
+		connections: {
+			...connections,
+			[key]: [output, input],
+		},
+		connectors: {
+			...connectors,
+			[outputKey]: [output, outputConnections],
+			[inputKey]: [input, inputConnections],
+		},
 	};
 };
+
+export const disconnect = (
+	connections: Record<string, [IOutput, IInput]>,
+	connectors: Record<string, IConnectorInfo>,
+	output: IOutput,
+	input: IInput,
+): {
+	connections: Record<string, [IOutput, IInput]>;
+	connectors: Record<string, IConnectorInfo>;
+} => {
+	const key = connectionKey(output, input);
+
+	const outputKey = connectorKey(output);
+	const inputKey = connectorKey(input);
+	const outputInfo = connectorInfo(connectors, outputKey);
+	const inputInfo = connectorInfo(connectors, inputKey);
+
+	connections = Object.fromEntries(
+		Object.entries(connections).filter(([existingKey]) => existingKey !== key),
+	);
+
+	const outputConnections = new Set(
+		[...outputInfo[1]].filter(([existingKey]) => existingKey !== key),
+	);
+	const inputConnections = new Set(
+		[...inputInfo[1]].filter(([existingKey]) => existingKey !== key),
+	);
+
+	try {
+		output.accessor().disconnect(input.accessor() as any);
+	} catch (e) {}
+
+	return {
+		connections,
+		connectors: {
+			...connectors,
+			[outputKey]: [output, outputConnections],
+			[inputKey]: [input, inputConnections],
+		},
+	};
+};
+
+export const connectOrDisconnect = (
+	connections: Record<string, [IOutput, IInput]>,
+	connectors: Record<string, IConnectorInfo>,
+	output: IOutput,
+	input: IInput,
+): {
+	connections: Record<string, [IOutput, IInput]>;
+	connectors: Record<string, IConnectorInfo>;
+} =>
+	connectionKey(output, input) in connections
+		? disconnect(connections, connectors, output, input)
+		: connect(connections, connectors, output, input);

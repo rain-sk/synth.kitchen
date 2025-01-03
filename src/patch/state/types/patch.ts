@@ -1,4 +1,4 @@
-import { IInput, IIo, IOutput } from './connection';
+import { IConnectorInfo, IInput, IIo, IOutput } from './connection';
 import { IModule } from './module';
 import { IParameter } from './parameter';
 import { Modifier } from '../../../constants/key';
@@ -17,9 +17,12 @@ export type IPatchState = {
 	selectedModuleKeys: Set<string>;
 
 	// i/o
+	activeConnectorKey: string | undefined;
+	connections: Record<string, [IOutput, IInput]>;
+	connectors: Record<string, IConnectorInfo>;
+	moduleConnectors: Record<string, Set<string>>;
 	io: Record<string, IIo>;
 	parameters: Record<string, IParameter>;
-	activeConnectorKey: string | undefined;
 
 	// mouse info
 	mouseDragStartPosition: Position;

@@ -8,7 +8,6 @@ export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
 ) => {
 	const { id, name, modules, modulePositions, connections } =
 		action.payload.patch;
-
 	return {
 		...state,
 		id: id ?? randomId(),
@@ -18,7 +17,10 @@ export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
 		selectedModuleKeys: new Set(),
 		mouseDragPosition: INVALID_POSITION,
 		mouseDragStartPosition: INVALID_POSITION,
-		connectionsToLoad: connections,
+		connectionsToLoad:
+			connections && Object.keys(connections).length > 0
+				? connections
+				: undefined,
 		selectionPending: false,
 		loadingFromCloud: false,
 	};

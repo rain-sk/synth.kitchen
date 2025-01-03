@@ -23,9 +23,12 @@ export const blankPatch = (): IPatchState => ({
 	selectedModuleKeys: new Set(),
 
 	// i/o
+	moduleConnectors: {},
+	activeConnectorKey: undefined,
+	connectors: {},
+	connections: {},
 	io: {},
 	parameters: {},
-	activeConnectorKey: undefined,
 
 	// mouse info
 	mouseDragStartPosition: INVALID_POSITION,

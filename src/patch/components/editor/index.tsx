@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react';
 
 import { blankPatch } from '../../state';
-import { ConnectionContextProvider } from '../../contexts/connection';
+import { DerivedConnectionStateContextProvider } from '../../contexts/derived-connection-state';
 import { Connections } from './connections';
 import { KeyHandler } from './key-handler';
 import { MidiContextProvider } from '../../contexts/midi';
@@ -11,14 +11,40 @@ import { PatchContextProvider } from '../../contexts/patch';
 import { PatchLoader } from './patch-loader';
 import { reducer } from '../../state/reducers';
 import { Toolbar } from '../toolbar';
-import { useEffectToMaintainDerivedConnectorState } from '../../hooks/useDerivedConnectorState';
+import { IPatchAction, patchActions } from '../../state/actions';
+import { IConnectorInfo, IInput, IOutput } from '../../state/types/connection';
+import { connectorKey } from '../../state/connection';
+
+const useLoadConnections = (
+	dispatch: React.Dispatch<IPatchAction>,
+	connectors: Record<string, IConnectorInfo>,
+	connectionsToLoad?: Record<string, [IOutput, IInput]>,
+) => {
+	if (connectionsToLoad) {
+		const connectedConnectors = new Set<string>();
+		Object.values(connectionsToLoad).forEach(([output, input]) => {
+			connectedConnectors.add(connectorKey(output));
+			connectedConnectors.add(connectorKey(input));
+		});
+
+		if (
+			connectedConnectors.size > 0 &&
+			[...connectedConnectors].every((key) => key in connectors)
+		) {
+			dispatch(patchActions.loadConnectionsAction(connectionsToLoad));
+		}
+	}
+};
 
 export const PatchEditor: React.FC = () => {
 	const [state, dispatch] = useReducer(reducer, blankPatch());
-	useEffectToMaintainDerivedConnectorState(state.activeConnectorKey);
+
+	// if (state.connectionsToLoad && )
+	useLoadConnections(dispatch, state.connectors, state.connectionsToLoad);
+
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>
-			<ConnectionContextProvider>
+			<DerivedConnectionStateContextProvider {...state}>
 				<MidiContextProvider>
 					<Toolbar />
 					<ModuleCanvasBackdrop>
@@ -28,7 +54,7 @@ export const PatchEditor: React.FC = () => {
 					</ModuleCanvasBackdrop>
 					<PatchLoader />
 				</MidiContextProvider>
-			</ConnectionContextProvider>
+			</DerivedConnectionStateContextProvider>
 		</PatchContextProvider>
 	);
 };

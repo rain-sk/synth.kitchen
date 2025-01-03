@@ -6,6 +6,7 @@ import {
 	keyCodeMovementMap,
 	Modifier,
 } from '../../../constants/key';
+import { connectionInfo, connectorInfo, disconnect } from '../connection';
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	state,
@@ -52,14 +53,40 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		(keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) &&
 		state.isKeyMovementEnabled
 	) {
+		let connections = { ...state.connections };
+		console.log({ connections });
+		let moduleConnectors = { ...state.moduleConnectors };
+
+		const connectorsOfSelectedModules = [...state.selectedModuleKeys]
+			.filter((moduleKey) => moduleKey !== '0')
+			.map((moduleKey) =>
+				moduleKey in moduleConnectors ? [...moduleConnectors[moduleKey]] : [],
+			)
+			.flat(2);
+		const connectionsOfSelectedModules = connectorsOfSelectedModules
+			.map((key) => [...connectorInfo(state.connectors, key)[1]])
+			.flat(2);
+		connectionsOfSelectedModules.forEach((connectionKey) => {
+			const [output, input] = connectionInfo(connections, connectionKey);
+			const { connections: newConnections } = disconnect(
+				connections,
+				state.connectors,
+				output,
+				input,
+			);
+			connections = newConnections;
+		});
+		console.log({ connections });
+		const modules = Object.fromEntries(
+			Object.entries(state.modules).filter(
+				([moduleKey]) =>
+					!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
+			),
+		);
 		return {
 			...state,
-			modules: Object.fromEntries(
-				Object.entries(state.modules).filter(
-					([moduleKey]) =>
-						!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
-				),
-			),
+			connections,
+			modules,
 			modulePositions: Object.fromEntries(
 				Object.entries(state.modulePositions).filter(
 					([moduleKey]) =>
