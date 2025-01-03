@@ -188,10 +188,6 @@ main {
 	border: 1px solid #4f4658;
 }
 
-.connector.active:hover::before {
-	display: none;
-}
-
 .connector:first-child {
 	margin-right: calc(1rem + 4px);
 	margin-left: calc(-2.2rem - 4px);
