@@ -25,7 +25,6 @@ import {
 import { patchActions } from '../state/actions';
 
 type IConnectionContext = {
-	activeConnectorKey?: string;
 	connectedToActiveConnector: string[];
 	connectorCount: number;
 	connectionCount: number;
@@ -189,7 +188,6 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 	return (
 		<ConnectionContext.Provider
 			value={{
-				activeConnectorKey,
 				connectedToActiveConnector,
 				connectorCount,
 				connectionCount,

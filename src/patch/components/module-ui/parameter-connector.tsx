@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { IParameter, paramKey } from '../../state/types/parameter';
 import { ConnectionContext } from '../../contexts/connection';
+import { PatchContext } from '../../contexts/patch';
 
 export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	moduleKey,
@@ -9,8 +10,8 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 }) => {
 	const [connectorKey] = useState(() => paramKey({ moduleKey, name }));
 
+	const { activeConnectorKey } = useContext(PatchContext);
 	const {
-		activeConnectorKey,
 		connectedToActiveConnector,
 		clickConnector,
 		highlightInputs,

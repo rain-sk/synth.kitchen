@@ -115,8 +115,9 @@ export const Connections: React.FC = () => {
 	const contextRef = useRef<CanvasRenderingContext2D>();
 	const mousePositionRef = useRef<Position>(INVALID_POSITION);
 
-	const { modules, modulePositions } = useContext(PatchContext);
-	const { connectionCount, activeConnectorKey } = useContext(ConnectionContext);
+	const { activeConnectorKey, modules, modulePositions } =
+		useContext(PatchContext);
+	const { connectionCount } = useContext(ConnectionContext);
 
 	const drawConnections = useCallback(
 		queueAnimationCallback(() => {

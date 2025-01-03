@@ -9,6 +9,7 @@ import { IAudioContext, IAudioNode } from 'standardized-audio-context';
 
 import { IoType, ioKey } from '../../state/types/connection';
 import { ConnectionContext } from '../../contexts/connection';
+import { PatchContext } from '../../contexts/patch';
 
 export const IoConnector: React.FunctionComponent<{
 	name: string;
@@ -19,8 +20,8 @@ export const IoConnector: React.FunctionComponent<{
 }> = ({ name, moduleKey, type, channel, accessor }) => {
 	const [connectorKey] = useState(() => ioKey({ moduleKey, channel, type }));
 
+	const { activeConnectorKey } = useContext(PatchContext);
 	const {
-		activeConnectorKey,
 		connectedToActiveConnector,
 		clickConnector,
 		highlightInputs,
