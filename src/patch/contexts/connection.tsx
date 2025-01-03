@@ -5,14 +5,7 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import {
-	IConnector,
-	IConnectorInfo,
-	IInput,
-	IOutput,
-	IoType,
-} from '../state/types/connection';
-import { PatchContext } from './patch';
+
 import {
 	connectOrDisconnect,
 	connectorInfo,
@@ -20,7 +13,15 @@ import {
 	doRegisterConnector,
 	doUnregisterConnector,
 } from '../state/connection';
+import {
+	IConnector,
+	IConnectorInfo,
+	IInput,
+	IoType,
+	IOutput,
+} from '../state/types/connection';
 import { patchActions } from '../state/actions';
+import { PatchContext } from './patch';
 
 type IConnectionContext = {
 	connectorCount: number;

@@ -6,12 +6,12 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import { queueAnimation } from '../../../utils/animation';
 
-import { patchActions } from '../../state/actions';
-import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { AddModule } from './add-module';
+import { INVALID_POSITION, Position } from '../../state/types/patch';
+import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
+import { queueAnimation } from '../../../utils/animation';
 
 const positionFromMouseEvent = (
 	e: MouseEvent,

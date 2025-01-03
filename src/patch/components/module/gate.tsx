@@ -2,10 +2,10 @@ import React, { useCallback } from 'react';
 
 import { GateNode } from '../../audio/nodes/gate';
 
+import { audioContext } from '../../audio';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
-import { audioContext } from '../../audio';
 import { useNode } from './use-node';
 
 const gateStateFromNode = (gate: GateNode): IModuleState['GATE'] => ({

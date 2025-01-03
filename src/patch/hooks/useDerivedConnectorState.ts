@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { createGlobalState } from 'react-use';
+
 import {
 	connectionInfo,
 	connectorInfo,

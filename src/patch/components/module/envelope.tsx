@@ -2,10 +2,10 @@ import React, { useCallback } from 'react';
 
 import { audioContext } from '../../audio';
 
+import { EnvelopeNode } from '../../audio/nodes/envelope';
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
-import { EnvelopeNode } from '../../audio/nodes/envelope';
 import { useNode } from './use-node';
 
 const envelopeStateFromNode = (

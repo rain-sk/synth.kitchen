@@ -1,16 +1,16 @@
 import React, { useReducer } from 'react';
 
-import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
-import { KeyHandler } from './key-handler';
-import { ModuleCanvas } from './module-canvas';
-import { Connections } from './connections';
 import { blankPatch } from '../../state';
-import { PatchContextProvider } from '../../contexts/patch';
 import { ConnectionContextProvider } from '../../contexts/connection';
+import { Connections } from './connections';
+import { KeyHandler } from './key-handler';
 import { MidiContextProvider } from '../../contexts/midi';
-import { Toolbar } from '../toolbar';
+import { ModuleCanvas } from './module-canvas';
+import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
+import { PatchContextProvider } from '../../contexts/patch';
 import { PatchLoader } from './patch-loader';
 import { reducer } from '../../state/reducers';
+import { Toolbar } from '../toolbar';
 import { useEffectToMaintainDerivedConnectorState } from '../../hooks/useDerivedConnectorState';
 
 export const PatchEditor: React.FC = () => {

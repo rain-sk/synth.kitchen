@@ -1,8 +1,9 @@
 import React, { useCallback, useContext } from 'react';
-import { patchActions } from '../../state/actions';
-import { ModuleType } from '../../state/types/module';
+
 import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { midi } from '../../midi';
+import { ModuleType } from '../../state/types/module';
+import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 
 const controlModules = (): ModuleType[] =>

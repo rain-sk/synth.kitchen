@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { IAudioParam } from 'standardized-audio-context';
 
 import { audioContext } from '../../audio';
-
 import { SequencerNode } from '../../audio/nodes/sequencer';
+
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';

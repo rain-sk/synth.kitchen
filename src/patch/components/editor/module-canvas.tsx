@@ -1,9 +1,9 @@
 import React, { useContext, useMemo } from 'react';
 
 import { IModule } from '../../state/types/module';
-import { Position } from '../../state/types/patch';
 import { Module } from '../module';
 import { PatchContext } from '../../contexts/patch';
+import { Position } from '../../state/types/patch';
 
 export const ModuleCanvas: React.FC<{}> = () => {
 	const { modulePositions, modules } = useContext(PatchContext);

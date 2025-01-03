@@ -5,8 +5,9 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { IParameter, paramKey } from '../../state/types/parameter';
+
 import { ConnectionContext } from '../../contexts/connection';
+import { IParameter, paramKey } from '../../state/types/parameter';
 import { PatchContext } from '../../contexts/patch';
 import { useDerivedConnectorState } from '../../hooks/useDerivedConnectorState';
 

@@ -1,4 +1,5 @@
 import { AudioWorkletNode, IAudioContext } from 'standardized-audio-context';
+
 import adsr from './adsr.js?url';
 import clock from './clock.js?url';
 import gate from './gate.js?url';
@@ -16,7 +17,7 @@ export const processors = [
 	midiCc,
 	midiClock,
 	noise,
-	sequencer
+	sequencer,
 ];
 
 export const initAudioProcessors = (context: IAudioContext) => async () => {
@@ -24,6 +25,6 @@ export const initAudioProcessors = (context: IAudioContext) => async () => {
 		throw 'No AudioWorkletNode, uh ohhhh';
 	}
 	return Promise.all(
-		processors.map((processor) => context.audioWorklet?.addModule(processor))
+		processors.map((processor) => context.audioWorklet?.addModule(processor)),
 	);
 };

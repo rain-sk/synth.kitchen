@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 
 import { NoiseNode } from '../../audio/nodes/noise';
 
-import { IoConnectors } from '../module-ui/io-connectors';
 import { IModule } from '../../state/types/module';
+import { IoConnectors } from '../module-ui/io-connectors';
 import { useNode } from './use-node';
 
 const initNoise = () => ({});

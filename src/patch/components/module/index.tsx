@@ -8,8 +8,12 @@ import React, {
 	useState,
 } from 'react';
 
-import { patchActions } from '../../state/actions';
 import { IModule } from '../../state/types/module';
+import { Modifier } from '../../../constants/key';
+import { ModuleHeader } from '../module-ui/module-header';
+import { patchActions } from '../../state/actions';
+import { PatchContext } from '../../contexts/patch';
+import { queueAnimation } from '../../../utils/animation';
 
 import { ClockModule } from './clock';
 import { DelayModule } from './delay';
@@ -18,20 +22,16 @@ import { FilterModule } from './filter';
 import { GainModule } from './gain';
 import { GateModule } from './gate';
 import { LimiterModule } from './limiter';
+import { MidiCcModule } from './midi-cc';
 import { MidiClockModule } from './midi-clock';
 import { MidiTriggerModule } from './midi-trigger';
-import { Position } from '../../state/types/patch';
 import { NoiseModule } from './noise';
 import { OscillatorModule } from './oscillator';
 import { OutputModule } from './output';
-import { queueAnimation } from '../../../utils/animation';
+import { PanModule } from './pan';
+import { Position } from '../../state/types/patch';
 import { SequencerModule } from './sequencer';
 import { VcaModule } from './vca';
-import { PanModule } from './pan';
-import { ModuleHeader } from '../module-ui/module-header';
-import { MidiCcModule } from './midi-cc';
-import { Modifier } from '../../../constants/key';
-import { PatchContext } from '../../contexts/patch';
 
 const useDragAndDrop = (
 	moduleKey: string,

@@ -1,8 +1,9 @@
 import { IAudioContext, IAudioWorkletNode } from 'standardized-audio-context';
-import { audioContext } from '../';
 import { NoteMessageEvent, PortEvent, WebMidi } from 'webmidi';
-import { midi } from '../../midi';
+
+import { audioContext } from '../';
 import { audioWorkletNodeFactory } from './audio-worklet-node-factory';
+import { midi } from '../../midi';
 
 export class MidiTriggerNode {
 	private _node = audioWorkletNodeFactory('midi-clock');

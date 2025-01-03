@@ -1,6 +1,3 @@
-// TODO:
-// [ ] stop relying on currentTime; count the number of frames and multiply that by the framerate
-
 function interpolate(a, d, s, r, framesSinceTickStart, framesSinceTickEnd) {
 	const noteOn = framesSinceTickStart !== -1;
 
@@ -31,7 +28,7 @@ class Adsr extends AudioWorkletProcessor {
 			{ name: 'decay', defaultValue: 0, minValue: 0, maxValue: 60 },
 			{ name: 'sustain', defaultValue: 1, minValue: 0, maxValue: 1 },
 			{ name: 'release', defaultValue: 0.1, minValue: 0, maxValue: 60 },
-			{ name: 'active', defaultValue: 1, minValue: 0, maxValue: 1 }
+			{ name: 'active', defaultValue: 1, minValue: 0, maxValue: 1 },
 		];
 	}
 
@@ -104,7 +101,7 @@ class Adsr extends AudioWorkletProcessor {
 					isSustainConstant ? sustain[0] : sustain[i],
 					frameRelease,
 					framesSinceTickStart,
-					framesSinceTickEnd
+					framesSinceTickEnd,
 				);
 
 				const frameValue = (adsrValue + lastFrame) / 2;

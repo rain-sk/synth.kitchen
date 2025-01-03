@@ -1,7 +1,8 @@
 import React, { useCallback, useContext, useState } from 'react';
+
 import { patchActions } from '../../state/actions';
-import { randomId } from '../../../utils/random-id';
 import { PatchContext } from '../../contexts/patch';
+import { randomId } from '../../../utils/random-id';
 
 export const NumberBox: React.FunctionComponent<{
 	name: string;

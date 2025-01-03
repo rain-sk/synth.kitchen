@@ -4,8 +4,8 @@ import { MidiClockNode } from '../../audio/nodes/midi-clock';
 
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
-import { RadioParameter } from '../module-ui/radio-parameter';
 import { MidiContext } from '../../contexts/midi';
+import { RadioParameter } from '../module-ui/radio-parameter';
 import { useNode } from './use-node';
 
 const clockStateFromNode = (

@@ -1,14 +1,15 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
+
 import { ConnectionContext } from '../../contexts/connection';
-import { INVALID_POSITION, Position } from '../../state/types/patch';
-import { queueAnimationCallback } from '../../../utils/animation';
-import { PatchContext } from '../../contexts/patch';
-import { IInput, IOutput } from '../../state/types/connection';
 import {
 	connectionEntries,
 	connectorButton,
 	connectorKey,
 } from '../../state/connection';
+import { IInput, IOutput } from '../../state/types/connection';
+import { INVALID_POSITION, Position } from '../../state/types/patch';
+import { PatchContext } from '../../contexts/patch';
+import { queueAnimationCallback } from '../../../utils/animation';
 
 const _ = {
 	root: document.getElementById('root'),

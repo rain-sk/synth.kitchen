@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 
 import { audioContext } from '../../audio';
+import { VcaNode } from '../../audio/nodes/vca';
 
 import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
-import { VcaNode } from '../../audio/nodes/vca';
 import { useNode } from './use-node';
 
 const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({

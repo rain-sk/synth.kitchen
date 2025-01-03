@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import { IAudioContext, IAudioNode } from 'standardized-audio-context';
 
-import { IoType, ioKey } from '../../state/types/connection';
 import { ConnectionContext } from '../../contexts/connection';
+import { IoType, ioKey } from '../../state/types/connection';
 import { PatchContext } from '../../contexts/patch';
 import { useDerivedConnectorState } from '../../hooks/useDerivedConnectorState';
 

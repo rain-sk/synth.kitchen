@@ -1,4 +1,5 @@
 import { IAudioContext, IAudioWorkletNode } from 'standardized-audio-context';
+
 import { audioContext } from '../';
 import { audioWorkletNodeFactory } from './audio-worklet-node-factory';
 

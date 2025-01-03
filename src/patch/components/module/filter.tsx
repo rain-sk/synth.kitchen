@@ -9,10 +9,10 @@ import {
 import { audioContext } from '../../audio';
 
 import { IModule, IModuleState } from '../../state/types/module';
-import { useNode } from './use-node';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { RadioParameter } from '../module-ui/radio-parameter';
+import { useNode } from './use-node';
 
 const filterStateFromNode = (
 	filter: IBiquadFilterNode<IAudioContext>,
