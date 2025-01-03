@@ -1,8 +1,14 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { IParameter, paramKey } from '../../state/types/parameter';
 import { ConnectionContext } from '../../contexts/connection';
 import { PatchContext } from '../../contexts/patch';
-import { useConnectedToActiveConnector } from '../../hooks/useConnectedToActiveConnector';
+import { useDerivedConnectorState } from '../../hooks/useDerivedConnectorState';
 
 export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	moduleKey,
@@ -12,14 +18,15 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	const [connectorKey] = useState(() => paramKey({ moduleKey, name }));
 
 	const { activeConnectorKey } = useContext(PatchContext);
-	const {
-		clickConnector,
-		highlightInputs,
-		registerConnector,
-		unregisterConnector,
-	} = useContext(ConnectionContext);
-	const connectedToActiveConnector =
-		useConnectedToActiveConnector(connectorKey);
+	const { clickConnector, registerConnector, unregisterConnector } =
+		useContext(ConnectionContext);
+	const [{ activeConnectorIsOutput, connectedToActiveConnector }] =
+		useDerivedConnectorState();
+	const highlightInputs = activeConnectorIsOutput;
+	const isConnectedToActiveConnector = useMemo(
+		() => connectedToActiveConnector.has(connectorKey),
+		[connectedToActiveConnector],
+	);
 
 	useEffect(() => {
 		registerConnector({ moduleKey, name, accessor });
@@ -46,7 +53,7 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 			className={`connector ${
 				isActive
 					? 'active'
-					: connectedToActiveConnector
+					: isConnectedToActiveConnector
 					? 'connected'
 					: highlight
 					? 'highlight'

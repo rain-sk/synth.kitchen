@@ -25,8 +25,6 @@ import { patchActions } from '../state/actions';
 type IConnectionContext = {
 	connectorCount: number;
 	connectionCount: number;
-	highlightInputs: boolean;
-	highlightOutputs: boolean;
 	registerConnector: (connector: IConnector) => void;
 	unregisterConnector: (connector: IConnector) => void;
 	clickConnector: (connector: IConnector) => void;
@@ -36,8 +34,6 @@ type IConnectionContext = {
 export const ConnectionContext = React.createContext<IConnectionContext>({
 	connectorCount: 0,
 	connectionCount: 0,
-	highlightInputs: false,
-	highlightOutputs: false,
 	registerConnector: () => {},
 	unregisterConnector: () => {},
 	clickConnector: () => {},
@@ -160,22 +156,11 @@ export const ConnectionContextProvider: React.FunctionComponent<{
 		[activeConnectorKey, setConnectionCount],
 	);
 
-	const activeConnector = connectorInfo(activeConnectorKey);
-	const activeConnectorExists = !!activeConnector;
-	const activeConnectorIsOutput =
-		activeConnectorExists &&
-		'type' in activeConnector[0] &&
-		activeConnector[0].type === IoType.output;
-	const activeConnectorIsInput =
-		activeConnectorExists && !activeConnectorIsOutput;
-
 	return (
 		<ConnectionContext.Provider
 			value={{
 				connectorCount,
 				connectionCount,
-				highlightInputs: activeConnectorIsOutput,
-				highlightOutputs: activeConnectorIsInput,
 				registerConnector,
 				unregisterConnector,
 				clickConnector,
