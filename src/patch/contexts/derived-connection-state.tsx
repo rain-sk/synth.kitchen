@@ -86,8 +86,7 @@ export const DerivedConnectionStateContextProvider: React.FunctionComponent<{
 
 			const activeConnectorIsOutput =
 				'type' in activeConnector && activeConnector.type === IoType.output;
-			const connectedConnectors = [...activeConnectorConnections]
-				.filter((key) => key in connections)
+			const connectedConnectors = activeConnectorConnections
 				.map((key) => connectionInfo(connections, key))
 				.map(([output, input]) =>
 					activeConnectorIsOutput ? connectorKey(input) : connectorKey(output),

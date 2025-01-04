@@ -11,7 +11,7 @@ export const registerConnector: React.Reducer<
 		...state,
 		connectors: {
 			...state.connectors,
-			[key]: [action.payload, new Set<string>()],
+			[key]: [action.payload, []],
 		},
 	};
 };

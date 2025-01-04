@@ -39,7 +39,6 @@ const useLoadConnections = (
 export const PatchEditor: React.FC = () => {
 	const [state, dispatch] = useReducer(reducer, blankPatch());
 
-	// if (state.connectionsToLoad && )
 	useLoadConnections(dispatch, state.connectors, state.connectionsToLoad);
 
 	return (

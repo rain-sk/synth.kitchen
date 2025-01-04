@@ -12,11 +12,11 @@ export const connectorInfo = (
 	connectors: Record<string, IConnectorInfo>,
 	key: string,
 ) => {
-	const connector = connectors[key];
-	if (!connector) {
+	const info = connectors[key];
+	if (!info) {
 		throw Error(`Info for connector with key ${key} not found`);
 	}
-	return connector;
+	return info;
 };
 
 export const connectorKey = (connector: IConnector) =>
@@ -65,19 +65,12 @@ export const connect = (
 	connections: Record<string, [IOutput, IInput]>;
 	connectors: Record<string, IConnectorInfo>;
 } => {
+	output.accessor().connect(input.accessor() as any);
+
 	const key = connectionKey(output, input);
 
 	const outputKey = connectorKey(output);
 	const inputKey = connectorKey(input);
-	const outputInfo = connectorInfo(connectors, outputKey);
-	const inputInfo = connectorInfo(connectors, inputKey);
-
-	try {
-		output.accessor().connect(input.accessor() as any);
-	} catch (e) {}
-
-	const outputConnections = new Set([...outputInfo[1], key]);
-	const inputConnections = new Set([...inputInfo[1], key]);
 
 	return {
 		connections: {
@@ -86,8 +79,8 @@ export const connect = (
 		},
 		connectors: {
 			...connectors,
-			[outputKey]: [output, outputConnections],
-			[inputKey]: [input, inputConnections],
+			[outputKey]: [output, [...connectorInfo(connectors, outputKey)[1], key]],
+			[inputKey]: [input, [...connectorInfo(connectors, inputKey)[1], key]],
 		},
 	};
 };
@@ -101,30 +94,33 @@ export const disconnect = (
 	connections: Record<string, [IOutput, IInput]>;
 	connectors: Record<string, IConnectorInfo>;
 } => {
+	try {
+		output.accessor().disconnect(input.accessor() as any);
+	} catch (e) {
+		// In dev-mode, React.StrictMode invokes reducers twice to surface behaviors
+		// which rely on side-effects. Trying to disconnect a non-existent connection
+		// leads to a DOMException in standardized-audio-context, so we catch the
+		// exception to avoid crashing.
+		console.warn(e);
+	}
+
 	const key = connectionKey(output, input);
 
 	const outputKey = connectorKey(output);
 	const inputKey = connectorKey(input);
-	const outputInfo = connectorInfo(connectors, outputKey);
-	const inputInfo = connectorInfo(connectors, inputKey);
-
-	connections = Object.fromEntries(
-		Object.entries(connections).filter(([existingKey]) => existingKey !== key),
+	const outputConnections = connectorInfo(connectors, outputKey)[1].filter(
+		(existingKey) => existingKey !== key,
 	);
-
-	const outputConnections = new Set(
-		[...outputInfo[1]].filter(([existingKey]) => existingKey !== key),
+	const inputConnections = connectorInfo(connectors, inputKey)[1].filter(
+		(existingKey) => existingKey !== key,
 	);
-	const inputConnections = new Set(
-		[...inputInfo[1]].filter(([existingKey]) => existingKey !== key),
-	);
-
-	try {
-		output.accessor().disconnect(input.accessor() as any);
-	} catch (e) {}
 
 	return {
-		connections,
+		connections: Object.fromEntries(
+			Object.entries(connections).filter(
+				([existingKey]) => existingKey !== key,
+			),
+		),
 		connectors: {
 			...connectors,
 			[outputKey]: [output, outputConnections],

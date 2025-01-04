@@ -17,7 +17,7 @@ export type IOutput = IIo;
 export type IInput = IIo | IParameter;
 export type IConnector = IOutput | IInput;
 
-export type IConnectorInfo = [IConnector, Set<string>];
+export type IConnectorInfo = [IConnector, string[]];
 
 export const ioKey = (io: Omit<IIo, 'accessor'>): string => {
 	return `${io.moduleKey}_${io.type}_${io.channel}`;

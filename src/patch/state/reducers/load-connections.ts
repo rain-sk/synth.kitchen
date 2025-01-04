@@ -6,18 +6,21 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	state,
 	action,
 ) => {
-	let connections = state.connections;
-
-	Object.values(action.payload).forEach(([output, input]) => {
-		let { connections: newConnections } = connect(
-			connections,
-			state.connectors,
-			output,
-			input,
-		);
-		connections = newConnections;
-	});
-
+	console.log(action.payload);
+	const connections = (() => {
+		let connections = state.connections;
+		Object.values(action.payload).forEach(([output, input]) => {
+			let { connections: newConnections } = connect(
+				connections,
+				state.connectors,
+				output,
+				input,
+			);
+			connections = newConnections;
+		});
+		return connections;
+	})();
+	console.log(connections);
 	return {
 		...state,
 		connections,
