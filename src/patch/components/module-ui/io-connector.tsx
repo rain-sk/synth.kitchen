@@ -37,17 +37,6 @@ export const IoConnector: React.FunctionComponent<{
 				accessor,
 			}),
 		);
-
-		return () => {
-			dispatch(
-				patchActions.unregisterConnectorAction({
-					moduleKey,
-					channel,
-					type,
-					accessor,
-				}),
-			);
-		};
 	}, []);
 
 	const onClick = () => {

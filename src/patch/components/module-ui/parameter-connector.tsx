@@ -30,16 +30,6 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 				accessor,
 			}),
 		);
-
-		return () => {
-			dispatch(
-				patchActions.unregisterConnectorAction({
-					moduleKey,
-					name,
-					accessor,
-				}),
-			);
-		};
 	}, []);
 
 	const onClick = () => {

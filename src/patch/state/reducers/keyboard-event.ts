@@ -39,7 +39,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	} else if (
 		keyCode in keyCodeMovementMap &&
 		state.isKeyMovementEnabled &&
-		action.payload.type === KeyboardEventType.KEY_DOWN
+		type === KeyboardEventType.KEY_DOWN
 	) {
 		const { deltaX, deltaY } = keyCodeMovementMap[keyCode];
 
@@ -56,6 +56,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		};
 	} else if (
 		(keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) &&
+		type === KeyboardEventType.KEY_DOWN &&
 		state.isKeyMovementEnabled
 	) {
 		const connectorKeysOfSelectedModules = [...state.selectedModuleKeys]
@@ -81,6 +82,14 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			return connections;
 		})();
 
+		const connectors = Object.fromEntries(
+			Object.entries(state.connectors).filter(
+				([, [connector]]) =>
+					connector.moduleKey === '0' ||
+					!state.selectedModuleKeys.has(connector.moduleKey),
+			),
+		);
+
 		const modules = Object.fromEntries(
 			Object.entries(state.modules).filter(
 				([moduleKey]) =>
@@ -94,16 +103,17 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 					!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
 			),
 		);
-		const newState = {
+
+		return {
 			...state,
 			connections,
+			connectors,
 			modules,
 			modulePositions,
 		};
-		console.log(newState);
-		return newState;
 	} else if (
 		keyCode === KeyCode.A &&
+		type === KeyboardEventType.KEY_DOWN &&
 		((state.heldModifiers & Modifier.SPECIAL) === Modifier.SPECIAL ||
 			(state.heldModifiers & Modifier.CONTROL) === Modifier.CONTROL)
 	) {

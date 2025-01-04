@@ -39,9 +39,7 @@ import {
 } from './set-active-connector-key';
 import {
 	IRegisterConnector,
-	IUnregisterConnector,
 	registerConnectorAction,
-	unregisterConnectorAction,
 } from './connector-registration';
 import { clickConnectorAction, IClickConnector } from './click-connector';
 import { ILoadConnections, loadConnectionsAction } from './load-connections';
@@ -61,7 +59,6 @@ export type IPatchAction =
 	| ISelectionDrag
 	| ISelectModule
 	| ISetActiveConnectorKey
-	| IUnregisterConnector
 	| IUpdateModulePosition
 	| IUpdateModule;
 
@@ -86,7 +83,6 @@ export const patchActions = {
 	selectModuleAction,
 	selectSingleModuleAction,
 	setActiveConnectorKeyAction,
-	unregisterConnectorAction,
 	updateModulePositionAction,
 	updateModuleAction,
 };
