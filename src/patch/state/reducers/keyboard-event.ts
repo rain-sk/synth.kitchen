@@ -15,10 +15,8 @@ import {
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	state,
-	action,
+	{ payload: { type, keyCode } },
 ) => {
-	const { type, keyCode } = action.payload;
-
 	if (keyCode in keyCodeModifierMap) {
 		const modifier = keyCodeModifierMap[keyCode];
 
@@ -59,26 +57,25 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		type === KeyboardEventType.KEY_DOWN &&
 		state.isKeyMovementEnabled
 	) {
-		const connectorKeysOfSelectedModules = [...state.selectedModuleKeys]
+		const connectionsOfSelectedModules = [...state.selectedModuleKeys]
 			.filter((moduleKey) => moduleKey !== '0')
-			.flatMap((moduleKey) => moduleConnectors(state.connectors, moduleKey));
-
-		const connectionsOfSelectedModules = connectorKeysOfSelectedModules.flatMap(
-			(key) => [...connectorInfo(state.connectors, key)[1]],
-		);
+			.flatMap((moduleKey) => moduleConnectors(state.connectors, moduleKey))
+			.flatMap((key) => [...connectorInfo(state.connectors, key)[1]]);
 
 		const connections = (() => {
 			let connections = state.connections;
-			connectionsOfSelectedModules.forEach((connectionKey) => {
-				const [output, input] = connectionInfo(connections, connectionKey);
-				const { connections: newConnections } = disconnect(
-					connections,
-					state.connectors,
-					output,
-					input,
-				);
-				connections = newConnections;
-			});
+			connectionsOfSelectedModules
+				.filter((connectionKey) => connectionKey in connections)
+				.forEach((connectionKey) => {
+					const [output, input] = connectionInfo(connections, connectionKey);
+					const { connections: newConnections } = disconnect(
+						connections,
+						state.connectors,
+						output,
+						input,
+					);
+					connections = newConnections;
+				});
 			return connections;
 		})();
 
