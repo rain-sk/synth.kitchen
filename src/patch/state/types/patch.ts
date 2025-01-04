@@ -20,7 +20,6 @@ export type IPatchState = {
 	activeConnectorKey: string | undefined;
 	connections: Record<string, [IOutput, IInput]>;
 	connectors: Record<string, IConnectorInfo>;
-	moduleConnectors: Record<string, Set<string>>;
 	io: Record<string, IIo>;
 	parameters: Record<string, IParameter>;
 

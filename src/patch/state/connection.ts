@@ -22,6 +22,15 @@ export const connectorInfo = (
 export const connectorKey = (connector: IConnector) =>
 	'type' in connector ? ioKey(connector) : paramKey(connector);
 
+export const moduleConnectors = (
+	connectors: Record<string, IConnectorInfo>,
+	moduleKey: string,
+) => {
+	return Object.entries(connectors)
+		.filter(([, [connector]]) => connector.moduleKey === moduleKey)
+		.map(([key]) => key);
+};
+
 export const connectionKey = (output: IOutput, input: IInput) => {
 	if (!('type' in output) || output.type === IoType.input) {
 		throw 'Invalid output';
