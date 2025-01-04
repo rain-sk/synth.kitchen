@@ -69,9 +69,6 @@ const connectionToPath =
 				}
 
 				const addSegment = (start: Position, end: Position): Position => {
-					// const dx = end[0] - start[0];
-					// const dy = end[1] - start[1];
-					// console.log({ dx, dy });
 					if (equals(start, outputPosition)) {
 						const endx = start[0] + 25;
 						const endy = start[1];

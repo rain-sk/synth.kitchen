@@ -124,7 +124,6 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			]),
 		};
 	} else {
-		// console.log(type, keyCode);
 		return state;
 	}
 };

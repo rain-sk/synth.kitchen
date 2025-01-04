@@ -13,19 +13,18 @@ class MidiCc extends AudioWorkletProcessor {
 				name: 'value',
 				defaultValue: 127,
 				minValue: 0,
-				maxValue: 127
+				maxValue: 127,
 			},
 			{
 				name: 'max',
-				defaultValue: 1.0
+				defaultValue: 1.0,
 			},
-			{ name: 'min', defaultValue: 0.0 }
+			{ name: 'min', defaultValue: 0.0 },
 		];
 	}
 
 	constructor() {
 		super();
-		console.log('midi-cc');
 	}
 
 	process(_, outputs, parameters) {
