@@ -18,7 +18,6 @@ type DerivedConnectionState = {
 	activeConnectorIsInput: boolean;
 	activeConnectorIsOutput: boolean;
 	connectedToActiveConnector: Set<string>;
-	connectorButton: (key: string) => HTMLButtonElement;
 };
 
 export const DerivedConnectionStateContext =
@@ -28,7 +27,6 @@ export const DerivedConnectionStateContext =
 		activeConnectorIsInput: false,
 		activeConnectorIsOutput: false,
 		connectedToActiveConnector: new Set<string>(),
-		connectorButton: () => undefined as any as HTMLButtonElement,
 	});
 
 export const DerivedConnectionStateContextProvider: React.FunctionComponent<{
@@ -44,33 +42,6 @@ export const DerivedConnectionStateContextProvider: React.FunctionComponent<{
 	const connectorCount = useMemo(
 		() => Object.keys(connectors).length,
 		[connectors],
-	);
-
-	const connectorButtons = useMemo(
-		() =>
-			Object.fromEntries(
-				Object.keys(connectors).map((key) => {
-					const button = document.getElementById(key) as HTMLButtonElement;
-					if (!button) {
-						throw Error(`Button for connector with key '${key}' not found`);
-					}
-					return [key, button];
-				}),
-			),
-		[connectors],
-	);
-
-	const connectorButton = useCallback(
-		(key: string) => {
-			const button = connectorButtons[key];
-
-			if (!button) {
-				throw Error(`Button for connector with key '${key}' not found`);
-			}
-
-			return button;
-		},
-		[connectorButtons],
 	);
 
 	const {
@@ -114,7 +85,6 @@ export const DerivedConnectionStateContextProvider: React.FunctionComponent<{
 				activeConnectorIsInput,
 				activeConnectorIsOutput,
 				connectedToActiveConnector,
-				connectorButton,
 			}}
 		>
 			{children}

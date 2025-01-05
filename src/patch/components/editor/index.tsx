@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 
 import { blankPatch } from '../../state';
 import { DerivedConnectionStateContextProvider } from '../../contexts/derived-connection-state';
@@ -12,34 +12,42 @@ import { PatchLoader } from './patch-loader';
 import { reducer } from '../../state/reducers';
 import { Toolbar } from '../toolbar';
 import { IPatchAction, patchActions } from '../../state/actions';
+import { connectorButton, connectorKey } from '../../state/connection';
 import { IConnectorInfo, IInput, IOutput } from '../../state/types/connection';
-import { connectorKey } from '../../state/connection';
 
-const useLoadConnections = (
-	dispatch: React.Dispatch<IPatchAction>,
-	connectors: Record<string, IConnectorInfo>,
-	connectionsToLoad?: Record<string, [IOutput, IInput]>,
-) => {
-	if (connectionsToLoad) {
-		const connectedConnectors = new Set<string>();
-		Object.values(connectionsToLoad).forEach(([output, input]) => {
-			connectedConnectors.add(connectorKey(output));
-			connectedConnectors.add(connectorKey(input));
-		});
+const useLoadConnections = ({
+	connectionsToLoad,
+	connectors,
+	dispatch,
+}: {
+	connectionsToLoad?: Record<string, [IOutput, IInput]>;
+	connectors: Record<string, IConnectorInfo>;
+	dispatch: React.Dispatch<IPatchAction>;
+}) => {
+	useEffect(() => {
+		if (connectionsToLoad) {
+			const connectedConnectors = new Set<string>();
+			Object.values(connectionsToLoad).forEach(([output, input]) => {
+				connectedConnectors.add(connectorKey(output));
+				connectedConnectors.add(connectorKey(input));
+			});
 
-		if (
-			connectedConnectors.size > 0 &&
-			[...connectedConnectors].every((key) => key in connectors)
-		) {
-			dispatch(patchActions.loadConnectionsAction(connectionsToLoad));
+			if (
+				connectedConnectors.size > 0 &&
+				[...connectedConnectors].every(
+					(key) => key in connectors && connectorButton(key),
+				)
+			) {
+				dispatch(patchActions.loadConnectionsAction(connectionsToLoad));
+			}
 		}
-	}
+	}, [connectionsToLoad, connectors]);
 };
 
 export const PatchEditor: React.FC = () => {
 	const [state, dispatch] = useReducer(reducer, blankPatch());
 
-	useLoadConnections(dispatch, state.connectors, state.connectionsToLoad);
+	useLoadConnections({ ...state, dispatch });
 
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>

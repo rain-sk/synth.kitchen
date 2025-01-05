@@ -6,7 +6,6 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	state,
 	action,
 ) => {
-	console.log(action.payload);
 	const connections = (() => {
 		let connections = state.connections;
 		Object.values(action.payload).forEach(([output, input]) => {
@@ -20,7 +19,6 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 		});
 		return connections;
 	})();
-	console.log(connections);
 	return {
 		...state,
 		connections,

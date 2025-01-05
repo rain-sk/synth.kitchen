@@ -22,6 +22,14 @@ export const connectorInfo = (
 export const connectorKey = (connector: IConnector) =>
 	'type' in connector ? ioKey(connector) : paramKey(connector);
 
+export const connectorButton = (key: string) => {
+	const button = document.getElementById(key) as HTMLButtonElement;
+	if (!button) {
+		throw Error(`Button for connector with key '${key}' not found`);
+	}
+	return button;
+};
+
 export const moduleConnectors = (
 	connectors: Record<string, IConnectorInfo>,
 	moduleKey: string,

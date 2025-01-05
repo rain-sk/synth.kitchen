@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 
-import { connectorKey } from '../../state/connection';
+import { connectorButton, connectorKey } from '../../state/connection';
 import { IInput, IOutput } from '../../state/types/connection';
 import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { PatchContext } from '../../contexts/patch';
@@ -114,8 +114,6 @@ export const Connections: React.FC = () => {
 	const { activeConnectorKey, modules, modulePositions, connections } =
 		useContext(PatchContext);
 
-	const { connectorButton } = useContext(DerivedConnectionStateContext);
-
 	const drawConnections = useCallback(
 		queueAnimationCallback(() => {
 			if (canvasRef.current && !contextRef.current) {
@@ -192,7 +190,7 @@ export const Connections: React.FC = () => {
 				});
 			}
 		}),
-		[activeConnectorKey, connectorButton],
+		[activeConnectorKey],
 	);
 
 	const onMouseMove = useCallback(
