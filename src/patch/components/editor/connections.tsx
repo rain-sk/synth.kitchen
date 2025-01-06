@@ -5,7 +5,6 @@ import { IInput, IOutput } from '../../state/types/connection';
 import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { PatchContext } from '../../contexts/patch';
 import { queueAnimationCallback } from '../../../utils/animation';
-import { DerivedConnectionStateContext } from '../../contexts/derived-connection-state';
 
 const _ = {
 	root: document.getElementById('root'),
@@ -111,8 +110,13 @@ export const Connections: React.FC = () => {
 	const contextRef = useRef<CanvasRenderingContext2D>();
 	const mousePositionRef = useRef<Position>(INVALID_POSITION);
 
-	const { activeConnectorKey, modules, modulePositions, connections } =
-		useContext(PatchContext);
+	const {
+		activeConnectorKey,
+		modules,
+		modulePositions,
+		connections,
+		connectors,
+	} = useContext(PatchContext);
 
 	const drawConnections = useCallback(
 		queueAnimationCallback(() => {
@@ -133,7 +137,6 @@ export const Connections: React.FC = () => {
 				);
 
 				resizeCanvas(canvasRef.current);
-
 				const connectionsToDraw = Object.values(connections).map(
 					connectionToPath(ConnectionDrawMode.DIRECT, connectorButton),
 				);
@@ -190,7 +193,7 @@ export const Connections: React.FC = () => {
 				});
 			}
 		}),
-		[activeConnectorKey],
+		[activeConnectorKey, connectors],
 	);
 
 	const onMouseMove = useCallback(
@@ -231,9 +234,9 @@ export const Connections: React.FC = () => {
 				main().removeEventListener('mousemove', onMouseMove);
 			}
 		};
-	}, [activeConnectorKey, drawConnections, connectorButton]);
+	}, [activeConnectorKey, drawConnections]);
 
-	useEffect(drawConnections, [activeConnectorKey]);
+	useEffect(drawConnections, [drawConnections]);
 
 	const onResize = useCallback(() => {
 		const m = main();

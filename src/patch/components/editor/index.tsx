@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useCallback, useEffect, useReducer } from 'react';
 
 import { blankPatch } from '../../state';
 import { DerivedConnectionStateContextProvider } from '../../contexts/derived-connection-state';
@@ -12,8 +12,23 @@ import { PatchLoader } from './patch-loader';
 import { reducer } from '../../state/reducers';
 import { Toolbar } from '../toolbar';
 import { IPatchAction, patchActions } from '../../state/actions';
-import { connectorButton, connectorKey } from '../../state/connection';
+import { connectorButtonExists, connectorKey } from '../../state/connection';
 import { IConnectorInfo, IInput, IOutput } from '../../state/types/connection';
+
+const doLoadConnections = (
+	connectedConnectors: Set<string>,
+	dispatch: React.Dispatch<IPatchAction>,
+) => {
+	const connectorButtonsExist = [...connectedConnectors].every((key) =>
+		connectorButtonExists(key),
+	);
+	if (connectorButtonsExist) {
+		console.log({ connectorButtonsExist });
+		dispatch(patchActions.loadConnectionsAction());
+	} else {
+		setTimeout(() => doLoadConnections(connectedConnectors, dispatch), 17);
+	}
+};
 
 const useLoadConnections = ({
 	connectionsToLoad,
@@ -31,14 +46,11 @@ const useLoadConnections = ({
 				connectedConnectors.add(connectorKey(output));
 				connectedConnectors.add(connectorKey(input));
 			});
-
 			if (
 				connectedConnectors.size > 0 &&
-				[...connectedConnectors].every(
-					(key) => key in connectors && connectorButton(key),
-				)
+				[...connectedConnectors].every((key) => key in connectors)
 			) {
-				dispatch(patchActions.loadConnectionsAction(connectionsToLoad));
+				doLoadConnections(connectedConnectors, dispatch);
 			}
 		}
 	}, [connectionsToLoad, connectors]);

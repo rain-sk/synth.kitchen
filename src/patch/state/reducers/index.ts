@@ -16,6 +16,7 @@ import { updateModulePosition } from './update-module-position';
 import { setActiveConnectorKey } from './set-active-connector-key';
 import { registerConnector } from './connector-registration';
 import { clickConnector } from './click-connector';
+import { loadConnections } from './load-connections';
 
 export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 	state,
@@ -43,6 +44,9 @@ export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 			}
 			case 'KeyboardEvent': {
 				return keyboardEvent(state, action);
+			}
+			case 'LoadConnections': {
+				return loadConnections(state, action);
 			}
 			case 'LoadFromCloud': {
 				return loadFromCloud(state, action);
