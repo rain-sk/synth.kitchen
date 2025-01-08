@@ -22,6 +22,7 @@ const controlModules = (): ModuleType[] =>
 const soundModules: ModuleType[] = ['OSCILLATOR', 'NOISE'];
 
 const effectModules: ModuleType[] = [
+	'COMPRESSOR',
 	'DELAY',
 	'FILTER',
 	'GAIN',
