@@ -6,13 +6,7 @@ import {
 	keyCodeMovementMap,
 	Modifier,
 } from '../../../constants/key';
-import {
-	connectionInfo,
-	connectorInfo,
-	disconnect,
-	disconnectSet,
-	moduleConnectors,
-} from '../connection';
+import { connectorInfo, disconnectSet, moduleConnectors } from '../connection';
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	state,
