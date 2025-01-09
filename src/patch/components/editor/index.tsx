@@ -14,59 +14,16 @@ import { Toolbar } from '../toolbar';
 import { useLoadConnections } from './use-load-connections';
 import { useAudioMidiInit } from './use-audio-midi-init';
 import { Init } from './init';
+import { useTitle } from 'react-use';
 
 export const PatchEditor: React.FC = () => {
 	const { initialized, status, init } = useAudioMidiInit();
 
 	const [state, dispatch] = useReducer(reducer, blankPatch());
 
+	useTitle(`patch/${state.name}`);
+
 	useLoadConnections({ ...state, dispatch, initialized });
-
-	const moduleCanvasBackdropProps = useMemo(
-		() => ({
-			dispatch,
-			modulePositions: state.modulePositions,
-			modules: state.modules,
-			selectedModuleKeys: state.selectedModuleKeys,
-		}),
-		[dispatch, state.modulePositions, state.modules, state.selectedModuleKeys],
-	);
-
-	const moduleCanvasProps = useMemo(
-		() => ({
-			dispatch,
-			heldModifiers: state.heldModifiers,
-			modulePositions: state.modulePositions,
-			modules: state.modules,
-			selectedModuleKeys: state.selectedModuleKeys,
-			selectionPending: state.selectionPending,
-		}),
-		[
-			dispatch,
-			state.heldModifiers,
-			state.modulePositions,
-			state.modules,
-			state.selectedModuleKeys,
-			state.selectionPending,
-		],
-	);
-
-	const connectionsProps = useMemo(
-		() => ({
-			activeConnectorKey: state.activeConnectorKey,
-			modules: state.modules,
-			modulePositions: state.modulePositions,
-			connections: state.connections,
-			connectors: state.connectors,
-		}),
-		[
-			state.activeConnectorKey,
-			state.modules,
-			state.modulePositions,
-			state.connections,
-			state.connectors,
-		],
-	);
 
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>
@@ -74,11 +31,7 @@ export const PatchEditor: React.FC = () => {
 				<MidiContextProvider>
 					<Toolbar />
 					{initialized ? (
-						<ModuleCanvasBackdrop {...moduleCanvasBackdropProps}>
-							<KeyHandler />
-							<ModuleCanvas {...moduleCanvasProps} />
-							<Connections {...connectionsProps} />
-						</ModuleCanvasBackdrop>
+						<ModuleCanvas state={state} dispatch={dispatch} />
 					) : (
 						<Init name={state.name} status={status} init={init} />
 					)}

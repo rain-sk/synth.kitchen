@@ -14,9 +14,10 @@ export const Init: React.FC<{
 		setButtonClicked(true);
 		init();
 	}, [init, setButtonClicked]);
+
 	return (
 		<main id="init">
-			<h1>Patch: {name}</h1>
+			<h1>patch/{name}</h1>
 			<button disabled={buttonClicked} type="button" onClick={onClickStart}>
 				start
 			</button>
