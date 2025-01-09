@@ -14,14 +14,13 @@ export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
 		name,
 		modules,
 		modulePositions,
+		connections,
+		connectors: {},
 		selectedModuleKeys: new Set(),
 		mouseDragPosition: INVALID_POSITION,
 		mouseDragStartPosition: INVALID_POSITION,
-		connectionsToLoad:
-			connections && Object.keys(connections).length > 0
-				? connections
-				: undefined,
 		selectionPending: false,
 		loadingFromCloud: false,
+		loadConnections: true,
 	};
 };

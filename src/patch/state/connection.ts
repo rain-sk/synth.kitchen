@@ -87,6 +87,21 @@ export const connect = (
 	};
 };
 
+export const disconnectSet = (
+	connections: Record<string, [IOutput, IInput]>,
+	connectors: Record<string, IConnectorInfo>,
+	connectionsToDisconnect: string[],
+) => {
+	connectionsToDisconnect.forEach((key: string) => {
+		const [output, input] = connections[key];
+		const { connections: newConnections, connectors: newConnectors } =
+			disconnect(connections, connectors, output, input);
+		connections = newConnections;
+		connectors = newConnectors;
+	});
+	return { connections, connectors };
+};
+
 export const disconnect = (
 	connections: Record<string, [IOutput, IInput]>,
 	connectors: Record<string, IConnectorInfo>,

@@ -34,5 +34,5 @@ export type IPatchState = {
 
 	// misc.
 	loadingFromCloud: boolean;
-	connectionsToLoad?: Record<string, [IOutput, IInput]>;
+	loadConnections: boolean;
 };

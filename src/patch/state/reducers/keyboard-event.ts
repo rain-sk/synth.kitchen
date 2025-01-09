@@ -10,6 +10,7 @@ import {
 	connectionInfo,
 	connectorInfo,
 	disconnect,
+	disconnectSet,
 	moduleConnectors,
 } from '../connection';
 
@@ -60,27 +61,17 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		const connectionsOfSelectedModules = [...state.selectedModuleKeys]
 			.filter((moduleKey) => moduleKey !== '0')
 			.flatMap((moduleKey) => moduleConnectors(state.connectors, moduleKey))
-			.flatMap((key) => [...connectorInfo(state.connectors, key)[1]]);
+			.map((key) => connectorInfo(state.connectors, key))
+			.flatMap(([, connections]) => connections);
 
-		const connections = (() => {
-			let connections = state.connections;
-			connectionsOfSelectedModules
-				.filter((connectionKey) => connectionKey in connections)
-				.forEach((connectionKey) => {
-					const [output, input] = connectionInfo(connections, connectionKey);
-					const { connections: newConnections } = disconnect(
-						connections,
-						state.connectors,
-						output,
-						input,
-					);
-					connections = newConnections;
-				});
-			return connections;
-		})();
+		const newState = disconnectSet(
+			state.connections,
+			state.connectors,
+			connectionsOfSelectedModules,
+		);
 
-		const connectors = Object.fromEntries(
-			Object.entries(state.connectors).filter(
+		newState.connectors = Object.fromEntries(
+			Object.entries(newState.connectors).filter(
 				([, [connector]]) =>
 					connector.moduleKey === '0' ||
 					!state.selectedModuleKeys.has(connector.moduleKey),
@@ -103,8 +94,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 
 		return {
 			...state,
-			connections,
-			connectors,
+			...newState,
 			modules,
 			modulePositions,
 		};

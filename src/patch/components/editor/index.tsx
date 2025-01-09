@@ -23,26 +23,28 @@ const doLoadConnections = (
 		connectorButtonExists(key),
 	);
 	if (connectorButtonsExist) {
-		console.log({ connectorButtonsExist });
 		dispatch(patchActions.loadConnectionsAction());
 	} else {
+		console.log('delay load connections');
 		setTimeout(() => doLoadConnections(connectedConnectors, dispatch), 17);
 	}
 };
 
 const useLoadConnections = ({
-	connectionsToLoad,
+	loadConnections,
+	connections,
 	connectors,
 	dispatch,
 }: {
-	connectionsToLoad?: Record<string, [IOutput, IInput]>;
+	loadConnections: boolean;
+	connections: Record<string, [IOutput, IInput]>;
 	connectors: Record<string, IConnectorInfo>;
 	dispatch: React.Dispatch<IPatchAction>;
 }) => {
 	useEffect(() => {
-		if (connectionsToLoad) {
+		if (loadConnections) {
 			const connectedConnectors = new Set<string>();
-			Object.values(connectionsToLoad).forEach(([output, input]) => {
+			Object.values(connections).forEach(([output, input]) => {
 				connectedConnectors.add(connectorKey(output));
 				connectedConnectors.add(connectorKey(input));
 			});
@@ -53,7 +55,7 @@ const useLoadConnections = ({
 				doLoadConnections(connectedConnectors, dispatch);
 			}
 		}
-	}, [connectionsToLoad, connectors]);
+	}, [loadConnections, connections, connectors]);
 };
 
 export const PatchEditor: React.FC = () => {

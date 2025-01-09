@@ -40,5 +40,5 @@ export const blankPatch = (): IPatchState => ({
 
 	// misc
 	loadingFromCloud: false,
-	connectionsToLoad: undefined,
+	loadConnections: false,
 });

@@ -6,33 +6,27 @@ import { IPatchState } from '../types/patch';
 export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	state,
 ) => {
-	if (!state.connectionsToLoad) {
+	if (!state.loadConnections) {
 		return { ...state };
 	}
 
-	const { connections, connectors } = (() => {
-		let connections = state.connections;
-		let connectors = state.connectors;
-		Object.values(state.connectionsToLoad).forEach(([output, input]) => {
-			output = connectorInfo(connectors, connectorKey(output))[0] as IOutput;
-			input = connectorInfo(connectors, connectorKey(input))[0] as IInput;
+	let connectors = state.connectors;
+	Object.values(state.connections).forEach(([output, input]) => {
+		output = connectorInfo(connectors, connectorKey(output))[0] as IOutput;
+		input = connectorInfo(connectors, connectorKey(input))[0] as IInput;
 
-			let { connections: newConnections, connectors: newConnectors } = connect(
-				connections,
-				state.connectors,
-				output,
-				input,
-			);
-			connections = newConnections;
-			connectors = newConnectors;
-		});
-		return { connections, connectors };
-	})();
+		let { connectors: newConnectors } = connect(
+			state.connections,
+			connectors,
+			output,
+			input,
+		);
+		connectors = newConnectors;
+	});
 
 	return {
 		...state,
-		connections,
 		connectors,
-		connectionsToLoad: undefined,
+		loadConnections: false,
 	};
 };
