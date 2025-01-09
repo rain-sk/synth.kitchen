@@ -6,15 +6,15 @@ export enum IoType {
 	output,
 }
 
-export type IIo = {
+export type IIo<Type extends IoType = IoType> = {
 	moduleKey: string;
 	channel: number;
-	type: IoType;
+	type: Type;
 	accessor: () => IAudioNode<IAudioContext>;
 };
 
-export type IOutput = IIo;
-export type IInput = IIo | IParameter;
+export type IOutput = IIo<IoType.output>;
+export type IInput = IIo<IoType.input> | IParameter;
 export type IConnector = IOutput | IInput;
 
 export type IConnectorInfo = [IConnector, string[]];

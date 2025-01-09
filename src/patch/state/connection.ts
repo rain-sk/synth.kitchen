@@ -3,7 +3,6 @@ import {
 	IConnectorInfo,
 	IInput,
 	ioKey,
-	IoType,
 	IOutput,
 } from './types/connection';
 import { paramKey } from './types/parameter';
@@ -43,14 +42,6 @@ export const moduleConnectors = (
 };
 
 export const connectionKey = (output: IOutput, input: IInput) => {
-	if (!('type' in output) || output.type === IoType.input) {
-		throw 'Invalid output';
-	}
-
-	if ('type' in input && input.type === IoType.output) {
-		throw 'Invalid input';
-	}
-
 	return `${connectorKey(output)}|${connectorKey(input)}`;
 };
 
