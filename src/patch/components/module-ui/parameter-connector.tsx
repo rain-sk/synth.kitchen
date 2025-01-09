@@ -1,15 +1,9 @@
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
-import { ConnectionContext } from '../../contexts/connection';
 import { IParameter, paramKey } from '../../state/types/parameter';
 import { PatchContext } from '../../contexts/patch';
-import { useDerivedConnectorState } from '../../hooks/useDerivedConnectorState';
+import { patchActions } from '../../state/actions';
+import { DerivedConnectionStateContext } from '../../contexts/derived-connection-state';
 
 export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	moduleKey,
@@ -18,11 +12,10 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 }) => {
 	const [connectorKey] = useState(() => paramKey({ moduleKey, name }));
 
-	const { activeConnectorKey } = useContext(PatchContext);
-	const { clickConnector, registerConnector, unregisterConnector } =
-		useContext(ConnectionContext);
-	const [{ activeConnectorIsOutput, connectedToActiveConnector }] =
-		useDerivedConnectorState();
+	const { activeConnectorKey, dispatch } = useContext(PatchContext);
+	const { activeConnectorIsOutput, connectedToActiveConnector } = useContext(
+		DerivedConnectionStateContext,
+	);
 	const highlightInputs = activeConnectorIsOutput;
 	const isConnectedToActiveConnector = useMemo(
 		() => connectedToActiveConnector.has(connectorKey),
@@ -30,16 +23,18 @@ export const ParameterConnector: React.FunctionComponent<IParameter> = ({
 	);
 
 	useEffect(() => {
-		registerConnector({ moduleKey, name, accessor });
-
-		return () => {
-			unregisterConnector({ moduleKey, name, accessor });
-		};
+		dispatch(
+			patchActions.registerConnectorAction({
+				moduleKey,
+				name,
+				accessor,
+			}),
+		);
 	}, []);
 
-	const onClick = useCallback(() => {
-		clickConnector({ moduleKey, name, accessor });
-	}, [clickConnector, moduleKey, name, accessor]);
+	const onClick = () => {
+		dispatch(patchActions.clickConnectorAction({ moduleKey, name, accessor }));
+	};
 
 	const isActive = activeConnectorKey === connectorKey;
 	const highlight = highlightInputs;

@@ -37,16 +37,25 @@ import {
 	ISetActiveConnectorKey,
 	setActiveConnectorKeyAction,
 } from './set-active-connector-key';
+import {
+	IRegisterConnector,
+	registerConnectorAction,
+} from './connector-registration';
+import { clickConnectorAction, IClickConnector } from './click-connector';
+import { ILoadConnections, loadConnectionsAction } from './load-connections';
 
 export type IPatchAction =
 	| IAddModule
 	| ICancelLoadFromCloud
 	| IChangeName
+	| IClickConnector
 	| IDisableKeyMovement
 	| IEnableKeyMovement
 	| IKeyboardEvent
+	| ILoadConnections
 	| ILoadFromCloud
 	| ILoadPatch
+	| IRegisterConnector
 	| ISelectionDrag
 	| ISelectModule
 	| ISetActiveConnectorKey
@@ -57,14 +66,17 @@ export const patchActions = {
 	addModuleAction,
 	cancelLoadFromCloudAction,
 	changeNameAction,
+	clickConnectorAction,
 	deselectAllModulesAction,
 	deselectModuleAction,
 	disableKeyMovementAction,
 	enableKeyMovementAction,
 	keyDownAction,
 	keyUpAction,
+	loadConnectionsAction,
 	loadFromCloudAction,
 	loadPatchAction,
+	registerConnectorAction,
 	selectionDragContinueAction,
 	selectionDragEndAction,
 	selectionDragStartAction,

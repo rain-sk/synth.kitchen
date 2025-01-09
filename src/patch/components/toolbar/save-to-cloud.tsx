@@ -1,28 +1,26 @@
 import { useCallback, useContext } from 'react';
 
-import { ConnectionContext } from '../../contexts/connection';
-import { connectionEntries } from '../../state/connection';
 import { ISerializedPatch } from '../../state/types/serialized-patch';
 import { PatchContext } from '../../contexts/patch';
 import { SaveToCloudSvg } from './svg/save-to-cloud';
 import { useApi } from '../../../api/use-api';
 
 export const SaveToCloud = () => {
-	const { id, name, modules, modulePositions } = useContext(PatchContext);
-	const { connectionCount } = useContext(ConnectionContext);
+	const { id, name, modules, modulePositions, connections } =
+		useContext(PatchContext);
 
 	const { savePatch } = useApi();
 
 	const onSave = useCallback(() => {
 		const patch: ISerializedPatch = {
-			id: id,
-			name: name,
-			modules: modules,
-			modulePositions: modulePositions,
-			connections: connectionEntries(),
+			id,
+			name,
+			modules,
+			modulePositions,
+			connections,
 		};
 		savePatch(patch);
-	}, [id, name, modules, modulePositions, connectionCount, savePatch]);
+	}, [id, name, modules, modulePositions, connections, savePatch]);
 
 	return (
 		<button type="button" onClick={onSave}>

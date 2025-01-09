@@ -32,6 +32,7 @@ import { PanModule } from './pan';
 import { Position } from '../../state/types/patch';
 import { SequencerModule } from './sequencer';
 import { VcaModule } from './vca';
+import { CompressorModule } from './compressor';
 
 const useDragAndDrop = (
 	moduleKey: string,
@@ -129,6 +130,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 	switch (module.type) {
 		case 'CLOCK':
 			return <ClockModule module={module as IModule<'CLOCK'>} />;
+		case 'COMPRESSOR':
+			return <CompressorModule module={module as IModule<'COMPRESSOR'>} />;
 		case 'MIDI_CC':
 			return <MidiCcModule module={module as IModule<'MIDI_CC'>} />;
 		case 'MIDI_CLOCK':

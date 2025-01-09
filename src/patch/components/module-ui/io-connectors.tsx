@@ -4,6 +4,33 @@ import { IAudioContext, IAudioNode } from 'standardized-audio-context';
 import { IoConnector } from './io-connector';
 import { IoType } from '../../state/types/connection';
 
+const Connector =
+	(type: IoType) =>
+	({
+		moduleKey,
+		accessor,
+		channel,
+		name,
+	}: {
+		channel: number;
+		moduleKey: string;
+		accessor: () => IAudioNode<IAudioContext>;
+		name: string;
+	}) =>
+		(
+			<IoConnector
+				moduleKey={moduleKey}
+				accessor={accessor}
+				type={type}
+				channel={channel}
+				name={name}
+			/>
+		);
+
+const InputConnector = Connector(IoType.input);
+
+const OutputConnector = Connector(IoType.output);
+
 export const IoConnectors: React.FunctionComponent<{
 	moduleKey: string;
 	inputAccessors: Record<string, () => IAudioNode<IAudioContext>>;
@@ -15,10 +42,9 @@ export const IoConnectors: React.FunctionComponent<{
 			<section className="inputs">
 				<h4 className="visually-hidden">Inputs</h4>
 				{Object.entries(inputAccessors).map(([key, accessor], i) => (
-					<IoConnector
+					<InputConnector
 						moduleKey={moduleKey}
 						accessor={accessor}
-						type={IoType.input}
 						channel={i}
 						key={key}
 						name={key}
@@ -28,10 +54,9 @@ export const IoConnectors: React.FunctionComponent<{
 			<section className="outputs">
 				<h4 className="visually-hidden">Outputs</h4>
 				{Object.entries(outputAccessors).map(([key, accessor], i) => (
-					<IoConnector
+					<OutputConnector
 						moduleKey={moduleKey}
 						accessor={accessor}
-						type={IoType.output}
 						channel={i}
 						key={key}
 						name={key}

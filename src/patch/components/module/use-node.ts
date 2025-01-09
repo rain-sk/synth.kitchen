@@ -7,6 +7,7 @@ import {
 } from '../../state/types/module';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
+import { useEffectOnce } from './use-effect-once';
 
 export const useNode = <NodeType, ModuleType extends Type>(
 	module: IModule,
@@ -20,6 +21,20 @@ export const useNode = <NodeType, ModuleType extends Type>(
 	if (!nodeRef.current) {
 		nodeRef.current = nodeFactory();
 	}
+
+	// Though React calls all effects twice because of a "dummy cycle" in dev mode,
+	// we need to use some special tricks to prevent actually disconnecting the
+	// audio node during the dummy cycle.
+	useEffectOnce(() => () => {
+		if (
+			nodeRef.current &&
+			typeof nodeRef.current === 'object' &&
+			'disconnect' in nodeRef.current &&
+			typeof nodeRef.current.disconnect === 'function'
+		) {
+			nodeRef.current.disconnect();
+		}
+	});
 
 	const [state, setState] = useState(() =>
 		moduleInit(

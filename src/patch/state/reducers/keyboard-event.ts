@@ -6,13 +6,18 @@ import {
 	keyCodeMovementMap,
 	Modifier,
 } from '../../../constants/key';
+import {
+	connectionInfo,
+	connectorInfo,
+	disconnect,
+	disconnectSet,
+	moduleConnectors,
+} from '../connection';
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	state,
-	action,
+	{ payload: { type, keyCode } },
 ) => {
-	const { type, keyCode } = action.payload;
-
 	if (keyCode in keyCodeModifierMap) {
 		const modifier = keyCodeModifierMap[keyCode];
 
@@ -33,7 +38,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	} else if (
 		keyCode in keyCodeMovementMap &&
 		state.isKeyMovementEnabled &&
-		action.payload.type === KeyboardEventType.KEY_DOWN
+		type === KeyboardEventType.KEY_DOWN
 	) {
 		const { deltaX, deltaY } = keyCodeMovementMap[keyCode];
 
@@ -50,25 +55,52 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		};
 	} else if (
 		(keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) &&
+		type === KeyboardEventType.KEY_DOWN &&
 		state.isKeyMovementEnabled
 	) {
+		const connectionsOfSelectedModules = [...state.selectedModuleKeys]
+			.filter((moduleKey) => moduleKey !== '0')
+			.flatMap((moduleKey) => moduleConnectors(state.connectors, moduleKey))
+			.map((key) => connectorInfo(state.connectors, key))
+			.flatMap(([, connections]) => connections);
+
+		const newState = disconnectSet(
+			state.connections,
+			state.connectors,
+			connectionsOfSelectedModules,
+		);
+
+		newState.connectors = Object.fromEntries(
+			Object.entries(newState.connectors).filter(
+				([, [connector]]) =>
+					connector.moduleKey === '0' ||
+					!state.selectedModuleKeys.has(connector.moduleKey),
+			),
+		);
+
+		const modules = Object.fromEntries(
+			Object.entries(state.modules).filter(
+				([moduleKey]) =>
+					!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
+			),
+		);
+
+		const modulePositions = Object.fromEntries(
+			Object.entries(state.modulePositions).filter(
+				([moduleKey]) =>
+					!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
+			),
+		);
+
 		return {
 			...state,
-			modules: Object.fromEntries(
-				Object.entries(state.modules).filter(
-					([moduleKey]) =>
-						!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
-				),
-			),
-			modulePositions: Object.fromEntries(
-				Object.entries(state.modulePositions).filter(
-					([moduleKey]) =>
-						!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
-				),
-			),
+			...newState,
+			modules,
+			modulePositions,
 		};
 	} else if (
 		keyCode === KeyCode.A &&
+		type === KeyboardEventType.KEY_DOWN &&
 		((state.heldModifiers & Modifier.SPECIAL) === Modifier.SPECIAL ||
 			(state.heldModifiers & Modifier.CONTROL) === Modifier.CONTROL)
 	) {
@@ -79,7 +111,6 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			]),
 		};
 	} else {
-		// console.log(type, keyCode);
 		return state;
 	}
 };

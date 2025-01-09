@@ -23,9 +23,11 @@ export const blankPatch = (): IPatchState => ({
 	selectedModuleKeys: new Set(),
 
 	// i/o
+	activeConnectorKey: undefined,
+	connectors: {},
+	connections: {},
 	io: {},
 	parameters: {},
-	activeConnectorKey: undefined,
 
 	// mouse info
 	mouseDragStartPosition: INVALID_POSITION,
@@ -38,5 +40,5 @@ export const blankPatch = (): IPatchState => ({
 
 	// misc
 	loadingFromCloud: false,
-	connectionsToLoad: undefined,
+	loadConnections: false,
 });

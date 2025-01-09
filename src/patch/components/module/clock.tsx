@@ -44,7 +44,7 @@ export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
 		[state],
 	);
 
-	const enabled = state != undefined;
+	const enabled = state !== undefined;
 
 	const tempoAccessor = useCallback(() => node.tempo, [enabled]);
 
