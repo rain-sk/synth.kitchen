@@ -105,13 +105,15 @@ const resizeCanvas = (canvas: HTMLCanvasElement) => {
 	canvas.height = rect.height;
 };
 
-export const Connections: React.FC<{
+export type ConnectionsProps = {
 	activeConnectorKey: string | undefined;
 	modules: Record<string, IModule>;
 	modulePositions: Record<string, Position>;
 	connections: Record<string, [IOutput, IInput]>;
 	connectors: Record<string, IConnectorInfo>;
-}> = ({
+};
+
+export const Connections: React.FC<ConnectionsProps> = ({
 	activeConnectorKey,
 	modules,
 	modulePositions,

@@ -1,57 +1,44 @@
 import React, { useMemo } from 'react';
 
 import { IModule } from '../../state/types/module';
-import { Module } from '../module';
-import { IPatchState, Position } from '../../state/types/patch';
+import { Module, ModuleProps } from '../module';
+import { Position } from '../../state/types/patch';
 import { IPatchAction } from '../../state/actions';
-import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
+import {
+	ModuleCanvasBackdrop,
+	ModuleCanvasBackdropProps,
+} from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
-import { Connections } from './connections';
+import { Connections, ConnectionsProps } from './connections';
 
 export const ModuleCanvas: React.FC<{
-	state: IPatchState;
+	moduleCanvasBackdropProps: ModuleCanvasBackdropProps;
+	connectionsProps: ConnectionsProps;
+	moduleProps: ModuleProps;
+	modulePositions: Record<string, Position>;
+	modules: Record<string, IModule>;
 	dispatch: React.Dispatch<IPatchAction>;
-}> = ({ state, dispatch }) => {
+}> = ({
+	moduleProps,
+	moduleCanvasBackdropProps,
+	connectionsProps,
+	modulePositions,
+	modules,
+	dispatch,
+}) => {
 	const sortedModules = useMemo(
 		() =>
-			Object.entries(state.modulePositions)
+			Object.entries(modulePositions)
 				.sort(
 					([, [ax, ay]], [, [bx, by]]) =>
 						Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2)) -
 						Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2)),
 				)
 				.map(([moduleKey, position]): [IModule, Position] => [
-					state.modules[moduleKey],
+					modules[moduleKey],
 					position,
 				]),
-		[state.modulePositions, state.modules],
-	);
-
-	const moduleCanvasBackdropProps = useMemo(
-		() => ({
-			dispatch,
-			modulePositions: state.modulePositions,
-			modules: state.modules,
-			selectedModuleKeys: state.selectedModuleKeys,
-		}),
-		[dispatch, state.modulePositions, state.modules, state.selectedModuleKeys],
-	);
-
-	const connectionsProps = useMemo(
-		() => ({
-			activeConnectorKey: state.activeConnectorKey,
-			modules: state.modules,
-			modulePositions: state.modulePositions,
-			connections: state.connections,
-			connectors: state.connectors,
-		}),
-		[
-			state.activeConnectorKey,
-			state.modules,
-			state.modulePositions,
-			state.connections,
-			state.connectors,
-		],
+		[modulePositions, modules],
 	);
 
 	return (
@@ -63,9 +50,9 @@ export const ModuleCanvas: React.FC<{
 						key={module.moduleKey}
 						module={module}
 						position={position}
-						selectedModuleKeys={state.selectedModuleKeys}
-						selectionPending={state.selectionPending}
-						heldModifiers={state.heldModifiers}
+						selectedModuleKeys={moduleProps.selectedModuleKeys}
+						selectionPending={moduleProps.selectionPending}
+						heldModifiers={moduleProps.heldModifiers}
 						dispatch={dispatch}
 					/>
 				))}

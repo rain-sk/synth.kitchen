@@ -1,12 +1,9 @@
-import React, { useMemo, useReducer } from 'react';
+import React, { useReducer } from 'react';
 
 import { blankPatch } from '../../state';
 import { DerivedConnectionStateContextProvider } from '../../contexts/derived-connection-state';
-import { Connections } from './connections';
-import { KeyHandler } from './key-handler';
 import { MidiContextProvider } from '../../contexts/midi';
 import { ModuleCanvas } from './module-canvas';
-import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { PatchContextProvider } from '../../contexts/patch';
 import { PatchLoader } from './patch-loader';
 import { reducer } from '../../state/reducers';
@@ -15,15 +12,17 @@ import { useLoadConnections } from './use-load-connections';
 import { useAudioMidiInit } from './use-audio-midi-init';
 import { Init } from './init';
 import { useTitle } from 'react-use';
+import { useEditorComponentProps } from './use-editor-component-props';
 
 export const PatchEditor: React.FC = () => {
 	const { initialized, status, init } = useAudioMidiInit();
-
 	const [state, dispatch] = useReducer(reducer, blankPatch());
-
 	useTitle(`patch/${state.name}`);
 
 	useLoadConnections({ ...state, dispatch, initialized });
+
+	const { connectionsProps, moduleCanvasBackdropProps, moduleProps } =
+		useEditorComponentProps(state, dispatch);
 
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>
@@ -31,7 +30,14 @@ export const PatchEditor: React.FC = () => {
 				<MidiContextProvider>
 					<Toolbar />
 					{initialized ? (
-						<ModuleCanvas state={state} dispatch={dispatch} />
+						<ModuleCanvas
+							connectionsProps={connectionsProps}
+							moduleCanvasBackdropProps={moduleCanvasBackdropProps}
+							moduleProps={moduleProps}
+							modulePositions={state.modulePositions}
+							modules={state.modules}
+							dispatch={dispatch}
+						/>
 					) : (
 						<Init name={state.name} status={status} init={init} />
 					)}

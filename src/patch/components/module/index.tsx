@@ -168,14 +168,19 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 	}
 };
 
-export const Module: React.FunctionComponent<{
-	module: IModule;
-	position: Position;
+export type ModuleProps = {
 	selectedModuleKeys: Set<string>;
 	selectionPending: boolean;
 	heldModifiers: Modifier;
 	dispatch: React.Dispatch<IPatchAction>;
-}> = ({
+};
+
+export const Module: React.FC<
+	{
+		module: IModule;
+		position: Position;
+	} & ModuleProps
+> = ({
 	module,
 	position,
 	selectedModuleKeys,

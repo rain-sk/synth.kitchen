@@ -22,14 +22,15 @@ const positionFromMouseEvent = (
 	e.clientY + scrollableElement.scrollTop,
 ];
 
+export type ModuleCanvasBackdropProps = {
+	dispatch: React.Dispatch<IPatchAction>;
+	modulePositions: Record<string, Position>;
+	modules: Record<string, IModule>;
+	selectedModuleKeys: Set<string>;
+};
+
 export const ModuleCanvasBackdrop: React.FC<
-	React.PropsWithChildren<{
-		drawOnTop?: boolean;
-		modules: Record<string, IModule>;
-		modulePositions: Record<string, Position>;
-		selectedModuleKeys: Set<string>;
-		dispatch: React.Dispatch<IPatchAction>;
-	}>
+	React.PropsWithChildren<ModuleCanvasBackdropProps>
 > = ({ children }) => {
 	const { modules, modulePositions, selectedModuleKeys, dispatch } =
 		useContext(PatchContext);
