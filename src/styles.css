@@ -62,6 +62,13 @@ nav > section {
 	padding: 0 0.5rem;
 }
 
+main#init {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
 main {
 	position: absolute;
 	top: 2.5rem;

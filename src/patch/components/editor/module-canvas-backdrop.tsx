@@ -9,9 +9,10 @@ import React, {
 
 import { AddModule } from './add-module';
 import { INVALID_POSITION, Position } from '../../state/types/patch';
-import { patchActions } from '../../state/actions';
+import { IPatchAction, patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 import { queueAnimation } from '../../../utils/animation';
+import { IModule } from '../../state/types/module';
 
 const positionFromMouseEvent = (
 	e: MouseEvent,
@@ -21,10 +22,16 @@ const positionFromMouseEvent = (
 	e.clientY + scrollableElement.scrollTop,
 ];
 
-export const ModuleCanvasBackdrop: React.FC<{
-	drawOnTop?: boolean;
-	children: React.ReactNode;
-}> = ({ children }) => {
+export type ModuleCanvasBackdropProps = {
+	dispatch: React.Dispatch<IPatchAction>;
+	modulePositions: Record<string, Position>;
+	modules: Record<string, IModule>;
+	selectedModuleKeys: Set<string>;
+};
+
+export const ModuleCanvasBackdrop: React.FC<
+	React.PropsWithChildren<ModuleCanvasBackdropProps>
+> = ({ children }) => {
 	const { modules, modulePositions, selectedModuleKeys, dispatch } =
 		useContext(PatchContext);
 
