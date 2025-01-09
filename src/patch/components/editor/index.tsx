@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useMemo, useReducer } from 'react';
 
 import { blankPatch } from '../../state';
 import { DerivedConnectionStateContextProvider } from '../../contexts/derived-connection-state';
@@ -11,68 +11,77 @@ import { PatchContextProvider } from '../../contexts/patch';
 import { PatchLoader } from './patch-loader';
 import { reducer } from '../../state/reducers';
 import { Toolbar } from '../toolbar';
-import { IPatchAction, patchActions } from '../../state/actions';
-import { connectorButtonExists, connectorKey } from '../../state/connection';
-import { IConnectorInfo, IInput, IOutput } from '../../state/types/connection';
-
-const doLoadConnections = (
-	connectedConnectors: Set<string>,
-	dispatch: React.Dispatch<IPatchAction>,
-) => {
-	const connectorButtonsExist = [...connectedConnectors].every((key) =>
-		connectorButtonExists(key),
-	);
-	if (connectorButtonsExist) {
-		dispatch(patchActions.loadConnectionsAction());
-	} else {
-		console.log('delay load connections');
-		setTimeout(() => doLoadConnections(connectedConnectors, dispatch), 17);
-	}
-};
-
-const useLoadConnections = ({
-	loadConnections,
-	connections,
-	connectors,
-	dispatch,
-}: {
-	loadConnections: boolean;
-	connections: Record<string, [IOutput, IInput]>;
-	connectors: Record<string, IConnectorInfo>;
-	dispatch: React.Dispatch<IPatchAction>;
-}) => {
-	useEffect(() => {
-		if (loadConnections) {
-			const connectedConnectors = new Set<string>();
-			Object.values(connections).forEach(([output, input]) => {
-				connectedConnectors.add(connectorKey(output));
-				connectedConnectors.add(connectorKey(input));
-			});
-			if (
-				connectedConnectors.size > 0 &&
-				[...connectedConnectors].every((key) => key in connectors)
-			) {
-				doLoadConnections(connectedConnectors, dispatch);
-			}
-		}
-	}, [loadConnections, connections, connectors]);
-};
+import { useLoadConnections } from './use-load-connections';
+import { useAudioMidiInit } from './use-audio-midi-init';
+import { Init } from './init';
 
 export const PatchEditor: React.FC = () => {
+	const { initialized, status, init } = useAudioMidiInit();
+
 	const [state, dispatch] = useReducer(reducer, blankPatch());
 
-	useLoadConnections({ ...state, dispatch });
+	useLoadConnections({ ...state, dispatch, initialized });
+
+	const moduleCanvasBackdropProps = useMemo(
+		() => ({
+			dispatch,
+			modulePositions: state.modulePositions,
+			modules: state.modules,
+			selectedModuleKeys: state.selectedModuleKeys,
+		}),
+		[dispatch, state.modulePositions, state.modules, state.selectedModuleKeys],
+	);
+
+	const moduleCanvasProps = useMemo(
+		() => ({
+			dispatch,
+			heldModifiers: state.heldModifiers,
+			modulePositions: state.modulePositions,
+			modules: state.modules,
+			selectedModuleKeys: state.selectedModuleKeys,
+			selectionPending: state.selectionPending,
+		}),
+		[
+			dispatch,
+			state.heldModifiers,
+			state.modulePositions,
+			state.modules,
+			state.selectedModuleKeys,
+			state.selectionPending,
+		],
+	);
+
+	const connectionsProps = useMemo(
+		() => ({
+			activeConnectorKey: state.activeConnectorKey,
+			modules: state.modules,
+			modulePositions: state.modulePositions,
+			connections: state.connections,
+			connectors: state.connectors,
+		}),
+		[
+			state.activeConnectorKey,
+			state.modules,
+			state.modulePositions,
+			state.connections,
+			state.connectors,
+		],
+	);
 
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>
 			<DerivedConnectionStateContextProvider {...state}>
 				<MidiContextProvider>
 					<Toolbar />
-					<ModuleCanvasBackdrop>
-						<KeyHandler />
-						<ModuleCanvas />
-						<Connections />
-					</ModuleCanvasBackdrop>
+					{initialized ? (
+						<ModuleCanvasBackdrop {...moduleCanvasBackdropProps}>
+							<KeyHandler />
+							<ModuleCanvas {...moduleCanvasProps} />
+							<Connections {...connectionsProps} />
+						</ModuleCanvasBackdrop>
+					) : (
+						<Init name={state.name} status={status} init={init} />
+					)}
 					<PatchLoader />
 				</MidiContextProvider>
 			</DerivedConnectionStateContextProvider>

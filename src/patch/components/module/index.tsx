@@ -11,7 +11,7 @@ import React, {
 import { IModule } from '../../state/types/module';
 import { Modifier } from '../../../constants/key';
 import { ModuleHeader } from '../module-ui/module-header';
-import { patchActions } from '../../state/actions';
+import { IPatchAction, patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 import { queueAnimation } from '../../../utils/animation';
 
@@ -171,10 +171,19 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 export const Module: React.FunctionComponent<{
 	module: IModule;
 	position: Position;
-}> = ({ module, position }) => {
+	selectedModuleKeys: Set<string>;
+	selectionPending: boolean;
+	heldModifiers: Modifier;
+	dispatch: React.Dispatch<IPatchAction>;
+}> = ({
+	module,
+	position,
+	selectedModuleKeys,
+	selectionPending,
+	heldModifiers,
+	dispatch,
+}) => {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const { selectedModuleKeys, selectionPending, heldModifiers, dispatch } =
-		useContext(PatchContext);
 
 	const { isDragging, startDragging, setPosition } = useDragAndDrop(
 		module.moduleKey,

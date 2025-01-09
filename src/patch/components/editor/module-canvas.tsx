@@ -1,13 +1,26 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { IModule } from '../../state/types/module';
 import { Module } from '../module';
-import { PatchContext } from '../../contexts/patch';
 import { Position } from '../../state/types/patch';
+import { Modifier } from '../../../constants/key';
+import { IPatchAction } from '../../state/actions';
 
-export const ModuleCanvas: React.FC<{}> = () => {
-	const { modulePositions, modules } = useContext(PatchContext);
-
+export const ModuleCanvas: React.FC<{
+	modulePositions: Record<string, Position>;
+	modules: Record<string, IModule>;
+	selectedModuleKeys: Set<string>;
+	selectionPending: boolean;
+	heldModifiers: Modifier;
+	dispatch: React.Dispatch<IPatchAction>;
+}> = ({
+	modulePositions,
+	modules,
+	selectedModuleKeys,
+	selectionPending,
+	heldModifiers,
+	dispatch,
+}) => {
 	const sortedModules = useMemo(
 		() =>
 			Object.entries(modulePositions)
@@ -26,7 +39,15 @@ export const ModuleCanvas: React.FC<{}> = () => {
 	return (
 		<section id="module-canvas" role="tree" aria-multiselectable>
 			{sortedModules.map(([module, position]) => (
-				<Module key={module.moduleKey} module={module} position={position} />
+				<Module
+					key={module.moduleKey}
+					module={module}
+					position={position}
+					selectedModuleKeys={selectedModuleKeys}
+					selectionPending={selectionPending}
+					heldModifiers={heldModifiers}
+					dispatch={dispatch}
+				/>
 			))}
 		</section>
 	);

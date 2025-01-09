@@ -1,10 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { connectorButton, connectorKey } from '../../state/connection';
-import { IInput, IOutput } from '../../state/types/connection';
+import { IConnectorInfo, IInput, IOutput } from '../../state/types/connection';
 import { INVALID_POSITION, Position } from '../../state/types/patch';
-import { PatchContext } from '../../contexts/patch';
 import { queueAnimationCallback } from '../../../utils/animation';
+import { IModule } from '../../state/types/module';
 
 const _ = {
 	root: document.getElementById('root'),
@@ -105,18 +105,22 @@ const resizeCanvas = (canvas: HTMLCanvasElement) => {
 	canvas.height = rect.height;
 };
 
-export const Connections: React.FC = () => {
+export const Connections: React.FC<{
+	activeConnectorKey: string | undefined;
+	modules: Record<string, IModule>;
+	modulePositions: Record<string, Position>;
+	connections: Record<string, [IOutput, IInput]>;
+	connectors: Record<string, IConnectorInfo>;
+}> = ({
+	activeConnectorKey,
+	modules,
+	modulePositions,
+	connections,
+	connectors,
+}) => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
 	const mousePositionRef = useRef<Position>(INVALID_POSITION);
-
-	const {
-		activeConnectorKey,
-		modules,
-		modulePositions,
-		connections,
-		connectors,
-	} = useContext(PatchContext);
 
 	const drawConnections = useCallback(
 		queueAnimationCallback(() => {
@@ -243,14 +247,16 @@ export const Connections: React.FC = () => {
 		const width = m.offsetWidth;
 		const height = m.offsetHeight;
 
-		if (canvasRef.current && contextRef.current) {
-			contextRef.current.clearRect(0, 0, width, height);
-			contextRef.current.clearRect(0, 0, width, height);
-			resizeCanvas(canvasRef.current);
-		}
+		queueAnimationCallback(() => {
+			if (canvasRef.current && contextRef.current) {
+				contextRef.current.clearRect(0, 0, width, height);
+				contextRef.current.clearRect(0, 0, width, height);
+				resizeCanvas(canvasRef.current);
+			}
+		});
 
 		drawConnections();
-	}, [drawConnections]);
+	}, [drawConnections, connections]);
 
 	useEffect(() => {
 		root().addEventListener('resize', onResize, false);
