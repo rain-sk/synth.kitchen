@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useReducer } from 'react';
 
 import { blankPatch } from '../../state';
 import { DerivedConnectionStateContextProvider } from '../../contexts/derived-connection-state';

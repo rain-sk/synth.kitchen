@@ -18,7 +18,12 @@ export const Init: React.FC<{
 	return (
 		<main id="init">
 			<h1>patch/{name}</h1>
-			<button disabled={buttonClicked} type="button" onClick={onClickStart}>
+			<button
+				disabled={buttonClicked}
+				type="button"
+				onClick={onClickStart}
+				autoFocus
+			>
 				start
 			</button>
 			<p>{status}</p>

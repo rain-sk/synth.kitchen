@@ -199,7 +199,7 @@ export const Connections: React.FC<ConnectionsProps> = ({
 				});
 			}
 		}),
-		[activeConnectorKey, connectors],
+		[activeConnectorKey, connections],
 	);
 
 	const onMouseMove = useCallback(
@@ -244,33 +244,36 @@ export const Connections: React.FC<ConnectionsProps> = ({
 
 	useEffect(drawConnections, [drawConnections]);
 
-	const onResize = useCallback(() => {
+	const onScrollOrResize = useCallback(() => {
 		const m = main();
 		const width = m.offsetWidth;
 		const height = m.offsetHeight;
 
-		queueAnimationCallback(() => {
-			if (canvasRef.current && contextRef.current) {
-				contextRef.current.clearRect(0, 0, width, height);
-				contextRef.current.clearRect(0, 0, width, height);
-				resizeCanvas(canvasRef.current);
-			}
-		});
+		if (canvasRef.current && contextRef.current) {
+			contextRef.current.clearRect(0, 0, width, height);
+			contextRef.current.clearRect(0, 0, width, height);
+			resizeCanvas(canvasRef.current);
+		}
 
 		drawConnections();
-	}, [drawConnections, connections]);
+	}, [drawConnections, connections, connectors]);
 
 	useEffect(() => {
-		root().addEventListener('resize', onResize, false);
-		main().addEventListener('scroll', onResize, false);
-		onResize();
+		root().addEventListener('resize', onScrollOrResize, false);
+		main().addEventListener('scroll', onScrollOrResize, false);
+		onScrollOrResize();
 		return () => {
-			root().removeEventListener('resize', onResize, false);
-			main().removeEventListener('scroll', onResize, false);
+			root().removeEventListener('resize', onScrollOrResize, false);
+			main().removeEventListener('scroll', onScrollOrResize, false);
 		};
 	}, []);
 
-	useEffect(onResize, [connections, modules, modulePositions]);
+	useEffect(onScrollOrResize, [
+		onScrollOrResize,
+		connections,
+		modules,
+		modulePositions,
+	]);
 
 	return (
 		<canvas

@@ -25,10 +25,11 @@ export const useLoadPatch = (
 			getPatches()
 				.then((res) => res && res.json())
 				.then((data: { rows: DatabasePatch[] }) => {
-					const patch = data.rows.find((row) => row.ID === id);
-					if (patch) {
-						dispatch(patchActions.loadPatchAction(JSON.parse(patch.Patch)));
-					}
+					data.rows.forEach((row) => {
+						if (row.ID === id) {
+							dispatch(patchActions.loadPatchAction(JSON.parse(row.Patch)));
+						}
+					});
 				});
 		} else {
 			dispatch(patchActions.loadPatchAction(blankPatch()));
