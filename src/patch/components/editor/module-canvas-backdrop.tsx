@@ -13,6 +13,7 @@ import { IPatchAction, patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 import { queueAnimation } from '../../../utils/animation';
 import { IModule } from '../../state/types/module';
+import { UseScrollContext } from '../../contexts/use-scroll';
 
 const positionFromMouseEvent = (
 	e: MouseEvent,
@@ -35,8 +36,8 @@ export const ModuleCanvasBackdrop: React.FC<
 	const { modules, modulePositions, selectedModuleKeys, dispatch } =
 		useContext(PatchContext);
 
-	const container = useRef(undefined as HTMLElement | undefined);
-	const spacer = useRef(undefined as HTMLDivElement | undefined);
+	const container = useRef<HTMLElement | undefined>(undefined);
+	const spacer = useRef<HTMLDivElement | undefined>(undefined);
 	const selection = useRef({
 		element: undefined as HTMLDivElement | undefined,
 		start: INVALID_POSITION,
@@ -203,34 +204,38 @@ export const ModuleCanvasBackdrop: React.FC<
 	);
 
 	return (
-		<main
-			id="main"
-			ref={(main) => {
-				container.current = main ?? undefined;
-				setInitialized(isInitialized());
-			}}
-			onMouseDown={initialized ? onMouseDown : () => {}}
-			onScroll={initialized ? onResize : () => {}}
+		<UseScrollContext.Provider
+			value={container as React.RefObject<HTMLElement>}
 		>
-			<div
-				id="selection"
-				ref={(div) => {
-					selection.current.element = div ?? undefined;
+			<main
+				id="main"
+				ref={(main) => {
+					container.current = main ?? undefined;
 					setInitialized(isInitialized());
 				}}
-			/>
-			<div
-				id="spacer"
-				ref={(div) => {
-					spacer.current = div ?? undefined;
-					setInitialized(isInitialized());
-				}}
-			/>
-			{children}
-			{deviceButtonPosition !== INVALID_POSITION &&
-				selectedModuleKeys.size === 0 && (
-					<AddModule position={deviceButtonPosition} />
-				)}
-		</main>
+				onMouseDown={initialized ? onMouseDown : () => {}}
+				onScroll={initialized ? onResize : () => {}}
+			>
+				<div
+					id="selection"
+					ref={(div) => {
+						selection.current.element = div ?? undefined;
+						setInitialized(isInitialized());
+					}}
+				/>
+				<div
+					id="spacer"
+					ref={(div) => {
+						spacer.current = div ?? undefined;
+						setInitialized(isInitialized());
+					}}
+				/>
+				{children}
+				{deviceButtonPosition !== INVALID_POSITION &&
+					selectedModuleKeys.size === 0 && (
+						<AddModule position={deviceButtonPosition} />
+					)}
+			</main>
+		</UseScrollContext.Provider>
 	);
 };

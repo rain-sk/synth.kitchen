@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 
 import { connectorButton, connectorKey } from '../../state/connection';
 import { IConnectorInfo, IInput, IOutput } from '../../state/types/connection';
 import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { queueAnimationCallback } from '../../../utils/animation';
 import { IModule } from '../../state/types/module';
+import { useMouse, useRaf, useScroll } from 'react-use';
+import { UseScrollContext } from '../../contexts/use-scroll';
 
 const _ = {
 	root: document.getElementById('root'),
@@ -115,17 +117,28 @@ export type ConnectionsProps = {
 
 export const Connections: React.FC<ConnectionsProps> = ({
 	activeConnectorKey,
-	modules,
-	modulePositions,
 	connections,
-	connectors,
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
-	const mousePositionRef = useRef<Position>(INVALID_POSITION);
 
-	const drawConnections = useCallback(
-		queueAnimationCallback(() => {
+	const scroll = useScroll({ current: main() });
+	const mouse = useMouse({ current: main() });
+
+	const drawConnections = useCallback(() => {
+		const connectionsToDraw = Object.values(connections).map(
+			connectionToPath(ConnectionDrawMode.DIRECT, connectorButton),
+		);
+		if (activeConnectorKey) {
+			connectionsToDraw.push([
+				[
+					[mouse.posX, mouse.posY],
+					position(connectorButton(activeConnectorKey)),
+				],
+			]);
+		}
+
+		requestAnimationFrame(() => {
 			if (canvasRef.current && !contextRef.current) {
 				contextRef.current = canvasRef.current.getContext('2d') ?? undefined;
 				if (contextRef.current) {
@@ -150,7 +163,7 @@ export const Connections: React.FC<ConnectionsProps> = ({
 				if (activeConnectorKey) {
 					connectionsToDraw.push([
 						[
-							mousePositionRef.current,
+							[mouse.elX, mouse.elY],
 							position(connectorButton(activeConnectorKey)),
 						],
 					]);
@@ -198,88 +211,32 @@ export const Connections: React.FC<ConnectionsProps> = ({
 					context2d.fill();
 				});
 			}
-		}),
-		[activeConnectorKey, connections],
-	);
-
-	const onMouseMove = useCallback(
-		(e: MouseEvent) => {
-			if (e.target === main()) {
-				mousePositionRef.current = [e.offsetX, e.offsetY];
-			} else {
-				const mainRect = main().getBoundingClientRect();
-				const targetRect = (e.target as HTMLElement).getBoundingClientRect();
-
-				const mousex = e.offsetX + targetRect.left - mainRect.left;
-				const mousey = e.offsetY + targetRect.top - mainRect.top;
-
-				mousePositionRef.current = [mousex, mousey];
-			}
-			drawConnections();
-		},
-		[drawConnections],
-	);
-
-	const activeListenerRef = useRef(false);
-	useEffect(() => {
-		if (activeConnectorKey && !activeListenerRef.current) {
-			activeListenerRef.current = true;
-			mousePositionRef.current = position(connectorButton(activeConnectorKey));
-			main().addEventListener('mousemove', onMouseMove);
-		} else if (!activeConnectorKey) {
-			activeListenerRef.current = false;
-			mousePositionRef.current = INVALID_POSITION;
-			main().removeEventListener('mousemove', onMouseMove);
-		}
-
-		drawConnections();
-
-		return () => {
-			if (activeListenerRef.current) {
-				activeListenerRef.current = false;
-				main().removeEventListener('mousemove', onMouseMove);
-			}
-		};
-	}, [activeConnectorKey, drawConnections]);
-
-	useEffect(drawConnections, [drawConnections]);
-
-	const onScrollOrResize = useCallback(() => {
-		const m = main();
-		const width = m.offsetWidth;
-		const height = m.offsetHeight;
-
-		if (canvasRef.current && contextRef.current) {
-			contextRef.current.clearRect(0, 0, width, height);
-			contextRef.current.clearRect(0, 0, width, height);
-			resizeCanvas(canvasRef.current);
-		}
-
-		drawConnections();
-	}, [drawConnections, connections, connectors]);
+		});
+	}, [activeConnectorKey, scroll, mouse]);
 
 	useEffect(() => {
-		root().addEventListener('resize', onScrollOrResize, false);
-		main().addEventListener('scroll', onScrollOrResize, false);
-		onScrollOrResize();
-		return () => {
-			root().removeEventListener('resize', onScrollOrResize, false);
-			main().removeEventListener('scroll', onScrollOrResize, false);
-		};
+		drawConnections();
 	}, []);
+	useEffect(drawConnections, [scroll]);
+	useEffect(() => {
+		if (activeConnectorKey) {
+			drawConnections();
+		}
+	}, [mouse]);
 
-	useEffect(onScrollOrResize, [
-		onScrollOrResize,
-		connections,
-		modules,
-		modulePositions,
-	]);
+	useEffect(() => {
+		root().addEventListener('resize', drawConnections, false);
+		return () => {
+			root().removeEventListener('resize', drawConnections, false);
+		};
+	}, [drawConnections]);
 
 	return (
 		<canvas
 			id="connections"
 			ref={(ref) => {
 				canvasRef.current = ref ?? undefined;
+				drawConnections();
 			}}
 			style={{ position: 'fixed', top: '2.5rem' }}
 		/>
