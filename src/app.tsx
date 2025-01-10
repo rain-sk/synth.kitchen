@@ -9,6 +9,7 @@ export const SynthKitchen: React.FC = () => {
 		<Switch>
 			<Route path="/" component={HomeRoute} />
 			<Route path="/patch" component={PatchRoute} />
+			<Route path="/patch/:id" component={PatchRoute} />
 		</Switch>
 	);
 };
