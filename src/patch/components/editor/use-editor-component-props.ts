@@ -22,14 +22,12 @@ export const useEditorComponentProps = (
 	const connectionsProps: ConnectionsProps = useMemo(
 		() => ({
 			activeConnectorKey: state.activeConnectorKey,
-			modules: state.modules,
 			modulePositions: state.modulePositions,
 			connections: state.connections,
 			connectors: state.connectors,
 		}),
 		[
 			state.activeConnectorKey,
-			state.modules,
 			state.modulePositions,
 			state.connections,
 			state.connectors,

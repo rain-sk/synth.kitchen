@@ -14,7 +14,8 @@
 		"server-name-gen": "^1.0.2",
 		"standardized-audio-context": "^25.3.77",
 		"uuid": "^10.0.0",
-		"webmidi": "^3.1.11"
+		"webmidi": "^3.1.11",
+		"wouter": "^3.3.5"
 	},
 	"scripts": {
 		"build": "tsc && vite build",

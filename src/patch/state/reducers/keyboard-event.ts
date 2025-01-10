@@ -86,11 +86,23 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			),
 		);
 
+		Object.values(newState.connections).forEach(([output, input]) => {
+			if (state.selectedModuleKeys.has(output.moduleKey)) {
+				console.error('failed to delete output');
+			}
+			if (state.selectedModuleKeys.has(input.moduleKey)) {
+				console.error('failed to delete input');
+			}
+		});
+
 		return {
 			...state,
 			...newState,
 			modules,
 			modulePositions,
+			selectedModuleKeys: new Set(
+				state.selectedModuleKeys.has('0') ? ['0'] : [],
+			),
 		};
 	} else if (
 		keyCode === KeyCode.A &&

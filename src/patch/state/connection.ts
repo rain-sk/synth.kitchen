@@ -30,7 +30,7 @@ export const connectorButton = (key: string) => {
 };
 
 export const connectorButtonExists = (key: string) =>
-	document.getElementById(key) !== undefined;
+	!!document.getElementById(key);
 
 export const moduleConnectors = (
 	connectors: Record<string, IConnectorInfo>,
@@ -111,6 +111,31 @@ export const disconnect = (
 	connections: Record<string, [IOutput, IInput]>;
 	connectors: Record<string, IConnectorInfo>;
 } => {
+	const key = connectionKey(output, input);
+	if (!(key in connections)) {
+		console.error('unregistered connection', key);
+		throw Error('disconnecting unregistered connection');
+	}
+
+	const outputKey = connectorKey(output);
+	const inputKey = connectorKey(input);
+
+	if (!(outputKey in connectors) || !(inputKey in connectors)) {
+		console.error('unregistered connector', {
+			outputKey,
+			inputKey,
+			connectors,
+		});
+		throw Error('disconnecting one or more unregistered connectors');
+	}
+
+	const outputInfo = connectorInfo(connectors, outputKey);
+	output = outputInfo[0] as IOutput;
+	const inputInfo = connectorInfo(connectors, inputKey);
+	input = inputInfo[0] as IInput;
+
+	console.log(outputKey);
+
 	try {
 		output.accessor().disconnect(input.accessor() as any);
 	} catch (e) {
@@ -121,23 +146,19 @@ export const disconnect = (
 		console.warn(e);
 	}
 
-	const key = connectionKey(output, input);
-
-	const outputKey = connectorKey(output);
-	const inputKey = connectorKey(input);
-	const outputConnections = connectorInfo(connectors, outputKey)[1].filter(
+	const outputConnections = outputInfo[1].filter(
 		(existingKey) => existingKey !== key,
 	);
-	const inputConnections = connectorInfo(connectors, inputKey)[1].filter(
+	const inputConnections = inputInfo[1].filter(
 		(existingKey) => existingKey !== key,
+	);
+
+	const newConnections = Object.fromEntries(
+		Object.entries(connections).filter(([existingKey]) => existingKey !== key),
 	);
 
 	return {
-		connections: Object.fromEntries(
-			Object.entries(connections).filter(
-				([existingKey]) => existingKey !== key,
-			),
-		),
+		connections: newConnections,
 		connectors: {
 			...connectors,
 			[outputKey]: [output, outputConnections],

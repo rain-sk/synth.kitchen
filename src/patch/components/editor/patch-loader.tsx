@@ -4,6 +4,7 @@ import ReactModal from 'react-modal';
 import { DatabasePatch, useApi } from '../../../api/use-api';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
+import { useLocation } from 'wouter';
 
 const root = document.getElementById('root');
 
@@ -20,20 +21,11 @@ export const PatchLoader: React.FC = () => {
 			.then((data: { rows: DatabasePatch[] }) => setPatches(data.rows));
 	}, [loadingFromCloud, setPatches, getPatches]);
 
+	const [, navigate] = useLocation();
+
 	const open = useCallback(
 		(patch: DatabasePatch) => () => {
-			dispatch(
-				patchActions.loadPatchAction({
-					id: '',
-					name: '',
-					modules: {},
-					modulePositions: {},
-					connections: {},
-				}),
-			);
-			setTimeout(() => {
-				dispatch(patchActions.loadPatchAction(JSON.parse(patch.Patch)));
-			}, 100);
+			navigate(`/patch/${patch.ID}`);
 		},
 		[dispatch],
 	);
