@@ -29,6 +29,12 @@ h1 {
 	margin: 1rem;
 }
 
+main section > h2,
+main ul li a,
+main ul li a:visited {
+	color: #fff;
+}
+
 .visually-hidden:not(:focus):not(:active) {
 	border: 0;
 	clip: rect(0 0 0 0);
