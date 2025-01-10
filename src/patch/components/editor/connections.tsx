@@ -1,12 +1,9 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { connectorButton, connectorKey } from '../../state/connection';
 import { IConnectorInfo, IInput, IOutput } from '../../state/types/connection';
 import { INVALID_POSITION, Position } from '../../state/types/patch';
-import { queueAnimationCallback } from '../../../utils/animation';
-import { IModule } from '../../state/types/module';
-import { useMouse, useRaf, useScroll } from 'react-use';
-import { UseScrollContext } from '../../contexts/use-scroll';
+import { useMouse, useScroll } from 'react-use';
 
 const _ = {
 	root: document.getElementById('root'),
@@ -45,10 +42,7 @@ const equals = (position1: Position, position2: Position) => {
 type Segment = [Position, Position];
 type Path = Segment[];
 const connectionToPath =
-	(
-		mode: ConnectionDrawMode,
-		connectorButton: (key: string) => HTMLButtonElement,
-	) =>
+	(mode: ConnectionDrawMode) =>
 	([output, input]: [IOutput, IInput]): Path => {
 		const outputPosition = position(connectorButton(connectorKey(output)));
 		const inputPosition = position(connectorButton(connectorKey(input)));
@@ -109,15 +103,16 @@ const resizeCanvas = (canvas: HTMLCanvasElement) => {
 
 export type ConnectionsProps = {
 	activeConnectorKey: string | undefined;
-	modules: Record<string, IModule>;
-	modulePositions: Record<string, Position>;
 	connections: Record<string, [IOutput, IInput]>;
 	connectors: Record<string, IConnectorInfo>;
+	modulePositions: Record<string, Position>;
 };
 
 export const Connections: React.FC<ConnectionsProps> = ({
 	activeConnectorKey,
 	connections,
+	connectors,
+	modulePositions,
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
@@ -126,9 +121,13 @@ export const Connections: React.FC<ConnectionsProps> = ({
 	const mouse = useMouse({ current: main() });
 
 	const drawConnections = useCallback(() => {
-		const connectionsToDraw = Object.values(connections).map(
-			connectionToPath(ConnectionDrawMode.DIRECT, connectorButton),
-		);
+		const connectionsToDraw = Object.values(connections)
+			.filter(
+				([output, input]) =>
+					connectorKey(output) in connectors &&
+					connectorKey(input) in connectors,
+			)
+			.map(connectionToPath(ConnectionDrawMode.DIRECT));
 		if (activeConnectorKey) {
 			connectionsToDraw.push([
 				[
@@ -157,7 +156,7 @@ export const Connections: React.FC<ConnectionsProps> = ({
 
 				resizeCanvas(canvasRef.current);
 				const connectionsToDraw = Object.values(connections).map(
-					connectionToPath(ConnectionDrawMode.DIRECT, connectorButton),
+					connectionToPath(ConnectionDrawMode.DIRECT),
 				);
 
 				if (activeConnectorKey) {
@@ -212,11 +211,12 @@ export const Connections: React.FC<ConnectionsProps> = ({
 				});
 			}
 		});
-	}, [activeConnectorKey, scroll, mouse]);
+	}, [activeConnectorKey, connections, connectors, scroll, mouse]);
 
 	useEffect(() => {
 		drawConnections();
 	}, []);
+	useEffect(drawConnections, [connections, connectors, modulePositions]);
 	useEffect(drawConnections, [scroll]);
 	useEffect(() => {
 		if (activeConnectorKey) {
@@ -236,7 +236,6 @@ export const Connections: React.FC<ConnectionsProps> = ({
 			id="connections"
 			ref={(ref) => {
 				canvasRef.current = ref ?? undefined;
-				drawConnections();
 			}}
 			style={{ position: 'fixed', top: '2.5rem' }}
 		/>
