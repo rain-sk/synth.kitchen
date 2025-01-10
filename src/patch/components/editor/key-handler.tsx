@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 
 import { KeyCode, keyCodeMovementMap } from '../../../constants/key';
 import { patchActions } from '../../state/actions';
