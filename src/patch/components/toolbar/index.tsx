@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { LoadFromCloud } from './load-from-cloud';
 import { LoadFromDisk } from './load-from-disk';
 import { PatchNameField } from './patch-name-field';
 import { Record } from './record';
@@ -25,7 +24,6 @@ export const Toolbar: React.FC<{}> = () => {
 					</Link>
 					<PatchNameField />
 					<SaveToCloud />
-					<LoadFromCloud />
 				</section>
 			</nav>
 		</>

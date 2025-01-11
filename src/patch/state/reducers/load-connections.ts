@@ -23,6 +23,5 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	return {
 		...state,
 		connectors,
-		loadConnections: false,
 	};
 };

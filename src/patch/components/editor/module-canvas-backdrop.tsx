@@ -1,18 +1,19 @@
 import React, {
 	MouseEvent as ReactMouseEvent,
 	useCallback,
-	useContext,
 	useEffect,
 	useRef,
 	useState,
 } from 'react';
 
 import { AddModule } from './add-module';
-import { INVALID_POSITION, Position } from '../../state/types/patch';
+import {
+	INVALID_POSITION,
+	IPatchState,
+	Position,
+} from '../../state/types/patch';
 import { IPatchAction, patchActions } from '../../state/actions';
-import { PatchContext } from '../../contexts/patch';
 import { queueAnimation } from '../../../utils/animation';
-import { IModule } from '../../state/types/module';
 import { UseScrollContext } from '../../contexts/use-scroll';
 
 const positionFromMouseEvent = (
@@ -24,18 +25,17 @@ const positionFromMouseEvent = (
 ];
 
 export type ModuleCanvasBackdropProps = {
+	state: IPatchState;
 	dispatch: React.Dispatch<IPatchAction>;
-	modulePositions: Record<string, Position>;
-	modules: Record<string, IModule>;
-	selectedModuleKeys: Set<string>;
 };
 
 export const ModuleCanvasBackdrop: React.FC<
 	React.PropsWithChildren<ModuleCanvasBackdropProps>
-> = ({ children }) => {
-	const { modules, modulePositions, selectedModuleKeys, dispatch } =
-		useContext(PatchContext);
-
+> = ({
+	state: { modules, modulePositions, selectedModuleKeys },
+	dispatch,
+	children,
+}) => {
 	const container = useRef<HTMLElement | undefined>(undefined);
 	const spacer = useRef<HTMLDivElement | undefined>(undefined);
 	const selection = useRef({

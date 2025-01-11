@@ -3,11 +3,12 @@ import { ILoadPatch } from '../actions/load-patch';
 import { blankPatch } from '..';
 
 export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
-	_,
+	state,
 	action,
 ) => {
 	return {
 		...blankPatch(),
 		...action.payload,
+		heldModifiers: state.heldModifiers,
 	};
 };

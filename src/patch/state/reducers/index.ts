@@ -7,7 +7,6 @@ import { changeName } from './change-name';
 import { disableKeyMovement } from './disable-key-movement';
 import { enableKeyMovement } from './enable-key-movement';
 import { keyboardEvent } from './keyboard-event';
-import { loadFromCloud } from './load-from-cloud';
 import { loadPatch } from './load-patch';
 import { selectionDrag } from './selection-drag';
 import { selectModule } from './select-module';
@@ -46,9 +45,6 @@ export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 		}
 		case 'LoadConnections': {
 			return loadConnections(state, action);
-		}
-		case 'LoadFromCloud': {
-			return loadFromCloud(state, action);
 		}
 		case 'LoadPatch': {
 			return loadPatch(state, action);

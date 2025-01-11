@@ -1,11 +1,11 @@
 import { INVALID_POSITION, IPatchState } from './types/patch';
-import { randomId } from '../../utils/random-id';
 import { Modifier } from '../../constants/key';
-import { randomName } from '../../utils/random-name';
 import { ISerializedPatch } from './types/serialized-patch';
 import { IModule } from './types/module';
+import { randomId } from '../../utils/random-id';
+import { randomName } from '../../utils/random-name';
 
-export const blankPatchToLoad = (): ISerializedPatch => ({
+export const blankPatchToClearCanvas = (): ISerializedPatch => ({
 	id: '',
 	name: '',
 	modules: {},
@@ -13,27 +13,33 @@ export const blankPatchToLoad = (): ISerializedPatch => ({
 	connections: {},
 });
 
-export const blankModules = (): Record<string, IModule> => ({
-	'0': {
-		name: 'output',
-		moduleKey: '0',
-		type: 'OUTPUT',
-		state: { gain: 0.45 },
+export const outputModule: () => IModule = () => ({
+	name: 'output',
+	moduleKey: '0',
+	type: 'OUTPUT',
+	state: { gain: 0.45 },
+});
+
+export const blankPatchToLoad = (id?: string): ISerializedPatch => ({
+	id: id ? id : randomId(),
+	name: randomName(),
+	modules: {
+		['0']: outputModule(),
 	},
+	modulePositions: {
+		['0']: [50, 50],
+	},
+	connections: {},
 });
 
 export const blankPatch = (): IPatchState => ({
 	// patch info
-	id: randomId(),
-	name: randomName(),
+	id: '',
+	name: '',
 
 	// modules and parameters
-	modules: {
-		...blankModules(),
-	},
-	modulePositions: {
-		'0': [50, 50],
-	},
+	modules: {},
+	modulePositions: {},
 	selectedModuleKeys: new Set(),
 
 	// i/o
@@ -51,7 +57,4 @@ export const blankPatch = (): IPatchState => ({
 	// keyboard info
 	heldModifiers: Modifier.NONE,
 	isKeyMovementEnabled: true,
-
-	// misc
-	loadingFromCloud: false,
 });

@@ -28,7 +28,6 @@ import {
 	updateModulePositionAction,
 } from './update-module-position';
 import { IUpdateModule, updateModuleAction } from './update-module';
-import { ILoadFromCloud, loadFromCloudAction } from './load-from-cloud';
 import {
 	cancelLoadFromCloudAction,
 	ICancelLoadFromCloud,
@@ -53,7 +52,6 @@ export type IPatchAction =
 	| IEnableKeyMovement
 	| IKeyboardEvent
 	| ILoadConnections
-	| ILoadFromCloud
 	| ILoadPatch
 	| IRegisterConnector
 	| ISelectionDrag
@@ -74,7 +72,6 @@ export const patchActions = {
 	keyDownAction,
 	keyUpAction,
 	loadConnectionsAction,
-	loadFromCloudAction,
 	loadPatchAction,
 	registerConnectorAction,
 	selectionDragContinueAction,

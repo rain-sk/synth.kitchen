@@ -1,9 +1,14 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { RefObject, useCallback, useEffect, useRef } from 'react';
 
 import { connectorButton, connectorKey } from '../../state/connection';
-import { IConnectorInfo, IInput, IOutput } from '../../state/types/connection';
-import { INVALID_POSITION, Position } from '../../state/types/patch';
+import { IInput, IOutput } from '../../state/types/connection';
+import {
+	INVALID_POSITION,
+	IPatchState,
+	Position,
+} from '../../state/types/patch';
 import { useMouse, useScroll } from 'react-use';
+import { queueAnimation } from '../../../utils/animation';
 
 const _ = {
 	root: document.getElementById('root'),
@@ -101,18 +106,8 @@ const resizeCanvas = (canvas: HTMLCanvasElement) => {
 	canvas.height = rect.height;
 };
 
-export type ConnectionsProps = {
-	activeConnectorKey: string | undefined;
-	connections: Record<string, [IOutput, IInput]>;
-	connectors: Record<string, IConnectorInfo>;
-	modulePositions: Record<string, Position>;
-};
-
-export const Connections: React.FC<ConnectionsProps> = ({
-	activeConnectorKey,
-	connections,
-	connectors,
-	modulePositions,
+export const Connections: React.FC<{ state: IPatchState }> = ({
+	state: { activeConnectorKey, connections, connectors, modulePositions },
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
@@ -137,7 +132,7 @@ export const Connections: React.FC<ConnectionsProps> = ({
 			]);
 		}
 
-		requestAnimationFrame(() => {
+		queueAnimation(() => {
 			if (canvasRef.current && !contextRef.current) {
 				contextRef.current = canvasRef.current.getContext('2d') ?? undefined;
 				if (contextRef.current) {
@@ -155,6 +150,7 @@ export const Connections: React.FC<ConnectionsProps> = ({
 				);
 
 				resizeCanvas(canvasRef.current);
+
 				const connectionsToDraw = Object.values(connections).map(
 					connectionToPath(ConnectionDrawMode.DIRECT),
 				);
@@ -210,13 +206,15 @@ export const Connections: React.FC<ConnectionsProps> = ({
 					context2d.fill();
 				});
 			}
-		});
+		}, 'cxn');
 	}, [activeConnectorKey, connections, connectors, scroll, mouse]);
 
 	useEffect(() => {
 		drawConnections();
 	}, []);
-	useEffect(drawConnections, [connections, connectors, modulePositions]);
+	useEffect(() => {
+		drawConnections();
+	}, [connections, connectors, modulePositions]);
 	useEffect(drawConnections, [scroll]);
 	useEffect(() => {
 		if (activeConnectorKey) {
@@ -234,9 +232,7 @@ export const Connections: React.FC<ConnectionsProps> = ({
 	return (
 		<canvas
 			id="connections"
-			ref={(ref) => {
-				canvasRef.current = ref ?? undefined;
-			}}
+			ref={canvasRef as RefObject<HTMLCanvasElement>}
 			style={{ position: 'fixed', top: '2.5rem' }}
 		/>
 	);

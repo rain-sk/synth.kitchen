@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DatabasePatch, useApi } from '../../../api/use-api';
 import { IPatchAction, patchActions } from '../../state/actions';
 import { useLocation } from 'wouter';
-import { blankPatch } from '../../state';
+import { blankPatchToClearCanvas, blankPatchToLoad } from '../../state';
 import { IPatchState } from '../../state/types/patch';
 import { connectorButtonExists, connectorKey } from '../../state/connection';
+import { randomId } from '../../../utils/random-id';
 
 const doLoadConnections = (
 	connectedConnectors: Set<string>,
@@ -33,24 +34,43 @@ export const useLoadPatch = (
 
 	const loadingRef = useRef(false);
 	useEffect(() => {
-		if (id && !loadingRef.current) {
+		if (!id && state.id === '' && !loadingRef.current) {
 			loadingRef.current = true;
-			getPatches()
-				.then((res) => res && res.json())
-				.then((data: { rows: DatabasePatch[] }) => {
-					const [patch] = data.rows
-						.filter((row) => row.ID === id)
-						.map((row) => JSON.parse(row.Patch));
-					dispatch(patchActions.loadPatchAction(patch));
-				})
-				.finally(() => {
-					loadingRef.current = false;
-					setLoadConnections(true);
-				});
-		} else {
-			dispatch(patchActions.loadPatchAction(blankPatch()));
+			const patchId = randomId();
+			dispatch(patchActions.loadPatchAction(blankPatchToLoad(patchId)));
+			setTimeout(() => {
+				loadingRef.current = false;
+				navigate(`/patch/${patchId}`, { replace: true });
+				setLoadConnections(true);
+			}, 50);
 		}
-	}, [id, getPatches, navigate]);
+	}, [id, state.id]);
+
+	useEffect(() => {
+		(async () => {
+			if (id && state.id === '' && !loadingRef.current) {
+				loadingRef.current = true;
+
+				const { rows: patches } = (await getPatches().then(
+					(res) => res && res.json(),
+				)) as { rows: DatabasePatch[] };
+
+				const [patch] = patches
+					.filter((patch) => patch.ID === id)
+					.map((patch) => JSON.parse(patch.Patch));
+
+				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
+				setTimeout(() => {
+					dispatch(
+						patchActions.loadPatchAction(patch ? patch : blankPatchToLoad()),
+					);
+					navigate(`/patch/${id}`, { replace: true });
+					setLoadConnections(true);
+					loadingRef.current = false;
+				}, 50);
+			}
+		})();
+	}, [id, state.id]);
 
 	useEffect(() => {
 		if (loadConnections) {
@@ -64,7 +84,6 @@ export const useLoadPatch = (
 				[...connectedConnectors].every((key) => key in connectors)
 			) {
 				setLoadConnections(false);
-				console.log('load connections');
 				doLoadConnections(connectedConnectors, dispatch);
 			}
 		}

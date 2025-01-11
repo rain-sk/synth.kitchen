@@ -1,48 +1,34 @@
 import React, { useMemo } from 'react';
 
 import { IModule } from '../../state/types/module';
-import { Module, ModuleProps } from '../module';
-import { Position } from '../../state/types/patch';
+import { Module } from '../module';
+import { IPatchState, Position } from '../../state/types/patch';
 import { IPatchAction } from '../../state/actions';
-import {
-	ModuleCanvasBackdrop,
-	ModuleCanvasBackdropProps,
-} from './module-canvas-backdrop';
+import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
-import { Connections, ConnectionsProps } from './connections';
+import { Connections } from './connections';
 
 export const ModuleCanvas: React.FC<{
-	moduleCanvasBackdropProps: ModuleCanvasBackdropProps;
-	connectionsProps: ConnectionsProps;
-	moduleProps: ModuleProps;
-	modulePositions: Record<string, Position>;
-	modules: Record<string, IModule>;
+	state: IPatchState;
 	dispatch: React.Dispatch<IPatchAction>;
-}> = ({
-	moduleProps,
-	moduleCanvasBackdropProps,
-	connectionsProps,
-	modulePositions,
-	modules,
-	dispatch,
-}) => {
+}> = ({ state, dispatch }) => {
 	const sortedModules = useMemo(
 		() =>
-			Object.entries(modulePositions)
+			Object.entries(state.modulePositions)
 				.sort(
 					([, [ax, ay]], [, [bx, by]]) =>
 						Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2)) -
 						Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2)),
 				)
 				.map(([moduleKey, position]): [IModule, Position] => [
-					modules[moduleKey],
+					state.modules[moduleKey],
 					position,
 				]),
-		[modulePositions, modules],
+		[state.modulePositions, state.modules],
 	);
 
 	return (
-		<ModuleCanvasBackdrop {...moduleCanvasBackdropProps}>
+		<ModuleCanvasBackdrop state={state} dispatch={dispatch}>
 			<KeyHandler />
 			<section id="module-canvas" role="tree" aria-multiselectable>
 				{sortedModules.map(([module, position]) => (
@@ -50,14 +36,12 @@ export const ModuleCanvas: React.FC<{
 						key={module.moduleKey}
 						module={module}
 						position={position}
-						selectedModuleKeys={moduleProps.selectedModuleKeys}
-						selectionPending={moduleProps.selectionPending}
-						heldModifiers={moduleProps.heldModifiers}
+						state={state}
 						dispatch={dispatch}
 					/>
 				))}
 			</section>
-			<Connections {...connectionsProps} />
+			<Connections state={state} />
 		</ModuleCanvasBackdrop>
 	);
 };
