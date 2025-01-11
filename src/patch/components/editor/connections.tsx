@@ -10,23 +10,8 @@ import {
 import { useMouse, useScroll } from 'react-use';
 import { queueAnimation } from '../../../utils/animation';
 
-const _ = {
-	root: document.getElementById('root'),
-	main: document.getElementById('main'),
-};
-
-const root = () => {
-	if (!_.root) {
-		_.root = document.getElementById('root');
-	}
-	return _.root as HTMLDivElement;
-};
-const main = () => {
-	if (!_.main) {
-		_.main = document.getElementById('main');
-	}
-	return _.main as HTMLElement;
-};
+const root = () => document.getElementById('root');
+const main = () => document.getElementById('main');
 
 const position = (button: HTMLButtonElement): Position => {
 	if (!button) {
@@ -36,7 +21,7 @@ const position = (button: HTMLButtonElement): Position => {
 	const rect = button.getBoundingClientRect();
 	return [
 		rect.left + rect.width / 2 + window.pageXOffset,
-		rect.top + rect.height / 2 + window.pageYOffset - main().offsetTop,
+		rect.top + rect.height / 2 + window.pageYOffset - (main()?.offsetTop ?? 0),
 	];
 };
 
@@ -100,10 +85,12 @@ enum ConnectionDrawMode {
 const devicePixelRatio = window.devicePixelRatio || 1;
 
 const resizeCanvas = (canvas: HTMLCanvasElement) => {
-	const rect = main().getBoundingClientRect();
+	const rect = main()?.getBoundingClientRect();
 
-	canvas.width = rect.width;
-	canvas.height = rect.height;
+	if (rect && rect.width > 0 && rect.height > 0) {
+		canvas.width = rect.width;
+		canvas.height = rect.height;
+	}
 };
 
 export const Connections: React.FC<{ state: IPatchState }> = ({
@@ -223,9 +210,9 @@ export const Connections: React.FC<{ state: IPatchState }> = ({
 	}, [mouse]);
 
 	useEffect(() => {
-		root().addEventListener('resize', drawConnections, false);
+		root()?.addEventListener('resize', drawConnections, false);
 		return () => {
-			root().removeEventListener('resize', drawConnections, false);
+			root()?.removeEventListener('resize', drawConnections, false);
 		};
 	}, [drawConnections]);
 
