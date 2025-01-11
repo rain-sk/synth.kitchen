@@ -5,7 +5,7 @@ import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 
 export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
-	const { dispatch } = useContext(PatchContext);
+	const { isKeyMovementEnabled, dispatch } = useContext(PatchContext);
 
 	const editRef = useRef<HTMLInputElement>(null);
 
@@ -18,16 +18,16 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 
 	const editingRef = useRef(false);
 	useEffect(() => {
-		if (edit && !editingRef.current) {
+		if (edit && !editingRef.current && isKeyMovementEnabled) {
 			editingRef.current = true;
 			editRef.current?.focus();
 			editRef.current?.setSelectionRange(0, name.length);
 			dispatch(patchActions.disableKeyMovementAction());
-		} else if (!edit) {
+		} else if (!edit && !isKeyMovementEnabled) {
 			dispatch(patchActions.enableKeyMovementAction());
 			editingRef.current = false;
 		}
-	}, [dispatch, edit, name]);
+	}, [dispatch, isKeyMovementEnabled, edit, name]);
 
 	const cancel = useCallback(() => {
 		setEdit(false);

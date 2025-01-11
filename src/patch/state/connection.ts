@@ -134,8 +134,6 @@ export const disconnect = (
 	const inputInfo = connectorInfo(connectors, inputKey);
 	input = inputInfo[0] as IInput;
 
-	console.log(outputKey);
-
 	try {
 		output.accessor().disconnect(input.accessor() as any);
 	} catch (e) {

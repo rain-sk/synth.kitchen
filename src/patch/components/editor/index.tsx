@@ -8,7 +8,6 @@ import { PatchContextProvider } from '../../contexts/patch';
 import { PatchLoader } from './patch-loader';
 import { reducer } from '../../state/reducers';
 import { Toolbar } from '../toolbar';
-import { useLoadConnections } from './use-load-connections';
 import { useAudioMidiInit } from './use-audio-midi-init';
 import { Init } from './init';
 import { useTitle } from 'react-use';
@@ -18,11 +17,10 @@ import { useLoadPatch } from './use-load-patch';
 export const PatchEditor: React.FC<{ id?: string }> = ({ id }) => {
 	const { initialized, status, init } = useAudioMidiInit();
 	const [state, dispatch] = useReducer(reducer, blankPatch());
+
 	useTitle(`patch/${state.name}`);
 
-	useLoadPatch(dispatch, id);
-
-	useLoadConnections({ ...state, dispatch, initialized });
+	useLoadPatch(state, dispatch, id);
 
 	const { connectionsProps, moduleCanvasBackdropProps, moduleProps } =
 		useEditorComponentProps(state, dispatch);

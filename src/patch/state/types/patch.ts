@@ -34,5 +34,4 @@ export type IPatchState = {
 
 	// misc.
 	loadingFromCloud: boolean;
-	loadConnections: boolean;
 };
