@@ -33,6 +33,7 @@ import { Position } from '../../state/types/patch';
 import { SequencerModule } from './sequencer';
 import { VcaModule } from './vca';
 import { CompressorModule } from './compressor';
+import { useLongPress } from 'react-use';
 
 const useDragAndDrop = (
 	moduleKey: string,
@@ -223,8 +224,13 @@ export const Module: React.FC<
 		dispatch(patchActions.selectSingleModuleAction(module.moduleKey));
 	}, [dispatch, module.moduleKey]);
 
+	const longPressOptions = useLongPress(() => {
+		console.log('long press');
+	});
+
 	const onMouseDown = useCallback(
 		(e: React.MouseEvent<HTMLDivElement>) => {
+			longPressOptions.onMouseDown(e);
 			const shiftClick = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
 			if (!shiftClick && !currentlySelected) {
@@ -242,6 +248,7 @@ export const Module: React.FC<
 			startDragging(e);
 		},
 		[
+			longPressOptions,
 			currentlySelected,
 			dispatch,
 			module.moduleKey,
@@ -258,8 +265,9 @@ export const Module: React.FC<
 			tabIndex={0}
 			onFocus={onFocus}
 			className={`module${selectionStateString}${draggingStateString}`}
-			onMouseDown={onMouseDown}
 			ref={containerRef}
+			{...longPressOptions}
+			onMouseDown={onMouseDown}
 		>
 			<ModuleHeader module={module} />
 			<ModuleUi module={module} />
