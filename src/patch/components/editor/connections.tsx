@@ -1,27 +1,17 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { RefObject, useCallback, useEffect, useRef } from 'react';
 
 import { connectorButton, connectorKey } from '../../state/connection';
-import { IConnectorInfo, IInput, IOutput } from '../../state/types/connection';
-import { INVALID_POSITION, Position } from '../../state/types/patch';
+import { IInput, IOutput } from '../../state/types/connection';
+import {
+	INVALID_POSITION,
+	IPatchState,
+	Position,
+} from '../../state/types/patch';
 import { useMouse, useScroll } from 'react-use';
+import { queueAnimation } from '../../../utils/animation';
 
-const _ = {
-	root: document.getElementById('root'),
-	main: document.getElementById('main'),
-};
-
-const root = () => {
-	if (!_.root) {
-		_.root = document.getElementById('root');
-	}
-	return _.root as HTMLDivElement;
-};
-const main = () => {
-	if (!_.main) {
-		_.main = document.getElementById('main');
-	}
-	return _.main as HTMLElement;
-};
+const root = () => document.getElementById('root');
+const main = () => document.getElementById('main');
 
 const position = (button: HTMLButtonElement): Position => {
 	if (!button) {
@@ -31,7 +21,7 @@ const position = (button: HTMLButtonElement): Position => {
 	const rect = button.getBoundingClientRect();
 	return [
 		rect.left + rect.width / 2 + window.pageXOffset,
-		rect.top + rect.height / 2 + window.pageYOffset - main().offsetTop,
+		rect.top + rect.height / 2 + window.pageYOffset - (main()?.offsetTop ?? 0),
 	];
 };
 
@@ -95,24 +85,16 @@ enum ConnectionDrawMode {
 const devicePixelRatio = window.devicePixelRatio || 1;
 
 const resizeCanvas = (canvas: HTMLCanvasElement) => {
-	const rect = main().getBoundingClientRect();
+	const rect = main()?.getBoundingClientRect();
 
-	canvas.width = rect.width;
-	canvas.height = rect.height;
+	if (rect && rect.width > 0 && rect.height > 0) {
+		canvas.width = rect.width;
+		canvas.height = rect.height;
+	}
 };
 
-export type ConnectionsProps = {
-	activeConnectorKey: string | undefined;
-	connections: Record<string, [IOutput, IInput]>;
-	connectors: Record<string, IConnectorInfo>;
-	modulePositions: Record<string, Position>;
-};
-
-export const Connections: React.FC<ConnectionsProps> = ({
-	activeConnectorKey,
-	connections,
-	connectors,
-	modulePositions,
+export const Connections: React.FC<{ state: IPatchState }> = ({
+	state: { activeConnectorKey, connections, connectors, modulePositions },
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>();
 	const contextRef = useRef<CanvasRenderingContext2D>();
@@ -137,7 +119,7 @@ export const Connections: React.FC<ConnectionsProps> = ({
 			]);
 		}
 
-		requestAnimationFrame(() => {
+		queueAnimation(() => {
 			if (canvasRef.current && !contextRef.current) {
 				contextRef.current = canvasRef.current.getContext('2d') ?? undefined;
 				if (contextRef.current) {
@@ -155,6 +137,7 @@ export const Connections: React.FC<ConnectionsProps> = ({
 				);
 
 				resizeCanvas(canvasRef.current);
+
 				const connectionsToDraw = Object.values(connections).map(
 					connectionToPath(ConnectionDrawMode.DIRECT),
 				);
@@ -210,13 +193,15 @@ export const Connections: React.FC<ConnectionsProps> = ({
 					context2d.fill();
 				});
 			}
-		});
+		}, 'cxn');
 	}, [activeConnectorKey, connections, connectors, scroll, mouse]);
 
 	useEffect(() => {
 		drawConnections();
 	}, []);
-	useEffect(drawConnections, [connections, connectors, modulePositions]);
+	useEffect(() => {
+		drawConnections();
+	}, [connections, connectors, modulePositions]);
 	useEffect(drawConnections, [scroll]);
 	useEffect(() => {
 		if (activeConnectorKey) {
@@ -225,18 +210,16 @@ export const Connections: React.FC<ConnectionsProps> = ({
 	}, [mouse]);
 
 	useEffect(() => {
-		root().addEventListener('resize', drawConnections, false);
+		root()?.addEventListener('resize', drawConnections, false);
 		return () => {
-			root().removeEventListener('resize', drawConnections, false);
+			root()?.removeEventListener('resize', drawConnections, false);
 		};
 	}, [drawConnections]);
 
 	return (
 		<canvas
 			id="connections"
-			ref={(ref) => {
-				canvasRef.current = ref ?? undefined;
-			}}
+			ref={canvasRef as RefObject<HTMLCanvasElement>}
 			style={{ position: 'fixed', top: '2.5rem' }}
 		/>
 	);

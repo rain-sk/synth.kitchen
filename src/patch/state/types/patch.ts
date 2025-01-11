@@ -31,8 +31,4 @@ export type IPatchState = {
 	// keyboard info
 	heldModifiers: Modifier;
 	isKeyMovementEnabled: boolean;
-
-	// misc.
-	loadingFromCloud: boolean;
-	loadConnections: boolean;
 };

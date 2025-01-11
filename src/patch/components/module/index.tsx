@@ -13,7 +13,6 @@ import { Modifier } from '../../../constants/key';
 import { ModuleHeader } from '../module-ui/module-header';
 import { IPatchAction, patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
-import { queueAnimation } from '../../../utils/animation';
 
 import { ClockModule } from './clock';
 import { DelayModule } from './delay';
@@ -29,10 +28,12 @@ import { NoiseModule } from './noise';
 import { OscillatorModule } from './oscillator';
 import { OutputModule } from './output';
 import { PanModule } from './pan';
-import { Position } from '../../state/types/patch';
+import { IPatchState, Position } from '../../state/types/patch';
 import { SequencerModule } from './sequencer';
 import { VcaModule } from './vca';
 import { CompressorModule } from './compressor';
+import { useLongPress } from 'react-use';
+import { queueAnimation } from '../../../utils/animation';
 
 const useDragAndDrop = (
 	moduleKey: string,
@@ -169,9 +170,7 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 };
 
 export type ModuleProps = {
-	selectedModuleKeys: Set<string>;
-	selectionPending: boolean;
-	heldModifiers: Modifier;
+	state: IPatchState;
 	dispatch: React.Dispatch<IPatchAction>;
 };
 
@@ -181,11 +180,9 @@ export const Module: React.FC<
 		position: Position;
 	} & ModuleProps
 > = ({
+	state: { selectedModuleKeys, selectionPending, heldModifiers },
 	module,
 	position,
-	selectedModuleKeys,
-	selectionPending,
-	heldModifiers,
 	dispatch,
 }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -223,8 +220,13 @@ export const Module: React.FC<
 		dispatch(patchActions.selectSingleModuleAction(module.moduleKey));
 	}, [dispatch, module.moduleKey]);
 
+	const longPressOptions = useLongPress(() => {
+		console.log('long press');
+	});
+
 	const onMouseDown = useCallback(
 		(e: React.MouseEvent<HTMLDivElement>) => {
+			longPressOptions.onMouseDown(e);
 			const shiftClick = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
 			if (!shiftClick && !currentlySelected) {
@@ -242,6 +244,7 @@ export const Module: React.FC<
 			startDragging(e);
 		},
 		[
+			longPressOptions,
 			currentlySelected,
 			dispatch,
 			module.moduleKey,
@@ -258,8 +261,9 @@ export const Module: React.FC<
 			tabIndex={0}
 			onFocus={onFocus}
 			className={`module${selectionStateString}${draggingStateString}`}
-			onMouseDown={onMouseDown}
 			ref={containerRef}
+			{...longPressOptions}
+			onMouseDown={onMouseDown}
 		>
 			<ModuleHeader module={module} />
 			<ModuleUi module={module} />

@@ -18,19 +18,8 @@ export const LoadFromDisk = () => {
 			}
 			const reader = new FileReader();
 			reader.onload = (e) => {
-				dispatch(
-					patchActions.loadPatchAction({
-						id: '',
-						name: '',
-						modules: {},
-						modulePositions: {},
-						connections: {},
-					}),
-				);
 				const patch = JSON.parse((e.target as any).result) as ISerializedPatch;
-				setTimeout(() => {
-					dispatch(patchActions.loadPatchAction(patch));
-				}, 100);
+				dispatch(patchActions.loadPatchAction(patch));
 			};
 			reader.readAsText(file);
 		},
