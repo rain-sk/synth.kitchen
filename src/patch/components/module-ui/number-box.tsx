@@ -38,11 +38,18 @@ export const NumberBox: React.FunctionComponent<{
 			const negative =
 				string[0] === '-' || (string[0] === '0' && string[1] === '-');
 
-			if (
-				string.length === 1 &&
-				(negative || string[0] === '.' || string[0] === ',')
-			) {
+			const positiveDecimal = string[0] === '.' || string[0] === ',';
+
+			if (string.length === 1 && (negative || positiveDecimal)) {
 				setTempValue(negative ? '-' : '.');
+				return;
+			}
+
+			const negativeDecimal =
+				string[0] === '-' && (string[1] === '.' || string[1] === ',');
+
+			if (string.length === 2 && negativeDecimal) {
+				setTempValue('-.');
 				return;
 			}
 
