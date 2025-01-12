@@ -129,6 +129,75 @@ export const NumberBox: React.FunctionComponent<{
 					commitValueCallback(newValue);
 					setTimeout(() => (e.target as any).select(), 1);
 				}
+			} else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+				const input = e.target as HTMLInputElement;
+				const forward =
+					input.selectionDirection === 'forward' ||
+					input.selectionDirection === 'none';
+				const start =
+					(forward ? input.selectionStart : input.selectionEnd) ?? 0;
+				const end = (forward ? input.selectionEnd : input.selectionStart) ?? 0;
+
+				if (e.shiftKey) {
+					if (start !== end) {
+						const newEnd = Math.max(
+							0,
+							Math.min(
+								tempValue?.length ?? 0,
+								e.key === 'ArrowLeft' ? end - 1 : end + 1,
+							),
+						);
+
+						input.setSelectionRange(
+							start < newEnd ? start : newEnd,
+							start < newEnd ? newEnd : start,
+							start < newEnd
+								? 'forward'
+								: start === newEnd
+								? 'none'
+								: 'backward',
+						);
+					} else {
+						const newEnd = Math.max(
+							0,
+							Math.min(
+								tempValue?.length ?? 0,
+								e.key === 'ArrowLeft' ? start - 1 : start + 1,
+							),
+						);
+						console.log({ start, newEnd });
+						input.setSelectionRange(
+							start < newEnd ? start : newEnd,
+							start < newEnd ? newEnd : start,
+							start < newEnd
+								? 'forward'
+								: start === newEnd
+								? 'none'
+								: 'backward',
+						);
+					}
+				} else {
+					if (start !== end) {
+						const newCursorPosition =
+							e.key === 'ArrowLeft'
+								? forward
+									? start
+									: end
+								: forward
+								? end
+								: start;
+						input.setSelectionRange(newCursorPosition, newCursorPosition);
+					} else {
+						const newCursorPosition = Math.max(
+							0,
+							Math.min(
+								tempValue?.length ?? 0,
+								e.key === 'ArrowLeft' ? start - 1 : start + 1,
+							),
+						);
+						input.setSelectionRange(newCursorPosition, newCursorPosition);
+					}
+				}
 			}
 		},
 		[commitValueCallback, valueToCommit, setTempValue, value],
