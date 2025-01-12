@@ -4,6 +4,22 @@ import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 import { randomId } from '../../../utils/random-id';
 
+// https://stackoverflow.com/a/27082406
+const countDecimals = (value: number) => {
+	let text = value.toString();
+	// verify if number 0.000005 is represented as "5e-6"
+	if (text.indexOf('e-') > -1) {
+		let [, trail] = text.split('e-');
+		let deg = parseInt(trail, 10);
+		return deg;
+	}
+	// count decimals for number in representation like "0.123456"
+	if (Math.floor(value) !== value) {
+		return text.split('.')[1].length || 0;
+	}
+	return 0;
+};
+
 export const NumberBox: React.FunctionComponent<{
 	name: string;
 	value: number;
@@ -87,12 +103,32 @@ export const NumberBox: React.FunctionComponent<{
 			} else if (e.key === 'Escape') {
 				setTempValue(`${value}`);
 				setTimeout(() => (e.target as any).select(), 1);
-			} else if (e.shiftKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
-				const newValue =
-					e.key === 'ArrowUp' ? valueToCommit() * 2 : valueToCommit() / 2;
-				setTempValue(`${newValue}`);
-				commitValueCallback(newValue);
-				setTimeout(() => (e.target as any).select(), 1);
+			} else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+				if (e.shiftKey) {
+					const newValue =
+						e.key === 'ArrowUp' ? valueToCommit() * 2 : valueToCommit() / 2;
+					setTempValue(`${newValue}`);
+					commitValueCallback(newValue);
+					setTimeout(() => (e.target as any).select(), 1);
+				} else {
+					const numberOfDecimals = countDecimals(valueToCommit());
+					const smallestIncrement = 0.1 ** numberOfDecimals;
+					let newValue =
+						e.key === 'ArrowUp'
+							? valueToCommit() + smallestIncrement
+							: valueToCommit() - smallestIncrement;
+
+					newValue = parseFloat(
+						(
+							Math.round(newValue * 10 ** numberOfDecimals) *
+							0.1 ** numberOfDecimals
+						).toFixed(numberOfDecimals),
+					);
+
+					setTempValue(`${newValue}`);
+					commitValueCallback(newValue);
+					setTimeout(() => (e.target as any).select(), 1);
+				}
 			}
 		},
 		[commitValueCallback, valueToCommit, setTempValue, value],
