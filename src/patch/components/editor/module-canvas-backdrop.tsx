@@ -99,30 +99,30 @@ export const ModuleCanvasBackdrop: React.FC<
 	}, [queueAnimation, drawSelection]);
 
 	const onScroll = useCallback(() => {
-		if (container.current && spacer.current) {
-			const mainRect = container.current.getBoundingClientRect();
-			const spacerRect = spacer.current.getBoundingClientRect();
+		queueAnimation(() => {
+			if (container.current && spacer.current) {
+				const mainRect = container.current.getBoundingClientRect();
+				const spacerRect = spacer.current.getBoundingClientRect();
 
-			const expandTop = spacerRect.top - mainRect.top < 150;
-			const expandBottom = spacerRect.bottom - mainRect.bottom < 150;
-			const expandLeft = spacerRect.left - mainRect.left < 150;
-			const expandRight = spacerRect.right - mainRect.right < 150;
+				const expandTop = spacerRect.top - mainRect.top < 150;
+				const expandBottom = spacerRect.bottom - mainRect.bottom < 150;
+				const expandLeft = spacerRect.left - mainRect.left < 150;
+				const expandRight = spacerRect.right - mainRect.right < 150;
 
-			// console.log({ expandTop, expandBottom, expandLeft, expandRight });
-
-			if (expandRight) {
-				spacer.current.style.width = `calc(${spacerRect.width}px + 150px)`;
+				if (expandRight) {
+					spacer.current.style.width = `calc(${spacerRect.width}px + 150px)`;
+				}
+				if (expandBottom) {
+					spacer.current.style.height = `calc(${spacerRect.height}px + 150px)`;
+				}
+				if (expandLeft) {
+					// console.log({ expandLeft });
+				}
+				if (expandTop) {
+					// console.log({ expandTop });
+				}
 			}
-			if (expandBottom) {
-				spacer.current.style.height = `calc(${spacerRect.height}px + 150px)`;
-			}
-			if (expandLeft) {
-				// console.log('hmm');
-			}
-			if (expandTop) {
-				// console.log('hmm');
-			}
-		}
+		}, 'scroll');
 	}, []);
 
 	const { current: onMouseout } = useRef((/*e: MouseEvent*/) => {});
