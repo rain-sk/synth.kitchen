@@ -30,7 +30,12 @@ export const PatchEditor: React.FC<{ id?: string }> = ({ id }) => {
 					{initialized ? (
 						<ModuleCanvas state={state} dispatch={dispatch} />
 					) : (
-						<Init name={state.name} status={status} init={init} />
+						<Init
+							loading={!id || id !== state.id}
+							name={id && id !== state.id ? '' : state.name}
+							status={status}
+							init={init}
+						/>
 					)}
 				</MidiContextProvider>
 			</DerivedConnectionStateContextProvider>

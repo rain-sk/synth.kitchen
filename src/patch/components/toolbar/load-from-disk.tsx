@@ -5,6 +5,7 @@ import { KeyCode } from '../../../constants/key';
 import { OpenFromDiskSvg } from './svg';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
+import { blankPatchToClearCanvas } from '../../state';
 
 export const LoadFromDisk = () => {
 	const { dispatch } = useContext(PatchContext);
@@ -16,6 +17,7 @@ export const LoadFromDisk = () => {
 			if (!file) {
 				return;
 			}
+			dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				const patch = JSON.parse((e.target as any).result) as ISerializedPatch;
