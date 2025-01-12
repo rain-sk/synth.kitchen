@@ -72,55 +72,60 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 	state,
 	action,
 ) => {
-	const { position } = action.payload;
-
 	const shift = (state.heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
 	switch (action.payload.type) {
 		case SelectionDragType.DRAG_START: {
 			return {
 				...state,
-				mouseDragStartPosition: position,
-				mouseDragPosition: position,
+				mouseDragStartPosition: action.payload.position,
+				mouseDragPosition: action.payload.position,
 				selectedModuleKeys: shift ? state.selectedModuleKeys : new Set(),
 				selectionPending: true,
 			};
 		}
 		case SelectionDragType.DRAG_CONTINUE: {
-			const { mouseDragStartPosition, modules, modulePositions } = state;
-
 			const modulesInDrag = modulesInRange(
-				mouseDragStartPosition,
-				position,
-				modules,
-				modulePositions,
+				state.mouseDragStartPosition,
+				action.payload.position,
+				state.modules,
+				state.modulePositions,
 			);
-
-			const selectedModuleKeys =
-				(state.heldModifiers & Modifier.SHIFT) == Modifier.SHIFT
-					? new Set([...modulesInDrag, ...state.selectedModuleKeys])
-					: modulesInDrag;
 
 			return {
 				...state,
-				mouseDragPosition: position,
-				selectedModuleKeys,
+				mouseDragPosition: action.payload.position,
+				pendingSelection: modulesInDrag,
 			};
 		}
 		case SelectionDragType.DRAG_END: {
-			const { mouseDragStartPosition, modules, modulePositions } = state;
+			const modulesInPendingSelection = modulesInRange(
+				state.mouseDragStartPosition,
+				action.payload.position,
+				state.modules,
+				state.modulePositions,
+			);
+
+			const newSelection = shift
+				? (() => {
+						const selection = new Set([...state.selectedModuleKeys]);
+						modulesInPendingSelection.forEach((moduleKey) => {
+							if (selection.has(moduleKey)) {
+								selection.delete(moduleKey);
+							} else {
+								selection.add(moduleKey);
+							}
+						});
+						return selection;
+				  })()
+				: modulesInPendingSelection;
 
 			return {
 				...state,
 				mouseDragStartPosition: INVALID_POSITION,
 				mouseDragPosition: INVALID_POSITION,
-				selectedModuleKeys: modulesInRange(
-					mouseDragStartPosition,
-					position,
-					modules,
-					modulePositions,
-				),
-				selectionPending: false,
+				selectedModuleKeys: newSelection,
+				pendingSelection: undefined,
 			};
 		}
 	}

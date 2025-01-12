@@ -201,7 +201,7 @@ export const Connections: React.FC<{ state: IPatchState }> = ({
 	}, []);
 	useEffect(() => {
 		drawConnections();
-	}, [connections, connectors, modulePositions]);
+	}, [activeConnectorKey, connections, connectors, modulePositions]);
 	useEffect(drawConnections, [scroll]);
 	useEffect(() => {
 		if (activeConnectorKey) {

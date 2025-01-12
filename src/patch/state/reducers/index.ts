@@ -4,8 +4,6 @@ import { IPatchAction } from '../actions';
 import { addModule } from './add-module';
 import { cancelLoadFromCloud } from './cancel-load-from-cloud';
 import { changeName } from './change-name';
-import { disableKeyMovement } from './disable-key-movement';
-import { enableKeyMovement } from './enable-key-movement';
 import { keyboardEvent } from './keyboard-event';
 import { loadPatch } from './load-patch';
 import { selectionDrag } from './selection-drag';
@@ -16,6 +14,8 @@ import { setActiveConnectorKey } from './set-active-connector-key';
 import { registerConnector } from './connector-registration';
 import { clickConnector } from './click-connector';
 import { loadConnections } from './load-connections';
+import { focusInput } from './input-focus';
+import { blurInput } from './input-blur';
 
 export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 	state,
@@ -34,11 +34,11 @@ export const reducer: React.Reducer<IPatchState, IPatchAction> = (
 		case 'ClickConnector': {
 			return clickConnector(state, action);
 		}
-		case 'DisableKeyMovement': {
-			return disableKeyMovement(state, action);
+		case 'FocusInput': {
+			return focusInput(state, action);
 		}
-		case 'EnableKeyMovement': {
-			return enableKeyMovement(state, action);
+		case 'BlurInput': {
+			return blurInput(state, action);
 		}
 		case 'KeyboardEvent': {
 			return keyboardEvent(state, action);

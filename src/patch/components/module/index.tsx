@@ -180,7 +180,7 @@ export const Module: React.FC<
 		position: Position;
 	} & ModuleProps
 > = ({
-	state: { selectedModuleKeys, selectionPending, heldModifiers },
+	state: { selectedModuleKeys, pendingSelection, heldModifiers },
 	module,
 	position,
 	dispatch,
@@ -204,15 +204,22 @@ export const Module: React.FC<
 		[module.moduleKey, selectedModuleKeys],
 	);
 
-	const selectionStateString = useMemo(
-		() =>
-			currentlySelected
-				? selectionPending
-					? ' selection_pending'
-					: ' selected'
-				: ' unselected',
-		[currentlySelected, selectionPending],
+	const inPendingSelection = useMemo(
+		() => pendingSelection && pendingSelection.has(module.moduleKey),
+		[module.moduleKey, pendingSelection],
 	);
+
+	const selectionStateString = useMemo(() => {
+		if (currentlySelected === inPendingSelection) {
+			return ' unselected';
+		} else if (currentlySelected) {
+			return ' selected';
+		} else if (inPendingSelection) {
+			return ' selection_pending';
+		} else {
+			return ' unselected';
+		}
+	}, [currentlySelected, inPendingSelection]);
 
 	const draggingStateString = isDragging ? ' dragging' : '';
 

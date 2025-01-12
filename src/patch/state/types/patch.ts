@@ -26,9 +26,9 @@ export type IPatchState = {
 	// mouse info
 	mouseDragStartPosition: Position;
 	mouseDragPosition: Position;
-	selectionPending: boolean;
+	pendingSelection: Set<string> | undefined;
 
 	// keyboard info
 	heldModifiers: Modifier;
-	isKeyMovementEnabled: boolean;
+	focusedInput: string | undefined;
 };

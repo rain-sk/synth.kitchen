@@ -5,7 +5,7 @@ import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 
 export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
-	const { isKeyMovementEnabled, dispatch } = useContext(PatchContext);
+	const { focusedInput, dispatch } = useContext(PatchContext);
 
 	const editRef = useRef<HTMLInputElement>(null);
 
@@ -18,20 +18,23 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 
 	const editingRef = useRef(false);
 	useEffect(() => {
-		if (edit && !editingRef.current && isKeyMovementEnabled) {
+		if (edit && !editingRef.current && focusedInput !== module.moduleKey) {
 			editingRef.current = true;
 			editRef.current?.focus();
 			editRef.current?.setSelectionRange(0, name.length);
-			dispatch(patchActions.disableKeyMovementAction());
-		} else if (!edit && !isKeyMovementEnabled) {
-			dispatch(patchActions.enableKeyMovementAction());
+		} else if (!edit && focusedInput) {
 			editingRef.current = false;
 		}
-	}, [dispatch, isKeyMovementEnabled, edit, name]);
+	}, [focusedInput, edit, name]);
+
+	const onFocus = useCallback(() => {
+		dispatch(patchActions.focusInputAction(module.moduleKey));
+	}, []);
 
 	const cancel = useCallback(() => {
 		setEdit(false);
 		setName(module.name);
+		dispatch(patchActions.blurInputAction());
 	}, [setEdit, setName, module.name]);
 
 	const handleNameChange = useCallback(
@@ -81,6 +84,7 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 						id={`rename_${module.moduleKey}`}
 						value={name}
 						onChange={handleNameChange}
+						onFocus={onFocus}
 						onBlur={cancel}
 						onKeyDown={handleKeyDown}
 					/>

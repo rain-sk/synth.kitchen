@@ -61,11 +61,15 @@ export const ModuleCanvasBackdrop: React.FC<
 		}
 	}, [selectedModuleKeys.size]);
 
+	const [draggingSelection, setDraggingSelection] = useState(false);
+
 	const drawSelection = useCallback(() => {
 		if (selection.current.element) {
 			if (selection.current.start.join(',') === INVALID_POSITION.join(',')) {
+				setDraggingSelection(false);
 				selection.current.element.style.display = 'none';
 			} else {
+				setDraggingSelection(true);
 				const xStart = selection.current.start[0];
 				const xEnd = selection.current.end[0];
 				const yStart = selection.current.start[1];
@@ -81,7 +85,7 @@ export const ModuleCanvasBackdrop: React.FC<
 				selection.current.element.style.height = `${Math.abs(yEnd - yStart)}px`;
 			}
 		}
-	}, []);
+	}, [setDraggingSelection]);
 
 	const clearSelection = useCallback(() => {
 		selection.current.start = INVALID_POSITION;
@@ -99,30 +103,30 @@ export const ModuleCanvasBackdrop: React.FC<
 	}, [queueAnimation, drawSelection]);
 
 	const onScroll = useCallback(() => {
-		if (container.current && spacer.current) {
-			const mainRect = container.current.getBoundingClientRect();
-			const spacerRect = spacer.current.getBoundingClientRect();
+		queueAnimation(() => {
+			if (container.current && spacer.current) {
+				const mainRect = container.current.getBoundingClientRect();
+				const spacerRect = spacer.current.getBoundingClientRect();
 
-			const expandTop = spacerRect.top - mainRect.top < 150;
-			const expandBottom = spacerRect.bottom - mainRect.bottom < 150;
-			const expandLeft = spacerRect.left - mainRect.left < 150;
-			const expandRight = spacerRect.right - mainRect.right < 150;
+				const expandTop = spacerRect.top - mainRect.top < 300;
+				const expandBottom = spacerRect.bottom - mainRect.bottom < 300;
+				const expandLeft = spacerRect.left - mainRect.left < 300;
+				const expandRight = spacerRect.right - mainRect.right < 300;
 
-			// console.log({ expandTop, expandBottom, expandLeft, expandRight });
-
-			if (expandRight) {
-				spacer.current.style.width = `calc(${spacerRect.width}px + 150px)`;
+				if (expandRight) {
+					spacer.current.style.width = `calc(${spacerRect.width}px + 100vw)`;
+				}
+				if (expandBottom) {
+					spacer.current.style.height = `calc(${spacerRect.height}px + 100vh)`;
+				}
+				if (expandLeft) {
+					// console.log({ expandLeft });
+				}
+				if (expandTop) {
+					// console.log({ expandTop });
+				}
 			}
-			if (expandBottom) {
-				spacer.current.style.height = `calc(${spacerRect.height}px + 150px)`;
-			}
-			if (expandLeft) {
-				// console.log('hmm');
-			}
-			if (expandTop) {
-				// console.log('hmm');
-			}
-		}
+		}, 'scroll');
 	}, []);
 
 	const { current: onMouseout } = useRef((/*e: MouseEvent*/) => {});
@@ -209,6 +213,7 @@ export const ModuleCanvasBackdrop: React.FC<
 		>
 			<main
 				id="main"
+				className={draggingSelection ? 'selection-drag' : ''}
 				ref={(main) => {
 					container.current = main ?? undefined;
 					setInitialized(isInitialized());

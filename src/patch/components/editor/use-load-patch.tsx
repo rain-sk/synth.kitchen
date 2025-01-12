@@ -34,22 +34,39 @@ export const useLoadPatch = (
 
 	const loadingRef = useRef(false);
 	useEffect(() => {
-		if (!id && state.id === '' && !loadingRef.current) {
-			loadingRef.current = true;
-			const patchId = randomId();
-			dispatch(patchActions.loadPatchAction(blankPatchToLoad(patchId)));
-			setTimeout(() => {
-				loadingRef.current = false;
-				navigate(`/patch/${patchId}`, { replace: true });
+		if (loadingRef.current) {
+			return;
+		}
+		if (!id) {
+			if (state.id === '') {
+				loadingRef.current = true;
+				const patchId = randomId();
+				dispatch(patchActions.loadPatchAction(blankPatchToLoad(patchId)));
 				setLoadConnections(true);
-			}, 50);
+				setTimeout(() => {
+					loadingRef.current = false;
+					navigate(`/patch/${patchId}`, { replace: true });
+				}, 10);
+			} else {
+				setTimeout(() => {
+					navigate(`/patch/${state.id}`, { replace: true });
+				}, 10);
+			}
 		}
 	}, [id, state.id]);
 
 	useEffect(() => {
 		(async () => {
-			if (id && state.id === '' && !loadingRef.current) {
+			if (
+				id &&
+				id.match(
+					/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+				)?.length === 1 &&
+				state.id !== id &&
+				!loadingRef.current
+			) {
 				loadingRef.current = true;
+				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 
 				const { rows: patches } = (await getPatches().then(
 					(res) => res && res.json(),
@@ -59,10 +76,9 @@ export const useLoadPatch = (
 					.filter((patch) => patch.ID === id)
 					.map((patch) => JSON.parse(patch.Patch));
 
-				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 				setTimeout(() => {
 					dispatch(
-						patchActions.loadPatchAction(patch ? patch : blankPatchToLoad()),
+						patchActions.loadPatchAction(patch ? patch : blankPatchToLoad(id)),
 					);
 					navigate(`/patch/${id}`, { replace: true });
 					setLoadConnections(true);

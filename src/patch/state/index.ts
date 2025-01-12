@@ -52,9 +52,9 @@ export const blankPatch = (): IPatchState => ({
 	// mouse info
 	mouseDragStartPosition: INVALID_POSITION,
 	mouseDragPosition: INVALID_POSITION,
-	selectionPending: false,
+	pendingSelection: undefined,
 
 	// keyboard info
 	heldModifiers: Modifier.NONE,
-	isKeyMovementEnabled: true,
+	focusedInput: undefined,
 });
