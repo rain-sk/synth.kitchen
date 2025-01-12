@@ -66,7 +66,7 @@ export const useApi = () => {
 		};
 
 		return fetch(
-			`https://cloud.seatable.io/api-gateway/api/v2/dtables/${tokenRef.current.dtable_uuid}/rows/?table_name=synth.kitchen-patch&convert_keys=true`,
+			`https://cloud.seatable.io/api-gateway/api/v2/dtables/${tokenRef.current.dtable_uuid}/rows/?table_name=patch&convert_keys=true`,
 			options,
 		).catch((err) => console.error(err));
 	}, [updateAccessToken, token]);
@@ -93,7 +93,7 @@ export const useApi = () => {
 						authorization: bearerPrefix(tokenRef.current.access_token),
 					},
 					body: JSON.stringify({
-						table_name: 'synth.kitchen-patch',
+						table_name: 'patch',
 						updates: [
 							{
 								row: {
@@ -126,7 +126,7 @@ export const useApi = () => {
 								Patch: JSON.stringify(patch),
 							},
 						],
-						table_name: 'synth.kitchen-patch',
+						table_name: 'patch',
 					}),
 				};
 
