@@ -18,14 +18,14 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 
 	const editingRef = useRef(false);
 	useEffect(() => {
-		if (edit && !editingRef.current && !focusedInput) {
+		if (edit && !editingRef.current && focusedInput !== module.moduleKey) {
 			editingRef.current = true;
 			editRef.current?.focus();
 			editRef.current?.setSelectionRange(0, name.length);
 		} else if (!edit && focusedInput) {
 			editingRef.current = false;
 		}
-	}, [dispatch, focusedInput, edit, name]);
+	}, [focusedInput, edit, name]);
 
 	const onFocus = useCallback(() => {
 		dispatch(patchActions.focusInputAction(module.moduleKey));
