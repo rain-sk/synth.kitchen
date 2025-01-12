@@ -1,13 +1,5 @@
 import { addModuleAction, IAddModule } from './add-module';
 import { changeNameAction, IChangeName } from './change-name';
-import {
-	IDisableKeyMovement,
-	disableKeyMovementAction,
-} from './disable-key-movement';
-import {
-	IEnableKeyMovement,
-	enableKeyMovementAction,
-} from './enable-key-movement';
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
 import { ILoadPatch, loadPatchAction } from './load-patch';
 import {
@@ -42,14 +34,16 @@ import {
 } from './connector-registration';
 import { clickConnectorAction, IClickConnector } from './click-connector';
 import { ILoadConnections, loadConnectionsAction } from './load-connections';
+import { blurInputAction, IBlurInput } from './input-blur';
+import { focusInputAction, IFocusInput } from './input-focus';
 
 export type IPatchAction =
 	| IAddModule
 	| ICancelLoadFromCloud
 	| IChangeName
 	| IClickConnector
-	| IDisableKeyMovement
-	| IEnableKeyMovement
+	| IBlurInput
+	| IFocusInput
 	| IKeyboardEvent
 	| ILoadConnections
 	| ILoadPatch
@@ -67,8 +61,8 @@ export const patchActions = {
 	clickConnectorAction,
 	deselectAllModulesAction,
 	deselectModuleAction,
-	disableKeyMovementAction,
-	enableKeyMovementAction,
+	blurInputAction,
+	focusInputAction,
 	keyDownAction,
 	keyUpAction,
 	loadConnectionsAction,

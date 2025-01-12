@@ -30,8 +30,8 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			}
 		}
 	} else if (
+		!state.focusedInput &&
 		keyCode in keyCodeMovementMap &&
-		state.isKeyMovementEnabled &&
 		type === KeyboardEventType.KEY_DOWN
 	) {
 		const { deltaX, deltaY } = keyCodeMovementMap[keyCode];
@@ -48,9 +48,9 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			),
 		};
 	} else if (
+		!state.focusedInput &&
 		(keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) &&
-		type === KeyboardEventType.KEY_DOWN &&
-		state.isKeyMovementEnabled
+		type === KeyboardEventType.KEY_DOWN
 	) {
 		const connectionsOfSelectedModules = [...state.selectedModuleKeys]
 			.filter((moduleKey) => moduleKey !== '0')

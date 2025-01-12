@@ -30,5 +30,5 @@ export type IPatchState = {
 
 	// keyboard info
 	heldModifiers: Modifier;
-	isKeyMovementEnabled: boolean;
+	focusedInput: string | undefined;
 };

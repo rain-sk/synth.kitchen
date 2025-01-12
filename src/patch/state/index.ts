@@ -56,5 +56,5 @@ export const blankPatch = (): IPatchState => ({
 
 	// keyboard info
 	heldModifiers: Modifier.NONE,
-	isKeyMovementEnabled: true,
+	focusedInput: undefined,
 });

@@ -20,11 +20,11 @@ export const NumberBox: React.FunctionComponent<{
 
 	const onFocus = useCallback(
 		(e: React.FocusEvent<HTMLInputElement>) => {
-			dispatch(patchActions.disableKeyMovementAction());
+			dispatch(patchActions.focusInputAction(id));
 			setTempValue(`${value}`);
 			e.target.select();
 		},
-		[dispatch, setTempValue, value],
+		[id, setTempValue, value],
 	);
 
 	const onChange = useCallback(
@@ -76,7 +76,7 @@ export const NumberBox: React.FunctionComponent<{
 	const onBlur = useCallback(() => {
 		commitValueCallback(valueToCommit());
 		setTempValue();
-		dispatch(patchActions.enableKeyMovementAction());
+		dispatch(patchActions.blurInputAction());
 	}, [commitValueCallback, dispatch, setTempValue, valueToCommit]);
 
 	const onKeyDown = useCallback(
