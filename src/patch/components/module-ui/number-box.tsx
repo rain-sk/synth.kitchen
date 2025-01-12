@@ -165,7 +165,6 @@ export const NumberBox: React.FunctionComponent<{
 								e.key === 'ArrowLeft' ? start - 1 : start + 1,
 							),
 						);
-						console.log({ start, newEnd });
 						input.setSelectionRange(
 							start < newEnd ? start : newEnd,
 							start < newEnd ? newEnd : start,
