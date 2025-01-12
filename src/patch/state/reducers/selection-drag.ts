@@ -72,44 +72,38 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 	state,
 	action,
 ) => {
-	const { position } = action.payload;
-
 	const shift = (state.heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
 	switch (action.payload.type) {
 		case SelectionDragType.DRAG_START: {
 			return {
 				...state,
-				mouseDragStartPosition: position,
-				mouseDragPosition: position,
+				mouseDragStartPosition: action.payload.position,
+				mouseDragPosition: action.payload.position,
 				selectedModuleKeys: shift ? state.selectedModuleKeys : new Set(),
 				selectionPending: true,
 			};
 		}
 		case SelectionDragType.DRAG_CONTINUE: {
-			const { mouseDragStartPosition, modules, modulePositions } = state;
-
 			const modulesInDrag = modulesInRange(
-				mouseDragStartPosition,
-				position,
-				modules,
-				modulePositions,
+				state.mouseDragStartPosition,
+				action.payload.position,
+				state.modules,
+				state.modulePositions,
 			);
 
 			return {
 				...state,
-				mouseDragPosition: position,
+				mouseDragPosition: action.payload.position,
 				pendingSelection: modulesInDrag,
 			};
 		}
 		case SelectionDragType.DRAG_END: {
-			const { mouseDragStartPosition, modules, modulePositions } = state;
-
 			const modulesInPendingSelection = modulesInRange(
-				mouseDragStartPosition,
-				position,
-				modules,
-				modulePositions,
+				state.mouseDragStartPosition,
+				action.payload.position,
+				state.modules,
+				state.modulePositions,
 			);
 
 			const newSelection = shift
