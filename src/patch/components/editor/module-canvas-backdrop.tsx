@@ -104,16 +104,16 @@ export const ModuleCanvasBackdrop: React.FC<
 				const mainRect = container.current.getBoundingClientRect();
 				const spacerRect = spacer.current.getBoundingClientRect();
 
-				const expandTop = spacerRect.top - mainRect.top < 150;
-				const expandBottom = spacerRect.bottom - mainRect.bottom < 150;
-				const expandLeft = spacerRect.left - mainRect.left < 150;
-				const expandRight = spacerRect.right - mainRect.right < 150;
+				const expandTop = spacerRect.top - mainRect.top < 300;
+				const expandBottom = spacerRect.bottom - mainRect.bottom < 300;
+				const expandLeft = spacerRect.left - mainRect.left < 300;
+				const expandRight = spacerRect.right - mainRect.right < 300;
 
 				if (expandRight) {
-					spacer.current.style.width = `calc(${spacerRect.width}px + 150px)`;
+					spacer.current.style.width = `calc(${spacerRect.width}px + 100vw)`;
 				}
 				if (expandBottom) {
-					spacer.current.style.height = `calc(${spacerRect.height}px + 150px)`;
+					spacer.current.style.height = `calc(${spacerRect.height}px + 100vh)`;
 				}
 				if (expandLeft) {
 					// console.log({ expandLeft });
