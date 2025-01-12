@@ -96,31 +96,42 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 				modulePositions,
 			);
 
-			const selectedModuleKeys =
-				(state.heldModifiers & Modifier.SHIFT) == Modifier.SHIFT
-					? new Set([...modulesInDrag, ...state.selectedModuleKeys])
-					: modulesInDrag;
-
 			return {
 				...state,
 				mouseDragPosition: position,
-				selectedModuleKeys,
+				pendingSelection: modulesInDrag,
 			};
 		}
 		case SelectionDragType.DRAG_END: {
 			const { mouseDragStartPosition, modules, modulePositions } = state;
 
+			const modulesInPendingSelection = modulesInRange(
+				mouseDragStartPosition,
+				position,
+				modules,
+				modulePositions,
+			);
+
+			const newSelection = shift
+				? (() => {
+						const selection = new Set([...state.selectedModuleKeys]);
+						modulesInPendingSelection.forEach((moduleKey) => {
+							if (selection.has(moduleKey)) {
+								selection.delete(moduleKey);
+							} else {
+								selection.add(moduleKey);
+							}
+						});
+						return selection;
+				  })()
+				: modulesInPendingSelection;
+
 			return {
 				...state,
 				mouseDragStartPosition: INVALID_POSITION,
 				mouseDragPosition: INVALID_POSITION,
-				selectedModuleKeys: modulesInRange(
-					mouseDragStartPosition,
-					position,
-					modules,
-					modulePositions,
-				),
-				selectionPending: false,
+				selectedModuleKeys: newSelection,
+				pendingSelection: undefined,
 			};
 		}
 	}
