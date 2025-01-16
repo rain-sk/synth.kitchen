@@ -11,11 +11,9 @@ export class GateNode {
 	private _node = audioWorkletNodeFactory('gate');
 
 	disconnect = () => {
-		setTimeout(() => {
-			this._node.parameters
-				.get('active')
-				?.setValueAtTime(0, audioContext.currentTime);
-		}, 10);
+		this._node.parameters
+			.get('active')
+			?.setValueAtTime(0, audioContext.currentTime);
 	};
 
 	node = (): IAudioWorkletNode<IAudioContext> => this._node;

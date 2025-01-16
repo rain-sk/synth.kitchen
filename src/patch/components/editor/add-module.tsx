@@ -25,11 +25,12 @@ const effectModules: ModuleType[] = [
 	'COMPRESSOR',
 	'DELAY',
 	'FILTER',
-	'GAIN',
 	'LIMITER',
 	'VCA',
 	'PAN',
 ];
+
+const utilModules: ModuleType[] = ['GAIN', 'SHIFT'];
 
 export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
 	const { dispatch } = useContext(PatchContext);
@@ -83,6 +84,14 @@ export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
 			</optgroup>
 			<optgroup label="Effects">
 				{effectModules.map((type) => (
+					<option
+						key={type}
+						value={type}
+					>{`${type.toLocaleLowerCase()}`}</option>
+				))}
+			</optgroup>
+			<optgroup label="Utils">
+				{utilModules.map((type) => (
 					<option
 						key={type}
 						value={type}

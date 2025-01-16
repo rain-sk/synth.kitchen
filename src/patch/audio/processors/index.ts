@@ -8,6 +8,7 @@ import midiCc from './midi-cc.js?url';
 import midiClock from './midi-clock.js?url';
 import noise from './noise.js?url';
 import sequencer from './sequencer.js?url';
+import shift from './shift.js?url';
 
 export const processors = [
 	adsr,
@@ -18,6 +19,7 @@ export const processors = [
 	midiClock,
 	noise,
 	sequencer,
+	shift,
 ];
 
 export const initAudioProcessors = (context: IAudioContext) => async () => {

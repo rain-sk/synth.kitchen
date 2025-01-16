@@ -17,6 +17,7 @@ export type ModuleType =
 	| 'OUTPUT'
 	| 'PAN'
 	| 'SEQUENCER'
+	| 'SHIFT'
 	| 'VCA';
 
 export interface IModuleState extends Record<ModuleType, any> {
@@ -73,6 +74,12 @@ export interface IModuleState extends Record<ModuleType, any> {
 		step5: number;
 		step6: number;
 		step7: number;
+	};
+	SHIFT: {
+		inputMin: number;
+		inputMax: number;
+		outputMin: number;
+		outputMax: number;
 	};
 	OUTPUT: {
 		gain: number;

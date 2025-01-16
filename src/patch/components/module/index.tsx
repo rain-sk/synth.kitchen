@@ -34,6 +34,7 @@ import { VcaModule } from './vca';
 import { CompressorModule } from './compressor';
 import { useLongPress } from 'react-use';
 import { queueAnimation } from '../../../utils/animation';
+import { ShiftModule } from './shift';
 
 const useDragAndDrop = (
 	moduleKey: string,
@@ -159,6 +160,8 @@ const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
 			return <PanModule module={module as IModule<'PAN'>} />;
 		case 'SEQUENCER':
 			return <SequencerModule module={module as IModule<'SEQUENCER'>} />;
+		case 'SHIFT':
+			return <ShiftModule module={module as IModule<'SHIFT'>} />;
 		case 'VCA':
 			return <VcaModule module={module as IModule<'VCA'>} />;
 		case 'ENVELOPE':
