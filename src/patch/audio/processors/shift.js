@@ -72,14 +72,18 @@ class Shift extends AudioWorkletProcessor {
 			const frameOutputRange = frameOutputMax - frameOutputMin;
 
 			for (let channel = 0; channel < output.length; channel++) {
-				const frameInput = input[channel][i];
+				if (frameInputRange === 0) {
+					output[channel][i] = 0;
+				} else {
+					const frameInput = input[channel][i];
 
-				const normalizedFrameInput =
-					(frameInput - frameInputMin) / frameInputRange;
-				const frameValue =
-					normalizedFrameInput * frameOutputRange + frameOutputMin;
+					const normalizedFrameInput =
+						(frameInput - frameInputMin) / frameInputRange;
+					const frameValue =
+						normalizedFrameInput * frameOutputRange + frameOutputMin;
 
-				output[channel][i] = frameValue;
+					output[channel][i] = frameValue;
+				}
 			}
 		}
 
