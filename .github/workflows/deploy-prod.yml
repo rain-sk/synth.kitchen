@@ -18,10 +18,10 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }} # Private key for SSH
+          key: ${{ secrets.VPS_KEY }}
           port: 22
           script: |
             cd /root/synth.kitchen
-            docker-compose down
+            systemctl stop synth.kitchen
             git pull origin prod
-            docker-compose up -d --build
+            systemctl start synth.kitchen
