@@ -8,8 +8,8 @@
       "type": "lldb",
       "request": "launch",
       "name": "debug backend",
-      "cwd": "${workspaceFolder}/api",
       "cargo": {
+        "cwd": "${workspaceFolder}/api",
         "args": [
           "build"
         ],
