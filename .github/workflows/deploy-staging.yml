@@ -1,0 +1,27 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Staging
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.VPS_HOST_STAGING }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }} # Private key for SSH
+          port: 22
+          script: |
+            cd /root/staging.synth.kitchen
+            systemctl stop staging.synth.kitchen
+            git pull origin main
+            docker-compose --env-file .env.staging up -d --build
