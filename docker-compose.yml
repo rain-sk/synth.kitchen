@@ -27,7 +27,7 @@ services:
   frontend:
     build: ./app
     labels:
-      - "traefik.http.routers.frontend.rule=Host(`beta.synth.kitchen`)" # Route for your domain
+      - "traefik.http.routers.frontend.rule=Host(`synth.kitchen`)" # Route for your domain
       - "traefik.http.routers.frontend.entrypoints=websecure" # Use HTTPS entry point
       - "traefik.http.routers.frontend.tls.certresolver=myresolver" # Use Let's Encrypt for SSL
     depends_on:
@@ -39,7 +39,7 @@ services:
   backend:
     build: ./api
     labels:
-      - "traefik.http.routers.backend.rule=Host(`beta.synth.kitchen`) && PathPrefix(`/api`)" # Route for `/api`
+      - "traefik.http.routers.backend.rule=Host(`synth.kitchen`) && PathPrefix(`/api`)" # Route for `/api`
       - "traefik.http.routers.backend.entrypoints=websecure" # Use HTTPS entry point
       - "traefik.http.routers.backend.tls.certresolver=myresolver" # Use Let's Encrypt for SSL
       - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api" # Strip /api prefix
