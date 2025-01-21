@@ -1,14 +1,53 @@
 services:
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--api.insecure=true" # Enable Traefik dashboard (can disable in production)
+      - "--providers.docker=true" # Enable Docker provider to automatically configure routes
+      - "--entrypoints.web.address=:80" # Handle HTTP traffic
+      - "--entrypoints.websecure.address=:443" # Handle HTTPS traffic
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true" # TLS challenge for Let's Encrypt
+      - "--certificatesresolvers.myresolver.acme.email=contact@synth.kitchen" # Email for Let's Encrypt registration
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json" # Store certificates in a file
+    ports:
+      - "80:80" # Expose HTTP
+      - "443:443" # Expose HTTPS
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock" # Give Traefik access to Docker
+      - "./letsencrypt:/letsencrypt" # Persist SSL certificates
+    labels:
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Middleware to redirect HTTP to HTTPS
+      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)" # Catch all HTTP requests
+      - "traefik.http.routers.http-catchall.entrypoints=web" # Entry point for HTTP
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https" # Apply redirection middleware
+    networks:
+      - web
+    restart: unless-stopped
+
   frontend:
     build: ./app
-    ports:
-      - "80:80"
+    labels:
+      - "traefik.http.routers.frontend.rule=Host(`beta.synth.kitchen`)" # Route for your domain
+      - "traefik.http.routers.frontend.entrypoints=websecure" # Use HTTPS entry point
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver" # Use Let's Encrypt for SSL
     depends_on:
       - backend
+    networks:
+      - web
     restart: "unless-stopped"
 
   backend:
     build: ./api
-    ports:
-      - "8000:8000"
+    labels:
+      - "traefik.http.routers.backend.rule=Host(`beta.synth.kitchen`) && PathPrefix(`/api`)" # Route for `/api`
+      - "traefik.http.routers.backend.entrypoints=websecure" # Use HTTPS entry point
+      - "traefik.http.routers.backend.tls.certresolver=myresolver" # Use Let's Encrypt for SSL
+      - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api" # Strip /api prefix
+      - "traefik.http.routers.backend.middlewares=backend-stripprefix"
+    networks:
+      - web
     restart: "unless-stopped"
+
+networks:
+  web:
+    external: false
