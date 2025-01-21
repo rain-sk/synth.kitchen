@@ -15,7 +15,7 @@ export const Home = () => {
 
 	useEffect(() => {
 		getPatches()
-			.then((res) => res && res.json())
+			.then((res) => (res ? res.json() : { rows: [] }))
 			.then((data: { rows: DatabasePatch[] }) => setPatches(data.rows));
 	}, [setPatches, getPatches]);
 

@@ -68,8 +68,8 @@ export const useLoadPatch = (
 				loadingRef.current = true;
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 
-				const { rows: patches } = (await getPatches().then(
-					(res) => res && res.json(),
+				const { rows: patches } = (await getPatches().then((res) =>
+					res ? res.json() : { rows: [] },
 				)) as { rows: DatabasePatch[] };
 
 				const [patch] = patches
