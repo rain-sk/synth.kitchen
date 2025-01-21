@@ -24,4 +24,4 @@ jobs:
             cd /root/staging.synth.kitchen
             systemctl stop staging.synth.kitchen
             git pull origin main
-            docker-compose --env-file .env.staging up -d --build
+            systemctl start staging.synth.kitchen
