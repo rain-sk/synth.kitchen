@@ -3,10 +3,11 @@
 #     driver: "bridge"
 
 services:
-  # frontend:
-  #   build: ./app
-  #   ports:
-  #     - "8080:80"
+  frontend:
+    build: ./app
+    ports:
+      - "8080:80"
+    restart: "unless-stopped"
   backend:
     build: ./api
     ports:
