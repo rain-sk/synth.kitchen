@@ -1,41 +1,14 @@
-# networks:
-#   net:
-#     driver: "bridge"
-
 services:
   frontend:
     build: ./app
     ports:
-      - "8080:80"
+      - "80:80"
+    depends_on:
+      - backend
     restart: "unless-stopped"
+
   backend:
     build: ./api
     ports:
       - "8000:8000"
     restart: "unless-stopped"
-  # authelia:
-  #   container_name: "authelia"
-  #   image: "authelia/authelia"
-  #   restart: "unless-stopped"
-  #   networks:
-  #     net: {}
-  #   volumes:
-  #     - "${PWD}/data/authelia/config:/config"
-  #   environment:
-  #     TZ: "Europe/Berlin"
-  # synth.kitchen:
-  #   container_name: "synth.kitchen"
-  #   build:
-  #     dockerfile: ./app/Dockerfile
-  #   networks:
-  #     net: {}
-  #   environment:
-  #     TZ: "Europe/Berlin"
-  # whoami:
-  #   container_name: "whoami"
-  #   image: "docker.io/traefik/whoami"
-  #   restart: "unless-stopped"
-  #   networks:
-  #     net: {}
-  #   environment:
-  #     TZ: "Europe/Berlin"
