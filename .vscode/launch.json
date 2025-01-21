@@ -1,0 +1,53 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "debug backend",
+      "cwd": "${workspaceFolder}/api",
+      "cargo": {
+        "args": [
+          "build"
+        ],
+        "filter": {
+          "kind": "bin"
+        }
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "app",
+        "order": 1
+      }
+    },
+    {
+      "name": "debug frontend",
+      "command": "npm run dev",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/app",
+      "presentation": {
+        "hidden": false,
+        "group": "app",
+        "order": 2
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Run app",
+      "configurations": [
+        "debug frontend",
+        "debug backend"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "app",
+        "order": 0
+      }
+    }
+  ]
+}
