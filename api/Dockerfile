@@ -1,29 +1,23 @@
 # Step 1: Build the Rust application with Musl
 FROM rust:latest AS builder
 
-# Install the Musl toolchain for static linking
-RUN rustup target add x86_64-unknown-linux-musl
-
-# Install other dependencies
-RUN apt-get update && \
-    apt-get install -y \
-    musl-tools \
-    musl-gcc \
-    pkg-config \
-    libssl-dev
-
 # Set the working directory inside the container
 WORKDIR /app
+
+# Add the musl target for cross-compilation
+RUN rustup target add x86_64-unknown-linux-musl
 
 # Build dependencies only to cache them
 RUN cargo build --release --target x86_64-unknown-linux-musl
 
-# Copy the project source code
+# Copy the Cargo.toml and Cargo.lock files to the container
+COPY Cargo.toml Cargo.lock ./
+
+# Now copy the actual project source code
 COPY . .
 
 # Build the project in release mode with Musl target
 RUN cargo build --release --target x86_64-unknown-linux-musl
-
 
 # Step 2: Create a final image for running the app using Alpine
 FROM alpine:latest
