@@ -38,16 +38,36 @@ services:
 
   backend:
     build: ./backend
+    ports:
+      - "8000:8000"
     labels:
       - "traefik.http.routers.backend.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)" # Route for `/api`
       - "traefik.http.routers.backend.entrypoints=websecure" # Use HTTPS entry point
       - "traefik.http.routers.backend.tls.certresolver=myresolver" # Use Let's Encrypt for SSL
       - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api" # Strip /api prefix
       - "traefik.http.routers.backend.middlewares=backend-stripprefix"
+    depends_on:
+      - db
     networks:
       - web
     restart: "unless-stopped"
 
+  db:
+    image: mongo:latest
+    container_name: db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: app
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - web
+
 networks:
   web:
     external: false
+
+volumes:
+  mongo-data:
