@@ -13,8 +13,8 @@ RUN cargo install --path .
 FROM alpine:latest AS runner
 ENV ROCKET_ADDRESS=0.0.0.0
 ENV ROCKET_PORT=8000
-COPY --from=builder /usr/local/cargo/bin/api /usr/local/bin/api
-RUN addgroup -S apigroup && adduser -S apiuser -G apigroup
-USER apiuser
+COPY --from=builder /usr/local/cargo/bin/backend /usr/local/bin/backend
+RUN addgroup -S backendgroup && adduser -S backenduser -G backendgroup
+USER backenduser
 EXPOSE 8000
-CMD ["api"]
+CMD ["backend"]
