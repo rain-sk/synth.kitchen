@@ -1,0 +1,31 @@
+{
+  "tasks": [
+    {
+      "type": "shell",
+      "command": "docker compose --env-file .env.dev up --build -d",
+      "label": "(cu) docker compose up",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "close": true,
+      }
+    },
+    {
+      "type": "shell",
+      "command": "docker compose down",
+      "label": "(cd) docker compose down",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    }
+  ]
+}
