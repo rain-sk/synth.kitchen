@@ -5,6 +5,9 @@ import { HomeRoute } from './routes/home';
 import { PatchRoute } from './routes/patch';
 
 export const SynthKitchen: React.FC = () => {
+	fetch('/api/hello')
+		.then((res) => res.json())
+		.then((data) => console.log(data));
 	return (
 		<Switch>
 			<Route path="/" component={HomeRoute} />
