@@ -1,20 +1,31 @@
-FROM rust:alpine AS builder
-WORKDIR /usr/src/app
-RUN apk add --no-cache musl-dev
-RUN USER="builder" cargo init
-COPY Cargo.toml .
-COPY Cargo.lock .
-RUN mkdir .cargo && cargo vendor > .cargo/config
-RUN cargo build --release
-COPY ./src src
-RUN touch src/main.rs && cargo build --release
-RUN cargo install --path .
+FROM node:latest AS build
+WORKDIR /app
 
-FROM alpine:latest AS runner
-ENV ROCKET_ADDRESS=0.0.0.0
-ENV ROCKET_PORT=8000
-COPY --from=builder /usr/local/cargo/bin/backend /usr/local/bin/backend
-RUN addgroup -S backendgroup && adduser -S backenduser -G backendgroup
-USER backenduser
+# Install dependencies
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Copy the source code
+COPY ./src ./src
+COPY tsconfig.json ./
+
+# Install TypeScript and build the app
+RUN npm install -g typescript
+RUN tsc
+
+# Step 2: Run the app
+FROM node:latest AS production
+WORKDIR /app
+
+# Copy the built JS files from the build stage
+COPY --from=build /app/dist /app/dist
+COPY package.json package-lock.json ./
+
+# Install only production dependencies
+RUN npm install --only=production
+
+# Expose the backend port
 EXPOSE 8000
-CMD ["backend"]
+
+# Run the compiled JS file
+CMD ["node", "dist/main.js"]
