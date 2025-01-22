@@ -18,7 +18,7 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST_STAGING }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }}
+          key: ${{ secrets.VPS_KEY_STAGING }}
           port: 22
           script: |
             cd /root/staging.synth.kitchen
