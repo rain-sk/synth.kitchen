@@ -3,7 +3,7 @@
     {
       "type": "shell",
       "command": "docker compose --env-file .env.dev up --build -d",
-      "label": "(cu) docker compose up",
+      "label": "(up) docker compose up",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -15,7 +15,35 @@
     {
       "type": "shell",
       "command": "docker compose down",
-      "label": "(cd) docker compose down",
+      "label": "(dn) docker compose down",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "type": "shell",
+      "command": "docker compose --env-file .env.dev up --no-recreate --build frontend -d",
+      "label": "(bf) build docker frontend",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "type": "shell",
+      "command": "docker compose --env-file .env.dev up --no-recreate --build backend -d",
+      "label": "(bb) build docker backend",
       "problemMatcher": [],
       "presentation": {
         "echo": true,

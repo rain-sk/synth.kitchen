@@ -31,6 +31,7 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure" # Use HTTPS entry point
       - "traefik.http.routers.frontend.tls.certresolver=myresolver" # Use Let's Encrypt for SSL
     depends_on:
+      - traefik
       - backend
     networks:
       - web
@@ -47,27 +48,34 @@ services:
       - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api" # Strip /api prefix
       - "traefik.http.routers.backend.middlewares=backend-stripprefix"
     depends_on:
-      - db
+      - traefik
+      # - db
     networks:
       - web
     restart: "unless-stopped"
 
-  db:
-    image: mongo:latest
-    container_name: db
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: app
-      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - mongo-data:/data/db
-    networks:
-      - web
+  # db:
+  #   image: mysql:latest
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: hMd7zQ1zsEwuAatwzCtBcuuAxTxPFstUywQtRhzDMVjnrp4K3S9WX37N
+  #     MYSQL_USER: app
+  #     MYSQL_PASSWORD: N5n1CQTnsk2FeuGVT8R7Cfpvg7qFJDDz5rEGnTAKu5XDKy7FRN1zrEqw
+  #     MYSQL_DATABASE: synthkitchen-dev
+  #   ports:
+  #     - 3306:3306
+  #   networks:
+  #     - web
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     timeout: 20s
+  #     retries: 10
+  #   volumes:
+  #     - db-storage:/var/lib/mysql
 
 networks:
   web:
     external: false
-
-volumes:
-  mongo-data:
+    driver: bridge
+# volumes:
+#   db-storage:

@@ -3,6 +3,9 @@ import { Route, Switch } from 'wouter';
 
 import { HomeRoute } from './routes/home';
 import { PatchRoute } from './routes/patch';
+import { AuthRoute } from './routes/auth';
+
+document.domain = 'localhost';
 
 export const SynthKitchen: React.FC = () => {
 	fetch('/api/hello')
@@ -13,6 +16,7 @@ export const SynthKitchen: React.FC = () => {
 			<Route path="/" component={HomeRoute} />
 			<Route path="/patch" component={PatchRoute} />
 			<Route path="/patch/:id" component={PatchRoute} />
+			<Route path="/auth" component={AuthRoute} />
 		</Switch>
 	);
 };
