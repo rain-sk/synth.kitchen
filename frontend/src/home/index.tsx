@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { DatabasePatch, useApi } from '../api/use-api';
 import { Link } from 'wouter';
+
+import { DatabasePatch, useApi } from '../api/use-api';
 
 const PatchItem: React.FC<{ id: string; name: string }> = ({ id, name }) => (
 	<li>

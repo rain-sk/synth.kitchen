@@ -1,52 +1,26 @@
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
-import { jwtConstants } from './constants';
-import { IS_PUBLIC_KEY } from './decorators/public.decorator';
+  getSession,
+  VerifySessionOptions,
+} from 'supertokens-node/recipe/session';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(
-    private jwtService: JwtService,
-    private reflector: Reflector,
-  ) {}
+  constructor(private readonly getSessionOptions?: VerifySessionOptions) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    if (isPublic) {
-      // 💡 See this condition
-      return true;
-    }
+  public async canActivate(context: ExecutionContext): Promise<boolean> {
+    const ctx = context.switchToHttp();
 
-    const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
-    if (!token) {
-      throw new UnauthorizedException();
-    }
-    try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
-      });
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
-      request['user'] = payload;
-    } catch {
-      throw new UnauthorizedException();
-    }
+    const req = ctx.getRequest();
+    const resp = ctx.getResponse();
+
+    // If the session doesn't exist and {sessionRequired: true} is passed to the AuthGuard constructor (default is true),
+    // getSession will throw an error that will be handled by the exception filter, returning a 401 response.
+
+    // To avoid an error when the session doesn't exist, pass {sessionRequired: false} to the AuthGuard constructor.
+    // In this case, req.session will be undefined if the session doesn't exist.
+    const session = await getSession(req, resp, this.getSessionOptions);
+    req.session = session;
     return true;
-  }
-
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
   }
 }

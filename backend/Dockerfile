@@ -9,9 +9,8 @@ RUN npm install
 COPY ./src ./src
 COPY tsconfig.json ./
 
-# Install TypeScript and build the app
-RUN npm install -g typescript
-RUN tsc
+# Build the app
+RUN npm run build
 
 # Step 2: Run the app
 FROM node:latest AS production
