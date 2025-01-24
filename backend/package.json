@@ -30,7 +30,7 @@
     "supertokens-node": "latest"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.0.0",
+    "@nestjs/cli": "^11.0.2",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^11.0.5",
     "@types/express": "^4.17.13",
