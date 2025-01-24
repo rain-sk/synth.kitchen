@@ -8,15 +8,12 @@ import {
 import { AuthModal } from './modal';
 import { SuperTokensConfig } from '.';
 import { useAsyncFn } from 'react-use';
+import { AuthService } from './service';
+import { IAuthUser } from './types';
 
 SuperTokens.init(SuperTokensConfig);
 
-type IAuthUser = {
-	emails: string[];
-	id: string;
-};
-
-type IAuthContext = {
+export type IAuthContext = {
 	user?: IAuthUser;
 	setOpenAuthModal: (openAuthModal: boolean) => void;
 	session: SessionContextType;
@@ -30,11 +27,10 @@ const AuthContextProviderInner: React.FC<React.PropsWithChildren> = ({
 	children,
 }) => {
 	const session = useSessionContext();
-	const [user, updateUser] = useAsyncFn<() => Promise<IAuthUser>>(async () => {
-		const response = await fetch('/api/me');
-		const { user } = await response.json();
-		console.log(user);
-		return user;
+	const [user, updateUser] = useAsyncFn<
+		() => Promise<IAuthUser | undefined>
+	>(async () => {
+		return await AuthService.me();
 	}, []);
 
 	const [openAuthModal, setOpenAuthModal] = useState(false);
