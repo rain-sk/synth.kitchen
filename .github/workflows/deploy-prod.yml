@@ -21,7 +21,8 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           port: 22
           script: |
-            cd /root/synth.kitchen
-            systemctl stop synth.kitchen
-            git pull origin prod
-            systemctl start synth.kitchen
+            docker compose down
+            git fetch
+            git checkout origin/prod
+            systemctl stop staging.synth.kitchen
+            systemctl start staging.synth.kitchen
