@@ -22,6 +22,8 @@ jobs:
           port: 22
           script: |
             cd /root/staging.synth.kitchen
+            docker compose down
+            git fetch
+            git checkout origin/main
             systemctl stop staging.synth.kitchen
-            git pull origin main
             systemctl start staging.synth.kitchen
