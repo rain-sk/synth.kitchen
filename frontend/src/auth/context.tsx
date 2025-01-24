@@ -40,12 +40,7 @@ const AuthContextProviderInner: React.FC<React.PropsWithChildren> = ({
 			return;
 		}
 
-		if (!session.doesSessionExist) {
-			setOpenAuthModal(true);
-			return;
-		}
-
-		if (!user.loading && !user.value) {
+		if (session.doesSessionExist && !user.loading && !user.value) {
 			updateUser();
 			return;
 		}
