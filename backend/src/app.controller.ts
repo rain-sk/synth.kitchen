@@ -4,6 +4,7 @@ import Multitenancy from 'supertokens-node/recipe/multitenancy';
 import { AppService } from './app.service';
 import { AuthGuard } from './auth/auth.guard';
 import { Session } from './auth/session/session.decorator';
+import { getUser } from 'supertokens-node';
 
 @Controller()
 export class AppController {
@@ -14,6 +15,14 @@ export class AppController {
     return {
       hello: true,
       guess: 42,
+    };
+  }
+
+  @Get('/me')
+  @UseGuards(new AuthGuard())
+  async getMe(@Session() session: SessionContainer): Promise<{}> {
+    return {
+      user: await getUser(session.getUserId()),
     };
   }
 
