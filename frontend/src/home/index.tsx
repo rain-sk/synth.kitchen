@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 
 import { DatabasePatch, useApi } from '../api/use-api';
+import { Nav } from '../nav';
 
 const PatchItem: React.FC<{ id: string; name: string }> = ({ id, name }) => (
 	<li>
@@ -22,6 +23,7 @@ export const Home = () => {
 
 	return (
 		<>
+			<Nav />
 			<main>
 				<h1>Synth Kitchen</h1>
 				<section>

@@ -10,7 +10,7 @@ export const SignOutRoute = () => {
 			(async () => {
 				await signOut();
 				signingOutRef.current = false;
-				navigate('/account');
+				navigate('/');
 			})();
 		}
 	}, []);
