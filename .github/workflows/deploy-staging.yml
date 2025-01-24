@@ -3,7 +3,7 @@ name: Deploy to Staging
 on:
   push:
     branches:
-      - main
+      - staging
 
 jobs:
   deploy:
@@ -24,7 +24,7 @@ jobs:
             cd /root/staging.synth.kitchen
             docker compose down
             git fetch
-            git checkout main
+            git checkout staging
             git pull
             systemctl stop staging.synth.kitchen
             systemctl start staging.synth.kitchen
