@@ -12,11 +12,14 @@ export const appInfo = {
   websiteBasePath: '/auth',
 };
 
-export const connectionUri = 'https://st-dev-64175bc0-d99d-11ef-8c4b-53905c1f8f99.aws.supertokens.io';
+export const connectionUri =
+  'https://st-dev-64175bc0-d99d-11ef-8c4b-53905c1f8f99.aws.supertokens.io';
 
 export const recipeList = [
   EmailPassword.init(),
   Session.init(),
-  Dashboard.init(),
+  Dashboard.init({
+    admins: ['rain@synth.kitchen'],
+  }),
   UserRoles.init(),
 ];
