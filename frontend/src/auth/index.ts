@@ -4,8 +4,8 @@ import Session from 'supertokens-auth-react/recipe/session';
 export const SuperTokensConfig = {
 	appInfo: {
 		appName: 'synth.kitchen',
-		apiDomain: 'https://localhost/api',
-		websiteDomain: 'https://localhost',
+		apiDomain: `https://${process.env.DOMAIN}/api`,
+		websiteDomain: `https://${process.env.DOMAIN}`,
 	},
 	// recipeList contains all the modules that you want to
 	// use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
