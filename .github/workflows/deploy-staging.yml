@@ -22,7 +22,6 @@ jobs:
           port: 22
           script: |
             cd /root/staging.synth.kitchen
-            docker build -t placeholder ./frontend/placeholder
             git fetch
             git checkout staging
             git pull
