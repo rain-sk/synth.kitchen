@@ -26,6 +26,8 @@ services:
 
   frontend:
     build: ./frontend
+    environment:
+      BUILD_ENV: "${BUILD_ENV}"
     labels:
       - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)" # Route for your domain
       - "traefik.http.routers.frontend.entrypoints=websecure" # Use HTTPS entry point
