@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import * as SuperTokensConfig from './config';
 import { PatchModule } from './patch/patch.module';
 // import { UserModule } from './user/user.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PatchModule } from './patch/patch.module';
       appInfo: SuperTokensConfig.appInfo,
     }),
     PatchModule,
+    UsersModule,
     // UserModule,
   ],
   controllers: [AppController],

@@ -31,7 +31,6 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure" # Use HTTPS entry point
       - "traefik.http.routers.frontend.tls.certresolver=myresolver" # Use Let's Encrypt for SSL
     depends_on:
-      - traefik
       - backend
     networks:
       - web
@@ -48,8 +47,8 @@ services:
       - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api" # Strip /api prefix
       - "traefik.http.routers.backend.middlewares=backend-stripprefix"
     depends_on:
-      - traefik
-      - db
+      db:
+        condition: service_healthy
     networks:
       - web
     restart: "unless-stopped"
@@ -57,10 +56,11 @@ services:
   db:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: root # Set the root password for MySQL
-      MYSQL_DATABASE: app # Create a database named 'nest'
-      MYSQL_USER: app_user
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: synth.kitchen
+      MYSQL_USER: app
       MYSQL_PASSWORD: hMd7zQ1zsEwuAatwzCtBcuuAxTxPFstUywQtRhzDMVjnrp4K3S9WX37N
+      MYSQL_ROOT_HOST: "%"
       TZ: Europe/Berlin # Set timezone to America/New_York
     ports:
       - 3306:3306
@@ -68,7 +68,7 @@ services:
       - web
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: mysqladmin ping -h mysql --user=$$MYSQL_USER --password=$$MYSQL_ROOT_PASSWORD
       timeout: 20s
       retries: 10
     volumes:

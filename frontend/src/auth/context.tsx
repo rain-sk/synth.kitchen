@@ -33,6 +33,7 @@ const AuthContextProviderInner: React.FC<React.PropsWithChildren> = ({
 		return await AuthService.me();
 	}, []);
 
+	console.log(user.value);
 	const [openAuthModal, setOpenAuthModal] = useState(false);
 
 	useEffect(() => {
