@@ -8,6 +8,7 @@ import { SynthKitchen } from './app';
 import './reset.css';
 import './styles.css';
 
+console.log(SuperTokensConfig);
 SuperTokens.init(SuperTokensConfig);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

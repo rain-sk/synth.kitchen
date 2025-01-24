@@ -42,7 +42,7 @@ services:
     ports:
       - "8000:8000"
     labels:
-      - "traefik.http.routers.backend.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)" # Route for `/api`
+      - "traefik.http.routers.backend.rule=Host(`${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/auth`))" # Route for `/api` or `/auth`
       - "traefik.http.routers.backend.entrypoints=websecure" # Use HTTPS entry point
       - "traefik.http.routers.backend.tls.certresolver=myresolver" # Use Let's Encrypt for SSL
       - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api" # Strip /api prefix
