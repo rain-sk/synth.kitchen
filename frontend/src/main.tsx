@@ -1,20 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import SuperTokens, { SuperTokensWrapper } from 'supertokens-auth-react';
 
-import { SuperTokensConfig } from './auth';
+import { AuthContextProvider } from './auth/context';
 import { SynthKitchen } from './app';
 
 import './reset.css';
 import './styles.css';
 
-console.log(SuperTokensConfig);
-SuperTokens.init(SuperTokensConfig);
-
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<React.StrictMode>
-		<SuperTokensWrapper>
+		<AuthContextProvider>
 			<SynthKitchen />
-		</SuperTokensWrapper>
+		</AuthContextProvider>
 	</React.StrictMode>,
 );
