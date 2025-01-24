@@ -24,9 +24,7 @@ jobs:
             cd /root/staging.synth.kitchen
             docker build -t placeholder ./frontend/placeholder
             systemctl stop staging.synth.kitchen
-            docker run -d placeholder
             git fetch
             git checkout staging
             git pull
-            docker stop placeholder
             systemctl start staging.synth.kitchen
