@@ -24,6 +24,7 @@ jobs:
             cd /root/staging.synth.kitchen
             docker compose down
             git fetch
-            git checkout origin/main
+            git checkout main
+            git pull
             systemctl stop staging.synth.kitchen
             systemctl start staging.synth.kitchen

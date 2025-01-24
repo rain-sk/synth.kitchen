@@ -23,6 +23,7 @@ jobs:
           script: |
             docker compose down
             git fetch
-            git checkout origin/prod
+            git checkout prod
+            git pull
             systemctl stop staging.synth.kitchen
             systemctl start staging.synth.kitchen
