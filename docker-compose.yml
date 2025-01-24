@@ -61,7 +61,7 @@ services:
       MYSQL_USER: app
       MYSQL_PASSWORD: hMd7zQ1zsEwuAatwzCtBcuuAxTxPFstUywQtRhzDMVjnrp4K3S9WX37N
       MYSQL_ROOT_HOST: "%"
-      TZ: Europe/Berlin # Set timezone to America/New_York
+      TZ: Europe/Berlin
     ports:
       - 3306:3306
     networks:
