@@ -8,9 +8,9 @@ export const databaseProviders = [
         type: 'mysql',
         host: 'db',
         port: 3306,
-        username: 'root',
-        password: 'root',
-        database: 'app',
+        username: 'user',
+        password: 'user',
+        database: 'synth.kitchen',
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
       });

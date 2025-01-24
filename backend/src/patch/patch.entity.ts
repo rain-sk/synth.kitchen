@@ -1,5 +1,6 @@
-import { User } from 'src/user/user.entity';
 import { Entity, Column, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+
+import { User } from '../users/entities/user.entity';
 
 @Entity()
 export class Patch {
