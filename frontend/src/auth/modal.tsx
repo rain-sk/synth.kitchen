@@ -1,6 +1,7 @@
-import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 import Modal from 'react-modal';
 import { AuthForm } from './form';
+import { useContext } from 'react';
+import { AuthContext } from './context';
 
 const customStyles = {
 	content: {
@@ -16,7 +17,7 @@ const customStyles = {
 Modal.setAppElement('#root');
 
 export const AuthModal: React.FC<{ open: boolean }> = ({ open }) => {
-	const session = useSessionContext();
+	const { session } = useContext(AuthContext);
 
 	return session.loading ? null : (
 		<Modal isOpen={open} style={customStyles}>
