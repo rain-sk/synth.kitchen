@@ -3,13 +3,16 @@ import { useCallback, useContext } from 'react';
 import { ISerializedPatch } from '../../state/types/serialized-patch';
 import { PatchContext } from '../../contexts/patch';
 import { SaveToCloudSvg } from './svg/save-to-cloud';
-import { useApi } from '../../../api/use-api';
+import { PatchService } from '../../service';
 
 export const SaveToCloud = () => {
 	const { id, name, modules, modulePositions, connections } =
 		useContext(PatchContext);
 
-	const { savePatch } = useApi();
+	// const { savePatch } = useApi();
+	const savePatch = useCallback(async (patch: ISerializedPatch) => {
+		await PatchService.create(patch);
+	}, []);
 
 	const onSave = useCallback(() => {
 		const patch: ISerializedPatch = {
