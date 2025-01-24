@@ -2,7 +2,7 @@ services:
   traefik:
     image: traefik:v2.10
     command:
-      - "--api.insecure=true" # Enable Traefik dashboard (can disable in production)
+      # - "--api.insecure=true" # Enable Traefik dashboard (can disable in production)
       - "--providers.docker=true" # Enable Docker provider to automatically configure routes
       - "--entrypoints.web.address=:80" # Handle HTTP traffic
       - "--entrypoints.websecure.address=:443" # Handle HTTPS traffic
@@ -49,33 +49,36 @@ services:
       - "traefik.http.routers.backend.middlewares=backend-stripprefix"
     depends_on:
       - traefik
-      # - db
+      - db
     networks:
       - web
     restart: "unless-stopped"
 
-  # db:
-  #   image: mysql:latest
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: hMd7zQ1zsEwuAatwzCtBcuuAxTxPFstUywQtRhzDMVjnrp4K3S9WX37N
-  #     MYSQL_USER: app
-  #     MYSQL_PASSWORD: N5n1CQTnsk2FeuGVT8R7Cfpvg7qFJDDz5rEGnTAKu5XDKy7FRN1zrEqw
-  #     MYSQL_DATABASE: synthkitchen-dev
-  #   ports:
-  #     - 3306:3306
-  #   networks:
-  #     - web
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-  #     timeout: 20s
-  #     retries: 10
-  #   volumes:
-  #     - db-storage:/var/lib/mysql
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root # Set the root password for MySQL
+      MYSQL_DATABASE: app # Create a database named 'nest'
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: hMd7zQ1zsEwuAatwzCtBcuuAxTxPFstUywQtRhzDMVjnrp4K3S9WX37N
+      TZ: Europe/Berlin # Set timezone to America/New_York
+    ports:
+      - 3306:3306
+    networks:
+      - web
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - db-storage:/var/lib/mysql
 
 networks:
   web:
     external: false
     driver: bridge
-# volumes:
-#   db-storage:
+
+volumes:
+  traefik-storage:
+  db-storage:

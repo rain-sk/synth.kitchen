@@ -7,9 +7,9 @@ import { AccountRoute } from './routes/account';
 import { SignOutRoute } from './routes/sign-out';
 
 export const SynthKitchen: React.FC = () => {
-	// fetch('/api/hello')
-	// 	.then((res) => res.json())
-	// 	.then((data) => console.log(data));
+	fetch('/api/')
+		.then((res) => res.json())
+		.then((data) => console.log(data));
 	return (
 		<Switch>
 			<Route path="/" component={HomeRoute} />

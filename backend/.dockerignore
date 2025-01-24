@@ -1,0 +1,23 @@
+# Ignore Dockerfiles
+Dockerfile
+.dockerignore
+# Avoid node_modules directory
+node_modules
+# Ignore logs and temp files
+*.log
+*.tmp
+*.temp
+# Avoid build directories
+dist
+build
+# git directory and files
+.git
+.gitignore
+# environment variables file
+.env
+#  editor directories and files
+.vscode
+.idea
+# OS-specific files
+.DS_Store
+Thumbs.db

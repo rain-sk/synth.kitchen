@@ -10,7 +10,7 @@ import { getUser } from 'supertokens-node';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('/hello')
+  @Get('/')
   getHello() {
     return {
       hello: true,
