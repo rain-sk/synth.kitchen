@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synth Kitchen</title>
+  <style>
+    body {
+      background-color: greenyellow;
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* HTML: <div class="loader"></div> */
+    .loader,
+    .loader:before,
+    .loader:after {
+      width: 35px;
+      aspect-ratio: 1;
+      box-shadow: 0 0 0 3px inset #000;
+      position: relative;
+      animation: l6 1.5s infinite 0.5s;
+    }
+
+    .loader:before,
+    .loader:after {
+      content: "";
+      position: absolute;
+      left: calc(100% + 5px);
+      animation-delay: 1s;
+    }
+
+    .loader:after {
+      left: -40px;
+      animation-delay: 0s;
+    }
+
+    @keyframes l6 {
+
+      0%,
+      55%,
+      100% {
+        border-radius: 0
+      }
+
+      20%,
+      30% {
+        border-radius: 50%
+      }
+    }
+
+    h1 {
+      position: absolute;
+      top: -10000px;
+      left: -10000px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Synth Kitchen</h1>
+
+  <div class="loader" role="presentation"></div>
+
+  <p>The site is being updated. Try reloading after a few seconds.</p>
+
+  <script>
+    setTimeout(function () {
+      window.location.reload()
+    }, 10000)
+  </script>
+</body>
+
+</html>

@@ -22,9 +22,11 @@ jobs:
           port: 22
           script: |
             cd /root/staging.synth.kitchen
-            docker compose down
+            docker build -t placeholder ./frontend/placeholder
+            systemctl stop staging.synth.kitchen
+            docker run -d placeholder
             git fetch
             git checkout staging
             git pull
-            systemctl stop staging.synth.kitchen
+            docker stop placeholder
             systemctl start staging.synth.kitchen
