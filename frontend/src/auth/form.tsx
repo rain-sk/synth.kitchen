@@ -53,9 +53,12 @@ export const AuthForm = () => {
 					  });
 				if (result.status === 'OK') {
 					setOpenAuthModal(false);
+				} else {
+					console.warn(result.status);
 				}
 			} catch (e) {
 				console.error(e);
+			} finally {
 				submittingRef.current = false;
 				setSubmitting(false);
 			}
