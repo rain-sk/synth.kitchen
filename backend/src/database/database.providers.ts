@@ -12,7 +12,6 @@ export const databaseProviders = [
         password: 'hMd7zQ1zsEwuAatwzCtBcuuAxTxPFstUywQtRhzDMVjnrp4K3S9WX37N',
         database: 'synth.kitchen',
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        synchronize: true,
       });
 
       return dataSource.initialize();
