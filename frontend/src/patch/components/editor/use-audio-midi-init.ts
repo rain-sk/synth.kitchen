@@ -1,18 +1,17 @@
 import { useCallback } from 'react';
-import { audioContext, initAudio } from '../../audio';
-import { initMidi, midi } from '../../midi';
 import { createGlobalState } from 'react-use';
+import { audioContext, initAudio } from '../../audio';
+import { initMidi } from '../../midi';
 
-const audioMidiInitialized = () =>
-	audioContext.state === 'running' && midi.initialized;
+const audioInitialized = () => audioContext.state === 'running';
 
-const useAudioMidiInitialized = createGlobalState(audioMidiInitialized);
+const useAudioInitialized = createGlobalState(audioInitialized);
 
-const useAudioMidiInitializedStatus = createGlobalState('');
+const useAudioInitializedStatus = createGlobalState('');
 
 export const useAudioMidiInit = () => {
-	const [initialized, setInitialized] = useAudioMidiInitialized();
-	const [status, setStatus] = useAudioMidiInitializedStatus();
+	const [initialized, setInitialized] = useAudioInitialized();
+	const [status, setStatus] = useAudioInitializedStatus();
 
 	const init = useCallback(async () => {
 		setStatus('starting audio');
@@ -20,7 +19,7 @@ export const useAudioMidiInit = () => {
 		setStatus('starting midi');
 		await initMidi();
 
-		if (audioMidiInitialized()) {
+		if (audioInitialized()) {
 			setInitialized(true);
 		} else {
 			setStatus('initialization failed');
