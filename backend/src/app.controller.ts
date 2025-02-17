@@ -1,10 +1,9 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { SessionContainer } from 'supertokens-node/recipe/session';
-import Multitenancy from 'supertokens-node/recipe/multitenancy';
+import { getUser } from 'supertokens-node';
 import { AppService } from './app.service';
 import { AuthGuard } from './auth/auth.guard';
 import { Session } from './auth/session/session.decorator';
-import { getUser } from 'supertokens-node';
 
 @Controller()
 export class AppController {
