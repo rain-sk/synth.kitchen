@@ -15,8 +15,8 @@ export class MidiCcNode {
 			WebMidi.addListener('connected', this.onConnected);
 			WebMidi.addListener('disconnected', this.onDisconnected);
 
-			if (WebMidi.inputs.length === 1) {
-				this.setInput(WebMidi.inputs[0].name);
+			if (WebMidi.inputs.length > 0) {
+				this.setInputName(WebMidi.inputs[0].name);
 			}
 
 			this.handleCCValue(0);
@@ -56,7 +56,7 @@ export class MidiCcNode {
 		return null;
 	}
 
-	setInput = (name: string) => {
+	setInputName = (name: string) => {
 		const oldInput = this.input;
 
 		this._inputName = '';
@@ -96,13 +96,13 @@ export class MidiCcNode {
 
 	onConnected = (e: PortEvent) => {
 		if (e.port.type === 'input' && !this.input) {
-			this.setInput(e.port.name);
+			this.setInputName(e.port.name);
 		}
 	};
 
 	onDisconnected = (e: PortEvent) => {
 		if (e.port === this.input) {
-			this.setInput('');
+			this.setInputName('');
 		}
 	};
 
