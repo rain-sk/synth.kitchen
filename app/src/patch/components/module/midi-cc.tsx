@@ -20,7 +20,7 @@ const initMidiCc = (cc: MidiCcNode, state?: IModuleState['MIDI_CC']) => {
 	if (state) {
 		try {
 			cc.setCC(state.cc);
-			cc.setInput(state.input);
+			cc.setInputName(state.input);
 			cc.setMax(state.max);
 			cc.setMin(state.min);
 		} catch (e) {
@@ -50,7 +50,7 @@ export const MidiCcModule: React.FC<{
 	const commitInputChange = useCallback(
 		(input: string) => {
 			if (node) {
-				node.setInput(input);
+				node.setInputName(input);
 				setState({
 					...state,
 					input,

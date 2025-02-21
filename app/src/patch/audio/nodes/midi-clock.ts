@@ -15,7 +15,7 @@ export class MidiClockNode {
 			WebMidi.addListener('connected', this.onConnected);
 			WebMidi.addListener('disconnected', this.onDisconnected);
 
-			if (WebMidi.inputs.length === 1) {
+			if (WebMidi.inputs.length > 0) {
 				this.setInput(WebMidi.inputs[0].name);
 			}
 		}
