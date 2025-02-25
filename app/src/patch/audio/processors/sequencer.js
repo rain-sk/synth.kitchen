@@ -17,7 +17,7 @@ class Sequencer extends AudioWorkletProcessor {
 			{ name: 'step5', defaultValue: 0 },
 			{ name: 'step6', defaultValue: 0 },
 			{ name: 'step7', defaultValue: 0 },
-			{ name: 'active', defaultValue: 1, minValue: 0, maxValue: 1 }
+			{ name: 'active', defaultValue: 1, minValue: 0, maxValue: 1 },
 		];
 	}
 
@@ -50,56 +50,55 @@ class Sequencer extends AudioWorkletProcessor {
 			if (tick) {
 				const frameSteps = Math.min(
 					Math.max(2, Math.round(stepsIsConstant ? steps[0] : steps[i])),
-					8
+					8,
 				);
 				step = (step + 1) % frameSteps;
 			}
 
-			const frameValue = (() => {
-				switch (step) {
-					case 0: {
-						const step0 = parameters.step0;
-						const step0IsConstant = step0.length === 1;
-						return step0IsConstant ? step0[0] : step0[i];
-					}
-					case 1: {
-						const step1 = parameters.step1;
-						const step1IsConstant = step1.length === 1;
-						return step1IsConstant ? step1[0] : step1[i];
-					}
-					case 2: {
-						const step2 = parameters.step2;
-						const step2IsConstant = step2.length === 1;
-						return step2IsConstant ? step2[0] : step2[i];
-					}
-					case 3: {
-						const step3 = parameters.step3;
-						const step3IsConstant = step3.length === 1;
-						return step3IsConstant ? step3[0] : step3[i];
-					}
-					case 4: {
-						const step4 = parameters.step4;
-						const step4IsConstant = step4.length === 1;
-						return step4IsConstant ? step4[0] : step4[i];
-					}
-					case 5: {
-						const step5 = parameters.step5;
-						const step5IsConstant = step5.length === 1;
-						return step5IsConstant ? step5[0] : step5[i];
-					}
-					case 6: {
-						const step6 = parameters.step6;
-						const step6IsConstant = step6.length === 1;
-						return step6IsConstant ? step6[0] : step6[i];
-					}
-					case 7:
-					default: {
-						const step7 = parameters.step7;
-						const step7IsConstant = step7.length === 1;
-						return step7IsConstant ? step7[0] : step7[i];
-					}
+			let frameValue = 0;
+			switch (step) {
+				case 0: {
+					const step0 = parameters.step0;
+					const step0IsConstant = step0.length === 1;
+					frameValue = step0IsConstant ? step0[0] : step0[i];
 				}
-			})();
+				case 1: {
+					const step1 = parameters.step1;
+					const step1IsConstant = step1.length === 1;
+					frameValue = step1IsConstant ? step1[0] : step1[i];
+				}
+				case 2: {
+					const step2 = parameters.step2;
+					const step2IsConstant = step2.length === 1;
+					frameValue = step2IsConstant ? step2[0] : step2[i];
+				}
+				case 3: {
+					const step3 = parameters.step3;
+					const step3IsConstant = step3.length === 1;
+					frameValue = step3IsConstant ? step3[0] : step3[i];
+				}
+				case 4: {
+					const step4 = parameters.step4;
+					const step4IsConstant = step4.length === 1;
+					frameValue = step4IsConstant ? step4[0] : step4[i];
+				}
+				case 5: {
+					const step5 = parameters.step5;
+					const step5IsConstant = step5.length === 1;
+					frameValue = step5IsConstant ? step5[0] : step5[i];
+				}
+				case 6: {
+					const step6 = parameters.step6;
+					const step6IsConstant = step6.length === 1;
+					frameValue = step6IsConstant ? step6[0] : step6[i];
+				}
+				case 7:
+				default: {
+					const step7 = parameters.step7;
+					const step7IsConstant = step7.length === 1;
+					frameValue = step7IsConstant ? step7[0] : step7[i];
+				}
+			}
 
 			for (let channel = 0; channel < output.length; channel++) {
 				output[channel][i] = frameValue;
