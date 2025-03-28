@@ -12,7 +12,7 @@ export const SynthKitchen: React.FC = () => {
 			<Route path="/" component={RedirectToPatch} />
 			<Route path="/patch" component={PatchRoute} />
 			<Route path="/patch/:id" component={PatchRoute} />
-			<Route path="/patchs" component={PatchesRoute} />
+			<Route path="/patches" component={PatchesRoute} />
 		</Switch>
 	);
 };
