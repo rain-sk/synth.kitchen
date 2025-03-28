@@ -1,15 +1,18 @@
 import React from 'react';
-import { Route, Switch } from 'wouter';
+import { Redirect, Route, Switch } from 'wouter';
 
-import { HomeRoute } from './routes/home';
+import { PatchesRoute } from './routes/patches';
 import { PatchRoute } from './routes/patch';
+
+const RedirectToPatch = () => <Redirect to="/patch" />;
 
 export const SynthKitchen: React.FC = () => {
 	return (
 		<Switch>
-			<Route path="/" component={HomeRoute} />
+			<Route path="/" component={RedirectToPatch} />
 			<Route path="/patch" component={PatchRoute} />
 			<Route path="/patch/:id" component={PatchRoute} />
+			<Route path="/patchs" component={PatchesRoute} />
 		</Switch>
 	);
 };
