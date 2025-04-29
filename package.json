@@ -1,0 +1,14 @@
+{
+  "name": "synth.kitchen",
+  "authors": "https://github.com/rain-sk",
+  "version": "0.3.0",
+  "scripts": {
+    "build-app": "cd app && npm install && npm run build",
+    "build-cms": "cd cms && npm install && npm run build",
+    "build": "npm run build-app && npm run build-cms",
+    "publish-app": "rm -rf /var/www/staging.synth.kitchen/ && mkdir -p /var/www/staging.synth.kitchen && mv ./app/dist/* /var/www/staging.synth.kitchen/ -f",
+    "publish-cms": "",
+    "publish": ""
+  },
+  "dependencies": {}
+}
