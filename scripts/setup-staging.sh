@@ -77,17 +77,25 @@ server {
     return 404; # managed by Certbot
 }" > /etc/nginx/sites-available/staging.synth.kitchen
 ln -s /etc/nginx/sites-available/staging.synth.kitchen /etc/nginx/sites-enabled/
-sudo ufw allow 'Nginx Full'
-sudo ufw delete allow 'Nginx HTTP'
 systemctl reload nginx
 
+# Update ufw settings to use Nginx Full only
+sudo ufw allow 'Nginx Full'
+sudo ufw delete allow 'Nginx HTTP'
+
 # Clone synth.kitchen.git
+mkdir /code
 cd /code
 git clone https://github.com/rain-sk/synth.kitchen.git
+cd synth.kitchen
+
+# Install node, npm, and related dependencies
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo bash -
+apt-get install -y nodejs
 
 # Build and deploy synth.kitchen/app
 apt -y install npm
-cd synth.kitchen
+git checkout strapi-backend # TODO clean this up
 npm run build
 npm run publish
 
