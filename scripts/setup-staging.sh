@@ -7,7 +7,6 @@ yes | ufw enable
 
 # Install Nginx and update ufw
 apt-get -y install nginx
-ufw allow 'Nginx HTTP'
 echo "server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
@@ -28,6 +27,7 @@ echo "server {
 systemctl enable nginx
 
 # Install certbot and configure Nginx
+ufw allow 'Nginx HTTP'
 snap install --classic certbot
 ln -s /snap/bin/certbot /usr/bin/certbot
 certbot -d staging.synth.kitchen -m rain@synth.kitchen --agree-tos -n --nginx
