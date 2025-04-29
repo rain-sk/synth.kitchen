@@ -7,7 +7,7 @@
     "build": "strapi build",
     "console": "strapi console",
     "deploy": "strapi deploy",
-    "dev": "strapi develop",
+    "dev": "strapi develop --debug",
     "develop": "strapi develop",
     "start": "strapi start",
     "strapi": "strapi",
@@ -22,6 +22,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
+    "strapi-provider-mailersend": "^1.0.0",
     "styled-components": "^6.0.0"
   },
   "devDependencies": {
