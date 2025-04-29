@@ -1,4 +1,4 @@
-import { defineConfig, splitVendorChunkPlugin } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 // import { analyzer } from 'vite-bundle-analyzer';
 
@@ -22,8 +22,7 @@ export default defineConfig({
 		watch: {
 			usePolling: true,
 		},
-		host: true, // needed for the Docker Container port mapping to work
 		strictPort: true,
-		port: 8080, // you can replace this port with any port
+		port: 8080,
 	},
 });
