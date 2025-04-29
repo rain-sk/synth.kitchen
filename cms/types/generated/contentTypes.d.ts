@@ -388,10 +388,11 @@ export interface ApiPatchPatch extends Struct.CollectionTypeSchema {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
-    description: Schema.Attribute.Text & Schema.Attribute.DefaultTo<''>;
+    description: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::patch.patch'> &
       Schema.Attribute.Private;
+    notes: Schema.Attribute.Blocks;
     patch: Schema.Attribute.JSON & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Unique;

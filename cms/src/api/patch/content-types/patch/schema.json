@@ -7,6 +7,9 @@
     "pluralName": "patches",
     "description": ""
   },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "slug": {
       "type": "uid",
@@ -20,7 +23,6 @@
       "unique": false
     },
     "description": {
-      "default": "",
       "type": "text",
       "required": false
     },
@@ -33,6 +35,9 @@
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "patches"
+    },
+    "notes": {
+      "type": "blocks"
     }
   }
 }
