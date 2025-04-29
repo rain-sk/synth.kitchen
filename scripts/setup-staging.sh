@@ -49,7 +49,7 @@ echo "server {
 	}
 }" > /etc/nginx/sites-available/default
 echo "server {
-  root /var/www/staging.synth.kitchen;
+  root /var/www/staging.synth.kitchen/html;
 
   server_name staging.synth.kitchen; # managed by Certbot
 
@@ -101,4 +101,4 @@ npm run publish
 
 
 # Reboot to apply all updates
-# reboot
+reboot
