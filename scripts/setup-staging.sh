@@ -100,6 +100,9 @@ git checkout strapi-backend # TODO clean this up
 npm run build:app
 npm run publish:app
 
+# Install MySQL
+apt -y install mysql-server
+systemctl enable mysql-server
 
 # Reboot to apply all updates
 reboot
