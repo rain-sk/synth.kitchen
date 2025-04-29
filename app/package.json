@@ -4,6 +4,7 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
+		"@strapi/client": "^1.3.0",
 		"extendable-media-recorder": "^9.2.11",
 		"extendable-media-recorder-wav-encoder": "^7.0.115",
 		"hhmmss": "^1.0.0",
