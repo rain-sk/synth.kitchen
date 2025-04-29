@@ -96,8 +96,8 @@ apt-get install -y nodejs
 # Build and deploy synth.kitchen/app
 apt -y install npm
 git checkout strapi-backend # TODO clean this up
-npm run build
-npm run publish
+npm run build:app
+npm run publish:app
 
 
 # Reboot to apply all updates
