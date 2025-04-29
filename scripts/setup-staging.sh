@@ -90,3 +90,7 @@ apt -y install npm
 cd synth.kitchen
 npm run build
 npm run publish
+
+
+# Reboot to apply all updates
+# reboot
