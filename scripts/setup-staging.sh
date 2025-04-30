@@ -53,6 +53,21 @@ echo "server {
 
   server_name staging.synth.kitchen; # managed by Certbot
 
+  location /cms {
+    rewrite ^/cms/?(.*)$ /$1 break;
+    proxy_pass http://strapi;
+    proxy_http_version 1.1;
+    proxy_set_header X-Forwarded-Host \$host;
+    proxy_set_header X-Forwarded-Server \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header Host \$http_host;
+    proxy_set_header Upgrade \$http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_pass_request_headers on;
+  }
+
 	location / {
 		# First attempt to serve request as file, then
 		# as directory, then fall back to displaying a 404.
@@ -90,6 +105,8 @@ cd /code
 git clone https://github.com/rain-sk/synth.kitchen.git
 cd synth.kitchen
 
+### BUILD AND DEPLOY THE REACT APP
+
 # Install node, npm, and related dependencies
 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo bash -
 apt-get install -y nodejs
@@ -99,6 +116,34 @@ apt -y install npm
 git checkout strapi-backend # TODO clean this up
 npm run build:app
 npm run publish:app
+
+### BUILD AND DEPLOY THE CMS
+
+# Register the strapi cms service
+echo "upstream strapi {
+    server 127.0.0.1:1337;
+}" > /etc/nginx/conf.d/upstream.conf
+echo "[Unit]
+Description=Strapi CMS
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/npm install && /usr/bin/npm run build && /usr/bin/npm run start
+WorkingDirectory=/code/synth.kitchen/cms
+Environment=NODE_ENV=production
+Restart=always
+User=root
+Group=root
+SyslogIdentifier=cms
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_PATH=/usr/lib/nodejs:/usr/lib/node_modules/npm
+
+[Install]
+WantedBy=multi-user.target
+" > /etc/systemd/system/cms.service
+systemctl daemon-reload
+systemctl start cms
+systemctl enable cms
 
 # Install MySQL
 apt -y install mysql-server
