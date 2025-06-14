@@ -1,0 +1,27 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"skipLibCheck": true,
+		"target": "ES2022",
+		"allowJs": true,
+		"resolveJsonModule": true,
+		"moduleDetection": "force",
+		"isolatedModules": true,
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"baseUrl": ".",
+		"rootDir": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		},
+		"outDir": "dist",
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noPropertyAccessFromIndexSignature": false,
+		"typeRoots": ["./node_modules/@types", "types"],
+		"sourceMap": true
+	},
+	"include": ["**/*.ts", "types/express", "build.js"],
+	"exclude": ["node_modules"]
+}
