@@ -1,0 +1,28 @@
+{
+  "name": "shared",
+  "version": "0.4.0",
+  "description": "shared types for synth.kitchen",
+  "license": "MIT",
+  "keywords": [],
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.js"
+  },
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc && node -r ts-node/register build.ts"
+  },
+  "peerDependencies": {
+    "server-name-gen": "^1.0.2",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.0",
+    "esbuild": "^0.25.8",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

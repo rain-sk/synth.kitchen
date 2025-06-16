@@ -1,0 +1,99 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useRoute } from 'wouter';
+
+import { blankPatchToClearCanvas, blankPatchToLoad } from '../../state';
+import { IPatchAction, patchActions } from '../../state/actions';
+import { connectorButtonExists, connectorKey } from '../../state/connection';
+import { IPatchState } from '../../state/types/patch';
+
+import { useApi } from '../../api';
+
+const doLoadConnections = async (
+	connectedConnectors: Set<string>,
+	dispatch: React.Dispatch<IPatchAction>,
+) => {
+	await new Promise((resolve) => {
+		const tryLoad = async () => {
+			const connectorButtonsExist = [...connectedConnectors].every((key) =>
+				connectorButtonExists(key),
+			);
+			if (connectorButtonsExist) {
+				dispatch(patchActions.loadConnectionsAction());
+				resolve(undefined);
+			} else {
+				tryLoad();
+			}
+		};
+		tryLoad();
+	});
+};
+
+export const useLoadPatch = (
+	state: IPatchState,
+	dispatch: React.Dispatch<IPatchAction>,
+	slug?: string,
+) => {
+	const { connections, connectors } = state;
+
+	const [newPatch] = useRoute('/patch/new');
+	const [, navigate] = useLocation();
+	const { getPatch } = useApi();
+	const [loadConnections, setLoadConnections] = useState(false);
+
+	const [loading, setLoading] = useState(false);
+	const loadingRef = useRef(loading);
+
+	useEffect(() => {
+		if (loadingRef.current) {
+			return;
+		}
+
+		(async () => {
+			if (newPatch) {
+				dispatch(patchActions.loadPatchAction(blankPatchToLoad()));
+			} else if (slug && state.slug === '') {
+				loadingRef.current = true;
+				setLoading(loadingRef.current);
+				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
+				const patch = await getPatch(slug);
+				if (patch) {
+					dispatch(patchActions.loadPatchAction(patch.data));
+					setLoadConnections(true);
+					if (slug !== patch.slug) {
+						navigate(`/patch/${patch.slug}`);
+					}
+				} else {
+					navigate('/patch/new');
+				}
+				loadingRef.current = false;
+				setLoading(loadingRef.current);
+			} else if (!slug) {
+				navigate('/patch/new');
+			}
+		})();
+	}, [newPatch, slug, state.slug]);
+
+	const loadConnectionsRef = useRef(false);
+	useEffect(() => {
+		(async () => {
+			if (!loadConnectionsRef.current && loadConnections) {
+				loadConnectionsRef.current = true;
+				const connectedConnectors = new Set<string>();
+				Object.values(connections).forEach(([output, input]) => {
+					connectedConnectors.add(connectorKey(output));
+					connectedConnectors.add(connectorKey(input));
+				});
+				if (
+					connectedConnectors.size > 0 &&
+					[...connectedConnectors].every((key) => key in connectors)
+				) {
+					setLoadConnections(false);
+					await doLoadConnections(connectedConnectors, dispatch);
+				}
+				loadConnectionsRef.current = false;
+			}
+		})();
+	}, [loadConnections, connections, connectors]);
+
+	return loading;
+};

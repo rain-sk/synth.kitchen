@@ -1,0 +1,256 @@
+body {
+	background: #525947;
+	-webkit-user-select: none; /* Safari */
+	user-select: none;
+	word-wrap: break-word;
+}
+
+body,
+#root {
+	margin: 0;
+	padding: 0;
+	font-family: monospace;
+	display: block;
+	width: 100vw;
+	height: 100vh;
+	color: #000;
+}
+
+h1 {
+	color: #fff;
+}
+
+#root {
+	position: relative;
+}
+
+#status {
+	color: #fff;
+	margin: 1rem;
+}
+
+main section > h2,
+main ul li a,
+main ul li a:visited {
+	color: #fff;
+}
+
+.visually-hidden:not(:focus):not(:active) {
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: auto;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	white-space: nowrap;
+}
+
+nav {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: #4f4658;
+	height: 2.5rem;
+	padding: 0.33rem 0;
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
+	z-index: 20;
+}
+
+nav > section {
+	display: flex;
+	flex-direction: row;
+	gap: 0.5rem;
+	padding: 0 0.5rem;
+}
+
+main#init {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+main {
+	position: absolute;
+	top: 2.5rem;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: scroll;
+}
+
+#selection {
+	position: absolute;
+	border: solid 1px #fffc;
+	border-radius: 3px;
+}
+
+#spacer {
+	position: relative;
+	min-width: calc(100vw + 300px);
+	min-height: calc(100vh + 300px - 2.5rem);
+	transition: all linear 10ms;
+}
+
+#connections {
+	z-index: 10;
+	pointer-events: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+#module-canvas {
+	pointer-events: all;
+}
+
+.module {
+	background: #aad96c;
+	position: absolute;
+	display: flexbox;
+	cursor: move;
+	border: 4px solid black;
+	border-radius: 3px;
+	padding: 1rem;
+	transition: border linear 100ms;
+}
+
+.module h2 {
+	max-width: 300px;
+	margin-bottom: 1rem;
+}
+
+.module .active {
+	background-color: #d9cc6c;
+}
+
+.module .connected {
+	background-color: #c66cd9;
+}
+
+.module .highlight {
+	background-color: #aad96c;
+}
+
+#module-canvas > .module {
+	transition: border linear 100ms;
+}
+
+.module.selected {
+	border: 4px solid #c66cd9;
+}
+
+.module.selection_pending {
+	border: 4px dashed #c66cd9dd;
+}
+
+.module.selected,
+.module.selection_pending {
+	z-index: 1;
+}
+
+.connectors {
+	margin-bottom: 1rem;
+	display: flex;
+	justify-content: space-between;
+}
+
+.connectors .inputs,
+.connectors .outputs {
+	display: flex;
+	flex-direction: column;
+}
+
+.io {
+	display: flex;
+	flex: 1rem;
+}
+
+.io:not(:first-child) {
+	margin-top: 0.5rem;
+}
+
+.connector {
+	position: relative;
+	width: 1.2rem;
+	height: 1.2rem;
+	margin: 0;
+	border-radius: 0.6rem;
+	background-color: #b9ffce;
+	border: 1px solid #4f4658;
+}
+
+.connector:hover:before {
+	content: '';
+	position: absolute;
+	top: -100%;
+	left: -100%;
+	width: 300%;
+	height: 300%;
+	border-radius: 50%;
+	display: block;
+	background: rgb(63, 94, 251);
+	background: radial-gradient(circle, #b9ffce 0%, #7aa888 100%);
+	border: 1px solid #4f4658;
+}
+
+main.selection-drag .connector:hover:before {
+	display: none;
+}
+
+.connector:first-child {
+	margin-right: calc(1rem + 4px);
+	margin-left: calc(-2.2rem - 4px);
+}
+
+.connector:last-child {
+	margin-left: calc(1rem + 4px);
+	margin-right: calc(-2.2rem - 4px);
+}
+
+.numparam,
+.radioparam {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 0.5rem;
+}
+
+.numparam button {
+	margin-right: 1rem;
+}
+
+.numbox {
+	display: flex;
+	justify-content: space-between;
+}
+
+.numbox label {
+	min-width: 6rem;
+}
+
+.numbox input {
+	margin-left: 1rem;
+}
+
+#load {
+	display: flex;
+	align-items: center;
+	padding: 0 0.5rem;
+	color: #fff;
+}
+
+input[type='file'] {
+	display: none;
+}
+
+.ReactModalPortal {
+	position: relative;
+	z-index: 30;
+}
