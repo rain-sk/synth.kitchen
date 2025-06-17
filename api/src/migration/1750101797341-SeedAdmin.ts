@@ -2,9 +2,8 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 import { User } from "../entity/User";
 import { PasswordResetRequest } from "../entity/PasswordResetRequest";
 import { EmailVerificationRequest } from "../entity/EmailVerificationRequest";
-import { sendEmail, sendResetPasswordEmail } from "../utils/email";
-
-const adminEmail = process.env.ADMIN_EMAIL || "admin@synth.kitchen";
+import { sendResetPasswordEmail } from "../utils/email";
+import { adminEmail, appOrigin } from "../env";
 
 export class SeedAdmin1750101797341 implements MigrationInterface {
   name = "SeedAdmin1750101797341";
@@ -24,8 +23,10 @@ export class SeedAdmin1750101797341 implements MigrationInterface {
     passwordResetRequest.user = admin;
     await userRepository.save(admin);
     await passwordResetRepository.save(passwordResetRequest);
-
-    await sendResetPasswordEmail(admin.email, passwordResetRequest.id);
+    await sendResetPasswordEmail(admin.email, {
+      appOrigin,
+      resetKey: passwordResetRequest.id,
+    });
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

@@ -1,10 +1,17 @@
-import "reflect-metadata";
 import { DataSource } from "typeorm";
+import "reflect-metadata";
 
-import { pgDbName, pgHost, pgPassword, pgPort, pgUser } from "./env";
+import {
+  dbLogging as logging,
+  pgDbName as database,
+  pgHost as host,
+  pgPassword as password,
+  pgPort as port,
+  pgUser as username,
+} from "./env";
 
 import { User } from "./entity/User";
-import { Recipe } from "./entity/Recipe";
+import { Patch } from "./entity/Patch";
 import { PasswordResetRequest } from "./entity/PasswordResetRequest";
 import { EmailVerificationRequest } from "./entity/EmailVerificationRequest";
 
@@ -13,12 +20,12 @@ import { SeedAdmin1750101797341 } from "./migration/1750101797341-SeedAdmin";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: pgHost,
-  port: parseInt(pgPort || "") || 5432,
-  username: pgUser,
-  password: pgPassword,
-  database: pgDbName,
-  entities: [User, Recipe, EmailVerificationRequest, PasswordResetRequest],
+  host,
+  port,
+  username,
+  password,
+  database,
+  entities: [User, Patch, EmailVerificationRequest, PasswordResetRequest],
   migrations: [InitialSchema1750101797340, SeedAdmin1750101797341],
-  logging: true,
+  logging,
 });

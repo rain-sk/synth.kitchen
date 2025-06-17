@@ -1,5 +1,5 @@
 import { useRoute } from 'wouter';
-import { PatchEditor } from '../patch/components/editor';
+import { PatchEditor } from '../lib/patch/components/editor';
 
 export const PatchRoute = () => {
 	const [match, params] = useRoute('/patch/:id');

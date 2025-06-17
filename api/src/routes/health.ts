@@ -1,10 +1,12 @@
 import express from "express";
+import { AppDataSource } from "../data-source";
 
-const HealthCheckRouter = express.Router();
+export const HealthCheckRouter = express.Router();
 
-const healthRoute = process.env.HEALTH_ROUTE || "health";
-HealthCheckRouter.get(`/${healthRoute}`, (req, res) => {
-  res.status(200).send("OK");
+HealthCheckRouter.get("/", async (req, res) => {
+  if (AppDataSource.isInitialized) {
+    res.status(200).send("OK");
+  } else {
+    res.status(500).send("unhealthy");
+  }
 });
-
-export default HealthCheckRouter;
