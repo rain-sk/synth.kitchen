@@ -1,4 +1,4 @@
-FROM node:22-bullseye-slim as base
+FROM node:21-bullseye-slim as base
 
 ENV PORT=${PORT}
 
