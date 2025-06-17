@@ -8,11 +8,13 @@ import React, {
 
 type ApiContextValue = {
 	user?: { email: string };
+	login: (email: string, password: string) => Promise<Response>;
 	requestResetPassword: (email: string) => Promise<Response>;
 	resetPassword: (key: string, password: string) => void;
 };
 
 const defaultContextValue: ApiContextValue = {
+	login: async () => ({} as Response),
 	requestResetPassword: async () => ({} as Response),
 	resetPassword: async () => ({} as Response),
 };
@@ -42,6 +44,22 @@ export const ApiContextProvider: React.FC<
 			}
 		}
 	}, [jwt]);
+
+	const login = useCallback(
+		(email: string, password: string) =>
+			fetch(`${url}/user/login`, {
+				method: 'post',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					email,
+					password,
+				}),
+			}),
+		[],
+	);
 
 	const requestResetPassword = useCallback(
 		(email: string) =>
@@ -74,10 +92,11 @@ export const ApiContextProvider: React.FC<
 	const contextValue = useMemo(
 		() => ({
 			user,
+			login,
 			requestResetPassword,
 			resetPassword,
 		}),
-		[user, requestResetPassword, resetPassword],
+		[user, login, requestResetPassword, resetPassword],
 	);
 
 	return (
