@@ -65,7 +65,38 @@ export const sendResetPasswordEmail = transporter
               <h1>Reset your password</h1>
               <p><a href="${resetUrl}">Click to reset your password</a>.</p>
               <p>Or copy the link below and paste it into your browser:</p>
-              <p><b>${resetUrl}</b></p>
+              <p><b><i>${resetUrl}</i></b></p>
+            </body>
+            </html>`,
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(info);
+          }
+        });
+      })
+  : async () => {};
+
+export const sendPasswordChangedEmail = transporter
+  ? (to: string) =>
+      new Promise((resolve, reject) => {
+        const resetUrl = `${appOrigin}/reset-password/`;
+        const mailOptions: Mail.Options = {
+          ...defaultMailOptions,
+          to,
+          subject: "Your password at synth.kitchen was updated",
+          text: `Your password at synth.kitchen was updated. If this wasn't you, then click the link below to update your password.
+          
+          ${resetUrl}`,
+          html: `
+            <html>
+            <body>
+              <h1>Your password was updated</h1>
+              <p>Your password at synth.kitchen was updated. If this was you, please carry on.
+              <p>If you didn't recently change your password, then <a href="${resetUrl}">click here to reset your password<a/>, or copy the link below and paste it into your browser:</p>
+              <p><b><i>${resetUrl}</i></b></p>
             </body>
             </html>`,
         };
