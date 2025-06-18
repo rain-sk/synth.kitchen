@@ -8,7 +8,7 @@ import {
 import { useRoute } from 'wouter';
 import { navigate } from 'wouter/use-browser-location';
 
-import { ApiContext } from '../../api/context';
+import { AuthContext } from '../../api/auth/context';
 
 const validatePassword = (password: string, passwordDuplicate: string) => {
 	if (password !== passwordDuplicate) return 'Passwords do not match.';
@@ -17,7 +17,7 @@ const validatePassword = (password: string, passwordDuplicate: string) => {
 };
 
 const NewPasswordForm: React.FC<{ requestKey: string }> = ({ requestKey }) => {
-	const { resetPassword } = useContext(ApiContext);
+	const { resetPassword } = useContext(AuthContext);
 
 	const [password, setPassword] = useState('');
 	const handleChangePassword = useCallback(
@@ -80,7 +80,7 @@ function validateEmail(email: string) {
 }
 
 const RequestPasswordResetLink: React.FC = () => {
-	const { requestResetPassword } = useContext(ApiContext);
+	const { requestResetPassword } = useContext(AuthContext);
 
 	const [formSubmitted, setFormSubmitted] = useState(false);
 

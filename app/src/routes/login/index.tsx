@@ -7,7 +7,8 @@ import {
 } from 'react';
 // import { navigate } from 'wouter/use-browser-location';
 
-import { ApiContext } from '../../api/context';
+import { AuthContext } from '../../api/auth/context';
+import { Redirect } from 'wouter';
 
 const validate = (email: string, password: string): string | undefined => {
 	email + password;
@@ -15,7 +16,7 @@ const validate = (email: string, password: string): string | undefined => {
 };
 
 export const LoginRoute: React.FC = () => {
-	const { login } = useContext(ApiContext);
+	const { user, login } = useContext(AuthContext);
 
 	const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -37,18 +38,25 @@ export const LoginRoute: React.FC = () => {
 	const handleSubmit = useCallback(
 		async (e: FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
-			const error = validate(email.trim(), password);
+			let error = validate(email.trim(), password);
 			if (email && !error) {
 				setFormSubmitted(true);
-				const response = await login(email.trim(), password);
-				console.log(response);
+				try {
+					await login(email.trim(), password);
+				} catch (e) {
+					console.error(e);
+					error = 'Login failed, please try again.';
+				}
+				setFormSubmitted(false);
 			}
 			setError(error);
 		},
 		[email, password],
 	);
 
-	return (
+	return user ? (
+		<Redirect to="/account" />
+	) : (
 		<section>
 			<h2>login</h2>
 			<form onSubmit={handleSubmit}>

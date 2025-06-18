@@ -8,11 +8,18 @@ import { PasswordResetRequest } from "../entity/PasswordResetRequest";
 import { sendResetPasswordEmail } from "../utils/email";
 import { bcryptCost } from "../env";
 import { jwtSign } from "../utils/jwtSign";
+import { Request as JwtRequest } from "express-jwt";
 
 const UserRouter = express.Router();
 
-UserRouter.get("/user", (req, res) => {
-  res.json({ email: "admin@synth.kitchen" });
+UserRouter.get("/user", (req: JwtRequest, res) => {
+  res.json({
+    user: {
+      email: req.auth.email,
+      id: req.auth.id,
+      verified: req.auth.verified,
+    },
+  });
 });
 
 UserRouter.post("/user/login", async (req, res) => {
