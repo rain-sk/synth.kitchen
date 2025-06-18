@@ -12,7 +12,7 @@ const RedirectToPatch = () => <Redirect to="/patch" />;
 
 export const SynthKitchen: React.FC = () => {
 	return (
-		<ApiContextProvider url="http://localhost:3000">
+		<ApiContextProvider>
 			<Switch>
 				<Route path="/" component={RedirectToPatch} />
 				<Route path="/patch" component={PatchRoute} />

@@ -1,20 +1,18 @@
-import React, {
-	PropsWithChildren,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { PropsWithChildren, useCallback, useMemo } from 'react';
+import { useJwt } from './useJwt';
+import { useUser } from './useUser';
+
+const apiHost = import.meta.env.API_HOST || 'http://localhost:3000';
 
 type ApiContextValue = {
 	user?: { email: string };
-	login: (email: string, password: string) => Promise<Response>;
+	login: (email: string, password: string) => Promise<void>;
 	requestResetPassword: (email: string) => Promise<Response>;
 	resetPassword: (key: string, password: string) => void;
 };
 
 const defaultContextValue: ApiContextValue = {
-	login: async () => ({} as Response),
+	login: async () => {},
 	requestResetPassword: async () => ({} as Response),
 	resetPassword: async () => ({} as Response),
 };
@@ -22,48 +20,31 @@ const defaultContextValue: ApiContextValue = {
 export const ApiContext =
 	React.createContext<ApiContextValue>(defaultContextValue);
 
-type ApiContextProps = {
-	url: string;
-};
+export const ApiContextProvider: React.FC<PropsWithChildren> = ({
+	children,
+}) => {
+	const [jwt, setJwt] = useJwt();
+	const user = useUser(jwt);
 
-export const ApiContextProvider: React.FC<
-	PropsWithChildren<ApiContextProps>
-> = ({ url, children }) => {
-	const [jwt, setJwt] = useState('');
-	const [user] = useState<{ email: string } | undefined>();
-
-	useEffect(() => {
-		if (!jwt) {
-			const storedJwt = localStorage.getItem('jwt');
-			if (storedJwt) {
-				setJwt(storedJwt);
-			}
-		} else {
-			if (jwt !== localStorage.getItem('jwt')) {
-				localStorage.setItem('jwt', jwt);
-			}
-		}
-	}, [jwt]);
-
-	const login = useCallback(
-		(email: string, password: string) =>
-			fetch(`${url}/user/login`, {
-				method: 'post',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					email,
-					password,
-				}),
+	const login = useCallback(async (email: string, password: string) => {
+		const response = await fetch(`${apiHost}/user/login`, {
+			method: 'post',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				email,
+				password,
 			}),
-		[],
-	);
+		}).then((res) => res.json());
+		console.log(response);
+		setJwt(response.jwt || '');
+	}, []);
 
 	const requestResetPassword = useCallback(
 		(email: string) =>
-			fetch(`${url}/user/reset-password-request`, {
+			fetch(`${apiHost}/user/reset-password-request`, {
 				method: 'post',
 				headers: {
 					Accept: 'application/json',
@@ -78,7 +59,7 @@ export const ApiContextProvider: React.FC<
 
 	const resetPassword = useCallback(
 		async (password: string, key: string) =>
-			fetch(`${url}/user/reset-password`, {
+			fetch(`${apiHost}/user/reset-password`, {
 				method: 'post',
 				headers: {
 					Accept: 'application/json',
