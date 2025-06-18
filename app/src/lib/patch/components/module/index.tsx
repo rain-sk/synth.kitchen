@@ -33,7 +33,7 @@ import { SequencerModule } from './sequencer';
 import { VcaModule } from './vca';
 import { CompressorModule } from './compressor';
 import { useLongPress } from 'react-use';
-import { queueAnimation } from '../../../utils/animation';
+import { queueAnimation } from '../../../../utils/animation';
 import { ShiftModule } from './shift';
 
 const useDragAndDrop = (

@@ -5,7 +5,7 @@ import { useLocation } from 'wouter';
 import { blankPatchToClearCanvas, blankPatchToLoad } from '../../state';
 import { IPatchState } from '../../state/types/patch';
 import { connectorButtonExists, connectorKey } from '../../state/connection';
-import { randomId } from '../../../utils/random-id';
+import { randomId } from '../../../../utils/random-id';
 
 const doLoadConnections = (
 	connectedConnectors: Set<string>,

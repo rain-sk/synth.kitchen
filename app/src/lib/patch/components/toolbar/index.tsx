@@ -7,7 +7,7 @@ import { SaveToCloud } from './save-to-cloud';
 import { SaveToDisk } from './save-to-disk';
 import { Link } from 'wouter';
 
-import icon from '../../../icon.png';
+import icon from './icon.png';
 
 export const Toolbar: React.FC<{}> = () => {
 	return (

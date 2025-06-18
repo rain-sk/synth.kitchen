@@ -8,7 +8,7 @@ import {
 	Position,
 } from '../../state/types/patch';
 import { useMouse, useScroll } from 'react-use';
-import { queueAnimation } from '../../../utils/animation';
+import { queueAnimation } from '../../../../utils/animation';
 
 const root = () => document.getElementById('root');
 const main = () => document.getElementById('main');

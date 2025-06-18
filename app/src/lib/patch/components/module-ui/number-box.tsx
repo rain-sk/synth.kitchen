@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from 'react';
 
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
-import { randomId } from '../../../utils/random-id';
+import { randomId } from '../../../../utils/random-id';
 
 // https://stackoverflow.com/a/27082406
 const countDecimals = (value: number) => {

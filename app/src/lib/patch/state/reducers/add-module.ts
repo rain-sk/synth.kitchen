@@ -1,7 +1,7 @@
 import { IAddModule } from '../actions/add-module';
 import { IPatchState } from '../types/patch';
-import { randomName } from '../../../utils/random-name';
-import { randomId } from '../../../utils/random-id';
+import { randomName } from '../../../../utils/random-name';
+import { randomId } from '../../../../utils/random-id';
 
 export const addModule: React.Reducer<IPatchState, IAddModule> = (
 	state,

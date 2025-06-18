@@ -13,7 +13,7 @@ import {
 	Position,
 } from '../../state/types/patch';
 import { IPatchAction, patchActions } from '../../state/actions';
-import { queueAnimation } from '../../../utils/animation';
+import { queueAnimation } from '../../../../utils/animation';
 import { UseScrollContext } from '../../contexts/use-scroll';
 
 const positionFromMouseEvent = (
