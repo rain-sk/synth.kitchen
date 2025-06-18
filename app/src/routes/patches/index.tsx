@@ -8,7 +8,7 @@ const PatchItem: React.FC<{ id: string; name: string }> = ({ id, name }) => (
 	</li>
 );
 
-export const Patches = () => {
+export const PatchesRoute = () => {
 	// const [patches, setPatches] = useState<DatabasePatch[]>([]);
 
 	// const { getPatches } = useApi();

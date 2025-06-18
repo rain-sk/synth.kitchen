@@ -8,7 +8,7 @@ import {
 import { useRoute } from 'wouter';
 import { navigate } from 'wouter/use-browser-location';
 
-import { ApiContext } from '../api/context';
+import { ApiContext } from '../../api/context';
 
 const validatePassword = (password: string, passwordDuplicate: string) => {
 	if (password !== passwordDuplicate) return 'Passwords do not match.';

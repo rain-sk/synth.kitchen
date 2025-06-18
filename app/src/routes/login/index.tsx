@@ -7,7 +7,7 @@ import {
 } from 'react';
 // import { navigate } from 'wouter/use-browser-location';
 
-import { ApiContext } from '../api/context';
+import { ApiContext } from '../../api/context';
 
 const validate = (email: string, password: string): string | undefined => {
 	email + password;
