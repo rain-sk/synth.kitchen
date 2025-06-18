@@ -6,20 +6,20 @@ import { appOrigin } from "./env";
 
 // import { auth } from "./middleware/auth";
 
-export const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+export const server = express();
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 
-app.use(
+server.use(
   cors({
     origin: appOrigin,
   })
 );
-// app.use(auth);
+// server.use(auth);
 
-app.use(HealthCheckRouter);
-app.use(UserRouter);
+server.use(HealthCheckRouter);
+server.use(UserRouter);
 
-app.get("/", (req, res) => {
+server.get("/", (req, res) => {
   res.status(400).send("400: Invalid request.");
 });
