@@ -13,3 +13,5 @@ export const smtpPort = process.env.SMTP_PORT || "587";
 export const smtpUsername = process.env.SMTP_USERNAME || "";
 export const transactionalEmail =
   process.env.TRANSACTIONAL_EMAIL || "api@synth.kitchen";
+export const bcryptCost = process.env.BCRYPT_COST || "12";
+export const jwtSecret = process.env.JWT_SECRET || "Hello World!";

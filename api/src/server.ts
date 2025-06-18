@@ -2,18 +2,24 @@ import express from "express";
 import cors from "cors";
 import UserRouter from "./routes/user";
 import HealthCheckRouter from "./routes/health";
-import { appOrigin } from "./env";
+import { appOrigin, jwtSecret } from "./env";
+import { expressjwt } from "express-jwt";
 
 // import { auth } from "./middleware/auth";
 
 export const server = express();
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
-
 server.use(
   cors({
     origin: appOrigin,
   })
+);
+server.use(
+  expressjwt({
+    secret: jwtSecret,
+    algorithms: ["HS256"],
+  }).unless({ path: ["/user/login"] })
 );
 // server.use(auth);
 

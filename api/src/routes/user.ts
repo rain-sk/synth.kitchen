@@ -1,16 +1,51 @@
 import express from "express";
-import { hashSync } from "bcrypt";
+import { hash, compare } from "bcrypt";
 
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 import { PasswordResetRequest } from "../entity/PasswordResetRequest";
 
 import { sendResetPasswordEmail } from "../utils/email";
+import { bcryptCost } from "../env";
+import { jwtSign } from "../utils/jwtSign";
 
 const UserRouter = express.Router();
 
 UserRouter.get("/user", (req, res) => {
   res.json({ email: "admin@synth.kitchen" });
+});
+
+UserRouter.post("/user/login", async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  if (email && password) {
+    try {
+      const user = await AppDataSource.getRepository(User)
+        .createQueryBuilder("user")
+        .where("user.email = :email", {
+          email,
+          password,
+        })
+        .getOneOrFail();
+      if (await compare(password, user.password)) {
+        const token = await jwtSign({
+          id: user.id,
+          email: user.email,
+          admin: user.admin,
+          verified: user.verified,
+        });
+        console.log(token);
+        res.status(200).json({
+          jwt: token,
+        });
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  res.status(401).send("Login failed.");
 });
 
 UserRouter.post("/user/reset-password-request", async (req, res) => {
@@ -66,7 +101,7 @@ UserRouter.post("/user/reset-password", async (req, res) => {
       id: request.user.id,
     });
 
-    user.password = hashSync(password, 10);
+    user.password = await hash(password, bcryptCost);
     await userRepository.save(user);
     await requestRepository.remove(request);
   } catch (e) {
