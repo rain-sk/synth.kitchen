@@ -8,7 +8,7 @@ import {
 // import { navigate } from 'wouter/use-browser-location';
 
 import { AuthContext } from '../../api/auth/context';
-import { Redirect } from 'wouter';
+import { Link, Redirect } from 'wouter';
 
 const validate = (email: string, password: string): string | undefined => {
 	email + password;
@@ -77,6 +77,9 @@ export const LoginRoute: React.FC = () => {
 				{error ? <p id="email-error">{error}</p> : null}
 				<button disabled={formSubmitted ? true : false}>login</button>
 			</form>
+			<p>
+				<Link to="/reset-password">forgot password</Link>
+			</p>
 		</section>
 	);
 };

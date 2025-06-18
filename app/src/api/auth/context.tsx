@@ -10,7 +10,7 @@ type AuthContextValue = {
 	login: (email: string, password: string) => Promise<void>;
 	logout: () => void;
 	requestResetPassword: (email: string) => Promise<Response>;
-	resetPassword: (key: string, password: string) => void;
+	resetPassword: (key: string, password: string) => Promise<Response>;
 };
 
 const defaultContextValue: AuthContextValue = {

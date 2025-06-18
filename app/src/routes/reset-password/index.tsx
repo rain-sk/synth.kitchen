@@ -97,8 +97,8 @@ const RequestPasswordResetLink: React.FC = () => {
 			const error = validateEmail(email.trim());
 			if (email && !error) {
 				setFormSubmitted(true);
-				const response = await requestResetPassword(email.trim());
-				console.log(response);
+				await requestResetPassword(email.trim());
+				navigate('/login');
 			}
 			setError(error);
 		},
