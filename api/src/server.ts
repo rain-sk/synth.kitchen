@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
-import UserRouter from "./routes/user";
-import HealthCheckRouter from "./routes/health";
-import { appOrigin, jwtSecret } from "./env";
-import { expressjwt } from "express-jwt";
 
-// import { auth } from "./middleware/auth";
+import { AuthRouter } from "./routes/auth";
+import { HealthCheckRouter } from "./routes/health";
+
+import { appOrigin, healthRoute } from "./env";
+import { TokenRouter } from "./routes/token";
 
 export const server = express();
 server.use(express.json());
@@ -15,16 +15,10 @@ server.use(
     origin: appOrigin,
   })
 );
-server.use(
-  expressjwt({
-    secret: jwtSecret,
-    algorithms: ["HS256"],
-  }).unless({ path: ["/user/login"] })
-);
-// server.use(auth);
 
-server.use(HealthCheckRouter);
-server.use(UserRouter);
+server.use(`/${healthRoute}`, HealthCheckRouter);
+server.use("/auth", AuthRouter);
+server.use("/token", TokenRouter);
 
 server.get("/", (req, res) => {
   res.status(400).send("400: Invalid request.");

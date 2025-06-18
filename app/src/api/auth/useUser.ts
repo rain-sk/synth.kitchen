@@ -11,7 +11,7 @@ export const useUser = (jwt: string) => {
 			if (jwt && !user) {
 				setLoading(true);
 				try {
-					const response = await fetch(`${apiHost}/user`, {
+					const response = await fetch(`${apiHost}/auth/user`, {
 						headers: {
 							authorization: `Bearer ${jwt}`,
 							Accept: 'application/json',

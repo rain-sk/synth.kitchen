@@ -9,10 +9,11 @@ import { sendResetPasswordEmail } from "../utils/email";
 import { bcryptCost } from "../env";
 import { jwtSign } from "../utils/jwtSign";
 import { Request as JwtRequest } from "express-jwt";
+import { jwt } from "../middleware/jwt";
 
-const UserRouter = express.Router();
+export const AuthRouter = express.Router();
 
-UserRouter.get("/user", (req: JwtRequest, res) => {
+AuthRouter.get("/user", jwt, (req: JwtRequest, res) => {
   res.json({
     user: {
       email: req.auth.email,
@@ -22,7 +23,7 @@ UserRouter.get("/user", (req: JwtRequest, res) => {
   });
 });
 
-UserRouter.post("/user/login", async (req, res) => {
+AuthRouter.post("/login", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -42,7 +43,6 @@ UserRouter.post("/user/login", async (req, res) => {
           admin: user.admin,
           verified: user.verified,
         });
-        console.log(token);
         res.status(200).json({
           jwt: token,
         });
@@ -55,7 +55,92 @@ UserRouter.post("/user/login", async (req, res) => {
   res.status(401).send("Login failed.");
 });
 
-UserRouter.post("/user/reset-password-request", async (req, res) => {
+const uniqueEmail = async (email: string) =>
+  !(await AppDataSource.getRepository(User)
+    .createQueryBuilder("user")
+    .where("user.email = :email", { email })
+    .getExists());
+
+const uniqueUsername = async (username: string) =>
+  !(await AppDataSource.getRepository(User)
+    .createQueryBuilder("user")
+    .where("user.username = :username", { username })
+    .getExists());
+
+const validateRegistration = (
+  email: string,
+  username: string,
+  password: string
+) => {
+  let error = {
+    email: [] as string[],
+    username: [] as string[],
+    password: [] as string[],
+  };
+
+  if (!uniqueEmail(email)) {
+    error.email.push("Email is already in use.");
+  }
+
+  if (!uniqueUsername(username)) {
+    error.username.push("Username is already in use.");
+  }
+
+  const invalidPasswordRegExp = new RegExp(
+    /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*)$/
+  );
+  const invalidPassword = invalidPasswordRegExp.test(password);
+  if (invalidPassword) {
+    error.password.push(
+      "Password must be at least 8 characters, and must contain at least one lowercase and one uppercase letter."
+    );
+  }
+
+  if (
+    error.email.length > 0 ||
+    error.username.length > 0 ||
+    error.password.length > 0
+  ) {
+    return error;
+  } else {
+    undefined;
+  }
+};
+AuthRouter.post("/register", async (req, res) => {
+  const email = req.body.email;
+  const username = req.body.username;
+  const password = req.body.password;
+
+  const error = validateRegistration(email, username, password);
+  if (!error) {
+    try {
+      const user = await AppDataSource.getRepository(User)
+        .createQueryBuilder("user")
+        .where("user.email = :email", {
+          email,
+          password,
+        })
+        .getOneOrFail();
+      if (await compare(password, user.password)) {
+        const token = await jwtSign({
+          id: user.id,
+          email: user.email,
+          admin: user.admin,
+          verified: user.verified,
+        });
+        res.status(200).json({
+          jwt: token,
+        });
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  res.status(401).send("Login failed.");
+});
+
+AuthRouter.post("/reset-password-request", async (req, res) => {
   const email = req.body.email;
   if (!email) {
     res.status(400).send();
@@ -87,7 +172,7 @@ UserRouter.post("/user/reset-password-request", async (req, res) => {
   res.status(200).json({ success: true });
 });
 
-UserRouter.post("/user/reset-password", async (req, res) => {
+AuthRouter.post("/reset-password", async (req, res) => {
   const password = req.body.password;
   const key = req.body.key;
   if (!password && !key) {
@@ -121,5 +206,3 @@ UserRouter.post("/user/reset-password", async (req, res) => {
   }
   res.status(200).json({ success: true });
 });
-
-export default UserRouter;

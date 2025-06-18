@@ -1,10 +1,7 @@
 import express from "express";
 
-const HealthCheckRouter = express.Router();
+export const HealthCheckRouter = express.Router();
 
-const healthRoute = process.env.HEALTH_ROUTE || "health";
-HealthCheckRouter.get(`/${healthRoute}`, (req, res) => {
+HealthCheckRouter.get("/", (req, res) => {
   res.status(200).send("OK");
 });
-
-export default HealthCheckRouter;
