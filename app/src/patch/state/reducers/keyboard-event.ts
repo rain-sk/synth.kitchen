@@ -5,7 +5,7 @@ import {
 	keyCodeModifierMap,
 	keyCodeMovementMap,
 	Modifier,
-} from '../../../constants/key';
+} from '../../constants/key';
 import { connectorInfo, disconnectSet, moduleConnectors } from '../connection';
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (

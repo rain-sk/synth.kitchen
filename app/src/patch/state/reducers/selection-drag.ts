@@ -1,7 +1,7 @@
 import { INVALID_POSITION, IPatchState, Position } from '../types/patch';
 import { ISelectionDrag, SelectionDragType } from '../actions/selection-drag';
 import { IModule } from '../types/module';
-import { Modifier } from '../../../constants/key';
+import { Modifier } from '../../constants/key';
 
 type IRectangle = {
 	x: number;

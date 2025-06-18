@@ -1,5 +1,5 @@
 import { INVALID_POSITION, IPatchState } from './types/patch';
-import { Modifier } from '../../constants/key';
+import { Modifier } from '../constants/key';
 import { ISerializedPatch } from './types/serialized-patch';
 import { IModule } from './types/module';
 import { randomId } from '../../utils/random-id';

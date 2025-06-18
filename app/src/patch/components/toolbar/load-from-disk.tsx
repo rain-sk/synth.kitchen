@@ -1,7 +1,7 @@
 import { useCallback, useContext } from 'react';
 
 import { ISerializedPatch } from '../../state/types/serialized-patch';
-import { KeyCode } from '../../../constants/key';
+import { KeyCode } from '../../constants/key';
 import { OpenFromDiskSvg } from './svg';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';

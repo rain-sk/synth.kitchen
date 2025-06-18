@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 
 import { IModule } from '../../state/types/module';
-import { Modifier } from '../../../constants/key';
+import { Modifier } from '../../constants/key';
 import { ModuleHeader } from '../module-ui/module-header';
 import { IPatchAction, patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
