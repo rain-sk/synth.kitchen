@@ -20,8 +20,16 @@ esbuild
   .build({
     entryPoints: ["./src/index.ts"],
     outdir: "./build",
+    external: [
+      "bcrypt",
+      "express",
+      "typeorm",
+      "nodemailer",
+      "jsonwebtoken",
+      "express-jwt",
+    ],
     bundle: true,
-    minify: true,
+    minify: false,
     sourcemap: false,
     platform: "node",
     target: "node20",
