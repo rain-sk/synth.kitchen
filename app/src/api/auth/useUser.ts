@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-
-const apiHost = import.meta.env.API_HOST || 'http://localhost:3000';
+import { apiHost } from '../../env';
 
 export const useUser = (jwt: string) => {
 	const [loading, setLoading] = useState(true);

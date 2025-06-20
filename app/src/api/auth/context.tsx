@@ -1,8 +1,7 @@
 import React, { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
 import { useJwt } from './useJwt';
 import { useUser } from './useUser';
-
-const apiHost = import.meta.env.API_HOST || 'http://localhost:3000';
+import { apiHost } from '../../env';
 
 type AuthContextValue = {
 	loading: boolean;

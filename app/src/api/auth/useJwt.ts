@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocalStorage } from 'react-use';
-
-const apiHost = import.meta.env.API_HOST || 'http://localhost:3000';
+import { apiHost } from '../../env';
 
 export const useJwt = () => {
 	const syncing = useRef(false);
