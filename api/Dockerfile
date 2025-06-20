@@ -5,8 +5,7 @@ FROM base AS builder
 WORKDIR /usr/src
 COPY . .
 RUN npm ci
-RUN npm run build
-RUN npm run migrate
+RUN npm run build:prod
 
 
 FROM base AS server
