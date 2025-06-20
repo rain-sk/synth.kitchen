@@ -1,22 +1,21 @@
-FROM node:21-bullseye-slim as base
+FROM node:22-alpine AS base
 
-ENV PORT=${PORT}
+FROM base AS builder
 
-FROM base as builder
-
-WORKDIR ./
+WORKDIR /usr/src
 COPY . .
 RUN npm ci
-RUN npm run build
-RUN npm run migrate
+RUN npm run build:prod
 
 
-FROM base
+FROM base AS server
 
 RUN mkdir -p /usr/src
 WORKDIR /usr/src
-COPY --from=builder ./build /usr/src
+COPY --from=builder /usr/src/node_modules /usr/src/node_modules
+COPY --from=builder /usr/src/build /usr/src
 
-EXPOSE ${PORT}
+EXPOSE 3000
 
-CMD [ "node", "/usr/src/index.js" ]
+WORKDIR /usr/src
+CMD [ "node", "./index.js" ]

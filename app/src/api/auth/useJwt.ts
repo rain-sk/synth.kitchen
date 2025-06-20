@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocalStorage } from 'react-use';
-
-const apiHost = import.meta.env.API_HOST || 'http://localhost:3000';
+import { apiBase } from '../uri';
 
 export const useJwt = () => {
 	const syncing = useRef(false);
@@ -33,7 +32,7 @@ export const useJwt = () => {
 		if (jwt) {
 			syncing.current = true;
 			try {
-				const response = await fetch(`${apiHost}/token/refresh`, {
+				const response = await fetch(`${apiBase}/token/refresh`, {
 					headers: {
 						authorization: `Bearer ${jwt}`,
 						Accept: 'application/json',
@@ -51,7 +50,7 @@ export const useJwt = () => {
 	useEffect(() => {
 		(async () => {
 			if (!syncing.current && jwt) {
-				const response = await fetch(`${apiHost}/token`, {
+				const response = await fetch(`${apiBase}/token`, {
 					headers: {
 						authorization: `Bearer ${jwt}`,
 						Accept: 'application/json',

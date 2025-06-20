@@ -1,8 +1,7 @@
 import React, { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
 import { useJwt } from './useJwt';
 import { useUser } from './useUser';
-
-const apiHost = import.meta.env.API_HOST || 'http://localhost:3000';
+import { apiBase } from '../uri';
 
 type AuthContextValue = {
 	loading: boolean;
@@ -36,7 +35,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 			if (!loginRef.current) {
 				loginRef.current = true;
 				try {
-					const response = await fetch(`${apiHost}/auth/login`, {
+					const response = await fetch(`${apiBase}/auth/login`, {
 						method: 'post',
 						headers: {
 							Accept: 'application/json',
@@ -59,7 +58,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 
 	const requestResetPassword = useCallback(
 		(email: string) =>
-			fetch(`${apiHost}/auth/reset-password-request`, {
+			fetch(`${apiBase}/auth/reset-password-request`, {
 				method: 'post',
 				headers: {
 					Accept: 'application/json',
@@ -74,7 +73,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 
 	const resetPassword = useCallback(
 		async (password: string, key: string) =>
-			fetch(`${apiHost}/auth/reset-password`, {
+			fetch(`${apiBase}/auth/reset-password`, {
 				method: 'post',
 				headers: {
 					Accept: 'application/json',

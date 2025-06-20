@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-
-const apiHost = import.meta.env.API_HOST || 'http://localhost:3000';
+import { apiBase } from '../uri';
 
 export const useUser = (jwt: string) => {
 	const [loading, setLoading] = useState(true);
@@ -11,7 +10,7 @@ export const useUser = (jwt: string) => {
 			if (jwt && !user) {
 				setLoading(true);
 				try {
-					const response = await fetch(`${apiHost}/auth/user`, {
+					const response = await fetch(`${apiBase}/auth/user`, {
 						headers: {
 							authorization: `Bearer ${jwt}`,
 							Accept: 'application/json',

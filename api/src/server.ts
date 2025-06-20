@@ -16,6 +16,11 @@ server.use(
   })
 );
 
+// server.use((req, res, next) => {
+//   console.log(req.hostname);
+//   next();
+// });
+
 server.use(`/${healthRoute}`, HealthCheckRouter);
 server.use("/auth", AuthRouter);
 server.use("/token", TokenRouter);
