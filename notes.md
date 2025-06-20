@@ -16,7 +16,7 @@ I got the setup-staging.sh working consistently to get the react app built and s
 
 But maybe that's alright. I can proceed
 
-### Important!
+#### Important!
 
 After April 30, 20:22::19 UTC, run the following on the staging server:
 `certbot -d staging.synth.kitchen -m rain@synth.kitchen --agree-tos -n --nginx`
@@ -26,3 +26,9 @@ After April 30, 20:22::19 UTC, run the following on the staging server:
 I've reworked the basic structure, and have an app/server pair being deployed on a staging server running coolify. Coolify is also hosting the dev and staging databases.
 
 I think I'm getting to a point where I need some shared types defined in their own project, to define the expectations between backend/frontend clearly. I also foresee a need to omit patch JSON data when transmitting a big list of results. That would just be a waste of bandwidth. There's also a need to be able to generate thumbnails for each recipe.
+
+### Part 4
+
+Okay, now there's a functional app and server being deployed. The only issue is that the app doesn't get the VITE_API_HOST environment variable from the coolify dashboard. I guess I could code it so that if the host is one of a set of known hosts, we can map that to the known api host.
+
+Once that's working, I'm basically ready to go on with adding the rest of the user account system, then the dashboard.
