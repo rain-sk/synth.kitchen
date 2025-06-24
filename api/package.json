@@ -27,6 +27,7 @@
     "pg": "^8.16.0",
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.2.2",
+    "shared": "file:../lib/shared",
     "typeorm": "^0.3.24",
     "uuid": "^11.1.0"
   },

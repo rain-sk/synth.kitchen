@@ -6,9 +6,10 @@ import {
   ManyToOne,
 } from "typeorm";
 import { User } from "./User";
+import { RecipeInfo } from "shared";
 
 @Entity()
-export class Recipe {
+export class Recipe implements RecipeInfo {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
