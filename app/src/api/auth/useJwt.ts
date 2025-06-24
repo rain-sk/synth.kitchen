@@ -38,7 +38,6 @@ export const useJwt = () => {
 						Accept: 'application/json',
 					},
 				}).then((res) => res.json());
-				console.log(response);
 				setJwt(response.jwt);
 			} catch (error) {
 				console.error(error);
