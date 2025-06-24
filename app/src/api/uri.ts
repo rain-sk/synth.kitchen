@@ -6,6 +6,6 @@ export const apiBase = (() => {
 			return 'https://staging-api.synth.kitchen';
 		case 'localhost:8080':
 		default:
-			return;
+			return 'http://localhost:3000';
 	}
 })();
