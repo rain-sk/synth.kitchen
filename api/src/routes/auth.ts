@@ -9,7 +9,7 @@ import {
   sendPasswordChangedEmail,
   sendResetPasswordEmail,
 } from "../utils/email";
-import { bcryptCost } from "../env";
+import { appOrigin, bcryptCost } from "../env";
 import { jwtSign } from "../utils/jwtSign";
 import { Request as JwtRequest } from "express-jwt";
 import { jwt } from "../middleware/jwt";
@@ -215,7 +215,10 @@ AuthRouter.post("/reset-password-request", async (req, res) => {
         const passwordResetRequest = await passwordResetRepository.create();
         passwordResetRequest.user = user;
         await passwordResetRepository.save(passwordResetRequest);
-        sendResetPasswordEmail(user.email, passwordResetRequest.id);
+        await sendResetPasswordEmail(user.email, {
+          appOrigin,
+          resetKey: passwordResetRequest.id,
+        });
       }
     }
   );
@@ -251,7 +254,9 @@ AuthRouter.post("/reset-password", async (req, res) => {
         user.password = await hash(password, bcryptCost);
         await userRepository.save(user);
         await requestRepository.remove(request);
-        await sendPasswordChangedEmail(user.email);
+        await sendPasswordChangedEmail(user.email, {
+          appOrigin,
+        });
       } catch (e) {
         console.error(e);
         if (!request) {
