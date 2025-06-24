@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 // https://blog.ag-grid.com/avoiding-react-18-double-mount/
 export const useEffectOnce = (effect: () => void | (() => void)) => {
 	const effectFn = useRef<() => void | (() => void)>(effect);
-	const destroyFn = useRef<void | (() => void)>();
+	const destroyFn = useRef<void | (() => void)>(undefined);
 	const effectCalled = useRef(false);
 	const rendered = useRef(false);
 	const [, setVal] = useState<number>(0);

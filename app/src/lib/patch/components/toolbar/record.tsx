@@ -13,8 +13,8 @@ import { PatchContext } from '../../contexts/patch';
 
 export const Record: React.FC = () => {
 	const state = useContext(PatchContext);
-	const mediaRecorder = useRef<IMediaRecorder>();
-	const chunks = useRef<Blob[]>();
+	const mediaRecorder = useRef<IMediaRecorder>(undefined);
+	const chunks = useRef<Blob[]>(undefined);
 
 	const [recording, setRecording] = useState(false);
 

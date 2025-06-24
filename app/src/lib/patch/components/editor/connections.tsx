@@ -10,8 +10,20 @@ import {
 import { useMouse, useScroll } from 'react-use';
 import { queueAnimation } from '../../../../utils/animation';
 
-const root = () => document.getElementById('root');
-const main = () => document.getElementById('main');
+const root = () => {
+	const element = document.getElementById('root');
+	if (element) {
+		return element as Element;
+	}
+	throw new Error('no #root');
+};
+const main = () => {
+	const element = document.getElementById('main');
+	if (element) {
+		return element as HTMLElement;
+	}
+	throw new Error('no #main');
+};
 
 const position = (button: HTMLButtonElement): Position => {
 	if (!button) {
@@ -96,8 +108,8 @@ const resizeCanvas = (canvas: HTMLCanvasElement) => {
 export const Connections: React.FC<{ state: IPatchState }> = ({
 	state: { activeConnectorKey, connections, connectors, modulePositions },
 }) => {
-	const canvasRef = useRef<HTMLCanvasElement>();
-	const contextRef = useRef<CanvasRenderingContext2D>();
+	const canvasRef = useRef<HTMLCanvasElement>(undefined);
+	const contextRef = useRef<CanvasRenderingContext2D>(undefined);
 
 	const scroll = useScroll({ current: main() });
 	const mouse = useMouse({ current: main() });

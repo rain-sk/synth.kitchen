@@ -17,7 +17,7 @@ export const useNode = <NodeType, ModuleType extends Type>(
 	) => IModuleState[ModuleType],
 	nodeFactory: () => NodeType,
 ) => {
-	const nodeRef = useRef<NodeType>();
+	const nodeRef = useRef<NodeType>(undefined);
 	if (!nodeRef.current) {
 		nodeRef.current = nodeFactory();
 	}
