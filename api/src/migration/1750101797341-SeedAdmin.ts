@@ -3,9 +3,7 @@ import { User } from "../entity/User";
 import { PasswordResetRequest } from "../entity/PasswordResetRequest";
 import { EmailVerificationRequest } from "../entity/EmailVerificationRequest";
 import { sendResetPasswordEmail } from "../utils/email";
-import { appOrigin } from "../env";
-
-const adminEmail = process.env.ADMIN_EMAIL || "admin@synth.kitchen";
+import { adminEmail, appOrigin } from "../env";
 
 export class SeedAdmin1750101797341 implements MigrationInterface {
   name = "SeedAdmin1750101797341";
