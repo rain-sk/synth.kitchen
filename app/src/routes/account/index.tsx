@@ -5,7 +5,6 @@ import { Redirect } from 'wouter';
 
 export const AccountRoute: React.FC = () => {
 	const { user, loading } = useContext(AuthContext);
-	console.log(user, loading);
 	return (
 		<>
 			{user || loading ? (
@@ -16,6 +15,7 @@ export const AccountRoute: React.FC = () => {
 						<h3>your info</h3>
 
 						<p>Email: {user?.email}</p>
+						<p>Verified: {user?.verified ? 'verified' : 'not verified'}</p>
 					</article>
 				</section>
 			) : (

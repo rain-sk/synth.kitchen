@@ -1,0 +1,11 @@
+{
+  "name": "shared",
+  "version": "0.4.0",
+  "description": "shared types for synth.kitchen",
+  "license": "MIT",
+  "keywords": [],
+  "scripts": {},
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
