@@ -45,7 +45,9 @@ export const sendEmail = transporter
       })
   : async () => {};
 
-const makeEmailer = <Vars extends Record<string, string> = {}>(
+const makeEmailer = <
+  Vars extends Record<string, string> | undefined = undefined
+>(
   subject: string,
   text: string,
   html: string
@@ -56,10 +58,12 @@ const makeEmailer = <Vars extends Record<string, string> = {}>(
 
   return (to: string, vars: Vars) =>
     new Promise((resolve, reject) => {
+      let mutableSubject = subject;
       let mutableText = text;
       let mutableHtml = html;
 
       for (let key in vars) {
+        mutableSubject = mutableSubject.replaceAll(`:${key}`, vars[key]);
         mutableText = mutableText.replaceAll(`:${key}`, vars[key]);
         mutableHtml = mutableHtml.replaceAll(`:${key}`, vars[key]);
       }
@@ -67,9 +71,9 @@ const makeEmailer = <Vars extends Record<string, string> = {}>(
       const mailOptions: Mail.Options = {
         ...defaultMailOptions,
         to,
-        subject,
-        text,
-        html,
+        subject: mutableSubject,
+        text: mutableText,
+        html: mutableHtml,
       };
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
