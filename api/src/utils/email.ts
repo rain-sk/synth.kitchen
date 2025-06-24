@@ -1,12 +1,13 @@
 import { createTransport } from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
-import { appOrigin } from "../env";
-
-const smtpHost = process.env.SMTP_HOST || "";
-const smtpPort = parseInt(process.env.SMTP_PORT || "587");
-const smtpUsername = process.env.SMTP_USERNAME || "";
-const smtpPassword = process.env.SMTP_PASSWORD || "";
-const transactionalEmail = process.env.TRANSACTIONAL_EMAIL || "";
+import {
+  appOrigin,
+  smtpHost,
+  smtpPassword,
+  smtpPort,
+  smtpUsername,
+  transactionalEmail,
+} from "../env";
 
 const transporter = smtpHost
   ? createTransport({

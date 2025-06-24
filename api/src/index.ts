@@ -1,7 +1,6 @@
 import { server } from "./server";
 import { AppDataSource } from "./data-source";
-
-const port = parseInt(process.env.PORT || "") || 3000;
+import { port } from "./env";
 
 server.listen(port, async (e) => {
   if (e) {
