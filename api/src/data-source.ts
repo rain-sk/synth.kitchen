@@ -14,7 +14,7 @@ import { SeedAdmin1750101797341 } from "./migration/1750101797341-SeedAdmin";
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: pgHost,
-  port: parseInt(pgPort || "") || 5432,
+  port: pgPort,
   username: pgUser,
   password: pgPassword,
   database: pgDbName,
