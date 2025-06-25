@@ -17,7 +17,7 @@ server.use(
 );
 
 // server.use((req, res, next) => {
-//   console.log(req.hostname);
+//   console.log(req.path);
 //   next();
 // });
 

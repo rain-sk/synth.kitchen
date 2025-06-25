@@ -1,7 +1,7 @@
 import express from "express";
 
 import { Request as JwtRequest } from "express-jwt";
-import { verify } from "jsonwebtoken";
+import jsonwebtoken from "jsonwebtoken";
 import { jwtSecret } from "../env";
 import { jwt } from "../middleware/jwt";
 
@@ -20,7 +20,7 @@ TokenRouter.get(`/`, async (req, res) => {
   }
 
   try {
-    const jwt = verify(token, jwtSecret);
+    const jwt = jsonwebtoken.verify(token, jwtSecret);
     if (jwt) {
       res.status(200).send("OK");
       return;
@@ -44,7 +44,7 @@ TokenRouter.get(`/refresh`, jwt, async (req: JwtRequest, res) => {
   }
 
   try {
-    const jwt = verify(token, jwtSecret, {
+    const jwt = jsonwebtoken.verify(token, jwtSecret, {
       complete: true,
       ignoreExpiration: true,
     });

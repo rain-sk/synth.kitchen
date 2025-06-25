@@ -1,20 +1,21 @@
 import express from "express";
+import { AdminUser, UserInfoAuthenticated } from "shared";
+import { EntityManager } from "typeorm";
 import { hash, compare } from "bcrypt";
+import { Request as JwtRequest } from "express-jwt";
 
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 import { PasswordResetRequest } from "../entity/PasswordResetRequest";
+
+import { jwtSign } from "../utils/jwtSign";
+import { jwt } from "../middleware/jwt";
 
 import {
   sendPasswordChangedEmail,
   sendResetPasswordEmail,
 } from "../utils/email";
 import { appOrigin, bcryptCost } from "../env";
-import { jwtSign } from "../utils/jwtSign";
-import { Request as JwtRequest } from "express-jwt";
-import { jwt } from "../middleware/jwt";
-import { EntityManager } from "typeorm";
-import { AdminUser, UserInfoAuthenticated } from "shared";
 
 export const AuthRouter = express.Router();
 
@@ -36,9 +37,7 @@ AuthRouter.post("/login", async (req, res) => {
     try {
       const user = await AppDataSource.getRepository(User)
         .createQueryBuilder("user")
-        .where("user.email = :email", {
-          email,
-        })
+        .where("user.email = :email", { email })
         .getOneOrFail();
       if (await compare(password, user.password)) {
         const data: UserInfoAuthenticated | AdminUser = user.admin

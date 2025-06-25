@@ -9,7 +9,8 @@ COPY lib/shared/ ./lib/shared/
 
 WORKDIR /usr/src/api
 RUN npm ci
-COPY lib/shared/ ./node_modules/shared/
+COPY .env* .
+COPY api/.env* .
 RUN npm run build:prod
 
 

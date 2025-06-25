@@ -36,3 +36,7 @@ Once that's working, I'm basically ready to go on with adding the rest of the us
 ### Part 5
 
 The api build is failing because I'm importing from /lib/shared in a way that docker isn't happy with. I'll need to figure out another way forward.
+
+### Part 6
+
+I've updated the dockerfile setup to be able to include files from lib/shared. There's now something wrong with the login function which doesn't really make sense.

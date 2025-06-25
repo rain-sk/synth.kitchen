@@ -1,5 +1,5 @@
-import "reflect-metadata";
 import { DataSource } from "typeorm";
+import "reflect-metadata";
 
 import { pgDbName, pgHost, pgPassword, pgPort, pgUser } from "./env";
 

@@ -47,7 +47,13 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 							email,
 							password,
 						}),
-					}).then((res) => res.json());
+					}).then(async (res) => {
+						if (res.status === 200) {
+							return await res.json();
+						} else {
+							throw new Error(await res.text());
+						}
+					});
 					setJwt(response.jwt || '');
 				} catch (e) {
 					console.error(e);

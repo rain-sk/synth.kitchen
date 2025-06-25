@@ -1,5 +1,5 @@
-const esbuild = require("esbuild");
-const {
+import esbuild from "esbuild";
+import {
   port,
   adminEmail,
   appOrigin,
@@ -14,7 +14,7 @@ const {
   pgPassword,
   pgPort,
   healthRoute,
-} = require("./src/env");
+} from "./src/env";
 
 esbuild
   .build({
@@ -30,9 +30,10 @@ esbuild
     ],
     bundle: true,
     minify: true,
+    keepNames: true,
     sourcemap: false,
     platform: "node",
-    target: "node24",
+    target: "node22",
     format: "esm",
     color: true,
     tsconfig: "./tsconfig.json",
