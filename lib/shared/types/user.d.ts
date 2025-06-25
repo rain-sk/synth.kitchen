@@ -1,16 +1,19 @@
 import { RecipeInfo } from "./recipe";
 
-export type UserProfile = {
+export type UserInfo = {
   id: string;
   username: string;
-  recipes: Promise<RecipeInfo[]>;
 };
 
-export type AuthenticatedUserInfo = UserProfile & {
+export type UserRecipes = UserInfo & {
+  recipes: RecipeInfo[];
+};
+
+export type UserInfoAuthenticated = UserInfo & {
   verified: boolean;
   email: string;
 };
 
-export type AdminUser = AuthenticatedUserInfo & {
+export type AdminUser = UserInfoAuthenticated & {
   admin: true;
 };

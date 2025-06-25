@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
-import { AuthenticatedUserInfo } from 'shared';
+import { UserInfoAuthenticated } from 'shared';
 
 import { useJwt } from './useJwt';
 import { useUser } from './useUser';
@@ -7,7 +7,7 @@ import { apiBase } from '../uri';
 
 type AuthContextValue = {
 	loading: boolean;
-	user?: AuthenticatedUserInfo;
+	user?: UserInfoAuthenticated;
 	login: (email: string, password: string) => Promise<void>;
 	logout: () => void;
 	requestResetPassword: (email: string) => Promise<Response>;

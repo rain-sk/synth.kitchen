@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { AuthenticatedUserInfo } from 'shared';
+import { AdminUser, UserInfoAuthenticated } from 'shared';
 
 import { apiBase } from '../uri';
 
 export const useUser = (jwt: string) => {
 	const [loading, setLoading] = useState(true);
-	const [user, setUser] = useState<AuthenticatedUserInfo | undefined>();
+	const [user, setUser] = useState<
+		UserInfoAuthenticated | AdminUser | undefined
+	>();
 
 	const blockingRef = useRef(false);
 	useEffect(() => {
@@ -22,7 +24,7 @@ export const useUser = (jwt: string) => {
 						},
 					})
 						.then((res) => res.json())
-						.then((response) => response.user as AuthenticatedUserInfo);
+						.then((response) => response.user as UserInfoAuthenticated);
 					setUser(user);
 				} catch (e) {
 					console.error(e);

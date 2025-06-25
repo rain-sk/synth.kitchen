@@ -14,17 +14,18 @@ import { jwtSign } from "../utils/jwtSign";
 import { Request as JwtRequest } from "express-jwt";
 import { jwt } from "../middleware/jwt";
 import { EntityManager } from "typeorm";
+import { AdminUser, UserInfoAuthenticated } from "shared";
 
 export const AuthRouter = express.Router();
 
 AuthRouter.get("/user", jwt, (req: JwtRequest, res) => {
-  res.json({
-    user: {
-      email: req.auth.email,
-      id: req.auth.id,
-      verified: req.auth.verified,
-    },
-  });
+  const user: UserInfoAuthenticated = {
+    id: req.auth.id as string,
+    email: req.auth.email as string,
+    username: req.auth.username as string,
+    verified: req.auth.verified as boolean,
+  };
+  res.json({ user });
 });
 
 AuthRouter.post("/login", async (req, res) => {
@@ -40,22 +41,21 @@ AuthRouter.post("/login", async (req, res) => {
         })
         .getOneOrFail();
       if (await compare(password, user.password)) {
-        const token = await jwtSign(
-          user.admin
-            ? {
-                id: user.id,
-                admin: user.admin,
-                email: user.email,
-                username: user.username,
-                verified: user.verified,
-              }
-            : {
-                id: user.id,
-                email: user.email,
-                username: user.username,
-                verified: user.verified,
-              }
-        );
+        const data: UserInfoAuthenticated | AdminUser = user.admin
+          ? {
+              id: user.id,
+              admin: user.admin,
+              email: user.email,
+              username: user.username,
+              verified: user.verified,
+            }
+          : {
+              id: user.id,
+              email: user.email,
+              username: user.username,
+              verified: user.verified,
+            };
+        const token = await jwtSign(data);
         res.status(200).json({
           jwt: token,
         });

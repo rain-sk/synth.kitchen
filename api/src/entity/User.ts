@@ -6,12 +6,12 @@ import {
   OneToMany,
   OneToOne,
 } from "typeorm";
-import { AuthenticatedUserInfo } from "shared";
+import { UserInfoAuthenticated } from "shared";
 import { Recipe } from "./Recipe";
 import { EmailVerificationRequest } from "./EmailVerificationRequest";
 
 @Entity()
-export class User implements AuthenticatedUserInfo {
+export class User implements UserInfoAuthenticated {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
