@@ -2,7 +2,7 @@ import { IConnectorInfo, IInput, IIo, IOutput } from './connection';
 import { IModule } from './module';
 import { IParameter } from './parameter';
 import { Modifier } from '../../constants/key';
-import { RecipeInfo, UserInfo } from 'shared';
+import type { RecipeInfo, UserInfo } from 'shared';
 
 export type Position = [number, number];
 export const INVALID_POSITION: Position = [-1, -1];

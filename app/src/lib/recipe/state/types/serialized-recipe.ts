@@ -1,4 +1,4 @@
-import { UserInfo } from 'shared';
+import type { UserInfo } from 'shared';
 
 import { IInput, IOutput } from './connection';
 import { IModule } from './module';

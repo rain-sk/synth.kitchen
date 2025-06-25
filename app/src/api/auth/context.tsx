@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
-import { UserInfoAuthenticated } from 'shared';
+import type { UserInfoAuthenticated } from 'shared';
 
 import { useJwt } from './useJwt';
 import { useUser } from './useUser';

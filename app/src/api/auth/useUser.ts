@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AdminUser, UserInfoAuthenticated } from 'shared';
+import type { AdminUser, UserInfoAuthenticated } from 'shared';
 
 import { apiBase } from '../uri';
 
