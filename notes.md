@@ -32,3 +32,7 @@ I think I'm getting to a point where I need some shared types defined in their o
 Okay, now there's a functional app and server being deployed. The only issue is that the app doesn't get the VITE_API_HOST environment variable from the coolify dashboard. I guess I could code it so that if the host is one of a set of known hosts, we can map that to the known api host.
 
 Once that's working, I'm basically ready to go on with adding the rest of the user account system, then the dashboard.
+
+### Part 5
+
+The api build is failing because I'm importing from /lib/shared in a way that docker isn't happy with. I'll need to figure out another way forward.
