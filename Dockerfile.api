@@ -1,0 +1,26 @@
+FROM node:22-alpine AS base
+
+
+FROM base AS builder
+
+WORKDIR /usr/src
+COPY api/ ./api/
+COPY lib/shared/ ./lib/shared/
+
+WORKDIR /usr/src/api
+RUN npm ci
+COPY lib/shared/ ./node_modules/shared/
+RUN npm run build:prod
+
+
+FROM base AS server
+
+RUN mkdir -p /usr/src
+WORKDIR /usr/src
+COPY --from=builder /usr/src/api/node_modules /usr/src/node_modules
+COPY --from=builder /usr/src/api/build /usr/src
+
+EXPOSE 3000
+
+WORKDIR /usr/src
+CMD [ "node", "./index.js" ]
