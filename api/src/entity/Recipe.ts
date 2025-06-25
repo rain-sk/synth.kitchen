@@ -25,9 +25,9 @@ export class Recipe implements RecipeInfo {
   @ManyToOne(() => User, (user) => user.recipes)
   chef: User;
 
-  @OneToMany(() => Recipe, (patch) => patch.forkedFrom)
+  @OneToMany(() => Recipe, (recipe) => recipe.forkedFrom)
   forks: Promise<Recipe[]>;
 
-  @ManyToOne(() => Recipe, (patch) => patch.forks, { eager: true })
+  @ManyToOne(() => Recipe, (recipe) => recipe.forks, { eager: true })
   forkedFrom: Recipe;
 }
