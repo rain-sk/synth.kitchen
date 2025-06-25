@@ -1,0 +1,20 @@
+import { useContext } from 'react';
+import { Redirect } from 'wouter';
+
+import { AuthContext } from '../../api/auth/context';
+import { Loader } from '../../lib/shared/components/loader';
+import { Onboarding } from './onboarding';
+
+export const IndexRoute = () => {
+	const { user, loading } = useContext(AuthContext);
+	console.log(user, loading);
+	if (loading) {
+		return <Loader />;
+	}
+
+	if (user) {
+		return <Redirect to="/dashboard" />;
+	}
+
+	return <Onboarding />;
+};

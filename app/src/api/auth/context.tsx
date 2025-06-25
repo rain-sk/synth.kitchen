@@ -86,7 +86,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 		[],
 	);
 
-	const contextValue = useMemo(
+	const contextValue = useMemo<AuthContextValue>(
 		() => ({
 			loading,
 			user,

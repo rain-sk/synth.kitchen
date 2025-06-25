@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Route, Switch } from 'wouter';
+import { Route, Switch } from 'wouter';
 
 import { AuthContextProvider } from './api/auth/context';
 
@@ -9,14 +9,13 @@ import { ResetPasswordRoute } from './routes/reset-password';
 import { LoginRoute } from './routes/login';
 import { AccountRoute } from './routes/account';
 import { LogoutRoute } from './routes/logout';
-
-const RedirectToPatch = () => <Redirect to="/patch" />;
+import { IndexRoute } from './routes/index';
 
 export const SynthKitchen: React.FC = () => {
 	return (
 		<AuthContextProvider>
 			<Switch>
-				<Route path="/" component={RedirectToPatch} />
+				<Route path="/" component={IndexRoute} />
 				<Route path="/patch" component={PatchRoute} />
 				<Route path="/patch/:id" component={PatchRoute} />
 				<Route path="/patches" component={PatchesRoute} />

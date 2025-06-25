@@ -15,7 +15,7 @@ export const useUser = (jwt: string) => {
 			if (jwt && !user && !blockingRef.current) {
 				try {
 					blockingRef.current = true;
-					setLoading(true);
+					setLoading(blockingRef.current);
 
 					const user = await fetch(`${apiBase}/auth/user`, {
 						headers: {
@@ -31,11 +31,24 @@ export const useUser = (jwt: string) => {
 					setUser(undefined);
 				} finally {
 					blockingRef.current = false;
-					setLoading(false);
+					setLoading(blockingRef.current);
 				}
 			}
 		})();
 	}, [jwt, user]);
+
+	const timeoutRef = useRef<number>(undefined);
+	useEffect(() => {
+		if (loading) {
+			if (!jwt) {
+				timeoutRef.current = setTimeout(() => {
+					setLoading(false);
+				}, 100);
+			} else if (timeoutRef.current !== undefined) {
+				clearTimeout(timeoutRef.current);
+			}
+		}
+	}, [jwt, loading]);
 
 	return { user, loading };
 };
