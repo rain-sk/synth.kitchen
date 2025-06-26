@@ -33,7 +33,7 @@ esbuild
     keepNames: true,
     sourcemap: false,
     platform: "node",
-    target: "node22",
+    target: "esnext",
     format: "esm",
     color: true,
     tsconfig: "./tsconfig.json",
