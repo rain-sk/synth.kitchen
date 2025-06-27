@@ -21,6 +21,28 @@ const oscillatorStateFromNode = (
 	waveform: node.type,
 });
 
+const startOnce =
+	(
+		self: IOscillatorNode<IAudioContext> & {
+			startCalled: boolean;
+			oldStart: () => void;
+		},
+	) =>
+	() => {
+		if (self.startCalled) {
+			return;
+		}
+		self.startCalled = true;
+		self.oldStart();
+	};
+const replaceStart = (self: IOscillatorNode<IAudioContext>) => {
+	if (('startCalled' in self) as any) {
+		return;
+	}
+	(self as any).oldStart = self.start;
+	(self as any).start = startOnce(self as any);
+};
+
 const initOscillator = (
 	oscillator: IOscillatorNode<IAudioContext>,
 	state?: IModuleState['OSCILLATOR'],
@@ -40,6 +62,7 @@ const initOscillator = (
 		state = oscillatorStateFromNode(oscillator);
 	}
 
+	replaceStart(oscillator);
 	oscillator.start();
 	return state;
 };
