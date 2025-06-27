@@ -266,7 +266,7 @@ const Connections: React.FC<{
 	return (
 		<canvas
 			id="connections"
-			ref={canvasRef as RefObject<HTMLCanvasElement>}
+			ref={canvasRef as React.RefObject<HTMLCanvasElement>}
 			style={{ position: 'fixed', top: '2.5rem' }}
 		/>
 	);

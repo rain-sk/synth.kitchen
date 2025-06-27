@@ -52,11 +52,13 @@ export const keyboardEvent: React.Reducer<IRecipeState, IKeyboardEvent> = (
 		(keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) &&
 		type === KeyboardEventType.KEY_DOWN
 	) {
-		const connectionsOfSelectedModules = [...state.selectedModuleKeys]
-			.filter((moduleKey) => moduleKey !== '0')
-			.flatMap((moduleKey) => moduleConnectors(state.connectors, moduleKey))
-			.map((key) => connectorInfo(state.connectors, key))
-			.flatMap(([, connections]) => connections);
+		const connectionsOfSelectedModules = new Set(
+			[...state.selectedModuleKeys]
+				.filter((moduleKey) => moduleKey !== '0')
+				.flatMap((moduleKey) => moduleConnectors(state.connectors, moduleKey))
+				.map((key) => connectorInfo(state.connectors, key))
+				.flatMap(([, connections]) => connections),
+		);
 
 		const newState = disconnectSet(
 			state.connections,

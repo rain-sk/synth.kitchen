@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import {
 	IModule,
@@ -19,11 +19,9 @@ export const useNode = <NodeType, ModuleType extends Type>(
 ) => {
 	const nodeRef = useRef<NodeType>(undefined);
 
-	const makeNode = useCallback(() => {
-		if (!nodeRef.current) {
-			nodeRef.current = nodeFactory();
-		}
-	}, [nodeFactory]);
+	if (!nodeRef.current) {
+		nodeRef.current = nodeFactory();
+	}
 
 	// Though React calls all effects twice because of a "dummy cycle" in dev mode,
 	// we need to use some special tricks to prevent actually disconnecting the
@@ -40,13 +38,12 @@ export const useNode = <NodeType, ModuleType extends Type>(
 		}
 	});
 
-	const [state, setState] = useState(() => {
-		makeNode();
-		return moduleInit(
+	const [state, setState] = useState(() =>
+		moduleInit(
 			nodeRef.current as NodeType,
 			module.state as IModuleState[ModuleType],
-		);
-	});
+		),
+	);
 
 	const { dispatch } = useContext(RecipeContext);
 

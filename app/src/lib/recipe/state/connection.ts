@@ -90,7 +90,7 @@ export const connect = (
 export const disconnectSet = (
 	connections: Record<string, [IOutput, IInput]>,
 	connectors: Record<string, IConnectorInfo>,
-	connectionsToDisconnect: string[],
+	connectionsToDisconnect: Set<string>,
 ) => {
 	connectionsToDisconnect.forEach((key: string) => {
 		const [output, input] = connections[key];
