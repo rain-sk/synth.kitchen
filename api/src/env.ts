@@ -20,7 +20,6 @@ const errors: string[] = [];
 if (!pgHost) {
   errors.push("Missing parameter: POSTGRES_HOST");
 }
-console.log({ pgDbName, pgUser, pgHost });
 if (!pgDbName) {
   errors.push("Missing parameter: POSTGRES_DB_NAME");
 }
