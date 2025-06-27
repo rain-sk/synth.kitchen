@@ -7,7 +7,7 @@ import { Onboarding } from './onboarding';
 
 export const IndexRoute = () => {
 	const { user, loading } = useContext(AuthContext);
-	console.log(user, loading);
+
 	if (loading) {
 		return <Loader />;
 	}
