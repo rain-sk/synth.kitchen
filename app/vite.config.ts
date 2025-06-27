@@ -2,9 +2,12 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { analyzer } from 'vite-bundle-analyzer';
 
+const plugins =
+	process.env.NODE_ENV === 'production' ? [react()] : [react(), analyzer()];
+
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [react(), analyzer()],
+	plugins,
 	build: {
 		rollupOptions: {
 			output: {

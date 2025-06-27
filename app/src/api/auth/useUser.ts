@@ -37,7 +37,7 @@ export const useUser = (jwt: string) => {
 		})();
 	}, [jwt, user]);
 
-	const timeoutRef = useRef<number>(undefined);
+	const timeoutRef = useRef<any>(undefined);
 	useEffect(() => {
 		if (loading) {
 			if (!jwt) {

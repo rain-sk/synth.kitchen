@@ -14,7 +14,7 @@ const root = () => document.getElementById('root');
 const main = () => document.getElementById('main');
 
 const getMain = (): Promise<HTMLElement> => {
-	let timeout: number;
+	let timeout: any;
 	let knownMain: HTMLElement | null = null;
 	return new Promise<HTMLElement>((resolve) => {
 		const checkForMain = () => {
