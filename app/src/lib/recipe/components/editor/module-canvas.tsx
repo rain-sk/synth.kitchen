@@ -6,7 +6,7 @@ import { IRecipeState, Position } from '../../state/types/recipe';
 import { IRecipeAction } from '../../state/actions';
 import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
-import { Connections } from './connections';
+import { ConnectionsWrapper } from './connections';
 
 export const ModuleCanvas: React.FC<{
 	state: IRecipeState;
@@ -41,7 +41,7 @@ export const ModuleCanvas: React.FC<{
 					/>
 				))}
 			</section>
-			<Connections state={state} />
+			<ConnectionsWrapper state={state} />
 		</ModuleCanvasBackdrop>
 	);
 };

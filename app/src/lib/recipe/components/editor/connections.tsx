@@ -1,4 +1,4 @@
-import React, { RefObject, useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { connectorButton, connectorKey } from '../../state/connection';
 import { IInput, IOutput } from '../../state/types/connection';
@@ -10,19 +10,25 @@ import {
 import { useMouse, useScroll } from 'react-use';
 import { queueAnimation } from '../../../../utils/animation';
 
-const root = () => {
-	const element = document.getElementById('root');
-	if (element) {
-		return element as Element;
-	}
-	throw new Error('no #root');
-};
-const main = () => {
-	const element = document.getElementById('main');
-	if (element) {
-		return element as HTMLElement;
-	}
-	throw new Error('no #main');
+const root = () => document.getElementById('root');
+const main = () => document.getElementById('main');
+
+const getMain = (): Promise<HTMLElement> => {
+	let timeout: number;
+	let knownMain: HTMLElement | null = null;
+	return new Promise<HTMLElement>((resolve) => {
+		const checkForMain = () => {
+			knownMain = knownMain ?? main();
+			if (knownMain) {
+				if (timeout) {
+					clearTimeout(timeout);
+				}
+				return resolve(knownMain);
+			}
+			timeout = setTimeout(checkForMain, 10);
+		};
+		checkForMain();
+	});
 };
 
 const position = (button: HTMLButtonElement): Position => {
@@ -97,22 +103,51 @@ enum ConnectionDrawMode {
 const devicePixelRatio = window.devicePixelRatio || 1;
 
 const resizeCanvas = (canvas: HTMLCanvasElement) => {
-	const rect = main()?.getBoundingClientRect();
+	try {
+		const rect = main()?.getBoundingClientRect() ?? new DOMRect(0, 0, 0, 0);
 
-	if (rect && rect.width > 0 && rect.height > 0) {
-		canvas.width = rect.width;
-		canvas.height = rect.height;
+		if (rect && rect.width > 0 && rect.height > 0) {
+			canvas.width = rect.width;
+			canvas.height = rect.height;
+		}
+	} catch (e) {
+		console.warn(e);
 	}
 };
 
-export const Connections: React.FC<{ state: IRecipeState }> = ({
+export const ConnectionsWrapper: React.FC<{ state: IRecipeState }> = ({
+	state,
+}) => {
+	const [mainLoaded, setMainLoaded] = useState(false);
+	const mainRef = useRef<HTMLElement>(undefined);
+
+	useEffect(() => {
+		getMain().then((main) => {
+			mainRef.current = main;
+			setMainLoaded(true);
+		});
+	}, []);
+
+	return mainLoaded && mainRef.current !== undefined ? (
+		<Connections
+			state={state}
+			mainRef={mainRef as React.RefObject<HTMLElement>}
+		/>
+	) : null;
+};
+
+const Connections: React.FC<{
+	state: IRecipeState;
+	mainRef: React.RefObject<HTMLElement>;
+}> = ({
 	state: { activeConnectorKey, connections, connectors, modulePositions },
+	mainRef,
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>(undefined);
 	const contextRef = useRef<CanvasRenderingContext2D>(undefined);
 
-	const scroll = useScroll({ current: main() });
-	const mouse = useMouse({ current: main() });
+	const scroll = useScroll(mainRef);
+	const mouse = useMouse(mainRef);
 
 	const drawConnections = useCallback(() => {
 		const connectionsToDraw = Object.values(connections)
