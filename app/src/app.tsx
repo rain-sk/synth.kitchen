@@ -7,6 +7,7 @@ import { LoginRoute } from './routes/login';
 import { LogoutRoute } from './routes/logout';
 import { RecipeRoute } from './routes/recipe';
 import { ResetPasswordRoute } from './routes/reset-password';
+import { DashboardRoute } from './routes/dashboard';
 
 const RedirectToRecipe = () => {
 	const [match, params] = useRoute('/patch/:id');
@@ -22,7 +23,7 @@ export const SynthKitchen: React.FC = () => {
 	return (
 		<Switch>
 			<Route path="/" component={IndexRoute} />
-			{/* <Route path="/dashboard" component={DashboardRoute} /> */}
+			<Route path="/dashboard" component={DashboardRoute} />
 
 			<Route path="/patch" component={RedirectToRecipe} />
 			<Route path="/patch/:id" component={RedirectToRecipe} />
