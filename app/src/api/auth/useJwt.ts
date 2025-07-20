@@ -40,7 +40,9 @@ export const useJwt = () => {
 						Accept: 'application/json',
 					},
 				}).then((res) => res.json());
-				setJwt(response.jwt);
+				if (response.jwt && typeof response.jwt === 'string') {
+					setJwt(response.jwt);
+				}
 			} catch (error) {
 				console.error(error);
 			}
