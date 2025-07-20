@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocalStorage } from 'react-use';
 import { apiBase } from '../uri';
+import { navigate } from 'wouter/use-browser-location';
 
 export const useJwt = () => {
 	const syncing = useRef(false);
@@ -12,6 +13,7 @@ export const useJwt = () => {
 		loggingOut.current = true;
 		setStoredJwt('');
 		setJwt('');
+		navigate('/login');
 	}, [setJwt, setStoredJwt]);
 
 	useEffect(() => {
