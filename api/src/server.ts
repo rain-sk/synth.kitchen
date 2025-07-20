@@ -11,7 +11,6 @@ export const server = express();
 server.use(cors({ origin: appOrigin }));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
-console.log(appOrigin);
 
 // server.use((req, res, next) => {
 //   console.log(req.path);
