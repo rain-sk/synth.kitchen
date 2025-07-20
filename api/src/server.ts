@@ -8,13 +8,10 @@ import { appOrigin, healthRoute } from "./env";
 import { TokenRouter } from "./routes/token";
 
 export const server = express();
+server.use(cors({ origin: appOrigin }));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
-server.use(
-  cors({
-    origin: appOrigin,
-  })
-);
+console.log(appOrigin);
 
 // server.use((req, res, next) => {
 //   console.log(req.path);
