@@ -4,7 +4,7 @@ import { useLocation } from 'wouter';
 import { blankRecipeToClearCanvas, blankRecipeToLoad } from '../../state';
 import { IRecipeState } from '../../state/types/recipe';
 import { connectorButtonExists, connectorKey } from '../../state/connection';
-import { randomId } from '../../../../utils/random-id';
+import { randomId } from '../../../../utils/randomId';
 
 const doLoadConnections = (
 	connectedConnectors: Set<string>,

@@ -1,7 +1,7 @@
 import { IAddModule } from '../actions/add-module';
 import { IRecipeState } from '../types/recipe';
-import { randomName } from '../../../../utils/random-name';
-import { randomId } from '../../../../utils/random-id';
+import { randomName } from '../../../../utils/randomName';
+import { randomId } from '../../../../utils/randomId';
 
 export const addModule: React.Reducer<IRecipeState, IAddModule> = (
 	state,

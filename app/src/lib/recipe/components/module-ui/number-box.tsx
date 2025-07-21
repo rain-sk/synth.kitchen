@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from 'react';
 
 import { recipeActions } from '../../state/actions';
 import { RecipeContext } from '../../contexts/recipe';
-import { randomId } from '../../../../utils/random-id';
+import { randomId } from '../../../../utils/randomId';
 
 // https://stackoverflow.com/a/27082406
 const countDecimals = (value: number) => {

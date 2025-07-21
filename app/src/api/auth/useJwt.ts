@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocalStorage } from 'react-use';
 import { apiBase } from '../uri';
 import { navigate } from 'wouter/use-browser-location';
+import { fetchWithJwt } from '../../utils/fetchWithJwt';
 
 export const useJwt = () => {
 	const syncing = useRef(false);
@@ -34,12 +35,10 @@ export const useJwt = () => {
 		if (jwt) {
 			syncing.current = true;
 			try {
-				const response = await fetch(`${apiBase}/token/refresh`, {
-					headers: {
-						authorization: `Bearer ${jwt}`,
-						Accept: 'application/json',
-					},
-				}).then((res) => res.json());
+				const response = await fetchWithJwt(
+					`${apiBase}/token/refresh`,
+					jwt,
+				).then((res) => res.json());
 				if (response.jwt && typeof response.jwt === 'string') {
 					setJwt(response.jwt);
 				}
@@ -50,21 +49,18 @@ export const useJwt = () => {
 		}
 	}, [jwt, setJwt]);
 
-	useEffect(() => {
-		(async () => {
-			if (!syncing.current && jwt) {
-				const response = await fetch(`${apiBase}/token`, {
-					headers: {
-						authorization: `Bearer ${jwt}`,
-						Accept: 'application/json',
-					},
-				});
-				if (!syncing.current && response.status !== 200) {
-					sync();
-				}
+	const checkToken = useCallback(async () => {
+		if (!syncing.current && jwt) {
+			const response = await fetchWithJwt(`${apiBase}/token`, jwt);
+			if (!syncing.current && response.status !== 200) {
+				await sync();
 			}
-		})();
+		}
 	}, [jwt, sync]);
 
-	return { jwt, setJwt, logout };
+	useEffect(() => {
+		checkToken();
+	}, [checkToken]);
+
+	return { checkToken, jwt, setJwt, logout };
 };

@@ -2,8 +2,8 @@ import { INVALID_POSITION, IRecipeState } from './types/recipe';
 import { Modifier } from '../constants/key';
 import { ISerializedRecipe } from './types/serialized-recipe';
 import { IModule } from './types/module';
-import { randomId } from '../../../utils/random-id';
-import { randomName } from '../../../utils/random-name';
+import { randomId } from '../../../utils/randomId';
+import { randomName } from '../../../utils/randomName';
 
 export const blankRecipeToClearCanvas = (): ISerializedRecipe => ({
 	id: '',
