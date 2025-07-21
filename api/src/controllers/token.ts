@@ -37,13 +37,16 @@ export class TokenController {
     }
 
     try {
-      let jwt = jsonwebtoken.verify(token, jwtSecret, {
+      const jwt = jsonwebtoken.verify(token, jwtSecret, {
         complete: true,
         ignoreExpiration: true,
-      }).signature;
-      if (jwt) {
-        jwt = await jwtSign(req.auth);
-        res.status(200).json({ jwt });
+      });
+      let signature = jwt.signature;
+      if (signature && typeof jwt.payload === "object") {
+        delete jwt.payload.exp;
+        delete jwt.payload.iat;
+        signature = await jwtSign(jwt.payload);
+        res.status(200).json({ jwt: signature });
         return;
       }
     } catch (e) {
