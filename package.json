@@ -1,6 +1,6 @@
 {
   "name": "synth.kitchen",
   "scripts": {
-    "ssh-tunnel": "ssh -L 5432:10.0.1.9:5432 dbssh@159.69.34.77"
+    "ssh-tunnel": "ssh -L 5432:10.0.1.8:5432 dbssh@159.69.34.77"
   }
 }
