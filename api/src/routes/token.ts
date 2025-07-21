@@ -2,15 +2,19 @@ import express from "express";
 
 import { Request as JwtRequest } from "express-jwt";
 import jsonwebtoken from "jsonwebtoken";
-import { jwtSecret } from "../env";
+
+import { jwt } from "../middleware/jwt";
 import { jwtSign } from "../utils/jwtSign";
+
+import { jwtSecret } from "../env";
 
 export const TokenRouter = express.Router();
 
 TokenRouter.get(`/`, async (req: JwtRequest, res) => {
   if (req.auth) {
     res.status(200).send("OK");
-    return;
+  } else {
+    res.status(401).json({ err: "unauthorized" });
   }
 });
 
