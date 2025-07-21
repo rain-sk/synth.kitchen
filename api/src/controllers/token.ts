@@ -1,7 +1,9 @@
 import { Request as JwtRequest } from "express-jwt";
 import jsonwebtoken from "jsonwebtoken";
-import { jwtSecret } from "../env";
+
 import { jwtSign } from "../utils/jwtSign";
+
+import { jwtSecret } from "../env";
 
 export class TokenController {
   static checkToken = async (req: JwtRequest, res) => {
