@@ -10,15 +10,16 @@ import { jwtSecret } from "../env";
 
 export const TokenRouter = express.Router();
 
-TokenRouter.get(`/`, async (req: JwtRequest, res) => {
+const getToken = async (req: JwtRequest, res) => {
   if (req.auth) {
     res.status(200).send("OK");
   } else {
     res.status(401).json({ err: "unauthorized" });
   }
-});
+};
+TokenRouter.get(`/`, getToken);
 
-TokenRouter.get(`/refresh`, async (req: JwtRequest, res) => {
+const getTokenRefresh = async (req: JwtRequest, res) => {
   const authorization = req.headers.authorization;
   if (!authorization) {
     res.status(401).send("Missing authorization header.");
@@ -56,4 +57,5 @@ TokenRouter.get(`/refresh`, async (req: JwtRequest, res) => {
     console.error(e);
   }
   res.status(401).send("Token Invalid or Expired");
-});
+};
+TokenRouter.get(`/refresh`, getTokenRefresh);
