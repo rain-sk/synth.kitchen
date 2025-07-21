@@ -1,0 +1,214 @@
+import { compare, hash } from "bcrypt";
+import { Request as JwtRequest } from "express-jwt";
+import { AdminUser, UserInfoAuthenticated } from "shared";
+
+import { AppDataSource } from "../data-source";
+import { User } from "../entity/User";
+import { PasswordResetRequest } from "../entity/PasswordResetRequest";
+
+import {
+  sendPasswordChangedEmail,
+  sendResetPasswordEmail,
+} from "../utils/email";
+import { jwtSign } from "../utils/jwtSign";
+import { validateRegistration } from "./validate/registration";
+
+import { appOrigin, bcryptCost } from "../env";
+
+export class AuthController {
+  static getUser = (req: JwtRequest, res) => {
+    const user: UserInfoAuthenticated = {
+      id: req.auth.id as string,
+      email: req.auth.email as string,
+      username: req.auth.username as string,
+      verified: req.auth.verified as boolean,
+    };
+    res.json({ user });
+  };
+
+  static login = async (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    if (email && password) {
+      try {
+        const user = await AppDataSource.getRepository(User)
+          .createQueryBuilder("user")
+          .where("user.email = :email", { email })
+          .getOneOrFail();
+        if (await compare(password, user.password)) {
+          const data: UserInfoAuthenticated | AdminUser = user.admin
+            ? {
+                id: user.id,
+                admin: user.admin,
+                email: user.email,
+                username: user.username,
+                verified: user.verified,
+              }
+            : {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                verified: user.verified,
+              };
+          const token = await jwtSign(data);
+          res.status(200).json({
+            jwt: token,
+          });
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    res.status(401).send("Login failed.");
+  };
+
+  static register = async (req, res) => {
+    const email = req.body.email;
+    const username = req.body.username;
+    const password = req.body.password;
+
+    await AppDataSource.manager.transaction(
+      async (transactionalEntityManager) => {
+        try {
+          const error = await validateRegistration(transactionalEntityManager)(
+            email,
+            username,
+            password
+          );
+          if (error) {
+            res.status(400).json({ error });
+            return;
+          }
+        } catch (e) {
+          console.error(e);
+          res.status(500).json({ e });
+          return;
+        }
+
+        try {
+          const user = await transactionalEntityManager
+            .getRepository(User)
+            .create({
+              email,
+              username,
+              password: await hash(password, bcryptCost),
+            });
+          if (user) {
+            const token = await jwtSign(
+              user.admin
+                ? {
+                    id: user.id,
+                    admin: user.admin,
+                    email: user.email,
+                    username: user.username,
+                    verified: user.verified,
+                  }
+                : {
+                    id: user.id,
+                    email: user.email,
+                    username: user.username,
+                    verified: user.verified,
+                  }
+            );
+            res.status(200).json({
+              jwt: token,
+            });
+            return;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+
+        res.status(401).send("Login failed.");
+      }
+    );
+  };
+
+  static resetPassword = async (req, res) => {
+    const password = req.body.password;
+    const key = req.body.key;
+    if (!password && !key) {
+      res.status(400).send();
+      return;
+    }
+
+    await AppDataSource.manager.transaction(
+      async (transactionalEntityManager) => {
+        let request: PasswordResetRequest | undefined;
+        let user: User | undefined;
+        try {
+          const requestRepository =
+            transactionalEntityManager.getRepository(PasswordResetRequest);
+
+          request = await requestRepository.findOneOrFail({
+            where: { id: key },
+            relations: { user: true },
+          });
+
+          const userRepository = transactionalEntityManager.getRepository(User);
+          user = await userRepository.findOneByOrFail({
+            id: request.user.id,
+          });
+
+          user.password = await hash(password, bcryptCost);
+          await userRepository.save(user);
+          await requestRepository.remove(request);
+          await sendPasswordChangedEmail(user.email, {
+            appOrigin,
+          });
+        } catch (e) {
+          console.error(e);
+          if (!request) {
+            console.error("No reset request with the given key.");
+          } else if (!user) {
+            console.error("No user found with the request's foreign key.");
+          }
+        }
+      }
+    );
+    res.status(200).json({ success: true });
+  };
+
+  static requestResetPassword = async (req, res) => {
+    const email = req.body.email;
+    if (!email) {
+      res.status(400).send();
+      return;
+    }
+
+    await AppDataSource.manager.transaction(
+      async (transactionalEntityManager) => {
+        let user: User | undefined;
+        try {
+          user = await transactionalEntityManager
+            .getRepository(User)
+            .createQueryBuilder("user")
+            .where("user.email = :email", { email })
+            .getOneOrFail();
+        } catch (e) {
+          console.error("Failed to find user with the given email.", e);
+        }
+        if (user) {
+          const passwordResetRepository =
+            transactionalEntityManager.getRepository(PasswordResetRequest);
+          await transactionalEntityManager
+            .createQueryBuilder()
+            .delete()
+            .from(PasswordResetRequest)
+            .where("user = :user", { user: user.id })
+            .execute();
+          const passwordResetRequest = await passwordResetRepository.create();
+          passwordResetRequest.user = user;
+          await passwordResetRepository.save(passwordResetRequest);
+          await sendResetPasswordEmail(user.email, {
+            appOrigin,
+            resetKey: passwordResetRequest.id,
+          });
+        }
+      }
+    );
+    res.status(200).json({ success: true });
+  };
+}
