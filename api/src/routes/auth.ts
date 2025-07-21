@@ -19,7 +19,7 @@ import { appOrigin, bcryptCost } from "../env";
 
 export const AuthRouter = express.Router();
 
-AuthRouter.get("/user", jwt, (req: JwtRequest, res) => {
+const getAuthUser = (req: JwtRequest, res) => {
   const user: UserInfoAuthenticated = {
     id: req.auth.id as string,
     email: req.auth.email as string,
@@ -27,9 +27,10 @@ AuthRouter.get("/user", jwt, (req: JwtRequest, res) => {
     verified: req.auth.verified as boolean,
   };
   res.json({ user });
-});
+};
+AuthRouter.get("/user", jwt, getAuthUser);
 
-AuthRouter.post("/login", async (req, res) => {
+const getAuthLogin = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -65,7 +66,8 @@ AuthRouter.post("/login", async (req, res) => {
     }
   }
   res.status(401).send("Login failed.");
-});
+};
+AuthRouter.post("/login", getAuthLogin);
 
 const uniqueEmail =
   (transactionalEntityManager: EntityManager) => async (email: string) =>
@@ -121,7 +123,7 @@ const validateRegistration =
     }
   };
 
-AuthRouter.post("/register", async (req, res) => {
+const getAuthRegister = async (req, res) => {
   const email = req.body.email;
   const username = req.body.username;
   const password = req.body.password;
@@ -181,9 +183,10 @@ AuthRouter.post("/register", async (req, res) => {
       res.status(401).send("Login failed.");
     }
   );
-});
+};
+AuthRouter.post("/register", getAuthRegister);
 
-AuthRouter.post("/reset-password-request", async (req, res) => {
+const getAuthResetPasswordRequest = async (req, res) => {
   const email = req.body.email;
   if (!email) {
     res.status(400).send();
@@ -222,9 +225,10 @@ AuthRouter.post("/reset-password-request", async (req, res) => {
     }
   );
   res.status(200).json({ success: true });
-});
+};
+AuthRouter.post("/reset-password-request", getAuthResetPasswordRequest);
 
-AuthRouter.post("/reset-password", async (req, res) => {
+const getAuthResetPassword = async (req, res) => {
   const password = req.body.password;
   const key = req.body.key;
   if (!password && !key) {
@@ -267,4 +271,5 @@ AuthRouter.post("/reset-password", async (req, res) => {
     }
   );
   res.status(200).json({ success: true });
-});
+};
+AuthRouter.post("/reset-password", getAuthResetPassword);
