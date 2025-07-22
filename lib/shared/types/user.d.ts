@@ -1,12 +1,12 @@
-import { RecipeInfo } from "./recipe";
+import { PatchInfo } from "./patch";
 
 export type UserInfo = {
   id: string;
   username: string;
 };
 
-export type UserRecipes = UserInfo & {
-  recipes: RecipeInfo[];
+export type UserPatchs = UserInfo & {
+  patchs: PatchInfo[];
 };
 
 export type UserInfoAuthenticated = UserInfo & {

@@ -7,7 +7,7 @@ import {
   OneToOne,
 } from "typeorm";
 import { UserInfoAuthenticated } from "shared";
-import { Recipe } from "./Recipe";
+import { Patch } from "./Patch";
 import { EmailVerificationRequest } from "./EmailVerificationRequest";
 
 @Entity()
@@ -34,8 +34,8 @@ export class User implements UserInfoAuthenticated {
   @Column({ type: "boolean", default: false })
   verified: boolean;
 
-  @OneToMany(() => Recipe, (recipe) => recipe.chef)
-  recipes: Promise<Recipe[]>;
+  @OneToMany(() => Patch, (patch) => patch.chef)
+  patchs: Promise<Patch[]>;
 
   @OneToOne(() => EmailVerificationRequest, (request) => request.user)
   @Column({ type: "uuid", default: null })

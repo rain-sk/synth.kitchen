@@ -4,7 +4,7 @@ import "reflect-metadata";
 import { pgDbName, pgHost, pgPassword, pgPort, pgUser } from "./env";
 
 import { User } from "./entity/User";
-import { Recipe } from "./entity/Recipe";
+import { Patch } from "./entity/Patch";
 import { PasswordResetRequest } from "./entity/PasswordResetRequest";
 import { EmailVerificationRequest } from "./entity/EmailVerificationRequest";
 
@@ -18,7 +18,7 @@ export const AppDataSource = new DataSource({
   username: pgUser,
   password: pgPassword,
   database: pgDbName,
-  entities: [User, Recipe, EmailVerificationRequest, PasswordResetRequest],
+  entities: [User, Patch, EmailVerificationRequest, PasswordResetRequest],
   migrations: [InitialSchema1750101797340, SeedAdmin1750101797341],
   logging: true,
 });

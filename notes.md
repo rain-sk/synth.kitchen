@@ -25,7 +25,7 @@ After April 30, 20:22::19 UTC, run the following on the staging server:
 
 I've reworked the basic structure, and have an app/server pair being deployed on a staging server running coolify. Coolify is also hosting the dev and staging databases.
 
-I think I'm getting to a point where I need some shared types defined in their own project, to define the expectations between backend/frontend clearly. I also foresee a need to omit patch JSON data when transmitting a big list of results. That would just be a waste of bandwidth. There's also a need to be able to generate thumbnails for each recipe.
+I think I'm getting to a point where I need some shared types defined in their own project, to define the expectations between backend/frontend clearly. I also foresee a need to omit patch JSON data when transmitting a big list of results. That would just be a waste of bandwidth. There's also a need to be able to generate thumbnails for each patch.
 
 ### Part 4
 
