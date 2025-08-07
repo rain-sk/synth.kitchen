@@ -35,7 +35,7 @@ FROM nginx:alpine AS final
 
 RUN apk add --no-cache nodejs npm
 
-COPY nginx.app.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=app-build /src/app/dist /usr/share/nginx/html
 
 WORKDIR /usr/src/api
