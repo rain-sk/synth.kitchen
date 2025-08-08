@@ -9,6 +9,7 @@ const plugins =
 export default defineConfig({
 	plugins,
 	build: {
+		outDir: 'build',
 		rollupOptions: {
 			output: {
 				manualChunks: {
