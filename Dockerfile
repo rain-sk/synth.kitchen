@@ -22,7 +22,7 @@ RUN npm run build:prod
 
 FROM nginx:alpine AS serve
 
-RUN apk add --no-cache nodejs npm tini
+RUN apk add --no-cache nodejs npm tini supervisor
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /src/app/build /usr/share/nginx/html
@@ -31,7 +31,9 @@ WORKDIR /usr/src/api
 COPY --from=build /src/api/node_modules /usr/src/api/node_modules
 COPY --from=build /src/api/build /usr/src/api
 
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 EXPOSE 80
 
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["sh", "-c", "node index.js & exec nginx -g 'daemon off;'"]
+CMD ["supervisord"]
