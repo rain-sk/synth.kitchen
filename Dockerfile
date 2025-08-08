@@ -34,4 +34,8 @@ COPY --from=build /src/api/build /usr/src/api
 EXPOSE 80
 
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["sh", "-c", "node index.js & exec nginx -g 'daemon off;'"]
+CMD ["bash","-c", "node ./index.js & NODE=$! && \\
+                   nginx -g 'daemon off;' & NGINX=$! && \\
+                   wait -n; EXIT=$? && \\
+                   pkill -TERM -P $$ 2>/dev/null && \\
+                   exit $EXIT"]

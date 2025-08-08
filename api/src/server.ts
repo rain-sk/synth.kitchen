@@ -13,6 +13,9 @@ ServerRouter.use(`/${healthRoute}`, HealthCheckRouter);
 ServerRouter.use("/auth", AuthRouter);
 ServerRouter.use("/patch", PatchRouter);
 ServerRouter.use("/token", TokenRouter);
+ServerRouter.use("/crash", () => {
+  process.exit(1);
+});
 ServerRouter.get("/", (req, res) => {
   res.status(400).send("400: Invalid request.");
 });
