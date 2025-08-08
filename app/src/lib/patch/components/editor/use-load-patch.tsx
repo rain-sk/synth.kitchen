@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useRoute } from 'wouter';
 
-import { IPatchAction, patchActions } from '../../state/actions';
 import { blankPatchToClearCanvas, blankPatchToLoad } from '../../state';
-import { IPatchState } from '../../state/types/patch';
+import { IPatchAction, patchActions } from '../../state/actions';
 import { connectorButtonExists, connectorKey } from '../../state/connection';
+import { IPatchState } from '../../state/types/patch';
+
 import { useApi } from '../../api';
 
 const doLoadConnections = async (
 	connectedConnectors: Set<string>,
 	dispatch: React.Dispatch<IPatchAction>,
-): Promise<undefined> => {
-	return new Promise((resolve) => {
+) => {
+	await new Promise((resolve) => {
 		const tryLoad = async () => {
 			const connectorButtonsExist = [...connectedConnectors].every((key) =>
 				connectorButtonExists(key),
@@ -20,7 +21,7 @@ const doLoadConnections = async (
 				dispatch(patchActions.loadConnectionsAction());
 				resolve(undefined);
 			} else {
-				setTimeout(() => tryLoad(), 0);
+				tryLoad();
 			}
 		};
 		tryLoad();
