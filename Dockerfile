@@ -11,8 +11,8 @@ RUN npm ci
 
 WORKDIR /src/api
 RUN npm ci
-#COPY .env* .
-COPY api/.env* .
+COPY .env* .
+# COPY api/.env* .
 RUN npm run build:prod
 
 WORKDIR /src/app
