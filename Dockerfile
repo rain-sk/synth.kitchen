@@ -21,15 +21,14 @@ RUN npm run build:prod
 
 
 FROM nginx:alpine AS serve
-
-RUN apk add --no-cache nodejs npm tini supervisor
-
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /src/app/build /usr/share/nginx/html
+RUN apk add --no-cache nodejs tini supervisor
 
 WORKDIR /usr/src/api
 COPY --from=build /src/api/node_modules /usr/src/api/node_modules
 COPY --from=build /src/api/build /usr/src/api
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /src/app/build /usr/share/nginx/html
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
