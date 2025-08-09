@@ -14,6 +14,7 @@ RUN npm ci
 COPY .env* .
 RUN npm run build:prod
 RUN rm -f /src/api/.env
+RUN npm uninstall @types/bcrypt @types/cors @types/express @types/node concurrently esbuild ts-node typescript
 
 WORKDIR /src/web
 RUN npm ci
