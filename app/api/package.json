@@ -1,6 +1,6 @@
 {
   "name": "synth.kitchen-api",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "",
   "license": "ISC",
   "author": "",
@@ -26,7 +26,7 @@
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.2.2",
     "server-name-gen": "^1.0.2",
-    "shared": "file:../lib/shared",
+    "shared": "file:../../lib/shared",
     "typeorm": "0.3.25",
     "uuid": "^11.1.0"
   },
