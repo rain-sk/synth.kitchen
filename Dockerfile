@@ -13,6 +13,8 @@ WORKDIR /src/api
 RUN npm ci
 COPY .env* .
 RUN npm run build:prod
+COPY package-runtime.json package.json
+RUN npm install
 RUN rm -f /src/api/.env
 
 WORKDIR /src/web
