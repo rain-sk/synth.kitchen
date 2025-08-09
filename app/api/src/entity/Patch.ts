@@ -6,7 +6,7 @@ import {
   ManyToOne,
 } from "typeorm";
 import { User } from "./User";
-import { PatchInfo } from "shared";
+import { PatchInfo } from "synth.kitchen-shared";
 
 @Entity()
 export class Patch implements PatchInfo {

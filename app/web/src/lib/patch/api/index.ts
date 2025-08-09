@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { apiBase } from '../../../api/uri';
-import { Patch } from 'shared';
+import { Patch } from 'synth.kitchen-shared';
 
 export const useApi = () => {
 	const getPatch = useCallback(

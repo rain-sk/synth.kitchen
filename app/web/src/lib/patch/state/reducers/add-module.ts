@@ -1,4 +1,4 @@
-import { randomId, randomName } from 'shared';
+import { randomId, randomName } from 'synth.kitchen-shared';
 
 import { IAddModule } from '../actions/add-module';
 import { IPatchState } from '../types/patch';

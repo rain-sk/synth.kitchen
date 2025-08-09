@@ -6,7 +6,8 @@ import {
   OneToMany,
   OneToOne,
 } from "typeorm";
-import { UserInfoAuthenticated } from "shared";
+import { UserInfoAuthenticated } from "synth.kitchen-shared";
+
 import { Patch } from "./Patch";
 import { EmailVerificationRequest } from "./EmailVerificationRequest";
 

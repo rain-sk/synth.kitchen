@@ -1,5 +1,5 @@
 import { Request as JwtRequest } from "express-jwt";
-import { UserInfoAuthenticated } from "shared";
+import { UserInfoAuthenticated } from "synth.kitchen-shared";
 
 import { User } from "../entity/User";
 import { jwtSign } from "../utils/jwtSign";

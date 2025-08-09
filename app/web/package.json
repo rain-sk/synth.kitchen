@@ -11,7 +11,7 @@
 		"react-dom": "^19.1.1",
 		"react-modal": "^3.16.3",
 		"react-use": "^17.6.0",
-		"shared": "file:../../lib/shared",
+		"synth.kitchen-shared": "file:../shared",
 		"standardized-audio-context": "^25.3.77",
 		"webmidi": "^3.1.12",
 		"wouter": "^3.7.1"

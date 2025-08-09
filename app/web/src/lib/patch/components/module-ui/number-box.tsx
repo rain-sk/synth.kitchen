@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { randomId } from 'shared';
+import { randomId } from 'synth.kitchen-shared';
 
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';

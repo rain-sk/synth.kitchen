@@ -1,5 +1,5 @@
-import type { PatchQuery } from "shared";
-import { randomId, randomName } from "shared";
+import type { PatchQuery } from "synth.kitchen-shared";
+import { randomId, randomName } from "synth.kitchen-shared";
 
 import { AppDataSource } from "../data-source";
 import { Patch } from "../entity/Patch";

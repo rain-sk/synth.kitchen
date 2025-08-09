@@ -3,7 +3,7 @@ import esbuild from "esbuild";
 esbuild
   .build({
     entryPoints: ["./src/index.ts"],
-    outdir: "./dist",
+    outdir: "./build",
     external: ["server-name-gen", "uuid"],
     bundle: true,
     minify: true,

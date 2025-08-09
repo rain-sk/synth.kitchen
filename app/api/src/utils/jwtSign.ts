@@ -1,5 +1,5 @@
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
-import type { AdminUser, UserInfoAuthenticated } from "shared";
+import type { AdminUser, UserInfoAuthenticated } from "synth.kitchen-shared";
 
 import { User } from "../entity/User";
 

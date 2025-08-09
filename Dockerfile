@@ -2,11 +2,11 @@ FROM node:alpine AS build
 
 
 WORKDIR /src
-COPY lib/shared/ ./lib/shared/
+COPY app/shared/ ./shared/
 COPY app/api/ ./api/
 COPY app/web/ ./web/
 
-WORKDIR /src/lib/shared
+WORKDIR /src/shared
 RUN npm ci
 
 WORKDIR /src/api

@@ -1,4 +1,4 @@
-import type { PatchInfo, UserInfo } from 'shared';
+import type { PatchInfo, UserInfo } from 'synth.kitchen-shared';
 import { IConnectorInfo, IInput, IIo, IOutput } from './connection';
 import { IModule } from './module';
 import { IParameter } from './parameter';

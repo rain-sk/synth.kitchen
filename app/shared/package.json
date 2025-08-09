@@ -1,15 +1,15 @@
 {
-  "name": "shared",
-  "version": "0.4.0",
-  "description": "shared types for synth.kitchen",
+  "name": "synth.kitchen-shared",
+  "version": "0.5.0",
+  "description": "shared types for synth.kitchen-api and synth.kitchen-web",
   "license": "MIT",
   "keywords": [],
   "type": "commonjs",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "exports": {
-    "import": "./dist/index.js",
-    "require": "./dist/index.js"
+    "import": "./build/index.js",
+    "require": "./build/index.js"
   },
   "scripts": {
     "prepare": "npm run build",

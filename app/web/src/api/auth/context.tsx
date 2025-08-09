@@ -3,7 +3,7 @@ import type {
 	LoginResponse,
 	RegisterResponse,
 	UserInfoAuthenticated,
-} from 'shared';
+} from 'synth.kitchen-shared';
 
 import { useJwt } from './useJwt';
 import { useUser } from './useUser';

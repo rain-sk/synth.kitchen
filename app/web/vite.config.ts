@@ -14,7 +14,7 @@ export default defineConfig({
 			output: {
 				manualChunks: {
 					'react-use': ['react-use'],
-					shared: ['shared'],
+					shared: ['synth.kitchen-shared'],
 					'extendable-media-recorder': ['extendable-media-recorder'],
 					'extendable-media-recorder-wav-encoder': [
 						'extendable-media-recorder-wav-encoder',
