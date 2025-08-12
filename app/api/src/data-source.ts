@@ -12,6 +12,7 @@ import {
 
 import { User } from "./entity/User";
 import { Patch } from "./entity/Patch";
+import { Sample } from "./entity/Sample";
 import { PasswordResetRequest } from "./entity/PasswordResetRequest";
 import { EmailVerificationRequest } from "./entity/EmailVerificationRequest";
 
@@ -20,7 +21,6 @@ import { SeedAdmin1750101797341 } from "./migration/1750101797341-SeedAdmin";
 import { RenameChefToCreator1754401246115 } from "./migration/1754401246115-RenameChefToCreator";
 import { AddSlugToPatch1754401685802 } from "./migration/1754401685802-AddSlugToPatch";
 import { DefaultPublicTrue1754558730988 } from "./migration/1754558730988-DefaultPublicTrue";
-import { Sample } from "./entity/Sample";
 import { Samples1754999099521 } from "./migration/1754999099521-Samples";
 
 export const AppDataSource = new DataSource({
