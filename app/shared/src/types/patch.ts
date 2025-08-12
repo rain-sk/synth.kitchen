@@ -1,3 +1,4 @@
+import { Sample } from "./sample";
 import { UserInfo } from "./user";
 
 export type PatchQuery =
@@ -16,4 +17,5 @@ export type PatchInfo = {
 
 export type Patch = PatchInfo & {
   data: string;
+  samples: Sample[];
 };

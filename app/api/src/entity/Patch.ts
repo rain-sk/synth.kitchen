@@ -4,12 +4,14 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
+  ManyToMany,
 } from "typeorm";
 import { User } from "./User";
-import { PatchInfo } from "synth.kitchen-shared";
+import { Patch as SharedPatch } from "synth.kitchen-shared";
+import { Sample } from "./Sample";
 
 @Entity()
-export class Patch implements PatchInfo {
+export class Patch implements SharedPatch {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -21,6 +23,9 @@ export class Patch implements PatchInfo {
 
   @Column({ type: "json" })
   data: string;
+
+  @ManyToMany(() => Sample, (sample) => sample.patches, { eager: true })
+  samples: Sample[];
 
   @Column({ type: "boolean", default: true })
   public: boolean;
