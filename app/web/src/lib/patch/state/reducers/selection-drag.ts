@@ -10,7 +10,7 @@ type IRectangle = {
 	height: number;
 };
 
-const rectContainsOtherRect = (
+const rectIntersectsOtherRect = (
 	rect: IRectangle,
 	otherRect: IRectangle,
 ): boolean => {
@@ -25,10 +25,10 @@ const rectContainsOtherRect = (
 	const otherRectBottom = otherRect.y + otherRect.height;
 
 	return (
-		rectLeft < otherRectLeft &&
-		rectTop < otherRectTop &&
-		rectRight > otherRectRight &&
-		rectBottom > otherRectBottom
+		rectRight >= otherRectLeft &&
+		rectLeft <= otherRectRight &&
+		rectBottom >= otherRectTop &&
+		rectTop <= otherRectBottom
 	);
 };
 
@@ -60,7 +60,7 @@ const modulesInRange = (
 			height: moduleElement?.clientHeight ?? 0,
 		};
 
-		if (rectContainsOtherRect(rect, moduleRect)) {
+		if (rectIntersectsOtherRect(rect, moduleRect)) {
 			moduleKeysInRange.add(moduleKey);
 		}
 	}
