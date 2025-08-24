@@ -20,13 +20,89 @@ export type ModuleType =
 	| 'SHIFT'
 	| 'VCA';
 
+export const UnitMap = {
+	CLOCK: {
+		tempo: 'bpm',
+	},
+	COMPRESSOR: {
+		attack: 'sec',
+		release: 'sec',
+		knee: 'dB',
+		ratio: '',
+		threshold: '',
+	},
+	MIDI_CC: { input: '', cc: '', min: 'cv', max: 'cv' },
+	MIDI_CLOCK: { input: '' },
+	MIDI_TRIGGER: { input: '', note: '' },
+	GAIN: {
+		gain: '',
+	},
+	LIMITER: {},
+	NOISE: {},
+	DELAY: {
+		delayTime: 'sec',
+	},
+	ENVELOPE: {
+		gate: '',
+		attack: 'sec',
+		decay: 'sec',
+		sustain: '',
+		release: 'sec',
+		peak: '',
+	},
+	FILTER: {
+		frequency: 'hz',
+		detune: 'ct',
+		Q: '',
+		gain: '',
+		type: '',
+	},
+	GATE: { gate: '' },
+	OSCILLATOR: {
+		frequency: 'hz',
+		detune: 'ct',
+		waveform: '',
+	},
+	PAN: {
+		pan: '',
+	},
+	SEQUENCER: {
+		steps: '',
+		step0: '',
+		step1: '',
+		step2: '',
+		step3: '',
+		step4: '',
+		step5: '',
+		step6: '',
+		step7: '',
+	},
+	SHIFT: {
+		inputMin: '',
+		inputMax: '',
+		outputMin: '',
+		outputMax: '',
+	},
+	OUTPUT: {
+		gain: '',
+	},
+	VCA: {
+		gate: '',
+		attack: 'sec',
+		decay: 'sec',
+		sustain: '',
+		release: 'sec',
+		peak: '',
+	},
+};
+
 export interface IModuleState extends Record<ModuleType, any> {
 	CLOCK: { tempo: number };
 	COMPRESSOR: {
 		attack: number;
+		release: number;
 		knee: number;
 		ratio: number;
-		release: number;
 		threshold: number;
 	};
 	MIDI_CC: { input: string; cc: number; min: number; max: number };
