@@ -114,12 +114,14 @@ main {
 .module {
 	background: #aad96c;
 	position: absolute;
-	display: flexbox;
+	display: flex;
+	flex-direction: column;
 	cursor: move;
 	border: 4px solid black;
 	border-radius: 3px;
 	padding: 1rem;
 	transition: border linear 100ms;
+	width: 13rem;
 }
 
 .module h2 {
@@ -137,10 +139,6 @@ main {
 
 .module .highlight {
 	background-color: #aad96c;
-}
-
-#module-canvas > .module {
-	transition: border linear 100ms;
 }
 
 .module.selected {
