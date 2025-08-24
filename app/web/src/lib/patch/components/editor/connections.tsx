@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { connectorButton, connectorKey } from '../../state/connection';
-import { IInput, IOutput } from '../../state/types/connection';
+import { IConnection } from '../../state/types/connection';
 import {
 	INVALID_POSITION,
 	IPatchState,
@@ -51,7 +51,7 @@ type Segment = [Position, Position];
 type Path = Segment[];
 const connectionToPath =
 	(mode: ConnectionDrawMode) =>
-	([output, input]: [IOutput, IInput]): Path => {
+	([output, input]: IConnection): Path => {
 		const outputPosition = position(connectorButton(connectorKey(output)));
 		const inputPosition = position(connectorButton(connectorKey(input)));
 

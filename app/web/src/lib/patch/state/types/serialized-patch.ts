@@ -1,6 +1,6 @@
 import type { UserInfo } from 'synth.kitchen-shared';
 
-import { IInput, IOutput } from './connection';
+import { IConnection } from './connection';
 import { IModule } from './module';
 import { Position } from './patch';
 
@@ -11,5 +11,5 @@ export type ISerializedPatch = {
 	creator?: UserInfo;
 	modules: Record<string, IModule>;
 	modulePositions: Record<string, Position>;
-	connections: Record<string, [IOutput, IInput]>;
+	connections: Record<string, IConnection>;
 };

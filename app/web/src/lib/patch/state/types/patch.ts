@@ -1,5 +1,5 @@
 import type { PatchInfo, UserInfo } from 'synth.kitchen-shared';
-import { IConnectorInfo, IInput, IIo, IOutput } from './connection';
+import { IConnection, IConnectorInfo, IIo } from './connection';
 import { IModule } from './module';
 import { IParameter } from './parameter';
 import { Modifier } from '../../constants/key';
@@ -9,8 +9,6 @@ export const INVALID_POSITION: Position = [-1, -1];
 
 export interface IPatchState extends PatchInfo {
 	// patch info
-	id: string;
-	name: string;
 	creator: UserInfo;
 
 	// modules and parameters
@@ -20,7 +18,7 @@ export interface IPatchState extends PatchInfo {
 
 	// i/o
 	activeConnectorKey: string | undefined;
-	connections: Record<string, [IOutput, IInput]>;
+	connections: Record<string, IConnection>;
 	connectors: Record<string, IConnectorInfo>;
 	io: Record<string, IIo>;
 	parameters: Record<string, IParameter>;

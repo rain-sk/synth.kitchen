@@ -1,4 +1,5 @@
 import {
+	IConnection,
 	IConnector,
 	IConnectorInfo,
 	IInput,
@@ -46,9 +47,9 @@ export const connectionKey = (output: IOutput, input: IInput) => {
 };
 
 export const connectionInfo = (
-	connections: Record<string, [IOutput, IInput]>,
+	connections: Record<string, IConnection>,
 	connectionKey: string,
-): [IOutput, IInput] => {
+): IConnection => {
 	const connection = connections[connectionKey];
 
 	if (!connection) {
@@ -59,12 +60,12 @@ export const connectionInfo = (
 };
 
 export const connect = (
-	connections: Record<string, [IOutput, IInput]>,
+	connections: Record<string, IConnection>,
 	connectors: Record<string, IConnectorInfo>,
 	output: IOutput,
 	input: IInput,
 ): {
-	connections: Record<string, [IOutput, IInput]>;
+	connections: Record<string, IConnection>;
 	connectors: Record<string, IConnectorInfo>;
 } => {
 	output.accessor().connect(input.accessor() as any);
@@ -88,7 +89,7 @@ export const connect = (
 };
 
 export const disconnectSet = (
-	connections: Record<string, [IOutput, IInput]>,
+	connections: Record<string, IConnection>,
 	connectors: Record<string, IConnectorInfo>,
 	connectionsToDisconnect: Set<string>,
 ) => {
@@ -103,12 +104,12 @@ export const disconnectSet = (
 };
 
 export const disconnect = (
-	connections: Record<string, [IOutput, IInput]>,
+	connections: Record<string, IConnection>,
 	connectors: Record<string, IConnectorInfo>,
 	output: IOutput,
 	input: IInput,
 ): {
-	connections: Record<string, [IOutput, IInput]>;
+	connections: Record<string, IConnection>;
 	connectors: Record<string, IConnectorInfo>;
 } => {
 	const key = connectionKey(output, input);
@@ -166,12 +167,12 @@ export const disconnect = (
 };
 
 export const connectOrDisconnect = (
-	connections: Record<string, [IOutput, IInput]>,
+	connections: Record<string, IConnection>,
 	connectors: Record<string, IConnectorInfo>,
 	output: IOutput,
 	input: IInput,
 ): {
-	connections: Record<string, [IOutput, IInput]>;
+	connections: Record<string, IConnection>;
 	connectors: Record<string, IConnectorInfo>;
 } =>
 	connectionKey(output, input) in connections

@@ -5,12 +5,7 @@ import {
 	connectorInfo,
 	connectionInfo,
 } from '../state/connection';
-import {
-	IConnectorInfo,
-	IInput,
-	IoType,
-	IOutput,
-} from '../state/types/connection';
+import { IConnection, IConnectorInfo, IoType } from '../state/types/connection';
 
 type DerivedConnectionState = {
 	activeConnectorIsInput: boolean;
@@ -28,7 +23,7 @@ export const DerivedConnectionStateContext =
 export const DerivedConnectionStateContextProvider: React.FC<
 	React.PropsWithChildren<{
 		activeConnectorKey?: string;
-		connections: Record<string, [IOutput, IInput]>;
+		connections: Record<string, IConnection>;
 		connectors: Record<string, IConnectorInfo>;
 	}>
 > = ({ children, activeConnectorKey, connections, connectors }) => {

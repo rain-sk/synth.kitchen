@@ -19,6 +19,13 @@ export type IConnector = IOutput | IInput;
 
 export type IConnectorInfo = [IConnector, string[]];
 
+export type IConnectionInfo = {
+	color: string;
+};
+export type IConnection =
+	| [IOutput, IInput]
+	| [IOutput, IInput, IConnectionInfo];
+
 export const ioKey = (io: Omit<IIo, 'accessor'>): string => {
 	return `${io.moduleKey}_${io.type}_${io.channel}`;
 };
