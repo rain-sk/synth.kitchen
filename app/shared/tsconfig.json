@@ -4,7 +4,7 @@
       "lib": [
          "es2022"
       ],
-      "outDir": "dist",
+      "outDir": "build",
       "rootDir": "src",
       "declaration": true,
       "emitDeclarationOnly": true,
