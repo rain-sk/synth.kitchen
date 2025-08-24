@@ -28,7 +28,7 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 	}, [focusedInput, edit, name]);
 
 	const onFocus = useCallback(() => {
-		dispatch(patchActions.focusInputAction(module.moduleKey));
+		// dispatch(patchActions.focusInputAction(module.moduleKey));
 	}, []);
 
 	const cancel = useCallback(() => {
@@ -90,7 +90,7 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 					/>
 				</>
 			) : (
-				name
+				module.type.toLowerCase()
 			)}
 		</h2>
 	);

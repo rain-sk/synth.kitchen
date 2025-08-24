@@ -119,14 +119,14 @@ main {
 	cursor: move;
 	border: 4px solid black;
 	border-radius: 3px;
-	padding: 1rem;
+	padding: 0.5rem;
 	transition: border linear 100ms;
 	width: 13rem;
 }
 
 .module h2 {
-	max-width: 300px;
-	margin-bottom: 1rem;
+	font-size: 1.2rem;
+	margin-bottom: 0;
 }
 
 .module .active {
@@ -214,27 +214,32 @@ main.selection-drag .connector:hover:before {
 }
 
 .numparam,
+.numparam > div,
 .radioparam {
 	display: flex;
-	justify-content: space-between;
-	margin-top: 0.5rem;
+}
+
+.numparam input,
+.radioparam select {
+	font-size: 0.667rem;
+}
+
+.numparam input {
+	max-width: 50%;
 }
 
 .numparam button {
 	margin-right: 1rem;
 }
 
-.numbox {
-	display: flex;
+.numparam > div,
+.radioparam {
 	justify-content: space-between;
+	flex-grow: 1;
 }
 
-.numbox label {
-	min-width: 6rem;
-}
-
-.numbox input {
-	margin-left: 1rem;
+.numparam > h3 {
+	font-size: 0.667rem;
 }
 
 #load {
