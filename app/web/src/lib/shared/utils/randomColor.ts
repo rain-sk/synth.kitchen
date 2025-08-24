@@ -1,3 +1,5 @@
+import { stringToInt } from './stringToInt';
+
 const colors = [
 	'#2e1419',
 	'#5f2f3a',
@@ -125,3 +127,7 @@ const colors = [
 	'#e847cb',
 	'#f199dd',
 ];
+
+export const randomColor = (input: string) => {
+	return colors[stringToInt(input) % colors.length];
+};
