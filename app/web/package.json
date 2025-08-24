@@ -4,15 +4,15 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"extendable-media-recorder": "^9.2.28",
-		"extendable-media-recorder-wav-encoder": "^7.0.130",
+		"extendable-media-recorder": "^9.2.29",
+		"extendable-media-recorder-wav-encoder": "^7.0.131",
 		"hhmmss": "^1.0.0",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
 		"react-modal": "^3.16.3",
 		"react-use": "^17.6.0",
-		"synth.kitchen-shared": "file:../shared",
 		"standardized-audio-context": "^25.3.77",
+		"synth.kitchen-shared": "file:../shared",
 		"webmidi": "^3.1.12",
 		"wouter": "^3.7.1"
 	},
@@ -25,8 +25,8 @@
 		"preview": "vite preview"
 	},
 	"devDependencies": {
-		"@types/node": "^24.2.0",
-		"@types/react": "^19.1.9",
+		"@types/node": "^24.3.0",
+		"@types/react": "^19.1.11",
 		"@types/react-dom": "^19.1.7",
 		"@types/react-modal": "^3.16.3",
 		"@vitejs/plugin-react": "^4.7.0",
@@ -34,6 +34,6 @@
 		"hsluv": "^1.0.1",
 		"typescript": "^5.9.2",
 		"vite": "^7.0.6",
-		"vite-bundle-analyzer": "^1.2.0"
+		"vite-bundle-analyzer": "^1.2.1"
 	}
 }
