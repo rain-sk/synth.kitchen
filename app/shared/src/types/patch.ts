@@ -17,5 +17,4 @@ export type PatchInfo = {
 
 export type Patch = PatchInfo & {
   data: string;
-  samples: Sample[];
 };
