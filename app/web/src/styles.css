@@ -188,10 +188,10 @@ main {
 .connector:hover:before {
 	content: '';
 	position: absolute;
-	top: -100%;
-	left: -100%;
-	width: 300%;
-	height: 300%;
+	top: -50%;
+	left: -50%;
+	width: 200%;
+	height: 200%;
 	border-radius: 50%;
 	display: block;
 	background: rgb(63, 94, 251);
@@ -236,6 +236,7 @@ main.selection-drag .connector:hover:before {
 .radioparam {
 	justify-content: space-between;
 	flex-grow: 1;
+	overflow: hidden;
 }
 
 .numparam > h3 {
