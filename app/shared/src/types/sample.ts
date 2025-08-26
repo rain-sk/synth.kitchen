@@ -1,5 +1,3 @@
-import { PatchInfo } from "./patch";
-
 export type SampleQuery =
   | {
       id: string;
@@ -13,5 +11,5 @@ export type SampleInfo = {
 };
 
 export type Sample = SampleInfo & {
-  data: string;
+  data: Buffer;
 };
