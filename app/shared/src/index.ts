@@ -7,6 +7,9 @@ export {
   PatchInfo,
   PatchQuery,
   LoginResponse,
+  Sample,
+  SampleInfo,
+  SampleQuery,
 } from "./types";
 
 export { randomId, randomName } from "./utils";

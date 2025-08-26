@@ -14,5 +14,4 @@ export type SampleInfo = {
 
 export type Sample = SampleInfo & {
   data: string;
-  patches: PatchInfo[];
 };
