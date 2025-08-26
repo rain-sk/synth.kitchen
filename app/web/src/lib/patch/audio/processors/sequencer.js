@@ -8,7 +8,7 @@ function calcPhase(phase, ticksPerMinute) {
 class Sequencer extends AudioWorkletProcessor {
 	static get parameterDescriptors() {
 		return [
-			{ name: 'steps', defaultValue: 4, minValue: 2, maxValue: 8 },
+			{ name: 'steps', defaultValue: 4, minValue: 2, maxValue: 16 },
 			{ name: 'step0', defaultValue: 0 },
 			{ name: 'step1', defaultValue: 0 },
 			{ name: 'step2', defaultValue: 0 },
@@ -17,6 +17,14 @@ class Sequencer extends AudioWorkletProcessor {
 			{ name: 'step5', defaultValue: 0 },
 			{ name: 'step6', defaultValue: 0 },
 			{ name: 'step7', defaultValue: 0 },
+			{ name: 'step8', defaultValue: 0 },
+			{ name: 'step9', defaultValue: 0 },
+			{ name: 'step10', defaultValue: 0 },
+			{ name: 'step11', defaultValue: 0 },
+			{ name: 'step12', defaultValue: 0 },
+			{ name: 'step13', defaultValue: 0 },
+			{ name: 'step14', defaultValue: 0 },
+			{ name: 'step15', defaultValue: 0 },
 			{ name: 'active', defaultValue: 1, minValue: 0, maxValue: 1 },
 		];
 	}
@@ -99,11 +107,59 @@ class Sequencer extends AudioWorkletProcessor {
 					frameValue = step6IsConstant ? step6[0] : step6[i];
 					break;
 				}
-				case 7:
-				default: {
+				case 7: {
 					const step7 = parameters.step7;
 					const step7IsConstant = step7.length === 1;
 					frameValue = step7IsConstant ? step7[0] : step7[i];
+					break;
+				}
+				case 8: {
+					const step8 = parameters.step8;
+					const step8IsConstant = step8.length === 1;
+					frameValue = step8IsConstant ? step8[0] : step8[i];
+					break;
+				}
+				case 9: {
+					const step9 = parameters.step9;
+					const step9IsConstant = step9.length === 1;
+					frameValue = step9IsConstant ? step9[0] : step9[i];
+					break;
+				}
+				case 10: {
+					const step10 = parameters.step10;
+					const step10IsConstant = step10.length === 1;
+					frameValue = step10IsConstant ? step10[0] : step10[i];
+					break;
+				}
+				case 11: {
+					const step11 = parameters.step11;
+					const step11IsConstant = step11.length === 1;
+					frameValue = step11IsConstant ? step11[0] : step11[i];
+					break;
+				}
+				case 12: {
+					const step12 = parameters.step12;
+					const step12IsConstant = step12.length === 1;
+					frameValue = step12IsConstant ? step12[0] : step12[i];
+					break;
+				}
+				case 13: {
+					const step13 = parameters.step13;
+					const step13IsConstant = step13.length === 1;
+					frameValue = step13IsConstant ? step13[0] : step13[i];
+					break;
+				}
+				case 14: {
+					const step14 = parameters.step14;
+					const step14IsConstant = step14.length === 1;
+					frameValue = step14IsConstant ? step14[0] : step14[i];
+					break;
+				}
+				case 15:
+				default: {
+					const step15 = parameters.step15;
+					const step15IsConstant = step15.length === 1;
+					frameValue = step15IsConstant ? step15[0] : step15[i];
 					break;
 				}
 			}

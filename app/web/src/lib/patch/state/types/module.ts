@@ -150,6 +150,14 @@ export interface IModuleState extends Record<ModuleType, any> {
 		step5: number;
 		step6: number;
 		step7: number;
+		step8: number;
+		step9: number;
+		step10: number;
+		step11: number;
+		step12: number;
+		step13: number;
+		step14: number;
+		step15: number;
 	};
 	SHIFT: {
 		inputMin: number;
