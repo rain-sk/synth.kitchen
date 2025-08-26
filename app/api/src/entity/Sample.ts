@@ -1,9 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from "typeorm";
-import { SampleInfo } from "synth.kitchen-shared";
+import { Sample as SharedSample } from "synth.kitchen-shared";
 import { Patch } from "./Patch";
 
 @Entity()
-export class Sample implements SampleInfo {
+export class Sample implements SharedSample {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
