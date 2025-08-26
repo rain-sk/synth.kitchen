@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
 import {
 	IModule,
@@ -17,32 +17,24 @@ export const useNode = <NodeType, ModuleType extends Type>(
 	) => IModuleState[ModuleType],
 	nodeFactory: () => NodeType,
 ) => {
-	const nodeRef = useRef<NodeType>(undefined);
-
-	if (!nodeRef.current) {
-		nodeRef.current = nodeFactory();
-	}
+	const node = useMemo(nodeFactory, []);
 
 	// Though React calls all effects twice because of a "dummy cycle" in dev mode,
 	// we need to use some special tricks to prevent actually disconnecting the
 	// audio node during the dummy cycle.
 	useEffectOnce(() => () => {
 		if (
-			nodeRef.current &&
-			typeof nodeRef.current === 'object' &&
-			'disconnect' in nodeRef.current &&
-			typeof nodeRef.current.disconnect === 'function'
+			node &&
+			typeof node === 'object' &&
+			'disconnect' in node &&
+			typeof node.disconnect === 'function'
 		) {
-			nodeRef.current.disconnect();
-			nodeRef.current = undefined;
+			node.disconnect();
 		}
 	});
 
 	const [state, setState] = useState(() =>
-		moduleInit(
-			nodeRef.current as NodeType,
-			module.state as IModuleState[ModuleType],
-		),
+		moduleInit(node as NodeType, module.state as IModuleState[ModuleType]),
 	);
 
 	const { dispatch } = useContext(PatchContext);
@@ -54,7 +46,7 @@ export const useNode = <NodeType, ModuleType extends Type>(
 	}, [dispatch, module.moduleKey, state]);
 
 	return {
-		node: nodeRef.current,
+		node,
 		state,
 		setState,
 	};
