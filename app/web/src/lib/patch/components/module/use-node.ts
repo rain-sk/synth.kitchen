@@ -9,6 +9,8 @@ import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 import { useEffectOnce } from './use-effect-once';
 
+const initializedNodes = new Set<string>();
+
 export const useNode = <NodeType, ModuleType extends Type>(
 	module: IModule,
 	moduleInit: (
@@ -20,6 +22,12 @@ export const useNode = <NodeType, ModuleType extends Type>(
 	const nodeRef = useRef<NodeType>(undefined);
 
 	if (!nodeRef.current) {
+		if (!initializedNodes.has(module.moduleKey)) {
+			initializedNodes.add(module.moduleKey);
+		} else {
+			console.error('re-initializing an existing audio node');
+			debugger;
+		}
 		nodeRef.current = nodeFactory();
 	}
 
