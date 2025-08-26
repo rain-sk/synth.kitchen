@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import {
 	connectorKey,
@@ -27,30 +27,44 @@ export const DerivedConnectionStateContextProvider: React.FC<
 		connectors: Record<string, IConnectorInfo>;
 	}>
 > = ({ children, activeConnectorKey, connections, connectors }) => {
-	const [activeConnector, activeConnectorConnections] = activeConnectorKey
-		? connectorInfo(connectors, activeConnectorKey)
-		: [undefined, []];
-
-	const activeConnectorIsOutput = activeConnector
-		? activeConnector &&
-		  'type' in activeConnector &&
-		  activeConnector.type === IoType.output
-		: false;
-	const activeConnectorIsInput = activeConnector
-		? !activeConnectorIsOutput
-		: false;
-
-	const connectedToActiveConnector: Set<string> = new Set(
-		activeConnectorKey
-			? activeConnectorConnections
-					.map((key) => connectionInfo(connections, key))
-					.map(([output, input]) =>
-						activeConnectorIsOutput
-							? connectorKey(input)
-							: connectorKey(output),
-					)
-			: undefined,
+	const [activeConnector, activeConnectorConnections] = useMemo(
+		() =>
+			activeConnectorKey
+				? connectorInfo(connectors, activeConnectorKey)
+				: [undefined, []],
+		[activeConnectorKey, connectors],
 	);
+
+	const { activeConnectorIsInput, activeConnectorIsOutput } = useMemo(() => {
+		if (activeConnector) {
+			const activeConnectorIsOutput =
+				activeConnector &&
+				'type' in activeConnector &&
+				activeConnector.type === IoType.output;
+
+			return {
+				activeConnectorIsInput: !activeConnectorIsOutput,
+				activeConnectorIsOutput,
+			};
+		} else {
+			return {
+				activeConnectorIsInput: false,
+				activeConnectorIsOutput: false,
+			};
+		}
+	}, [activeConnector]);
+
+	const connectedToActiveConnector = useMemo(() => {
+		if (!activeConnectorKey) {
+			return new Set<string>();
+		}
+		const connectedConnectors = activeConnectorConnections
+			.map((key) => connectionInfo(connections, key))
+			.map(([output, input]) =>
+				activeConnectorIsOutput ? connectorKey(input) : connectorKey(output),
+			);
+		return new Set<string>(connectedConnectors);
+	}, [activeConnectorConnections, activeConnectorIsOutput]);
 
 	return (
 		<DerivedConnectionStateContext.Provider
