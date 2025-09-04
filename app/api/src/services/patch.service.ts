@@ -26,7 +26,7 @@ const uniquePatchNameAndSlug = async (id: string) => {
   }
 };
 
-const getPatchParams = (getPatchInfo: PatchQuery): [string, PatchQuery] => {
+const getPatchParams = (query: PatchQuery): [string, PatchQuery] => {
   let where: string;
   let params: PatchQuery;
   if ("id" in query) {
@@ -35,6 +35,9 @@ const getPatchParams = (getPatchInfo: PatchQuery): [string, PatchQuery] => {
   } else if ("slug" in query) {
     where = "patch.slug = :slug";
     params = { slug: query.slug };
+  } else if ("creatorId" in query) {
+    where = "patch.creatorId = :creatorId";
+    params = { creatorId: query.creatorId };
   }
   return [where, params];
 };
@@ -54,7 +57,9 @@ export class PatchService {
     return false;
   };
 
-  static getPatch = async (info: PatchQuery): Promise<Patch | undefined> => {
+  static getPatch = async (
+    info: PatchQuery
+  ): Promise<Patch | Patch[] | undefined> => {
     const [where, params] = getPatchParams(info);
 
     try {

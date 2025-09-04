@@ -1,3 +1,4 @@
+import { Patch } from "../entity/Patch";
 import { PatchService } from "../services/patch.service";
 import { PatchQuery } from "synth.kitchen-shared";
 
@@ -18,18 +19,24 @@ export class PatchController {
 
   static getPatch = async (req, res) => {
     try {
-      let queryParamCount = Object.keys(req.query).length;
+      const query: PatchQuery = req.query;
+
+      let queryParamCount = Object.keys(query).length;
       if (queryParamCount !== 1) {
         throw new Error("Invalid number of query parameters");
-      } else if (!("id" in req.query || "slug" in req.query)) {
-        throw new Error("Missing expected query params ('id' or 'slug')");
+      } else if (!("id" in query || "slug" in query || "creatorId" in query)) {
+        throw new Error(
+          "Missing expected query params ('id', 'slug', or 'creatorId')"
+        );
       }
 
-      const patch = await PatchService.getPatch(req.query);
-      if (patch) {
-        res.json(patch);
+      const result = await PatchService.getPatch(query);
+      if (Array.isArray(result)) {
+        res.json({ patches: result });
+      } else if (result) {
+        res.json({ patch: result });
       } else {
-        res.status(404).send("");
+        res.sendStatus(404);
       }
 
       return;
