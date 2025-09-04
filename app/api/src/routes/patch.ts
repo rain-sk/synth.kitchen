@@ -3,5 +3,5 @@ import { PatchController } from "../controllers/patch";
 
 export const PatchRouter = express.Router();
 
-PatchRouter.get("/id", PatchController.getNewPatchId);
-PatchRouter.get("/:idOrSlug", PatchController.getPatch);
+PatchRouter.get("/", PatchController.getPatch);
+PatchRouter.get("/id", PatchController.getUniquePatchId);

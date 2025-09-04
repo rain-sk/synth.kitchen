@@ -29,12 +29,12 @@ const uniquePatchNameAndSlug = async (id: string) => {
 const getPatchParams = (getPatchInfo: PatchQuery): [string, PatchQuery] => {
   let where: string;
   let params: PatchQuery;
-  if ("id" in getPatchInfo) {
+  if ("id" in query) {
     where = "patch.id = :id";
-    params = { id: getPatchInfo.id };
-  } else if ("slug" in getPatchInfo) {
+    params = { id: query.id };
+  } else if ("slug" in query) {
     where = "patch.slug = :slug";
-    params = { slug: getPatchInfo.slug };
+    params = { slug: query.slug };
   }
   return [where, params];
 };
