@@ -8,6 +8,9 @@ import { IPatchState } from '../../state/types/patch';
 
 import { useApi } from '../../api';
 
+const uuidRegex =
+	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 const doLoadConnections = async (
 	connectedConnectors: Set<string>,
 	dispatch: React.Dispatch<IPatchAction>,
@@ -55,9 +58,11 @@ export const useLoadPatch = (
 				loadingRef.current = true;
 				setLoading(loadingRef.current);
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
-				const patch = await getPatch(slug);
+				const patch = await getPatch(
+					uuidRegex.test(slug) ? { id: slug } : { slug },
+				);
 				if (patch) {
-					dispatch(patchActions.loadPatchAction(patch.data));
+					dispatch(patchActions.loadPatchAction(patch.data as any));
 					setLoadConnections(true);
 					if (slug !== patch.slug) {
 						navigate(`/patch/${patch.slug}`);
