@@ -17,11 +17,12 @@ import { loadConnections } from './load-connections';
 import { focusInput } from './input-focus';
 import { blurInput } from './input-blur';
 import { clearPatchEditor } from './clear-patch-editor';
+import { clearActiveConnector } from './clear-active-connector';
 
 export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 	state,
 	action,
-) => {
+): IPatchState => {
 	switch (action.type) {
 		case 'AddModule': {
 			return addModule(state, action);
@@ -31,6 +32,9 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		}
 		case 'ChangeName': {
 			return changeName(state, action);
+		}
+		case 'ClearActiveConnector': {
+			return clearActiveConnector(state, action);
 		}
 		case 'ClearPatchEditor': {
 			return clearPatchEditor(state, action);

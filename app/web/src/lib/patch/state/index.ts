@@ -1,7 +1,10 @@
-import { INVALID_POSITION, IPatchState } from './types/patch';
+import { Module, ModulePosition, ModuleType } from 'synth.kitchen-shared';
+
+import { IPatchState } from './types/patch';
 import { Modifier } from '../constants/key';
 import { ISerializedPatch } from './types/serialized-patch';
-import { IModule } from './types/module';
+import { INVALID_POSITION } from './constants/positions';
+import { convertRemToPixels } from '../../shared/utils/rem-to-px';
 
 export const blankPatchToClearCanvas = (): ISerializedPatch => ({
 	id: '',
@@ -12,12 +15,24 @@ export const blankPatchToClearCanvas = (): ISerializedPatch => ({
 	connections: {},
 });
 
-export const outputModule: () => IModule = () => ({
+export const outputModule: () => Module = () => ({
 	name: 'output',
 	moduleKey: '0',
-	type: 'OUTPUT',
-	state: { gain: 0.45 },
+	type: ModuleType.OUTPUT,
+	state: { version: '0.5.0', gain: 0.45 },
 });
+
+const outputModulePosition = (): ModulePosition => {
+	const main = document.getElementById('main');
+	if (!main) {
+		return [200, 200];
+	}
+
+	const { width, height } = main.getBoundingClientRect();
+	const rightOffset = convertRemToPixels(9);
+	const bottomOffset = convertRemToPixels(14);
+	return [width - rightOffset, height - bottomOffset];
+};
 
 export const blankPatchToLoad = (): ISerializedPatch => ({
 	id: '', // no id
@@ -27,7 +42,7 @@ export const blankPatchToLoad = (): ISerializedPatch => ({
 		['0']: outputModule(),
 	},
 	modulePositions: {
-		['0']: [50, 50],
+		['0']: outputModulePosition(),
 	},
 	connections: {},
 });

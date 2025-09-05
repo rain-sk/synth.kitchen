@@ -34,6 +34,7 @@ const doLoadConnections = async (
 export const useLoadPatch = (
 	state: IPatchState,
 	dispatch: React.Dispatch<IPatchAction>,
+	initialized: boolean,
 	slug?: string,
 ) => {
 	const { connections, connectors } = state;
@@ -47,7 +48,7 @@ export const useLoadPatch = (
 	const loadingRef = useRef(loading);
 
 	useEffect(() => {
-		if (loadingRef.current) {
+		if (loadingRef.current || !initialized) {
 			return;
 		}
 
@@ -62,7 +63,16 @@ export const useLoadPatch = (
 					uuidRegex.test(slug) ? { id: slug } : { slug },
 				);
 				if (patch) {
-					dispatch(patchActions.loadPatchAction(patch.data as any));
+					dispatch(
+						patchActions.loadPatchAction({
+							id: patch.id,
+							name: patch.name,
+							slug: patch.slug,
+							modules: patch.state.modules,
+							modulePositions: patch.state.modulePositions,
+							connections: patch.state.connections,
+						}),
+					);
 					setLoadConnections(true);
 					if (slug !== patch.slug) {
 						navigate(`/patch/${patch.slug}`);
@@ -76,7 +86,7 @@ export const useLoadPatch = (
 				navigate('/patch/new');
 			}
 		})();
-	}, [newPatch, slug, state.slug]);
+	}, [initialized, newPatch, slug, state.slug]);
 
 	const loadConnectionsRef = useRef(false);
 	useEffect(() => {

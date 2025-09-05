@@ -20,7 +20,7 @@ export class User implements UserInfoAuthenticated {
   @IsEmail()
   email: string;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", unique: true })
   username: string;
 
   @Column({ type: "text" })

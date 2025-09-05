@@ -1,22 +1,23 @@
 import React, { useCallback } from 'react';
 import { IAudioContext, IDelayNode } from 'standardized-audio-context';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
 const delayStateFromNode = (
 	node: IDelayNode<IAudioContext>,
-): IModuleState['DELAY'] => ({
+): ModuleState['DELAY'] => ({
+	version: '0.5.0',
 	delayTime: node.delayTime.value,
 });
 
 const initDelay = (
 	delay: IDelayNode<IAudioContext>,
-	state?: IModuleState['DELAY'],
+	state?: ModuleState['DELAY'],
 ) => {
 	if (state) {
 		delay.delayTime.setValueAtTime(state.delayTime, audioContext.currentTime);
@@ -26,14 +27,13 @@ const initDelay = (
 	}
 };
 
-export const DelayModule: React.FC<{ module: IModule<'DELAY'> }> = ({
+export const DelayModule: React.FC<{ module: Module<ModuleType.DELAY> }> = ({
 	module,
 }) => {
-	const { node, state, setState } = useNode<IDelayNode<IAudioContext>, 'DELAY'>(
-		module,
-		initDelay,
-		() => audioContext.createDelay(179.99999999999),
-	);
+	const { node, state, setState } = useNode<
+		IDelayNode<IAudioContext>,
+		ModuleType.DELAY
+	>(module, initDelay, () => audioContext.createDelay(179.99999999999));
 
 	const enabled = state !== undefined;
 

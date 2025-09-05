@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { createGlobalState } from 'react-use';
 import { audioContext, initAudio } from '../../audio';
 import { initMidi } from '../../midi';
@@ -13,7 +13,12 @@ export const useAudioMidiInit = () => {
 	const [initialized, setInitialized] = useAudioInitialized();
 	const [status, setStatus] = useAudioInitializedStatus();
 
-	const init = useCallback(async () => {
+	const initCalledRef = useRef(false);
+	const initAudioMidi = useCallback(async () => {
+		if (initCalledRef.current) {
+			return;
+		}
+		initCalledRef.current = true;
 		setStatus('starting audio');
 		await initAudio();
 		setStatus('starting midi');
@@ -26,5 +31,5 @@ export const useAudioMidiInit = () => {
 		}
 	}, [setInitialized, setStatus]);
 
-	return { initialized, status, init };
+	return { initialized, status, initAudioMidi };
 };

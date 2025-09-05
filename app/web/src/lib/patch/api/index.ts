@@ -71,5 +71,7 @@ export const useApi = () => {
 		[],
 	);
 
-	return { getPatch, getPatches };
+	const savePatch = useCallback(async (patch: Patch) => {}, []);
+
+	return { getPatch, getPatches, savePatch };
 };

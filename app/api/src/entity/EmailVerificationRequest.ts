@@ -17,5 +17,5 @@ export class EmailVerificationRequest {
   user: User;
 
   @CreateDateColumn()
-  createdDate: Date;
+  createdAt: Date;
 }

@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
+import { Connection, ConnectorInfo, IoType } from 'synth.kitchen-shared';
 
 import {
 	connectorKey,
 	connectorInfo,
 	connectionInfo,
 } from '../state/connection';
-import { IConnection, IConnectorInfo, IoType } from '../state/types/connection';
 
 type DerivedConnectionState = {
 	activeConnectorIsInput: boolean;
@@ -23,8 +23,8 @@ export const DerivedConnectionStateContext =
 export const DerivedConnectionStateContextProvider: React.FC<
 	React.PropsWithChildren<{
 		activeConnectorKey?: string;
-		connections: Record<string, IConnection>;
-		connectors: Record<string, IConnectorInfo>;
+		connections: Record<string, Connection>;
+		connectors: Record<string, ConnectorInfo>;
 	}>
 > = ({ children, activeConnectorKey, connections, connectors }) => {
 	const [activeConnector, activeConnectorConnections] = useMemo(

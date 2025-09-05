@@ -1,18 +1,19 @@
 import React, { useCallback } from 'react';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
 import { OutputNode } from '../../audio/nodes/output';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
-const outputStateFromNode = (node: OutputNode): IModuleState['OUTPUT'] => ({
+const outputStateFromNode = (node: OutputNode): ModuleState['OUTPUT'] => ({
+	version: '0.5.0',
 	gain: node.gain.value,
 });
 
-const initOutput = (output: OutputNode, state?: IModuleState['OUTPUT']) => {
+const initOutput = (output: OutputNode, state?: ModuleState['OUTPUT']) => {
 	if (state) {
 		output.gain.setValueAtTime(state.gain, audioContext.currentTime);
 		return state;
@@ -21,10 +22,10 @@ const initOutput = (output: OutputNode, state?: IModuleState['OUTPUT']) => {
 	}
 };
 
-export const OutputModule: React.FC<{ module: IModule<'OUTPUT'> }> = ({
+export const OutputModule: React.FC<{ module: Module<ModuleType.OUTPUT> }> = ({
 	module,
 }) => {
-	const { node, state, setState } = useNode<OutputNode, 'OUTPUT'>(
+	const { node, state, setState } = useNode<OutputNode, ModuleType.OUTPUT>(
 		module,
 		initOutput,
 		() => new OutputNode(),

@@ -17,5 +17,5 @@ export class PasswordResetRequest {
   user: User;
 
   @CreateDateColumn()
-  createdDate: Date;
+  createdAt: Date;
 }

@@ -22,6 +22,10 @@ import { RenameChefToCreator1754401246115 } from "./migration/1754401246115-Rena
 import { AddSlugToPatch1754401685802 } from "./migration/1754401685802-AddSlugToPatch";
 import { DefaultPublicTrue1754558730988 } from "./migration/1754558730988-DefaultPublicTrue";
 import { Samples1754999099521 } from "./migration/1754999099521-Samples";
+import { PatchState1757113659573 } from "./migration/1757113659573-PatchState";
+import { SeedPatches1757411092846 } from "./migration/1757411092846-SeedPatches";
+import { UniqueUsername1757491678616 } from "./migration/1757491678616-UniqueUsername";
+import { ConsistentCreatedAtColumnName1757511544274 } from "./migration/1757511544274-NewMigration";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -44,6 +48,10 @@ export const AppDataSource = new DataSource({
     AddSlugToPatch1754401685802,
     DefaultPublicTrue1754558730988,
     Samples1754999099521,
+    PatchState1757113659573,
+    SeedPatches1757411092846,
+    UniqueUsername1757491678616,
+    ConsistentCreatedAtColumnName1757511544274,
   ],
   logging,
 });

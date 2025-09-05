@@ -11,6 +11,7 @@ import {
 } from './select-module';
 import {
 	ISelectionDrag,
+	selectionDragCancelAction,
 	selectionDragContinueAction,
 	selectionDragEndAction,
 	selectionDragStartAction,
@@ -40,11 +41,16 @@ import {
 	clearPatchEditorAction,
 	IClearPatchEditor,
 } from './clear-patch-editor';
+import {
+	clearActiveConnectorAction,
+	IClearActiveConnector,
+} from './clear-active-connector';
 
 export type IPatchAction =
 	| IAddModule
 	| ICancelLoadFromCloud
 	| IChangeName
+	| IClearActiveConnector
 	| IClearPatchEditor
 	| IClickConnector
 	| IBlurInput
@@ -63,6 +69,7 @@ export const patchActions = {
 	addModuleAction,
 	cancelLoadFromCloudAction,
 	changeNameAction,
+	clearActiveConnectorAction,
 	clearPatchEditorAction,
 	clickConnectorAction,
 	deselectAllModulesAction,
@@ -77,6 +84,7 @@ export const patchActions = {
 	selectionDragContinueAction,
 	selectionDragEndAction,
 	selectionDragStartAction,
+	selectionDragCancelAction,
 	selectModuleAction,
 	selectSingleModuleAction,
 	setActiveConnectorKeyAction,

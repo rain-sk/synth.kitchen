@@ -1,4 +1,5 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
+
 import { User } from "../entity/User";
 import { PasswordResetRequest } from "../entity/PasswordResetRequest";
 import { EmailVerificationRequest } from "../entity/EmailVerificationRequest";

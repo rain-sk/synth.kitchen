@@ -1,10 +1,10 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { Module } from 'synth.kitchen-shared';
 
-import { IModule } from '../../state/types/module';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 
-export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
+export const ModuleHeader: React.FC<{ module: Module }> = ({ module }) => {
 	const { focusedInput, dispatch } = useContext(PatchContext);
 
 	const editRef = useRef<HTMLInputElement>(null);
@@ -28,7 +28,8 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 	}, [focusedInput, edit, name]);
 
 	const onFocus = useCallback(() => {
-		// dispatch(patchActions.focusInputAction(module.moduleKey));
+		editRef.current?.select();
+		dispatch(patchActions.focusInputAction(module.moduleKey));
 	}, []);
 
 	const cancel = useCallback(() => {
@@ -87,10 +88,11 @@ export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
 						onFocus={onFocus}
 						onBlur={cancel}
 						onKeyDown={handleKeyDown}
+						autoFocus
 					/>
 				</>
 			) : (
-				module.type.toLowerCase()
+				module.name
 			)}
 		</h2>
 	);

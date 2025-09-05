@@ -5,24 +5,16 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
+import { ModulePosition } from 'synth.kitchen-shared';
 
 import { AddModule } from './add-module';
-import {
-	INVALID_POSITION,
-	IPatchState,
-	Position,
-} from '../../state/types/patch';
+import { IPatchState } from '../../state/types/patch';
 import { IPatchAction, patchActions } from '../../state/actions';
 import { queueAnimation } from '../../../../utils/animation';
 import { UseScrollContext } from '../../contexts/use-scroll';
-
-const positionFromMouseEvent = (
-	e: MouseEvent,
-	scrollableElement: HTMLElement,
-): Position => [
-	e.clientX + scrollableElement.scrollLeft,
-	e.clientY + scrollableElement.scrollTop,
-];
+import { INVALID_POSITION } from '../../state/constants/positions';
+import { clearActiveConnectorAction } from '../../state/actions/clear-active-connector';
+import { positionFromMouseEvent } from './utils/position-from-mouse-event';
 
 export type ModuleCanvasBackdropProps = {
 	state: IPatchState;
@@ -65,7 +57,7 @@ export const ModuleCanvasBackdrop: React.FC<
 
 	const drawSelection = useCallback(() => {
 		if (selection.current.element) {
-			if (selection.current.start.join(',') === INVALID_POSITION.join(',')) {
+			if (selection.current.start === INVALID_POSITION) {
 				setDraggingSelection(false);
 				selection.current.element.style.display = 'none';
 			} else {
@@ -173,9 +165,11 @@ export const ModuleCanvasBackdrop: React.FC<
 
 			if (
 				Math.abs(selection.current.start[0] - selection.current.end[0]) < 5 &&
-				Math.abs(selection.current.start[1] - selection.current.end[1]) < 5
+				Math.abs(selection.current.start[1] - selection.current.end[1]) < 5 &&
+				(e.target as HTMLElement).id !== 'overview'
 			) {
 				setDeviceButtonPosition(selection.current.start);
+				dispatch(clearActiveConnectorAction());
 			}
 
 			queueAnimation(clearSelection);
@@ -196,13 +190,15 @@ export const ModuleCanvasBackdrop: React.FC<
 
 			selection.current.start = position;
 
-			dispatch(patchActions.selectionDragStartAction(position));
+			if ((e.target as HTMLElement).id !== 'overview') {
+				dispatch(patchActions.selectionDragStartAction(position));
 
-			document.body.addEventListener('mouseup', onMouseUp);
-			document.body.addEventListener('mouseleave', onMouseUp);
-			document.body.addEventListener('mousemove', onDrag);
+				document.body.addEventListener('mouseup', onMouseUp);
+				document.body.addEventListener('mouseleave', onMouseUp);
+				document.body.addEventListener('mousemove', onDrag);
 
-			onDrag(e.nativeEvent);
+				onDrag(e.nativeEvent);
+			}
 		},
 		[dispatch],
 	);

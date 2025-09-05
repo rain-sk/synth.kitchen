@@ -8,7 +8,6 @@ import React, {
 	useState,
 } from 'react';
 
-import { IModule } from '../../state/types/module';
 import { Modifier } from '../../constants/key';
 import { ModuleHeader } from '../module-ui/module-header';
 import { IPatchAction, patchActions } from '../../state/actions';
@@ -28,26 +27,27 @@ import { NoiseModule } from './noise';
 import { OscillatorModule } from './oscillator';
 import { OutputModule } from './output';
 import { PanModule } from './pan';
-import { IPatchState, Position } from '../../state/types/patch';
+import { IPatchState } from '../../state/types/patch';
 import { SequencerModule } from './sequencer';
 import { VcaModule } from './vca';
 import { CompressorModule } from './compressor';
 import { useLongPress } from 'react-use';
 import { queueAnimation } from '../../../../utils/animation';
 import { ShiftModule } from './shift';
+import { Module, ModulePosition, ModuleType } from 'synth.kitchen-shared';
 
 const useDragAndDrop = (
 	moduleKey: string,
-	initialPosition: Position,
+	initialPosition: ModulePosition,
 	containerRef: React.MutableRefObject<HTMLElement | null>,
 ): {
 	isDragging: boolean;
 	startDragging: (e: ReactMouseEvent<HTMLDivElement>) => void;
-	setPosition: (position: Position) => void;
+	setPosition: (position: ModulePosition) => void;
 } => {
 	const { dispatch } = useContext(PatchContext);
 	const updateModulePosition = useCallback(
-		(position: Position) => {
+		(position: ModulePosition) => {
 			dispatch(patchActions.updateModulePositionAction(moduleKey, position));
 		},
 		[dispatch, moduleKey],
@@ -55,7 +55,7 @@ const useDragAndDrop = (
 
 	const moveContainerRef = (
 		containerRef: React.MutableRefObject<HTMLElement | null>,
-		position: Position,
+		position: ModulePosition,
 	) =>
 		queueAnimation(() => {
 			if (containerRef.current) {
@@ -87,7 +87,7 @@ const useDragAndDrop = (
 		} else {
 			const x = e.clientX - dragOffset.current.x;
 			const y = e.clientY - dragOffset.current.y;
-			const newPosition: Position = [x, y];
+			const newPosition: ModulePosition = [x, y];
 
 			moveContainerRef(containerRef, newPosition);
 
@@ -120,7 +120,7 @@ const useDragAndDrop = (
 		}
 	};
 
-	const { current: setPosition } = useRef((newPosition: Position) => {
+	const { current: setPosition } = useRef((newPosition: ModulePosition) => {
 		position.current = newPosition;
 		moveContainerRef(containerRef, newPosition);
 	});
@@ -128,44 +128,54 @@ const useDragAndDrop = (
 	return { isDragging, startDragging, setPosition };
 };
 
-const ModuleUi: React.FC<{ module: IModule }> = ({ module }) => {
+const ModuleUi: React.FC<{ module: Module }> = ({ module }) => {
 	switch (module.type) {
 		case 'CLOCK':
-			return <ClockModule module={module as IModule<'CLOCK'>} />;
+			return <ClockModule module={module as Module<ModuleType.CLOCK>} />;
 		case 'COMPRESSOR':
-			return <CompressorModule module={module as IModule<'COMPRESSOR'>} />;
+			return (
+				<CompressorModule module={module as Module<ModuleType.COMPRESSOR>} />
+			);
 		case 'MIDI_CC':
-			return <MidiCcModule module={module as IModule<'MIDI_CC'>} />;
+			return <MidiCcModule module={module as Module<ModuleType.MIDI_CC>} />;
 		case 'MIDI_CLOCK':
-			return <MidiClockModule module={module as IModule<'MIDI_CLOCK'>} />;
+			return (
+				<MidiClockModule module={module as Module<ModuleType.MIDI_CLOCK>} />
+			);
 		case 'MIDI_TRIGGER':
-			return <MidiTriggerModule module={module as IModule<'MIDI_TRIGGER'>} />;
+			return (
+				<MidiTriggerModule module={module as Module<ModuleType.MIDI_TRIGGER>} />
+			);
 		case 'DELAY':
-			return <DelayModule module={module as IModule<'DELAY'>} />;
+			return <DelayModule module={module as Module<ModuleType.DELAY>} />;
 		case 'FILTER':
-			return <FilterModule module={module as IModule<'FILTER'>} />;
+			return <FilterModule module={module as Module<ModuleType.FILTER>} />;
 		case 'GAIN':
-			return <GainModule module={module as IModule<'GAIN'>} />;
+			return <GainModule module={module as Module<ModuleType.GAIN>} />;
 		case 'GATE':
-			return <GateModule module={module as IModule<'GATE'>} />;
+			return <GateModule module={module as Module<ModuleType.GATE>} />;
 		case 'LIMITER':
-			return <LimiterModule module={module as IModule<'LIMITER'>} />;
+			return <LimiterModule module={module as Module<ModuleType.LIMITER>} />;
 		case 'NOISE':
-			return <NoiseModule module={module as IModule<'NOISE'>} />;
+			return <NoiseModule module={module as Module<ModuleType.NOISE>} />;
 		case 'OSCILLATOR':
-			return <OscillatorModule module={module as IModule<'OSCILLATOR'>} />;
+			return (
+				<OscillatorModule module={module as Module<ModuleType.OSCILLATOR>} />
+			);
 		case 'OUTPUT':
-			return <OutputModule module={module as IModule<'OUTPUT'>} />;
+			return <OutputModule module={module as Module<ModuleType.OUTPUT>} />;
 		case 'PAN':
-			return <PanModule module={module as IModule<'PAN'>} />;
+			return <PanModule module={module as Module<ModuleType.PAN>} />;
 		case 'SEQUENCER':
-			return <SequencerModule module={module as IModule<'SEQUENCER'>} />;
+			return (
+				<SequencerModule module={module as Module<ModuleType.SEQUENCER>} />
+			);
 		case 'SHIFT':
-			return <ShiftModule module={module as IModule<'SHIFT'>} />;
+			return <ShiftModule module={module as Module<ModuleType.SHIFT>} />;
 		case 'VCA':
-			return <VcaModule module={module as IModule<'VCA'>} />;
+			return <VcaModule module={module as Module<ModuleType.VCA>} />;
 		case 'ENVELOPE':
-			return <EnvelopeModule module={module as IModule<'ENVELOPE'>} />;
+			return <EnvelopeModule module={module as Module<ModuleType.ENVELOPE>} />;
 		default: {
 			return <p>unavailable</p>;
 		}
@@ -177,10 +187,10 @@ export type ModuleProps = {
 	dispatch: React.Dispatch<IPatchAction>;
 };
 
-export const Module: React.FC<
+export const ModuleWrapper: React.FC<
 	{
-		module: IModule;
-		position: Position;
+		module: Module;
+		position: ModulePosition;
 	} & ModuleProps
 > = ({
 	state: { selectedModuleKeys, pendingSelection, heldModifiers },
@@ -212,31 +222,22 @@ export const Module: React.FC<
 		[module.moduleKey, pendingSelection],
 	);
 
-	const selectionStateString = useMemo(() => {
-		if (currentlySelected === inPendingSelection) {
-			return ' unselected';
-		} else if (currentlySelected) {
-			return ' selected';
-		} else if (inPendingSelection) {
-			return ' selection_pending';
-		} else {
-			return ' unselected';
-		}
-	}, [currentlySelected, inPendingSelection]);
-
-	const draggingStateString = isDragging ? ' dragging' : '';
-
 	const onFocus = useCallback(() => {
 		dispatch(patchActions.selectSingleModuleAction(module.moduleKey));
 	}, [dispatch, module.moduleKey]);
 
-	const longPressOptions = useLongPress(() => {
-		console.log('long press');
-	});
-
 	const onMouseDown = useCallback(
 		(e: React.MouseEvent<HTMLDivElement>) => {
-			longPressOptions.onMouseDown(e);
+			e.stopPropagation();
+			const targetNodeName = (e.target as HTMLElement).nodeName.toLowerCase();
+			if (
+				targetNodeName === 'h2' ||
+				targetNodeName === 'input' ||
+				targetNodeName === 'button' ||
+				targetNodeName === 'select'
+			) {
+				return;
+			}
 			const shiftClick = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
 			if (!shiftClick && !currentlySelected) {
@@ -254,7 +255,6 @@ export const Module: React.FC<
 			startDragging(e);
 		},
 		[
-			longPressOptions,
 			currentlySelected,
 			dispatch,
 			module.moduleKey,
@@ -263,6 +263,20 @@ export const Module: React.FC<
 		],
 	);
 
+	const classNames: string[] = ['module', module.type];
+	if (isDragging) {
+		classNames.push('dragging');
+	}
+	if (currentlySelected === inPendingSelection) {
+		classNames.push('unselected');
+	} else if (currentlySelected) {
+		classNames.push('selected');
+	} else if (inPendingSelection) {
+		classNames.push('selection_pending');
+	} else {
+		classNames.push('unselected');
+	}
+
 	return (
 		<div
 			id={module.moduleKey}
@@ -270,9 +284,9 @@ export const Module: React.FC<
 			aria-selected={currentlySelected}
 			tabIndex={0}
 			onFocus={onFocus}
-			className={`module${selectionStateString}${draggingStateString}`}
+			className={classNames.join(' ')}
+			data-name={module.name}
 			ref={containerRef}
-			{...longPressOptions}
 			onMouseDown={onMouseDown}
 		>
 			<ModuleHeader module={module} />

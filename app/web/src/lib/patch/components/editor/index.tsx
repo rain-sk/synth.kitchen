@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 
-import { blankPatch, blankPatchToLoad } from '../../state';
+import { blankPatch } from '../../state';
 import { DerivedConnectionStateContextProvider } from '../../contexts/derived-connection-state';
 import { MidiContextProvider } from '../../contexts/midi';
 import { ModuleCanvas } from './module-canvas';
@@ -12,15 +12,15 @@ import { Init } from './init';
 import { useTitle } from 'react-use';
 import { useLoadPatch } from './use-load-patch';
 
-const initialState = { ...blankPatch(), ...blankPatchToLoad() };
+const initialState = { ...blankPatch() };
 
 export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
-	const { initialized, status, init } = useAudioMidiInit();
+	const { initialized, status, initAudioMidi } = useAudioMidiInit();
 	const [state, dispatch] = useReducer(patchReducer, initialState);
 
 	useTitle(`patch/${state.name ? state.name : 'untitled'}`);
 
-	const loading = useLoadPatch(state, dispatch, slug);
+	const loading = useLoadPatch(state, dispatch, initialized, slug);
 
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>
@@ -34,7 +34,7 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 							loading={loading}
 							name={state.name ? state.name : 'untitled'}
 							status={status}
-							init={init}
+							init={initAudioMidi}
 						/>
 					)}
 				</MidiContextProvider>

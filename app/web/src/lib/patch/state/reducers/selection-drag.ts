@@ -1,7 +1,10 @@
-import { INVALID_POSITION, IPatchState, Position } from '../types/patch';
+import { Module, ModulePosition } from 'synth.kitchen-shared';
+
 import { ISelectionDrag, SelectionDragType } from '../actions/selection-drag';
-import { IModule } from '../types/module';
 import { Modifier } from '../../constants/key';
+import { IPatchState } from '../types/patch';
+import { INVALID_POSITION } from '../constants/positions';
+import { convertRemToPixels } from '../../../shared/utils/rem-to-px';
 
 type IRectangle = {
 	x: number;
@@ -33,10 +36,10 @@ const rectIntersectsOtherRect = (
 };
 
 const modulesInRange = (
-	mouseDragStartPosition: Position,
-	currentMousePosition: Position,
-	modules: Record<string, IModule>,
-	modulePositions: Record<string, Position>,
+	mouseDragStartPosition: ModulePosition,
+	currentMousePosition: ModulePosition,
+	modules: Record<string, Module>,
+	modulePositions: Record<string, ModulePosition>,
 ): Set<string> => {
 	const moduleKeysInRange = new Set<string>();
 
@@ -53,11 +56,16 @@ const modulesInRange = (
 		const navElement = document.getElementsByTagName('nav')[0];
 		const moduleElement = document.getElementById(moduleKey);
 
+		const width = moduleElement?.clientWidth ?? 0,
+			height = moduleElement?.clientHeight ?? 0;
+
+		const onePointFourRem = convertRemToPixels(1.4);
+
 		const moduleRect = {
-			x: position[0],
-			y: position[1] + navElement.clientHeight,
-			width: moduleElement?.clientWidth ?? 0,
-			height: moduleElement?.clientHeight ?? 0,
+			x: position[0] - width / 2,
+			y: position[1] + navElement.clientHeight - height / 2 - onePointFourRem,
+			width,
+			height: height + onePointFourRem,
 		};
 
 		if (rectIntersectsOtherRect(rect, moduleRect)) {
@@ -128,5 +136,13 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 				pendingSelection: undefined,
 			};
 		}
+		case SelectionDragType.DRAG_CANCEL:
+			return {
+				...state,
+				mouseDragStartPosition: INVALID_POSITION,
+				mouseDragPosition: INVALID_POSITION,
+				selectedModuleKeys: new Set(),
+				pendingSelection: undefined,
+			};
 	}
 };

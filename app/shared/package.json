@@ -1,7 +1,7 @@
 {
   "name": "synth.kitchen-shared",
-  "version": "0.5.0",
-  "description": "shared types for synth.kitchen-api and synth.kitchen-web",
+  "version": "0.5.1",
+  "description": "shared types and utils for synth.kitchen-api and synth.kitchen-web",
   "license": "MIT",
   "keywords": [],
   "type": "commonjs",
@@ -20,9 +20,12 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@types/node": "^24.2.0",
+    "@types/node": "^24.3.1",
     "esbuild": "^0.25.8",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "standardized-audio-context": "^25.3.77"
   }
 }

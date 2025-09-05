@@ -1,20 +1,16 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { Module, ModuleState, ModuleType as Type } from 'synth.kitchen-shared';
 
-import {
-	IModule,
-	IModuleState,
-	ModuleType as Type,
-} from '../../state/types/module';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 import { useEffectOnce } from './use-effect-once';
 
 export const useNode = <NodeType, ModuleType extends Type>(
-	module: IModule,
+	module: Module,
 	moduleInit: (
 		node: NodeType,
-		state?: IModuleState[ModuleType],
-	) => IModuleState[ModuleType],
+		state?: ModuleState[ModuleType],
+	) => ModuleState[ModuleType],
 	nodeFactory: () => NodeType,
 ) => {
 	const node = useMemo(nodeFactory, []);
@@ -34,7 +30,7 @@ export const useNode = <NodeType, ModuleType extends Type>(
 	});
 
 	const [state, setState] = useState(() =>
-		moduleInit(node as NodeType, module.state as IModuleState[ModuleType]),
+		moduleInit(node as NodeType, module.state as ModuleState[ModuleType]),
 	);
 
 	const { dispatch } = useContext(PatchContext);

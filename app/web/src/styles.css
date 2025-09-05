@@ -1,5 +1,6 @@
 body {
-	background: #525947;
+	/* background: #c66cd9; */
+	background: #ac81b7;
 	-webkit-user-select: none; /* Safari */
 	user-select: none;
 	word-wrap: break-word;
@@ -22,6 +23,53 @@ h1 {
 
 #root {
 	position: relative;
+}
+
+#overview {
+	position: fixed;
+	bottom: 1rem;
+	right: 1rem;
+	width: 16rem;
+	height: 9rem;
+	border: 0.1rem solid #ffffff;
+	border-radius: 0.25rem;
+	animation: all 1s linear;
+	background-color: #6f5e4b;
+	z-index: 11;
+}
+
+#overview > span {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+#overview:hover {
+	background-color: #bf82bb;
+}
+
+#overview #scrub-area {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-size: contain;
+	overflow: hidden;
+}
+
+#overview:hover #scrub-area {
+	opacity: 0.75;
+}
+
+#overview #scrub-outline {
+	position: absolute;
+	display: block;
+	border: 0.1rem solid #ffffff;
 }
 
 #status {
@@ -52,13 +100,26 @@ nav {
 	top: 0;
 	left: 0;
 	right: 0;
-	background: #4f4658;
-	height: 2.5rem;
+	background: #5999a5;
+	border-bottom: 0.05rem white solid;
+	height: 2rem;
 	padding: 0.33rem 0;
 	display: flex;
-	flex-direction: row-reverse;
+	flex-direction: row;
 	justify-content: space-between;
 	z-index: 20;
+	box-sizing: content-box;
+}
+
+nav button {
+	background-color: #3c6a73;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+nav img {
+	height: 100%;
 }
 
 nav > section {
@@ -82,6 +143,14 @@ main {
 	right: 0;
 	bottom: 0;
 	overflow: scroll;
+}
+
+button {
+	background-color: #9142a0;
+	border: 1px solid white;
+	border-radius: 0.5rem;
+	color: white;
+	cursor: pointer;
 }
 
 #selection {
@@ -117,16 +186,50 @@ main {
 	display: flex;
 	flex-direction: column;
 	cursor: move;
-	border: 4px solid black;
-	border-radius: 3px;
+	border: 0.1rem solid black;
+	border-bottom-left-radius: 0.2rem;
+	border-bottom-right-radius: 0.2rem;
 	padding: 0.5rem;
+	padding-top: 0;
 	transition: border linear 100ms;
-	width: 13rem;
+	width: 10rem;
+	transform: translate(-50%, -50%);
+}
+
+.module::before {
+	content: '';
+	display: block;
+	position: absolute;
+	width: calc(100% + 0.2rem);
+	height: 1.4rem;
+	top: -1.4rem;
+	left: -0.1rem;
+	background-color: #7bd7f0;
+	transition: border linear 100ms;
+	border: 0.1rem solid black;
+	border-top-left-radius: 0.2rem;
+	border-top-right-radius: 0.2rem;
 }
 
 .module h2 {
-	font-size: 1.2rem;
-	margin-bottom: 0;
+	display: inline-block;
+	position: absolute;
+	top: -1.2rem;
+	left: 0.5rem;
+	margin: 0;
+	font-weight: 100;
+	font-size: 0.7rem;
+	cursor: text;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	max-width: 9rem;
+}
+.module h2 input {
+	position: relative;
+	top: -0.1rem;
+	height: 1.2rem;
+	width: 9rem;
 }
 
 .module .active {
@@ -134,19 +237,21 @@ main {
 }
 
 .module .connected {
-	background-color: #c66cd9;
+	background-color: #e86a88;
 }
 
 .module .highlight {
 	background-color: #aad96c;
 }
 
-.module.selected {
-	border: 4px solid #c66cd9;
+.module.selected,
+.module.selected::before {
+	border: 0.1rem solid #ffffff;
 }
 
-.module.selection_pending {
-	border: 4px dashed #c66cd9dd;
+.module.selection_pending,
+.module.selection_pending::before {
+	border: 0.1rem dashed #ffffffdd;
 }
 
 .module.selected,
@@ -155,7 +260,7 @@ main {
 }
 
 .connectors {
-	margin-bottom: 1rem;
+	margin-bottom: 0.5rem;
 	display: flex;
 	justify-content: space-between;
 }
@@ -197,6 +302,24 @@ main {
 	background: rgb(63, 94, 251);
 	background: radial-gradient(circle, #b9ffce 0%, #7aa888 100%);
 	border: 1px solid #4f4658;
+	z-index: 999;
+}
+
+.connector::after {
+	content: '';
+	position: absolute;
+	border-radius: 50%;
+	display: block;
+	background: transparent;
+	top: -50%;
+	left: -100%;
+	height: 200%;
+	width: 300%;
+}
+
+.connector:hover::after {
+	top: -50%;
+	height: 200%;
 }
 
 main.selection-drag .connector:hover:before {
@@ -213,19 +336,42 @@ main.selection-drag .connector:hover:before {
 	margin-right: calc(-2.2rem - 4px);
 }
 
+.numparam:not(:first-child),
+.radioparam:not(:first-child) {
+	margin-top: 0.1rem;
+}
+
 .numparam,
 .numparam > div,
 .radioparam {
 	display: flex;
+	height: 1.25rem;
+}
+
+.numparam label h3,
+.io p,
+.radioparam label {
+	font-weight: 100;
+	font-size: 0.75rem;
 }
 
 .numparam input,
 .radioparam select {
-	font-size: 0.667rem;
+	font-size: 0.75rem;
+	max-width: 50%;
+	font-weight: 400;
+}
+
+#main.selection_drag .module {
+	pointer-events: none;
+}
+
+.radioparam select {
+	font-size: 0.6rem;
 }
 
 .numparam input {
-	max-width: 50%;
+	text-align: right;
 }
 
 .numparam button {
