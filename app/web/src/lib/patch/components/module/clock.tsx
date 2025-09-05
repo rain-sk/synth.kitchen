@@ -3,19 +3,20 @@ import React, { useCallback } from 'react';
 import { audioContext } from '../../audio';
 import { ClockNode } from '../../audio/nodes/clock';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
-const clockStateFromNode = (clock: ClockNode): IModuleState['CLOCK'] => ({
+const clockStateFromNode = (clock: ClockNode): ModuleState['CLOCK'] => ({
+	version: '0.5.0',
 	tempo: clock.tempo.value,
 });
 
 const initClock = (
 	clock: ClockNode,
-	state?: IModuleState['CLOCK'],
-): IModuleState['CLOCK'] => {
+	state?: ModuleState['CLOCK'],
+): ModuleState['CLOCK'] => {
 	if (state) {
 		clock.tempo.setValueAtTime(state.tempo, audioContext.currentTime);
 		return state;
@@ -24,10 +25,10 @@ const initClock = (
 	}
 };
 
-export const ClockModule: React.FC<{ module: IModule<'CLOCK'> }> = ({
+export const ClockModule: React.FC<{ module: Module<ModuleType.CLOCK> }> = ({
 	module,
 }) => {
-	const { node, state, setState } = useNode<ClockNode, 'CLOCK'>(
+	const { node, state, setState } = useNode<ClockNode, ModuleType.CLOCK>(
 		module,
 		initClock,
 		() => new ClockNode(),

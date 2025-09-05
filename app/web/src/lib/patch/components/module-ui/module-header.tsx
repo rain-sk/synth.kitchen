@@ -1,10 +1,10 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { Module } from 'synth.kitchen-shared';
 
-import { IModule } from '../../state/types/module';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 
-export const ModuleHeader: React.FC<{ module: IModule }> = ({ module }) => {
+export const ModuleHeader: React.FC<{ module: Module }> = ({ module }) => {
 	const { focusedInput, dispatch } = useContext(PatchContext);
 
 	const editRef = useRef<HTMLInputElement>(null);

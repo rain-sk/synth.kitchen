@@ -1,5 +1,5 @@
-import { IPatchState } from '../types/patch';
 import { IUpdateModule } from '../actions/update-module';
+import { IPatchState } from '../types/patch';
 
 export const updateModule: React.Reducer<IPatchState, IUpdateModule> = (
 	state,

@@ -6,14 +6,15 @@ import {
 
 import { audioContext } from '../../audio';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 const compressorStateFromNode = (
 	node: IDynamicsCompressorNode<IAudioContext>,
-): IModuleState['COMPRESSOR'] => ({
+): ModuleState['COMPRESSOR'] => ({
+	version: '0.5.0',
 	attack: node.attack.value,
 	knee: node.knee.value,
 	ratio: node.ratio.value,
@@ -23,7 +24,7 @@ const compressorStateFromNode = (
 
 const initCompressor = (
 	compressor: IDynamicsCompressorNode<IAudioContext>,
-	state?: IModuleState['COMPRESSOR'],
+	state?: ModuleState['COMPRESSOR'],
 ) => {
 	if (state) {
 		compressor.attack.setValueAtTime(state.attack, audioContext.currentTime);
@@ -40,12 +41,12 @@ const initCompressor = (
 	}
 };
 
-export const CompressorModule: React.FC<{ module: IModule<'COMPRESSOR'> }> = ({
-	module,
-}) => {
+export const CompressorModule: React.FC<{
+	module: Module<ModuleType.COMPRESSOR>;
+}> = ({ module }) => {
 	const { node, state, setState } = useNode<
 		IDynamicsCompressorNode<IAudioContext>,
-		'COMPRESSOR'
+		ModuleType.COMPRESSOR
 	>(module, initCompressor, () => audioContext.createDynamicsCompressor());
 
 	const enabled = state !== undefined;

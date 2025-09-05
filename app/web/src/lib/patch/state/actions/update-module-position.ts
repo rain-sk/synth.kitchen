@@ -1,16 +1,16 @@
-import { Position } from '../types/patch';
+import { ModulePosition } from 'synth.kitchen-shared';
 
 export type IUpdateModulePosition = {
 	type: 'UpdateModulePosition';
 	payload: {
 		moduleKey: string;
-		position: Position;
+		position: ModulePosition;
 	};
 };
 
 export const updateModulePositionAction = (
 	moduleKey: string,
-	position: Position,
+	position: ModulePosition,
 ): IUpdateModulePosition => ({
 	type: 'UpdateModulePosition',
 	payload: {

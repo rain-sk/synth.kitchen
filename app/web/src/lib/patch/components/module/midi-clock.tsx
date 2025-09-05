@@ -2,21 +2,22 @@ import React, { useCallback, useContext } from 'react';
 
 import { MidiClockNode } from '../../audio/nodes/midi-clock';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { MidiContext } from '../../contexts/midi';
 import { RadioParameter } from '../module-ui/radio-parameter';
 import { useNode } from './use-node';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 const clockStateFromNode = (
 	clock: MidiClockNode,
-): IModuleState['MIDI_CLOCK'] => ({
+): ModuleState['MIDI_CLOCK'] => ({
+	version: '0.5.0',
 	input: clock.inputName,
 });
 
 const initMidiClock = (
 	clock: MidiClockNode,
-	state?: IModuleState['MIDI_CLOCK'],
+	state?: ModuleState['MIDI_CLOCK'],
 ) => {
 	if (state) {
 		try {
@@ -30,15 +31,14 @@ const initMidiClock = (
 	}
 };
 
-export const MidiClockModule: React.FC<{ module: IModule<'MIDI_CLOCK'> }> = ({
-	module,
-}) => {
+export const MidiClockModule: React.FC<{
+	module: Module<ModuleType.MIDI_CLOCK>;
+}> = ({ module }) => {
 	const { inputs } = useContext(MidiContext);
-	const { node, state, setState } = useNode<MidiClockNode, 'MIDI_CLOCK'>(
-		module,
-		initMidiClock,
-		() => new MidiClockNode(),
-	);
+	const { node, state, setState } = useNode<
+		MidiClockNode,
+		ModuleType.MIDI_CLOCK
+	>(module, initMidiClock, () => new MidiClockNode());
 
 	const enabled = state != undefined;
 

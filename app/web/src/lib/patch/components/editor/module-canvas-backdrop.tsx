@@ -5,21 +5,19 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
+import { ModulePosition } from 'synth.kitchen-shared';
 
 import { AddModule } from './add-module';
-import {
-	INVALID_POSITION,
-	IPatchState,
-	Position,
-} from '../../state/types/patch';
+import { IPatchState } from '../../state/types/patch';
 import { IPatchAction, patchActions } from '../../state/actions';
 import { queueAnimation } from '../../../../utils/animation';
 import { UseScrollContext } from '../../contexts/use-scroll';
+import { INVALID_POSITION } from '../../state/constants/positions';
 
 const positionFromMouseEvent = (
 	e: MouseEvent,
 	scrollableElement: HTMLElement,
-): Position => [
+): ModulePosition => [
 	e.clientX + scrollableElement.scrollLeft,
 	e.clientY + scrollableElement.scrollTop,
 ];

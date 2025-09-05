@@ -1,3 +1,4 @@
+import { IPatchState } from '../types/patch';
 import { IClickConnector } from '../actions/click-connector';
 import {
 	connect,
@@ -6,8 +7,7 @@ import {
 	connectorKey,
 	disconnect,
 } from '../connection';
-import { IInput, IoType, IOutput } from '../types/connection';
-import { IPatchState } from '../types/patch';
+import { Input, IoType, Output } from 'synth.kitchen-shared';
 
 export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 	state,
@@ -31,10 +31,10 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 	if (activeConnectorIsOutput !== clickedConnectorIsOutput) {
 		const output = (
 			activeConnectorIsOutput ? activeConnector : clicked
-		) as IOutput;
+		) as Output;
 		const input = (
 			activeConnectorIsOutput ? clicked : activeConnector
-		) as IInput;
+		) as Input;
 
 		const key = connectionKey(output, input);
 

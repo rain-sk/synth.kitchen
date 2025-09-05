@@ -1,7 +1,9 @@
-import { INVALID_POSITION, IPatchState, Position } from '../types/patch';
+import { Module, ModulePosition } from 'synth.kitchen-shared';
+
 import { ISelectionDrag, SelectionDragType } from '../actions/selection-drag';
-import { IModule } from '../types/module';
 import { Modifier } from '../../constants/key';
+import { IPatchState } from '../types/patch';
+import { INVALID_POSITION } from '../constants/positions';
 
 type IRectangle = {
 	x: number;
@@ -33,10 +35,10 @@ const rectIntersectsOtherRect = (
 };
 
 const modulesInRange = (
-	mouseDragStartPosition: Position,
-	currentMousePosition: Position,
-	modules: Record<string, IModule>,
-	modulePositions: Record<string, Position>,
+	mouseDragStartPosition: ModulePosition,
+	currentMousePosition: ModulePosition,
+	modules: Record<string, Module>,
+	modulePositions: Record<string, ModulePosition>,
 ): Set<string> => {
 	const moduleKeysInRange = new Set<string>();
 

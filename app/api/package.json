@@ -1,6 +1,6 @@
 {
   "name": "synth.kitchen-api",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "license": "ISC",
   "author": "",
@@ -10,8 +10,9 @@
     "build:prod": "npm run build",
     "postbuild:prod": "npm run migrate",
     "start": "node ./build/index.js",
-    "orm": "node --env-file=.env -r ts-node/register node_modules/typeorm/cli.js",
-    "gen:migration": "npm run orm -- migration:generate -d ./src/data-source.ts ./src/migration/NewMigration",
+    "orm": "node --trace-warnings --env-file=.env -r ts-node/register node_modules/typeorm/cli.js",
+    "migration:generate": "npm run orm -- migration:generate -d ./src/data-source.ts ./src/migration/NewMigration",
+    "migration:create": "npm run orm -- migration:create ./src/migration/NewMigration",
     "migrate": "npm run orm -- migration:run -d ./src/data-source.ts"
   },
   "dependencies": {
@@ -34,7 +35,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.2.0",
+    "@types/node": "^24.3.1",
     "concurrently": "^9.2.0",
     "esbuild": "^0.25.8",
     "ts-node": "^10.9.2",

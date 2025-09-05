@@ -1,21 +1,22 @@
 import React, { useCallback } from 'react';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { ShiftNode } from '../../audio/nodes/shift';
 
 import { audioContext } from '../../audio';
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
-const shiftStateFromNode = (shift: ShiftNode): IModuleState['SHIFT'] => ({
+const shiftStateFromNode = (shift: ShiftNode): ModuleState['SHIFT'] => ({
+	version: '0.5.0',
 	inputMin: shift.inputMin.value,
 	inputMax: shift.inputMax.value,
 	outputMin: shift.outputMin.value,
 	outputMax: shift.outputMax.value,
 });
 
-const initShift = (shift: ShiftNode, state?: IModuleState['SHIFT']) => {
+const initShift = (shift: ShiftNode, state?: ModuleState['SHIFT']) => {
 	if (state) {
 		shift.inputMin.setValueAtTime(state.inputMin, audioContext.currentTime);
 		shift.inputMax.setValueAtTime(state.inputMax, audioContext.currentTime);
@@ -27,10 +28,10 @@ const initShift = (shift: ShiftNode, state?: IModuleState['SHIFT']) => {
 	}
 };
 
-export const ShiftModule: React.FC<{ module: IModule<'SHIFT'> }> = ({
+export const ShiftModule: React.FC<{ module: Module<ModuleType.SHIFT> }> = ({
 	module,
 }) => {
-	const { node, state, setState } = useNode<ShiftNode, 'SHIFT'>(
+	const { node, state, setState } = useNode<ShiftNode, ModuleType.SHIFT>(
 		module,
 		initShift,
 		() => new ShiftNode(),

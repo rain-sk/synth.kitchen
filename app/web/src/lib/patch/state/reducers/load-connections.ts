@@ -1,6 +1,6 @@
-import { ILoadConnections } from '../actions/load-connections';
 import { connect, connectorInfo, connectorKey } from '../connection';
-import { IInput, IOutput } from '../types/connection';
+import { ILoadConnections } from '../actions/load-connections';
+import { Input, Output } from 'synth.kitchen-shared';
 import { IPatchState } from '../types/patch';
 
 export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
@@ -8,8 +8,8 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 ) => {
 	let connectors = state.connectors;
 	Object.values(state.connections).forEach(([output, input]) => {
-		output = connectorInfo(connectors, connectorKey(output))[0] as IOutput;
-		input = connectorInfo(connectors, connectorKey(input))[0] as IInput;
+		output = connectorInfo(connectors, connectorKey(output))[0] as Output;
+		input = connectorInfo(connectors, connectorKey(input))[0] as Input;
 
 		let { connectors: newConnectors } = connect(
 			state.connections,

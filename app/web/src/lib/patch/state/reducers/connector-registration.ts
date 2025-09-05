@@ -1,4 +1,5 @@
 import { connectorKey } from '../connection';
+
 import { IPatchState } from '../types/patch';
 import { IRegisterConnector } from '../actions/connector-registration';
 

@@ -1,4 +1,4 @@
-import { Position } from '../types/patch';
+import { ModulePosition } from 'synth.kitchen-shared';
 
 export enum SelectionDragType {
 	DRAG_START,
@@ -9,13 +9,13 @@ export enum SelectionDragType {
 export type ISelectionDrag = {
 	type: 'SelectionDrag';
 	payload: {
-		position: Position;
+		position: ModulePosition;
 		type: SelectionDragType;
 	};
 };
 
 export const selectionDragStartAction = (
-	position: Position,
+	position: ModulePosition,
 ): ISelectionDrag => ({
 	type: 'SelectionDrag',
 	payload: {
@@ -25,7 +25,7 @@ export const selectionDragStartAction = (
 });
 
 export const selectionDragContinueAction = (
-	position: Position,
+	position: ModulePosition,
 ): ISelectionDrag => ({
 	type: 'SelectionDrag',
 	payload: {
@@ -34,7 +34,9 @@ export const selectionDragContinueAction = (
 	},
 });
 
-export const selectionDragEndAction = (position: Position): ISelectionDrag => ({
+export const selectionDragEndAction = (
+	position: ModulePosition,
+): ISelectionDrag => ({
 	type: 'SelectionDrag',
 	payload: {
 		type: SelectionDragType.DRAG_END,

@@ -1,18 +1,19 @@
 import React, { useCallback } from 'react';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { GateNode } from '../../audio/nodes/gate';
 
 import { audioContext } from '../../audio';
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
-const gateStateFromNode = (gate: GateNode): IModuleState['GATE'] => ({
+const gateStateFromNode = (gate: GateNode): ModuleState['GATE'] => ({
+	version: '0.5.0',
 	gate: gate.gate.value,
 });
 
-const initGate = (gate: GateNode, state?: IModuleState['GATE']) => {
+const initGate = (gate: GateNode, state?: ModuleState['GATE']) => {
 	if (state) {
 		gate.gate.setValueAtTime(state.gate, audioContext.currentTime);
 		return state;
@@ -21,10 +22,10 @@ const initGate = (gate: GateNode, state?: IModuleState['GATE']) => {
 	}
 };
 
-export const GateModule: React.FC<{ module: IModule<'GATE'> }> = ({
+export const GateModule: React.FC<{ module: Module<ModuleType.GATE> }> = ({
 	module,
 }) => {
-	const { node, state, setState } = useNode<GateNode, 'GATE'>(
+	const { node, state, setState } = useNode<GateNode, ModuleType.GATE>(
 		module,
 		initGate,
 		() => new GateNode(),

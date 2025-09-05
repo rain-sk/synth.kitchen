@@ -4,10 +4,10 @@ import {
 	IAudioParam,
 	IOscillatorNode,
 } from 'standardized-audio-context';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { RadioParameter } from '../module-ui/radio-parameter';
@@ -15,7 +15,8 @@ import { useNode } from './use-node';
 
 const oscillatorStateFromNode = (
 	node: IOscillatorNode<IAudioContext>,
-): IModuleState['OSCILLATOR'] => ({
+): ModuleState['OSCILLATOR'] => ({
+	version: '0.5.0',
 	frequency: node.frequency.value,
 	detune: node.detune.value,
 	waveform: node.type,
@@ -45,7 +46,7 @@ const replaceStart = (self: IOscillatorNode<IAudioContext>) => {
 
 const initOscillator = (
 	oscillator: IOscillatorNode<IAudioContext>,
-	state?: IModuleState['OSCILLATOR'],
+	state?: ModuleState['OSCILLATOR'],
 ) => {
 	if (!oscillator) {
 		throw Error('uninitialized ref');
@@ -67,12 +68,12 @@ const initOscillator = (
 	return state;
 };
 
-export const OscillatorModule: React.FC<{ module: IModule<'OSCILLATOR'> }> = ({
-	module,
-}) => {
+export const OscillatorModule: React.FC<{
+	module: Module<ModuleType.OSCILLATOR>;
+}> = ({ module }) => {
 	const { node, state, setState } = useNode<
 		IOscillatorNode<IAudioContext>,
-		'OSCILLATOR'
+		ModuleType.OSCILLATOR
 	>(module, initOscillator, () => audioContext.createOscillator());
 
 	const commitFrequencyChange = useCallback(

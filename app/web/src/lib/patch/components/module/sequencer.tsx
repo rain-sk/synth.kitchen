@@ -4,14 +4,15 @@ import { IAudioParam } from 'standardized-audio-context';
 import { audioContext } from '../../audio';
 import { SequencerNode } from '../../audio/nodes/sequencer';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 const sequencerStateFromNode = (
 	sequencer: SequencerNode,
-): IModuleState['SEQUENCER'] => ({
+): ModuleState['SEQUENCER'] => ({
+	version: '0.5.1',
 	steps: sequencer.steps.value,
 	step0: sequencer.step0.value,
 	step1: sequencer.step1.value,
@@ -33,7 +34,7 @@ const sequencerStateFromNode = (
 
 const initSequencer = (
 	sequencer: SequencerNode,
-	state?: IModuleState['SEQUENCER'],
+	state?: ModuleState['SEQUENCER'],
 ) => {
 	if (state) {
 		sequencer.steps.setValueAtTime(state.steps, audioContext.currentTime);
@@ -51,14 +52,13 @@ const initSequencer = (
 	}
 };
 
-export const SequencerModule: React.FC<{ module: IModule<'SEQUENCER'> }> = ({
-	module,
-}) => {
-	const { node, state, setState } = useNode<SequencerNode, 'SEQUENCER'>(
-		module,
-		initSequencer,
-		() => new SequencerNode(),
-	);
+export const SequencerModule: React.FC<{
+	module: Module<ModuleType.SEQUENCER>;
+}> = ({ module }) => {
+	const { node, state, setState } = useNode<
+		SequencerNode,
+		ModuleType.SEQUENCER
+	>(module, initSequencer, () => new SequencerNode());
 
 	const commitStepsChange = useCallback(
 		(steps: number) => {

@@ -3,20 +3,21 @@ import { IAudioContext, IStereoPannerNode } from 'standardized-audio-context';
 
 import { audioContext } from '../../audio';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 const panStateFromNode = (
 	node: IStereoPannerNode<IAudioContext>,
-): IModuleState['PAN'] => ({
+): ModuleState['PAN'] => ({
+	version: '0.5.0',
 	pan: node.pan.value,
 });
 
 const initPan = (
 	pan: IStereoPannerNode<IAudioContext>,
-	state?: IModuleState['PAN'],
+	state?: ModuleState['PAN'],
 ) => {
 	if (state) {
 		pan.pan.setValueAtTime(state.pan, audioContext.currentTime);
@@ -26,10 +27,12 @@ const initPan = (
 	}
 };
 
-export const PanModule: React.FC<{ module: IModule<'PAN'> }> = ({ module }) => {
+export const PanModule: React.FC<{ module: Module<ModuleType.PAN> }> = ({
+	module,
+}) => {
 	const { node, state, setState } = useNode<
 		IStereoPannerNode<IAudioContext>,
-		'PAN'
+		ModuleType.PAN
 	>(module, initPan, () => audioContext.createStereoPanner());
 
 	const enabled = state != undefined;

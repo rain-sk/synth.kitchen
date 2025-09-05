@@ -62,7 +62,7 @@ export const useLoadPatch = (
 					uuidRegex.test(slug) ? { id: slug } : { slug },
 				);
 				if (patch) {
-					dispatch(patchActions.loadPatchAction(patch.data as any));
+					dispatch(patchActions.loadPatchAction(patch.state as any));
 					setLoadConnections(true);
 					if (slug !== patch.slug) {
 						navigate(`/patch/${patch.slug}`);

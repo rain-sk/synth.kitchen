@@ -1,8 +1,8 @@
 import React, { useCallback, useContext } from 'react';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { MidiTriggerNode } from '../../audio/nodes/midi-trigger';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { MidiContext } from '../../contexts/midi';
 import { RadioParameter } from '../module-ui/radio-parameter';
@@ -18,14 +18,15 @@ const noteOptions = (() => {
 
 const midiTriggerStateFromNode = (
 	clock: MidiTriggerNode,
-): IModuleState['MIDI_TRIGGER'] => ({
+): ModuleState['MIDI_TRIGGER'] => ({
+	version: '0.5.0',
 	input: clock.inputName,
 	note: clock.note,
 });
 
 const initMidiTrigger = (
 	trigger: MidiTriggerNode,
-	state?: IModuleState['MIDI_TRIGGER'],
+	state?: ModuleState['MIDI_TRIGGER'],
 ) => {
 	if (state) {
 		try {
@@ -41,15 +42,14 @@ const initMidiTrigger = (
 };
 
 export const MidiTriggerModule: React.FC<{
-	module: IModule<'MIDI_TRIGGER'>;
+	module: Module<ModuleType.MIDI_TRIGGER>;
 }> = ({ module }) => {
 	const { inputs } = useContext(MidiContext);
 
-	const { node, state, setState } = useNode<MidiTriggerNode, 'MIDI_TRIGGER'>(
-		module,
-		initMidiTrigger,
-		() => new MidiTriggerNode(),
-	);
+	const { node, state, setState } = useNode<
+		MidiTriggerNode,
+		ModuleType.MIDI_TRIGGER
+	>(module, initMidiTrigger, () => new MidiTriggerNode());
 
 	const enabled = state != undefined;
 

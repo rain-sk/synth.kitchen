@@ -1,12 +1,12 @@
-import { IConnector } from '../types/connection';
+import { Connector } from 'synth.kitchen-shared';
 
 export type IRegisterConnector = {
 	type: 'RegisterConnector';
-	payload: IConnector;
+	payload: Connector;
 };
 
 export const registerConnectorAction = (
-	connector: IConnector,
+	connector: Connector,
 ): IRegisterConnector => ({
 	type: 'RegisterConnector',
 	payload: connector,

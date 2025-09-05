@@ -1,6 +1,6 @@
-import { IModule } from '../types/module';
+import { Module } from 'synth.kitchen-shared';
 
-type IModuleUpdate = Partial<Omit<IModule, 'moduleKey' | 'type'>>;
+type IModuleUpdate = Partial<Omit<Module, 'moduleKey' | 'type'>>;
 
 export type IUpdateModule = {
 	type: 'UpdateModule';
@@ -12,11 +12,11 @@ export type IUpdateModule = {
 
 export const updateModuleAction = (
 	moduleKey: string,
-	update: IModuleUpdate
+	update: IModuleUpdate,
 ): IUpdateModule => ({
 	type: 'UpdateModule',
 	payload: {
 		moduleKey,
-		update
-	}
+		update,
+	},
 });

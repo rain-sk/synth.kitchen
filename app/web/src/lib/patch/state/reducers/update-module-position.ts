@@ -1,5 +1,5 @@
-import { IPatchState } from '../types/patch';
 import { IUpdateModulePosition } from '../actions/update-module-position';
+import { IPatchState } from '../types/patch';
 
 export const updateModulePosition: React.Reducer<
 	IPatchState,
