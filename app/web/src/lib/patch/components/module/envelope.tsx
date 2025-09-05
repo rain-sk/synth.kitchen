@@ -3,14 +3,15 @@ import React, { useCallback } from 'react';
 import { audioContext } from '../../audio';
 
 import { EnvelopeNode } from '../../audio/nodes/envelope';
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 const envelopeStateFromNode = (
 	node: EnvelopeNode,
-): IModuleState['ENVELOPE'] => ({
+): ModuleState['ENVELOPE'] => ({
+	version: '0.5.0',
 	gate: Math.round(node.gate.value * 10000) / 10000,
 	attack: Math.round(node.attack.value * 100) / 100,
 	decay: Math.round(node.decay.value * 100) / 100,
@@ -21,7 +22,7 @@ const envelopeStateFromNode = (
 
 const initEnvelope = (
 	envelope: EnvelopeNode,
-	state?: IModuleState['ENVELOPE'],
+	state?: ModuleState['ENVELOPE'],
 ) => {
 	if (state) {
 		envelope.gate.setValueAtTime(state.gate, audioContext.currentTime);
@@ -36,10 +37,10 @@ const initEnvelope = (
 	}
 };
 
-export const EnvelopeModule: React.FC<{ module: IModule<'ENVELOPE'> }> = ({
-	module,
-}) => {
-	const { node, state, setState } = useNode<EnvelopeNode, 'ENVELOPE'>(
+export const EnvelopeModule: React.FC<{
+	module: Module<ModuleType.ENVELOPE>;
+}> = ({ module }) => {
+	const { node, state, setState } = useNode<EnvelopeNode, ModuleType.ENVELOPE>(
 		module,
 		initEnvelope,
 		() => new EnvelopeNode(),

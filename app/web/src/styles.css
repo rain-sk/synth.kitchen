@@ -1,5 +1,5 @@
 body {
-	background: #525947;
+	background: #c66cd9;
 	-webkit-user-select: none; /* Safari */
 	user-select: none;
 	word-wrap: break-word;
@@ -134,7 +134,7 @@ main {
 }
 
 .module .connected {
-	background-color: #c66cd9;
+	background-color: #ffffff;
 }
 
 .module .highlight {
@@ -142,11 +142,11 @@ main {
 }
 
 .module.selected {
-	border: 4px solid #c66cd9;
+	border: 4px solid #ffffff;
 }
 
 .module.selection_pending {
-	border: 4px dashed #c66cd9dd;
+	border: 4px dashed #ffffffdd;
 }
 
 .module.selected,

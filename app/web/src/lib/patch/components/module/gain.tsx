@@ -3,20 +3,21 @@ import { IAudioContext, IGainNode } from 'standardized-audio-context';
 
 import { audioContext } from '../../audio';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 const gainStateFromNode = (
 	node: IGainNode<IAudioContext>,
-): IModuleState['GAIN'] => ({
+): ModuleState['GAIN'] => ({
+	version: '0.5.0',
 	gain: node.gain.value,
 });
 
 const initGain = (
 	gain: IGainNode<IAudioContext>,
-	state?: IModuleState['GAIN'],
+	state?: ModuleState['GAIN'],
 ) => {
 	if (state) {
 		gain.gain.setValueAtTime(state.gain, audioContext.currentTime);
@@ -26,14 +27,13 @@ const initGain = (
 	}
 };
 
-export const GainModule: React.FC<{ module: IModule<'GAIN'> }> = ({
+export const GainModule: React.FC<{ module: Module<ModuleType.GAIN> }> = ({
 	module,
 }) => {
-	const { node, state, setState } = useNode<IGainNode<IAudioContext>, 'GAIN'>(
-		module,
-		initGain,
-		() => audioContext.createGain(),
-	);
+	const { node, state, setState } = useNode<
+		IGainNode<IAudioContext>,
+		ModuleType.GAIN
+	>(module, initGain, () => audioContext.createGain());
 
 	const enabled = state !== undefined;
 

@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 
-import { IParameter, paramKey } from '../../state/types/parameter';
 import { PatchContext } from '../../contexts/patch';
 import { patchActions } from '../../state/actions';
 import { DerivedConnectionStateContext } from '../../contexts/derived-connection-state';
+import { Parameter, paramKey } from 'synth.kitchen-shared';
 
-export const ParameterConnector: React.FunctionComponent<IParameter> = ({
+export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 	moduleKey,
 	name,
 	accessor,

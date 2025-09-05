@@ -1,14 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Connection, ModulePosition } from 'synth.kitchen-shared';
 
 import { connectorButton, connectorKey } from '../../state/connection';
-import { IConnection } from '../../state/types/connection';
-import {
-	INVALID_POSITION,
-	IPatchState,
-	Position,
-} from '../../state/types/patch';
+import { IPatchState } from '../../state/types/patch';
 import { useMouse, useScroll } from 'react-use';
 import { queueAnimation } from '../../../../utils/animation';
+import { INVALID_POSITION } from '../../state/constants/positions';
 
 const root = () => document.getElementById('root');
 const main = () => document.getElementById('main');
@@ -31,7 +28,7 @@ const getMain = (): Promise<HTMLElement> => {
 	});
 };
 
-const position = (button: HTMLButtonElement): Position => {
+const position = (button: HTMLButtonElement): ModulePosition => {
 	if (!button) {
 		return INVALID_POSITION;
 	}
@@ -43,15 +40,15 @@ const position = (button: HTMLButtonElement): Position => {
 	];
 };
 
-const equals = (position1: Position, position2: Position) => {
+const equals = (position1: ModulePosition, position2: ModulePosition) => {
 	return position1[0] === position2[0] && position1[1] === position2[1];
 };
 
-type Segment = [Position, Position];
+type Segment = [ModulePosition, ModulePosition];
 type Path = Segment[];
 const connectionToPath =
 	(mode: ConnectionDrawMode) =>
-	([output, input]: IConnection): Path => {
+	([output, input]: Connection): Path => {
 		const outputPosition = position(connectorButton(connectorKey(output)));
 		const inputPosition = position(connectorButton(connectorKey(input)));
 
@@ -71,7 +68,10 @@ const connectionToPath =
 					return [[outputPosition, inputPosition]];
 				}
 
-				const addSegment = (start: Position, end: Position): Position => {
+				const addSegment = (
+					start: ModulePosition,
+					end: ModulePosition,
+				): ModulePosition => {
 					if (equals(start, outputPosition)) {
 						const endx = start[0] + 25;
 						const endy = start[1];

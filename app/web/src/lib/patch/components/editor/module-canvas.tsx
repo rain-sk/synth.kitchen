@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 
-import { IModule } from '../../state/types/module';
-import { Module } from '../module';
-import { IPatchState, Position } from '../../state/types/patch';
+import { ModuleWrapper } from '../module';
+import { IPatchState } from '../../state/types/patch';
 import { IPatchAction } from '../../state/actions';
 import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
 import { ConnectionsWrapper } from './connections';
+import { Module, ModulePosition } from 'synth.kitchen-shared';
 
 export const ModuleCanvas: React.FC<{
 	state: IPatchState;
@@ -20,7 +20,7 @@ export const ModuleCanvas: React.FC<{
 						Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2)) -
 						Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2)),
 				)
-				.map(([moduleKey, position]): [IModule, Position] => [
+				.map(([moduleKey, position]): [Module, ModulePosition] => [
 					state.modules[moduleKey],
 					position,
 				]),
@@ -32,7 +32,7 @@ export const ModuleCanvas: React.FC<{
 			<KeyHandler />
 			<section id="module-canvas" role="tree" aria-multiselectable>
 				{sortedModules.map(([module, position]) => (
-					<Module
+					<ModuleWrapper
 						key={module.moduleKey}
 						module={module}
 						position={position}

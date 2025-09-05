@@ -1,14 +1,15 @@
 import React, { useCallback } from 'react';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
 import { VcaNode } from '../../audio/nodes/vca';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
-const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
+const vcaStateFromNode = (node: VcaNode): ModuleState['VCA'] => ({
+	version: '0.5.0',
 	gate: Math.round(node.gate.value * 10000) / 10000,
 	attack: Math.round(node.attack.value * 100) / 100,
 	decay: Math.round(node.decay.value * 100) / 100,
@@ -17,7 +18,7 @@ const vcaStateFromNode = (node: VcaNode): IModuleState['VCA'] => ({
 	peak: Math.round(node.peak.value * 100) / 100,
 });
 
-const initVca = (vca: VcaNode, state?: IModuleState['VCA']) => {
+const initVca = (vca: VcaNode, state?: ModuleState['VCA']) => {
 	if (state) {
 		vca.gate.setValueAtTime(state.gate, audioContext.currentTime);
 		vca.attack.setValueAtTime(state.attack, audioContext.currentTime);
@@ -31,8 +32,10 @@ const initVca = (vca: VcaNode, state?: IModuleState['VCA']) => {
 	}
 };
 
-export const VcaModule: React.FC<{ module: IModule<'VCA'> }> = ({ module }) => {
-	const { node, state, setState } = useNode<VcaNode, 'VCA'>(
+export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
+	module,
+}) => {
+	const { node, state, setState } = useNode<VcaNode, ModuleType.VCA>(
 		module,
 		initVca,
 		() => new VcaNode(),

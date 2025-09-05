@@ -1,19 +1,24 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  ManyToOne,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
   ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "./User";
-import { Patch as SharedPatch } from "synth.kitchen-shared";
+import { PatchInfo } from "synth.kitchen-shared";
 import { Sample } from "./Sample";
 
 @Entity()
-export class Patch implements SharedPatch {
+export class Patch implements PatchInfo {
   @PrimaryGeneratedColumn("uuid")
-  id: string;
+  id!: string;
+
+  @CreateDateColumn({ type: "timestamp" })
+  createdAt!: Date;
 
   @Column({ type: "text" })
   name: string;
@@ -21,8 +26,8 @@ export class Patch implements SharedPatch {
   @Column({ type: "text" })
   slug: string;
 
-  @Column({ type: "json" })
-  data: string;
+  @Column({ type: "json", nullable: true })
+  state: string;
 
   @ManyToMany(() => Sample, (sample) => sample.patches, { eager: true })
   samples: Sample[];
@@ -31,6 +36,7 @@ export class Patch implements SharedPatch {
   public: boolean;
 
   @ManyToOne(() => User, (user) => user.patches)
+  @JoinColumn()
   creator: User;
 
   @OneToMany(() => Patch, (patch) => patch.forkedFrom)
@@ -38,4 +44,7 @@ export class Patch implements SharedPatch {
 
   @ManyToOne(() => Patch, (patch) => patch.forks, { eager: true })
   forkedFrom: Patch;
+
+  @Column({ type: "boolean", default: true })
+  needsUpgrade: boolean;
 }

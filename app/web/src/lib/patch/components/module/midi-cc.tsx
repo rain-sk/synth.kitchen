@@ -2,21 +2,22 @@ import React, { useCallback, useContext } from 'react';
 
 import { MidiCcNode } from '../../audio/nodes/midi-cc';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { MidiContext } from '../../contexts/midi';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { RadioParameter } from '../module-ui/radio-parameter';
 import { useNode } from './use-node';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
-const midiCcStateFromNode = (node: MidiCcNode): IModuleState['MIDI_CC'] => ({
+const midiCcStateFromNode = (node: MidiCcNode): ModuleState['MIDI_CC'] => ({
+	version: '0.5.0',
 	input: node.inputName,
 	cc: node.cc,
 	max: node.max,
 	min: node.min,
 });
 
-const initMidiCc = (cc: MidiCcNode, state?: IModuleState['MIDI_CC']) => {
+const initMidiCc = (cc: MidiCcNode, state?: ModuleState['MIDI_CC']) => {
 	if (state) {
 		try {
 			cc.setCC(state.cc);
@@ -33,11 +34,11 @@ const initMidiCc = (cc: MidiCcNode, state?: IModuleState['MIDI_CC']) => {
 };
 
 export const MidiCcModule: React.FC<{
-	module: IModule<'MIDI_CC'>;
+	module: Module<ModuleType.MIDI_CC>;
 }> = ({ module }) => {
 	const { inputs } = useContext(MidiContext);
 
-	const { node, state, setState } = useNode<MidiCcNode, 'MIDI_CC'>(
+	const { node, state, setState } = useNode<MidiCcNode, ModuleType.MIDI_CC>(
 		module,
 		initMidiCc,
 		() => new MidiCcNode(),

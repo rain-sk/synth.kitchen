@@ -1,15 +1,15 @@
 import {
-	IConnection,
-	IConnector,
-	IConnectorInfo,
-	IInput,
+	Connection,
+	Connector,
+	ConnectorInfo,
+	Input,
 	ioKey,
-	IOutput,
-} from './types/connection';
-import { paramKey } from './types/parameter';
+	Output,
+	paramKey,
+} from 'synth.kitchen-shared';
 
 export const connectorInfo = (
-	connectors: Record<string, IConnectorInfo>,
+	connectors: Record<string, ConnectorInfo>,
 	key: string,
 ) => {
 	const info = connectors[key];
@@ -19,7 +19,7 @@ export const connectorInfo = (
 	return info;
 };
 
-export const connectorKey = (connector: IConnector) =>
+export const connectorKey = (connector: Connector) =>
 	'type' in connector ? ioKey(connector) : paramKey(connector);
 
 export const connectorButton = (key: string) => {
@@ -34,7 +34,7 @@ export const connectorButtonExists = (key: string) =>
 	!!document.getElementById(key);
 
 export const moduleConnectors = (
-	connectors: Record<string, IConnectorInfo>,
+	connectors: Record<string, ConnectorInfo>,
 	moduleKey: string,
 ) => {
 	return Object.entries(connectors)
@@ -42,14 +42,14 @@ export const moduleConnectors = (
 		.map(([key]) => key);
 };
 
-export const connectionKey = (output: IOutput, input: IInput) => {
+export const connectionKey = (output: Output, input: Input) => {
 	return `${connectorKey(output)}|${connectorKey(input)}`;
 };
 
 export const connectionInfo = (
-	connections: Record<string, IConnection>,
+	connections: Record<string, Connection>,
 	connectionKey: string,
-): IConnection => {
+): Connection => {
 	const connection = connections[connectionKey];
 
 	if (!connection) {
@@ -60,13 +60,13 @@ export const connectionInfo = (
 };
 
 export const connect = (
-	connections: Record<string, IConnection>,
-	connectors: Record<string, IConnectorInfo>,
-	output: IOutput,
-	input: IInput,
+	connections: Record<string, Connection>,
+	connectors: Record<string, ConnectorInfo>,
+	output: Output,
+	input: Input,
 ): {
-	connections: Record<string, IConnection>;
-	connectors: Record<string, IConnectorInfo>;
+	connections: Record<string, Connection>;
+	connectors: Record<string, ConnectorInfo>;
 } => {
 	output.accessor().connect(input.accessor() as any);
 
@@ -89,8 +89,8 @@ export const connect = (
 };
 
 export const disconnectSet = (
-	connections: Record<string, IConnection>,
-	connectors: Record<string, IConnectorInfo>,
+	connections: Record<string, Connection>,
+	connectors: Record<string, ConnectorInfo>,
 	connectionsToDisconnect: Set<string>,
 ) => {
 	connectionsToDisconnect.forEach((key: string) => {
@@ -104,13 +104,13 @@ export const disconnectSet = (
 };
 
 export const disconnect = (
-	connections: Record<string, IConnection>,
-	connectors: Record<string, IConnectorInfo>,
-	output: IOutput,
-	input: IInput,
+	connections: Record<string, Connection>,
+	connectors: Record<string, ConnectorInfo>,
+	output: Output,
+	input: Input,
 ): {
-	connections: Record<string, IConnection>;
-	connectors: Record<string, IConnectorInfo>;
+	connections: Record<string, Connection>;
+	connectors: Record<string, ConnectorInfo>;
 } => {
 	const key = connectionKey(output, input);
 	if (!(key in connections)) {
@@ -131,9 +131,9 @@ export const disconnect = (
 	}
 
 	const outputInfo = connectorInfo(connectors, outputKey);
-	output = outputInfo[0] as IOutput;
+	output = outputInfo[0] as Output;
 	const inputInfo = connectorInfo(connectors, inputKey);
-	input = inputInfo[0] as IInput;
+	input = inputInfo[0] as Input;
 
 	try {
 		output.accessor().disconnect(input.accessor() as any);
@@ -167,13 +167,13 @@ export const disconnect = (
 };
 
 export const connectOrDisconnect = (
-	connections: Record<string, IConnection>,
-	connectors: Record<string, IConnectorInfo>,
-	output: IOutput,
-	input: IInput,
+	connections: Record<string, Connection>,
+	connectors: Record<string, ConnectorInfo>,
+	output: Output,
+	input: Input,
 ): {
-	connections: Record<string, IConnection>;
-	connectors: Record<string, IConnectorInfo>;
+	connections: Record<string, Connection>;
+	connectors: Record<string, ConnectorInfo>;
 } =>
 	connectionKey(output, input) in connections
 		? disconnect(connections, connectors, output, input)

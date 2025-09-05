@@ -1,17 +1,16 @@
-import { ModuleType } from '../types/module';
-import { Position } from '../types/patch';
+import { ModulePosition, ModuleType } from 'synth.kitchen-shared';
 
 export type IAddModule = {
 	type: 'AddModule';
 	payload: {
 		type: ModuleType;
-		position?: Position;
+		position?: ModulePosition;
 	};
 };
 
 export const addModuleAction = (
 	type: ModuleType,
-	position?: Position,
+	position?: ModulePosition,
 ): IAddModule => ({
 	type: 'AddModule',
 	payload: {

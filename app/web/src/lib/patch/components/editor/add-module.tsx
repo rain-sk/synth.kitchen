@@ -1,38 +1,45 @@
 import React, { useCallback, useContext } from 'react';
+import { ModulePosition, ModuleType } from 'synth.kitchen-shared';
 
-import { INVALID_POSITION, Position } from '../../state/types/patch';
 import { midi } from '../../midi';
-import { ModuleType } from '../../state/types/module';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
+import { INVALID_POSITION } from '../../state/constants/positions';
 
 const controlModules = (): ModuleType[] =>
 	midi.initialized
 		? [
-				'CLOCK',
-				'MIDI_CC',
-				'MIDI_CLOCK',
-				'MIDI_TRIGGER',
-				'GATE',
-				'ENVELOPE',
-				'SEQUENCER',
+				ModuleType.CLOCK,
+				ModuleType.MIDI_CC,
+				ModuleType.MIDI_CLOCK,
+				ModuleType.MIDI_TRIGGER,
+				ModuleType.GATE,
+				ModuleType.ENVELOPE,
+				ModuleType.SEQUENCER,
 		  ]
-		: ['CLOCK', 'GATE', 'ENVELOPE', 'SEQUENCER'];
+		: [
+				ModuleType.CLOCK,
+				ModuleType.GATE,
+				ModuleType.ENVELOPE,
+				ModuleType.SEQUENCER,
+		  ];
 
-const soundModules: ModuleType[] = ['OSCILLATOR', 'NOISE'];
+const soundModules: ModuleType[] = [ModuleType.OSCILLATOR, ModuleType.NOISE];
 
 const effectModules: ModuleType[] = [
-	'COMPRESSOR',
-	'DELAY',
-	'FILTER',
-	'LIMITER',
-	'VCA',
-	'PAN',
+	ModuleType.COMPRESSOR,
+	ModuleType.DELAY,
+	ModuleType.FILTER,
+	ModuleType.LIMITER,
+	ModuleType.VCA,
+	ModuleType.PAN,
 ];
 
-const utilModules: ModuleType[] = ['GAIN', 'SHIFT'];
+const utilModules: ModuleType[] = [ModuleType.GAIN, ModuleType.SHIFT];
 
-export const AddModule: React.FC<{ position?: Position }> = ({ position }) => {
+export const AddModule: React.FC<{ position?: ModulePosition }> = ({
+	position,
+}) => {
 	const { dispatch } = useContext(PatchContext);
 
 	const handleAddModule = useCallback(

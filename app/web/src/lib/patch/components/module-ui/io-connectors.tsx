@@ -2,7 +2,7 @@ import React from 'react';
 import { IAudioContext, IAudioNode } from 'standardized-audio-context';
 
 import { IoConnector } from './io-connector';
-import { IoType } from '../../state/types/connection';
+import { IoType } from 'synth.kitchen-shared';
 
 const Connector =
 	(type: IoType) =>

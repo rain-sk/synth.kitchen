@@ -1,7 +1,9 @@
-import { INVALID_POSITION, IPatchState } from './types/patch';
+import { Module, ModuleType } from 'synth.kitchen-shared';
+
+import { IPatchState } from './types/patch';
 import { Modifier } from '../constants/key';
 import { ISerializedPatch } from './types/serialized-patch';
-import { IModule } from './types/module';
+import { INVALID_POSITION } from './constants/positions';
 
 export const blankPatchToClearCanvas = (): ISerializedPatch => ({
 	id: '',
@@ -12,11 +14,11 @@ export const blankPatchToClearCanvas = (): ISerializedPatch => ({
 	connections: {},
 });
 
-export const outputModule: () => IModule = () => ({
+export const outputModule: () => Module = () => ({
 	name: 'output',
 	moduleKey: '0',
-	type: 'OUTPUT',
-	state: { gain: 0.45 },
+	type: ModuleType.OUTPUT,
+	state: { version: '0.5.0', gain: 0.45 },
 });
 
 export const blankPatchToLoad = (): ISerializedPatch => ({

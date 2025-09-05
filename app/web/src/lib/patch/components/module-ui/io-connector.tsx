@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { IAudioContext, IAudioNode } from 'standardized-audio-context';
+import { ioKey, IoType } from 'synth.kitchen-shared';
 
-import { IoType, ioKey } from '../../state/types/connection';
 import { PatchContext } from '../../contexts/patch';
 import { patchActions } from '../../state/actions';
 import { DerivedConnectionStateContext } from '../../contexts/derived-connection-state';

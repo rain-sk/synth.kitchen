@@ -21,7 +21,7 @@ import { clearPatchEditor } from './clear-patch-editor';
 export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 	state,
 	action,
-) => {
+): IPatchState => {
 	switch (action.type) {
 		case 'AddModule': {
 			return addModule(state, action);

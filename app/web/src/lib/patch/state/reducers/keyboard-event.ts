@@ -1,4 +1,3 @@
-import { IPatchState } from '../types/patch';
 import { IKeyboardEvent, KeyboardEventType } from '../actions/keyboard-event';
 import {
 	KeyCode,
@@ -7,6 +6,7 @@ import {
 	Modifier,
 } from '../../constants/key';
 import { connectorInfo, disconnectSet, moduleConnectors } from '../connection';
+import { IPatchState } from '../types/patch';
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	state,

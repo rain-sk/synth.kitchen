@@ -1,15 +1,16 @@
-import type { UserInfo } from 'synth.kitchen-shared';
-
-import { IConnection } from './connection';
-import { IModule } from './module';
-import { Position } from './patch';
+import type {
+	Connection,
+	Module,
+	ModulePosition,
+	UserInfo,
+} from 'synth.kitchen-shared';
 
 export type ISerializedPatch = {
 	id: string;
 	name: string;
 	slug: string;
 	creator?: UserInfo;
-	modules: Record<string, IModule>;
-	modulePositions: Record<string, Position>;
-	connections: Record<string, IConnection>;
+	modules: Record<string, Module>;
+	modulePositions: Record<string, ModulePosition>;
+	connections: Record<string, Connection>;
 };

@@ -5,10 +5,10 @@ import {
 	IBiquadFilterNode,
 	TBiquadFilterType,
 } from 'standardized-audio-context';
+import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
 
-import { IModule, IModuleState } from '../../state/types/module';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { RadioParameter } from '../module-ui/radio-parameter';
@@ -16,7 +16,8 @@ import { useNode } from './use-node';
 
 const filterStateFromNode = (
 	filter: IBiquadFilterNode<IAudioContext>,
-): IModuleState['FILTER'] => ({
+): ModuleState['FILTER'] => ({
+	version: '0.5.0',
 	frequency: filter.frequency.value,
 	detune: filter.detune.value,
 	Q: filter.Q.value,
@@ -26,7 +27,7 @@ const filterStateFromNode = (
 
 const initFilter = (
 	filter: IBiquadFilterNode<IAudioContext>,
-	state?: IModuleState['FILTER'],
+	state?: ModuleState['FILTER'],
 ) => {
 	if (state) {
 		filter.frequency.setValueAtTime(state.frequency, audioContext.currentTime);
@@ -40,12 +41,12 @@ const initFilter = (
 	}
 };
 
-export const FilterModule: React.FC<{ module: IModule<'FILTER'> }> = ({
+export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 	module,
 }) => {
 	const { node, state, setState } = useNode<
 		IBiquadFilterNode<IAudioContext>,
-		'FILTER'
+		ModuleType.FILTER
 	>(module, initFilter, () => audioContext.createBiquadFilter());
 
 	const enabled = state !== undefined;

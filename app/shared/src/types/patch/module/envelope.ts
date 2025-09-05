@@ -1,0 +1,14 @@
+export type ENVELOPE_STATE_VERSIONS = ["0.5.0"];
+export const ENVELOPE_STATE_VERSIONS: ENVELOPE_STATE_VERSIONS = ["0.5.0"];
+
+export type ENVELOPE_STATE = {
+  ["0.5.0"]: {
+    version: "0.5.0";
+    gate: number;
+    attack: number;
+    decay: number;
+    sustain: number;
+    release: number;
+    peak: number;
+  };
+};
