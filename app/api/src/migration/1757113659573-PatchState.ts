@@ -7,7 +7,7 @@ export class PatchState1757113659573 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const patches = (await queryRunner.query(
       `SELECT id, data from "patch"`
-    )) as { id: string; data: string }[];
+    )) as { id: string; data: PatchState }[];
 
     await queryRunner.query(`ALTER TABLE "patch" DROP COLUMN "data"`);
     await queryRunner.query(
