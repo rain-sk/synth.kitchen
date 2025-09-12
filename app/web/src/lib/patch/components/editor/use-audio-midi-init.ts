@@ -29,7 +29,7 @@ export const useAudioMidiInit = () => {
 		} else {
 			setStatus('initialization failed');
 		}
-	}, [setInitialized, setStatus]);
+	}, []);
 
 	return { initialized, status, initAudioMidi };
 };

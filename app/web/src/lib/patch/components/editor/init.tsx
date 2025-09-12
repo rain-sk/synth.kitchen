@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
+
+import { useEffectOnce } from '../module/use-effect-once';
 
 const onKeyDown = (init: () => void) => (e: KeyboardEvent) => {
 	if (e.key === 'Enter' || e.key === ' ') {
@@ -24,6 +26,8 @@ const isMobile = () => {
 	return check;
 };
 
+let handleKeyDown: any;
+
 export const Init: React.FC<{
 	loading: boolean;
 	name: string;
@@ -31,17 +35,18 @@ export const Init: React.FC<{
 	init: () => void;
 }> = ({ loading, name, status, init }) => {
 	const mobile = isMobile();
-	const keydown = useCallback(onKeyDown(init), [init]);
 
-	useEffect(() => {
+	useEffectOnce(() => {
 		if (mobile) {
 			return;
 		}
-		document.addEventListener('keydown', keydown, true);
+		handleKeyDown = onKeyDown(init);
+		document.addEventListener('keydown', handleKeyDown);
+
 		return () => {
-			document.removeEventListener('keydown', keydown);
+			document.removeEventListener('keydown', handleKeyDown);
 		};
-	}, [screen.orientation.type, keydown]);
+	});
 
 	const onClickStart = useCallback(() => {
 		init();
