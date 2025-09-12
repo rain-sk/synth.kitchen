@@ -2,12 +2,12 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 
 import { Patch } from "../entity/Patch";
 import { User } from "../entity/User";
-import { aaa, nnn } from "./seeds/patches";
 
 import { adminEmail } from "../env";
+import { patches } from "./seeds/patches";
 
-export class SeedPatches1757411092846 implements MigrationInterface {
-  name = "SeedPatches1757411092846";
+export class SeedPatches1757636495393 implements MigrationInterface {
+  name = "SeedPatches1757636495393";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     const userRepository = queryRunner.manager.getRepository(User);
@@ -15,17 +15,18 @@ export class SeedPatches1757411092846 implements MigrationInterface {
       where: { email: adminEmail },
     });
     const patchRepository = queryRunner.manager.getRepository(Patch);
-    for (let p of [aaa, nnn]) {
+    for (let p of patches) {
       const patch = patchRepository.create();
       Object.assign(patch, p);
       patch.creator = admin;
-      await patchRepository.save(patch);
+      patch.needsUpgrade = true;
+      await patchRepository.save({ ...patch });
     }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     const patchRepository = queryRunner.manager.getRepository(Patch);
-    for (let p of [aaa, nnn]) {
+    for (let p of patches) {
       patchRepository.delete({ id: p.id });
     }
   }

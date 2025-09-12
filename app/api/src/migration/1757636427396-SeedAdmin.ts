@@ -6,8 +6,8 @@ import { EmailVerificationRequest } from "../entity/EmailVerificationRequest";
 import { sendResetPasswordEmail } from "../utils/email";
 import { adminEmail, appOrigin } from "../env";
 
-export class SeedAdmin1750101797341 implements MigrationInterface {
-  name = "SeedAdmin1750101797341";
+export class SeedAdmin1757636427396 implements MigrationInterface {
+  name = "SeedAdmin1757636427396";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     const userRepository = queryRunner.manager.getRepository(User);
