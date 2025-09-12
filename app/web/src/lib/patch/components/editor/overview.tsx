@@ -1,8 +1,6 @@
 import {
-	MouseEvent,
 	RefObject,
 	useCallback,
-	useContext,
 	useEffect,
 	useMemo,
 	useRef,
@@ -11,8 +9,6 @@ import {
 import { useEffectOnce, useScroll } from 'react-use';
 import { Module, ModulePosition } from 'synth.kitchen-shared';
 
-import { PatchContext } from '../../contexts/patch';
-import { patchActions } from '../../state/actions';
 import { recomputeOverview } from './utils/recompute-overview';
 
 const main = () => document.getElementById('main');
@@ -33,9 +29,11 @@ const computeVisibleBounds = (
 	} = main;
 	const { clientHeight: scrubHeight, clientWidth: scrubWidth } = scrubContainer;
 
-	const scrubRatio = scrubWidth / scrubHeight;
+	// Get the
+	const scrubRatio = 16 / 9;
 	const overviewRatio = overviewSize.width / overviewSize.height;
 
+	// Compute highlight's size and position relative to the actual patch
 	const relativeHeight =
 		scrubRatio > overviewRatio
 			? overviewSize.height
@@ -44,23 +42,40 @@ const computeVisibleBounds = (
 		scrubRatio > overviewRatio
 			? (scrubRatio / overviewRatio) * overviewSize.width
 			: overviewSize.width;
-
 	const relativeTop = mainScrollY / relativeHeight;
 	const relativeLeft = mainScrollX / relativeWidth;
 	const relativeRight = (mainScrollX + mainWidth) / relativeWidth;
 	const relativeBottom = (mainScrollY + mainHeight) / relativeHeight;
 
-	const normalizedTop = scrubContainer.clientHeight * relativeTop;
-	const normalizedLeft = scrubContainer.clientWidth * relativeLeft;
-	const normalizedRight = scrubContainer.clientWidth * relativeRight;
-	const normalizedBottom = scrubContainer.clientHeight * relativeBottom;
+	// Normalize to the scrub container
+	const normalizedTop = scrubHeight * relativeTop;
+	const normalizedLeft = scrubWidth * relativeLeft;
+	const normalizedRight = scrubWidth * relativeRight;
+	const normalizedBottom = scrubHeight * relativeBottom;
 
-	// TODO: cut the box off at the edge of the container
+	// Constrain to the scrub container
+	const constrainedLeft = Math.min(
+		normalizedLeft,
+		scrubContainer.clientWidth - (normalizedRight - normalizedLeft),
+	);
+	const constrainedRight = Math.min(
+		normalizedRight,
+		scrubContainer.clientWidth,
+	);
+	const constrainedTop = Math.min(
+		normalizedTop,
+		scrubContainer.clientHeight - (normalizedBottom - normalizedTop),
+	);
+	const constrainedBottom = Math.min(
+		normalizedBottom,
+		scrubContainer.clientHeight,
+	);
+
 	return {
-		top: normalizedTop,
-		left: normalizedLeft,
-		right: normalizedRight,
-		bottom: normalizedBottom,
+		top: constrainedTop,
+		left: constrainedLeft,
+		right: constrainedRight,
+		bottom: constrainedBottom,
 	};
 };
 
@@ -69,7 +84,6 @@ export const Overview: React.FC<{
 	modulesCount: number;
 	sortedModules: [Module, ModulePosition][];
 }> = ({ connectionsCount, modulesCount, sortedModules }) => {
-	const { dispatch } = useContext(PatchContext);
 	const containerRef = useRef<HTMLDivElement>(undefined);
 	const scrubRef = useRef<HTMLDivElement>(undefined);
 	const [mainRef, setMainRef] = useState<RefObject<HTMLElement>>({
@@ -121,14 +135,28 @@ export const Overview: React.FC<{
 		}
 	}, [connectionsCount, modulesCount, sortedModules]);
 
-	const onClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
-		e.preventDefault();
-		if (containerRef.current && mainRef.current) {
-			containerRef.current.focus();
-			dispatch(patchActions.selectionDragCancelAction());
-			dispatch(patchActions.clearActiveConnectorAction());
-			dispatch(patchActions.deselectAllModulesAction());
+	const draggingRef = useRef(false);
+	const onMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+		if (draggingRef.current || !(e.buttons & 1)) {
+			return;
 		}
+		draggingRef.current = true;
+
+		const onMouseMove = (e: MouseEvent) => {
+			console.log(e.buttons);
+			if (!(e.buttons & 1)) {
+				draggingRef.current = false;
+				document.removeEventListener('mousemove', onMouseMove);
+				return;
+			}
+
+			console.log();
+		};
+		document.addEventListener('mousemove', onMouseMove);
+		document.addEventListener('mouseup', () => {
+			draggingRef.current = false;
+			document.removeEventListener('mousemove', onMouseMove);
+		});
 	}, []);
 
 	return (
@@ -138,7 +166,7 @@ export const Overview: React.FC<{
 			}}
 			id="overview"
 			tabIndex={0}
-			onClick={onClick}
+			onMouseDown={onMouseDown}
 		>
 			<span>
 				<div
@@ -150,8 +178,16 @@ export const Overview: React.FC<{
 				<div
 					id="scrub-outline"
 					style={{
-						top: `${visibleBounds.top}px`,
-						left: `${visibleBounds.left}px`,
+						top: `${Math.min(
+							visibleBounds.top,
+							(scrubRef.current?.clientHeight ?? 0) -
+								(visibleBounds.bottom - visibleBounds.top),
+						)}px`,
+						left: `${Math.min(
+							visibleBounds.left,
+							(scrubRef.current?.clientWidth ?? 0) -
+								(visibleBounds.right - visibleBounds.left),
+						)}px`,
 						width: `${visibleBounds.right - visibleBounds.left}px`,
 						height: `${visibleBounds.bottom - visibleBounds.top}px`,
 					}}
