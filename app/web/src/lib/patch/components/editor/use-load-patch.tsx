@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useRoute } from 'wouter';
 
-import { blankPatchToClearCanvas, blankPatchToLoad } from '../../state';
+import {
+	blankPatch,
+	blankPatchToClearCanvas,
+	blankPatchToLoad,
+} from '../../state';
 import { IPatchAction, patchActions } from '../../state/actions';
 import { connectorButtonExists, connectorKey } from '../../state/connection';
 import { IPatchState } from '../../state/types/patch';
@@ -48,13 +52,17 @@ export const useLoadPatch = (
 	const loadingRef = useRef(loading);
 
 	useEffect(() => {
-		if (loadingRef.current || !initialized) {
+		if (loadingRef.current) {
 			return;
 		}
 
 		(async () => {
 			if (newPatch) {
-				dispatch(patchActions.loadPatchAction(blankPatchToLoad()));
+				dispatch(
+					patchActions.loadPatchAction(
+						initialized ? blankPatchToLoad() : blankPatch(),
+					),
+				);
 			} else if (slug && state.slug === '') {
 				loadingRef.current = true;
 				setLoading(loadingRef.current);
