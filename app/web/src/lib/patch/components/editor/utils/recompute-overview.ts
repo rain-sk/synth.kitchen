@@ -32,7 +32,7 @@ export const recomputeOverview = async (
 	const width = maxX + twentyRem;
 	const height = maxY + twentyRem;
 	const dataUrl = await domToDataUrl(main, {
-		quality: 0.1,
+		quality: 0.01,
 		width,
 		height,
 		filter: (el) => {

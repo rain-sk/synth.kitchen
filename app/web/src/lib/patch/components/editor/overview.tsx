@@ -13,7 +13,6 @@ import { Module, ModulePosition } from 'synth.kitchen-shared';
 
 import { PatchContext } from '../../contexts/patch';
 import { patchActions } from '../../state/actions';
-import { positionFromMouseEvent } from './utils/position-from-mouse-event';
 import { recomputeOverview } from './utils/recompute-overview';
 
 const main = () => document.getElementById('main');
@@ -117,12 +116,10 @@ export const Overview: React.FC<{
 				}
 				clearTimeout(timeout);
 				delayedUpdateRef.current = null;
-			}, 150);
+			}, 500);
 			delayedUpdateRef.current = timeout;
 		}
 	}, [connectionsCount, modulesCount, sortedModules]);
-
-	const onFocus = useCallback(() => {}, []);
 
 	const onClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -142,7 +139,6 @@ export const Overview: React.FC<{
 			id="overview"
 			tabIndex={0}
 			onClick={onClick}
-			onFocus={onFocus}
 		>
 			<span>
 				<div
