@@ -10,8 +10,11 @@ import { useEffectOnce, useScroll } from 'react-use';
 import { Module, ModulePosition } from 'synth.kitchen-shared';
 
 import { recomputeOverview } from './utils/recompute-overview';
+import { convertRemToPixels } from '../../../shared/utils/rem-to-px';
+import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
 
 const main = () => document.getElementById('main');
+const point5Rem = convertRemToPixels(0.5);
 
 const computeVisibleBounds = (
 	main: HTMLElement,
@@ -54,17 +57,17 @@ const computeVisibleBounds = (
 	const normalizedBottom = scrubHeight * relativeBottom;
 
 	// Constrain to the scrub container
-	const constrainedLeft = Math.min(
-		normalizedLeft,
-		scrubContainer.clientWidth - (normalizedRight - normalizedLeft),
+	const constrainedLeft = Math.max(
+		0,
+		Math.min(normalizedLeft, scrubContainer.clientWidth - point5Rem),
 	);
 	const constrainedRight = Math.min(
 		normalizedRight,
 		scrubContainer.clientWidth,
 	);
-	const constrainedTop = Math.min(
-		normalizedTop,
-		scrubContainer.clientHeight - (normalizedBottom - normalizedTop),
+	const constrainedTop = Math.max(
+		0,
+		Math.min(normalizedTop, scrubContainer.clientHeight - point5Rem),
 	);
 	const constrainedBottom = Math.min(
 		normalizedBottom,
@@ -135,26 +138,25 @@ export const Overview: React.FC<{
 		}
 	}, [connectionsCount, modulesCount, sortedModules]);
 
-	const draggingRef = useRef(false);
+	const [draggingRef, dragging, setDragging] = useRefBackedState(false);
 	const onMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
 		if (draggingRef.current || !(e.buttons & 1)) {
 			return;
 		}
-		draggingRef.current = true;
+		setDragging(true);
 
 		const onMouseMove = (e: MouseEvent) => {
-			console.log(e.buttons);
 			if (!(e.buttons & 1)) {
-				draggingRef.current = false;
+				setDragging(false);
 				document.removeEventListener('mousemove', onMouseMove);
 				return;
 			}
 
-			console.log();
+			console.log(e.pageX, e.pageY);
 		};
 		document.addEventListener('mousemove', onMouseMove);
 		document.addEventListener('mouseup', () => {
-			draggingRef.current = false;
+			setDragging(false);
 			document.removeEventListener('mousemove', onMouseMove);
 		});
 	}, []);
@@ -167,6 +169,7 @@ export const Overview: React.FC<{
 			id="overview"
 			tabIndex={0}
 			onMouseDown={onMouseDown}
+			className={dragging ? 'dragging' : ''}
 		>
 			<span>
 				<div

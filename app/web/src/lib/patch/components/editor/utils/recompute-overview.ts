@@ -37,7 +37,12 @@ export const recomputeOverview = async (
 		height,
 		filter: (el) => {
 			const element = el as HTMLElement;
-			return element.id !== 'connections' && element.id !== 'add-module';
+			return (
+				element.id !== 'connections' &&
+				element.id !== 'add-module' &&
+				element.id !== 'spacer' &&
+				element.id !== 'selection'
+			);
 		},
 	});
 	return { width, height, dataUrl };
