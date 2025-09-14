@@ -1,12 +1,13 @@
 import {
 	Connection,
 	Connector,
-	ConnectorInfo,
 	Input,
 	ioKey,
 	Output,
 	paramKey,
 } from 'synth.kitchen-shared';
+
+import { ConnectorInfo } from './types/patch';
 
 export const connectorInfo = (
 	connectors: Record<string, ConnectorInfo>,
@@ -142,7 +143,19 @@ export const disconnect = (
 		// which rely on side-effects. Trying to disconnect a non-existent connection
 		// leads to a DOMException in standardized-audio-context, so we catch the
 		// exception to avoid crashing.
-		console.warn(e);
+		if (
+			import.meta.env.DEV &&
+			e &&
+			typeof e === 'object' &&
+			'name' in e &&
+			e.name === 'InvalidAccessError'
+		) {
+			console.log('Captured expected InvalidAccessError in React dev-mode.');
+			console.warn(e);
+		} else {
+			console.error(e);
+			// todo: handle actual failure (possibly from corrupted patches)
+		}
 	}
 
 	const outputConnections = outputInfo[1].filter(

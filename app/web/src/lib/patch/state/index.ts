@@ -75,3 +75,5 @@ export const blankPatch = (): IPatchState => ({
 	heldModifiers: Modifier.NONE,
 	focusedInput: undefined,
 });
+
+export { patchReducer } from './reducers';

@@ -12,7 +12,7 @@ export const NumberParameter: React.FunctionComponent<{
 	commitValueCallback: (newValue: number) => void;
 }> = ({ moduleKey, paramAccessor, name, value, commitValueCallback }) => {
 	return (
-		<section className="numparam">
+		<section className="numparam" data-omit>
 			{paramAccessor && (
 				<ParameterConnector
 					moduleKey={moduleKey}

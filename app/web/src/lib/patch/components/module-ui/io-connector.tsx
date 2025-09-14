@@ -66,9 +66,10 @@ export const IoConnector = <Type extends IoType>({
 		[isInput],
 	);
 
+	const isOutput = !isInput;
 	return (
-		<span className="io">
-			{!isInput && <p>{name}</p>}
+		<span className="io" data-omit>
+			{isOutput && <p>{name}</p>}
 			<button
 				aria-label={name}
 				aria-roledescription={roleDescription}

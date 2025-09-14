@@ -231,7 +231,6 @@ export const ModuleWrapper: React.FC<
 			e.stopPropagation();
 			const targetNodeName = (e.target as HTMLElement).nodeName.toLowerCase();
 			if (
-				targetNodeName === 'h2' ||
 				targetNodeName === 'input' ||
 				targetNodeName === 'button' ||
 				targetNodeName === 'select'

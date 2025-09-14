@@ -61,39 +61,5 @@ export const ModuleHeader: React.FC<{ module: Module }> = ({ module }) => {
 		[cancel, dispatch, module.moduleKey, name, setEdit],
 	);
 
-	return (
-		<h2
-			tabIndex={0}
-			onFocus={handleFocusHeader}
-			onMouseDown={(e) => {
-				e.preventDefault();
-			}}
-			onDoubleClick={handleFocusHeader}
-		>
-			{edit ? (
-				<>
-					<label
-						htmlFor={`rename_${module.moduleKey}`}
-						className="visually-hidden"
-					>
-						rename
-					</label>
-					<input
-						ref={editRef}
-						type="text"
-						name="rename"
-						id={`rename_${module.moduleKey}`}
-						value={name}
-						onChange={handleNameChange}
-						onFocus={onFocus}
-						onBlur={cancel}
-						onKeyDown={handleKeyDown}
-						autoFocus
-					/>
-				</>
-			) : (
-				module.name
-			)}
-		</h2>
-	);
+	return <h2 data-omit>{module.type.toLocaleLowerCase()}</h2>;
 };
