@@ -15,10 +15,13 @@ export type ConnectorInfo = [Connector, string[]];
 
 export type IPatchState = PatchInfo &
 	PatchState & {
-		// patch info
+		// PatchInfo:
+		id: string;
+		name: string;
+		slug: string;
 		creator: UserInfo;
 
-		// modules and parameters
+		// PatchState:
 		modules: Record<string, Module>;
 		modulePositions: Record<string, ModulePosition>;
 		selectedModuleKeys: Set<string>;

@@ -2,6 +2,7 @@ import { connectorKey } from '../connection';
 
 import { IPatchState } from '../types/patch';
 import { IRegisterConnector } from '../actions/connector-registration';
+import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const registerConnector: React.Reducer<
 	IPatchState,
@@ -16,11 +17,10 @@ export const registerConnector: React.Reducer<
 
 	const key = connectorKey(action.payload);
 	const connections = key in state.connectors ? state.connectors[key][1] : [];
-	return {
-		...state,
+	return cloneAndApply(state, {
 		connectors: {
 			...state.connectors,
 			[key]: [action.payload, connections],
 		},
-	};
+	});
 };

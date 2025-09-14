@@ -2,6 +2,7 @@ import { connect, connectorInfo, connectorKey } from '../connection';
 import { ILoadConnections } from '../actions/load-connections';
 import { Input, Output } from 'synth.kitchen-shared';
 import { IPatchState } from '../types/patch';
+import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	state,
@@ -20,8 +21,7 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 		connectors = newConnectors;
 	});
 
-	return {
-		...state,
+	return cloneAndApply(state, {
 		connectors,
-	};
+	});
 };

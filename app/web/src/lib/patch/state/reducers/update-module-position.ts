@@ -1,5 +1,6 @@
 import { IUpdateModulePosition } from '../actions/update-module-position';
 import { IPatchState } from '../types/patch';
+import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const updateModulePosition: React.Reducer<
 	IPatchState,
@@ -17,8 +18,7 @@ export const updateModulePosition: React.Reducer<
 	const selectedModuleKeys = state.selectedModuleKeys.has(moduleKey)
 		? state.selectedModuleKeys
 		: new Set([moduleKey]);
-	return {
-		...state,
+	return cloneAndApply(state, {
 		modulePositions: Object.fromEntries(
 			Object.entries(state.modulePositions).map(([moduleKey, position]) => [
 				moduleKey,
@@ -28,5 +28,5 @@ export const updateModulePosition: React.Reducer<
 			]),
 		),
 		selectedModuleKeys,
-	};
+	});
 };

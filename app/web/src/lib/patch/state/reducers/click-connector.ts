@@ -8,6 +8,7 @@ import {
 	disconnect,
 } from '../connection';
 import { Input, IoType, Output } from 'synth.kitchen-shared';
+import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 	state,
@@ -16,10 +17,7 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 	const clicked = action.payload;
 
 	if (!state.activeConnectorKey) {
-		return {
-			...state,
-			activeConnectorKey: connectorKey(clicked),
-		};
+		return cloneAndApply(state, { activeConnectorKey: connectorKey(clicked) });
 	}
 
 	const active = connectorInfo(state.connectors, state.activeConnectorKey);
@@ -42,16 +40,14 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 			key in state.connections
 				? disconnect(state.connections, state.connectors, output, input)
 				: connect(state.connections, state.connectors, output, input);
-		return {
-			...state,
+		return cloneAndApply(state, {
 			activeConnectorKey: undefined,
 			connections,
 			connectors,
-		};
+		});
 	}
 
-	return {
-		...state,
+	return cloneAndApply(state, {
 		activeConnectorKey: undefined,
-	};
+	});
 };

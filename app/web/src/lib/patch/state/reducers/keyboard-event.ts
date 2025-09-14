@@ -7,6 +7,7 @@ import {
 } from '../../constants/key';
 import { connectorInfo, disconnectSet, moduleConnectors } from '../connection';
 import { IPatchState } from '../types/patch';
+import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	state,
@@ -17,16 +18,14 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 
 		switch (type) {
 			case KeyboardEventType.KEY_DOWN: {
-				return {
-					...state,
+				return cloneAndApply(state, {
 					heldModifiers: state.heldModifiers | modifier,
-				};
+				});
 			}
 			case KeyboardEventType.KEY_UP: {
-				return {
-					...state,
+				return cloneAndApply(state, {
 					heldModifiers: state.heldModifiers & ~modifier,
-				};
+				});
 			}
 		}
 	} else if (
@@ -36,8 +35,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	) {
 		const { deltaX, deltaY } = keyCodeMovementMap[keyCode];
 
-		return {
-			...state,
+		return cloneAndApply(state, {
 			modulePositions: Object.fromEntries(
 				Object.entries(state.modulePositions).map(([moduleKey, position]) => [
 					moduleKey,
@@ -46,7 +44,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 						: position,
 				]),
 			),
-		};
+		});
 	} else if (
 		!state.focusedInput &&
 		(keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) &&
@@ -97,8 +95,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			}
 		});
 
-		return {
-			...state,
+		return cloneAndApply(state, {
 			...newState,
 			activeConnectorKey:
 				state.activeConnectorKey &&
@@ -110,19 +107,18 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			selectedModuleKeys: new Set(
 				state.selectedModuleKeys.has('0') ? ['0'] : [],
 			),
-		};
+		});
 	} else if (
 		keyCode === KeyCode.A &&
 		type === KeyboardEventType.KEY_DOWN &&
 		((state.heldModifiers & Modifier.SPECIAL) === Modifier.SPECIAL ||
 			(state.heldModifiers & Modifier.CONTROL) === Modifier.CONTROL)
 	) {
-		return {
-			...state,
+		return cloneAndApply(state, {
 			selectedModuleKeys: new Set([
 				...Object.values(state.modules).map((module) => module.moduleKey),
 			]),
-		};
+		});
 	} else {
 		return state;
 	}

@@ -5,6 +5,7 @@ import { Modifier } from '../../constants/key';
 import { IPatchState } from '../types/patch';
 import { INVALID_POSITION } from '../constants/positions';
 import { convertRemToPixels } from '../../../shared/utils/rem-to-px';
+import { cloneAndApply } from '../utils/clone-and-apply';
 
 type IRectangle = {
 	x: number;
@@ -84,13 +85,11 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 
 	switch (action.payload.type) {
 		case SelectionDragType.DRAG_START: {
-			return {
-				...state,
+			return cloneAndApply(state, {
 				mouseDragStartPosition: action.payload.position,
 				mouseDragPosition: action.payload.position,
 				selectedModuleKeys: shift ? state.selectedModuleKeys : new Set(),
-				selectionPending: true,
-			};
+			});
 		}
 		case SelectionDragType.DRAG_CONTINUE: {
 			const modulesInDrag = modulesInRange(
@@ -100,11 +99,10 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 				state.modulePositions,
 			);
 
-			return {
-				...state,
+			return cloneAndApply(state, {
 				mouseDragPosition: action.payload.position,
 				pendingSelection: modulesInDrag,
-			};
+			});
 		}
 		case SelectionDragType.DRAG_END: {
 			const modulesInPendingSelection = modulesInRange(
@@ -128,21 +126,19 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 				  })()
 				: modulesInPendingSelection;
 
-			return {
-				...state,
+			return cloneAndApply(state, {
 				mouseDragStartPosition: INVALID_POSITION,
 				mouseDragPosition: INVALID_POSITION,
 				selectedModuleKeys: newSelection,
 				pendingSelection: undefined,
-			};
+			});
 		}
 		case SelectionDragType.DRAG_CANCEL:
-			return {
-				...state,
+			return cloneAndApply(state, {
 				mouseDragStartPosition: INVALID_POSITION,
 				mouseDragPosition: INVALID_POSITION,
 				selectedModuleKeys: new Set(),
 				pendingSelection: undefined,
-			};
+			});
 	}
 };

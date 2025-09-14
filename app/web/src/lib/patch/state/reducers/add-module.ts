@@ -2,7 +2,7 @@ import { randomId, randomName } from 'synth.kitchen-shared';
 
 import { IPatchState } from '../types/patch';
 import { IAddModule } from '../actions/add-module';
-import { convertRemToPixels } from '../../../shared/utils/rem-to-px';
+import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const addModule: React.Reducer<IPatchState, IAddModule> = (
 	state,
@@ -11,11 +11,10 @@ export const addModule: React.Reducer<IPatchState, IAddModule> = (
 	const moduleKey = randomId();
 
 	const position = action.payload.position;
-	const x = position[0]; // - convertRemToPixels(2.5);
-	const y = position[1]; //- convertRemToPixels(1);
+	const x = position[0];
+	const y = position[1];
 
-	return {
-		...state,
+	return cloneAndApply(state, {
 		modules: {
 			...state.modules,
 			[moduleKey]: {
@@ -28,5 +27,5 @@ export const addModule: React.Reducer<IPatchState, IAddModule> = (
 			...state.modulePositions,
 			[moduleKey]: [x, y],
 		},
-	};
+	});
 };
