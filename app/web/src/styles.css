@@ -1,3 +1,9 @@
+html,
+body {
+	position: fixed;
+	overflow: hidden;
+}
+
 body {
 	/* background: #c66cd9; */
 	background: #ac81b7;
@@ -178,6 +184,7 @@ button {
 
 #module-canvas {
 	pointer-events: all;
+	overscroll-behavior: contain;
 }
 
 .module {
