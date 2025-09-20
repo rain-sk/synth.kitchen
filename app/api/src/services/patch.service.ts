@@ -63,10 +63,27 @@ export class PatchService {
     const [where, params] = getPatchParams(info);
 
     try {
+      const query = AppDataSource.getRepository(Patch)
+        .createQueryBuilder("patch")
+        .where(where, params);
+
+      return info.creatorId
+        ? await query.getMany()
+        : await query.getOneOrFail();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  static getUserPatches = async (
+    userId: string
+  ): Promise<Patch[] | undefined> => {
+    try {
       return await AppDataSource.getRepository(Patch)
         .createQueryBuilder("patch")
-        .where(where, params)
-        .getOneOrFail();
+        .where("patch.creatorId = :creatorId", { creatorId: userId })
+        .orderBy("patch.createdAt", "DESC")
+        .getMany();
     } catch (error) {
       console.error(error);
     }
