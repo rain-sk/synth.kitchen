@@ -72,7 +72,48 @@ export const useApi = () => {
 		[],
 	);
 
-	const savePatch = useCallback(async (patch: Patch) => {}, []);
+	const savePatch = useCallback(async (patch: Patch) => {
+		const headers = {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		};
+
+		if (!patch.id) {
+			try {
+				const result = await fetch(`${apiBase}/patch/`, {
+					headers,
+					method: 'post',
+					body: JSON.stringify(patch),
+				}).then((res) => res.json());
+
+				if (!('patch' in result && typeof result.patch === 'object')) {
+					throw new Error('Failed to create patch');
+				}
+
+				return result.patch as Patch;
+			} catch (error) {
+				console.error('Failed to create patch:', error);
+				throw error;
+			}
+		} else {
+			try {
+				const result = await fetch(`${apiBase}/patch/${patch.id}`, {
+					headers,
+					method: 'patch',
+					body: JSON.stringify(patch),
+				}).then((res) => res.json());
+
+				if (!('patch' in result && typeof result.patch === 'object')) {
+					throw new Error('Failed to update patch');
+				}
+
+				return result.patch as Patch;
+			} catch (error) {
+				console.error('Failed to update patch:', error);
+				throw error;
+			}
+		}
+	}, []);
 
 	return { getPatch, getPatches, savePatch };
 };

@@ -1,6 +1,8 @@
 import { PatchService } from "../services/patch.service";
 import { PatchQuery } from "synth.kitchen-shared";
 
+import { Patch } from "../entity/Patch";
+
 export class PatchController {
   static getUniquePatchId = async (req, res) => {
     try {
@@ -41,5 +43,38 @@ export class PatchController {
     }
 
     res.status(500).send("");
+  };
+
+  static createPatch = async (req, res) => {
+    try {
+      const patchData: Partial<Patch> = req.body;
+      const savedPatch = await PatchService.savePatch(patchData);
+      res.status(200).json({ patch: savedPatch });
+    } catch (error) {
+      console.error(`POST /patch/: ${error}`);
+      res.status(500).send("");
+    }
+  };
+
+  static updatePatch = async (req, res) => {
+    try {
+      const patchId: string = req.params.id;
+      const patchData: Partial<Patch> = req.body;
+
+      // Find the existing patch
+      const existingPatch = await PatchService.getPatch({ id: patchId });
+
+      if (!existingPatch) {
+        return res.status(404).send("Patch not found");
+      }
+
+      // Update the patch
+      const updatedPatch = await PatchService.updatePatch(patchId, patchData);
+
+      res.status(200).json({ patch: updatedPatch });
+    } catch (error) {
+      console.error(`PATCH /patch/: ${error}`);
+      res.status(500).send("");
+    }
   };
 }

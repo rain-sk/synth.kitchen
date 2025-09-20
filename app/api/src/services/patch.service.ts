@@ -78,15 +78,26 @@ export class PatchService {
 
   static savePatch = async (patchData: Partial<Patch>): Promise<Patch> => {
     const { id, name, slug } = await PatchService.getUniquePatchId();
-
     const patch = AppDataSource.getRepository(Patch).create({
       id,
       name,
       slug,
       ...patchData,
     });
-
     return await AppDataSource.getRepository(Patch).save(patch);
+  };
+
+  static updatePatch = async (
+    id: string,
+    patchData: Partial<Patch>
+  ): Promise<Patch> => {
+    const patchRepository = AppDataSource.getRepository(Patch);
+    const existingPatch = await patchRepository.findOne({ where: { id } });
+    if (!existingPatch) {
+      throw new Error("Patch not found");
+    }
+    const updatedPatch = Object.assign(existingPatch, patchData);
+    return await patchRepository.save(updatedPatch);
   };
 
   static getUniquePatchId = async (): Promise<{
