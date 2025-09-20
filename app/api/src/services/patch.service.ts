@@ -41,6 +41,7 @@ const getPatchParams = (query: PatchQuery): [string, PatchQuery] => {
   }
   return [where, params];
 };
+
 export class PatchService {
   static patchExists = async (info: PatchQuery): Promise<boolean> => {
     const [where, params] = getPatchParams(info);
@@ -75,18 +76,17 @@ export class PatchService {
     }
   };
 
-  static getUserPatches = async (
-    userId: string
-  ): Promise<Patch[] | undefined> => {
-    try {
-      return await AppDataSource.getRepository(Patch)
-        .createQueryBuilder("patch")
-        .where("patch.creatorId = :creatorId", { creatorId: userId })
-        .orderBy("patch.createdAt", "DESC")
-        .getMany();
-    } catch (error) {
-      console.error(error);
-    }
+  static savePatch = async (patchData: Partial<Patch>): Promise<Patch> => {
+    const { id, name, slug } = await PatchService.getUniquePatchId();
+
+    const patch = AppDataSource.getRepository(Patch).create({
+      id,
+      name,
+      slug,
+      ...patchData,
+    });
+
+    return await AppDataSource.getRepository(Patch).save(patch);
   };
 
   static getUniquePatchId = async (): Promise<{
