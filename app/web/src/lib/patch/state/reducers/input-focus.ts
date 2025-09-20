@@ -1,6 +1,6 @@
 import { IFocusInput } from '../actions/input-focus';
+import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
-import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const focusInput: React.Reducer<IPatchState, IFocusInput> = (
 	state,

@@ -5,9 +5,9 @@ import type {
 	UserInfoAuthenticated,
 } from 'synth.kitchen-shared';
 
+import { apiBase } from '../uri';
 import { useJwt } from './useJwt';
 import { useUser } from './useUser';
-import { apiBase } from '../uri';
 
 type AuthContextValue = {
 	loading: boolean;

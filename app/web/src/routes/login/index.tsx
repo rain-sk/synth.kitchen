@@ -1,3 +1,10 @@
+import { Link } from 'wouter';
+import { Redirect } from 'wouter';
+import { useSearchParams } from 'wouter';
+import { navigate } from 'wouter/use-browser-location';
+import { usePathname } from 'wouter/use-browser-location';
+import { AuthContext } from '../../api/auth/context';
+import { useEffectOnce } from '../../lib/patch/components/module/use-effect-once';
 import {
 	ChangeEvent,
 	FormEvent,
@@ -6,11 +13,6 @@ import {
 	useMemo,
 	useState,
 } from 'react';
-import { Link, Redirect, useSearchParams } from 'wouter';
-
-import { AuthContext } from '../../api/auth/context';
-import { useEffectOnce } from '../../lib/patch/components/module/use-effect-once';
-import { navigate, usePathname } from 'wouter/use-browser-location';
 
 const validate = (email: string, password: string): string | undefined => {
 	email + password;

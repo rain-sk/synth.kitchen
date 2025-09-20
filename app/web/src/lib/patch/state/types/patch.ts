@@ -2,28 +2,19 @@ import {
 	Connection,
 	Connector,
 	Io,
-	Module,
 	ModulePosition,
 	Parameter,
 	PatchInfo,
 	PatchState,
-	UserInfo,
 } from 'synth.kitchen-shared';
+
 import { Modifier } from '../../constants/key';
 
 export type ConnectorInfo = [Connector, string[]];
 
 export type IPatchState = PatchInfo &
 	PatchState & {
-		// PatchInfo:
-		id: string;
-		name: string;
-		slug: string;
-		creator: UserInfo;
-
-		// PatchState:
-		modules: Record<string, Module>;
-		modulePositions: Record<string, ModulePosition>;
+		// selection
 		selectedModuleKeys: Set<string>;
 
 		// i/o
@@ -42,3 +33,41 @@ export type IPatchState = PatchInfo &
 		heldModifiers: Modifier;
 		focusedInput: string | undefined;
 	};
+
+export const cloneAndApply = (
+	state: IPatchState,
+	update: Partial<IPatchState>,
+) => {
+	const newState: IPatchState = {
+		// PatchInfo
+		id: state.id,
+		name: state.name,
+		slug: state.slug,
+		creator: state.creator,
+
+		// PatchState
+		modules: state.modules,
+		modulePositions: state.modulePositions,
+		selectedModuleKeys: state.selectedModuleKeys,
+
+		// i/o
+		activeConnectorKey: state.activeConnectorKey,
+		connections: state.connections,
+		connectors: state.connectors,
+		io: state.io,
+		parameters: state.parameters,
+
+		// mouse info
+		mouseDragStartPosition: state.mouseDragStartPosition,
+		mouseDragPosition: state.mouseDragPosition,
+		pendingSelection: state.pendingSelection,
+
+		// keyboard info
+		heldModifiers: state.heldModifiers,
+		focusedInput: state.focusedInput,
+	};
+	for (let key in update) {
+		(newState as any)[key] = (update as any)[key];
+	}
+	return newState;
+};

@@ -1,6 +1,10 @@
 import { addModuleAction, IAddModule } from './add-module';
 import { changeNameAction, IChangeName } from './change-name';
+import { clickConnectorAction, IClickConnector } from './click-connector';
+import { blurInputAction, IBlurInput } from './input-blur';
+import { focusInputAction, IFocusInput } from './input-focus';
 import { IKeyboardEvent, keyDownAction, keyUpAction } from './keyboard-event';
+import { ILoadConnections, loadConnectionsAction } from './load-connections';
 import { ILoadPatch, loadPatchAction } from './load-patch';
 import {
 	deselectAllModulesAction,
@@ -20,7 +24,6 @@ import {
 	IUpdateModulePosition,
 	updateModulePositionAction,
 } from './update-module-position';
-import { IUpdateModule, updateModuleAction } from './update-module';
 import {
 	cancelLoadFromCloudAction,
 	ICancelLoadFromCloud,
@@ -33,10 +36,6 @@ import {
 	IRegisterConnector,
 	registerConnectorAction,
 } from './connector-registration';
-import { clickConnectorAction, IClickConnector } from './click-connector';
-import { ILoadConnections, loadConnectionsAction } from './load-connections';
-import { blurInputAction, IBlurInput } from './input-blur';
-import { focusInputAction, IFocusInput } from './input-focus';
 import {
 	clearPatchEditorAction,
 	IClearPatchEditor,
@@ -45,15 +44,19 @@ import {
 	clearActiveConnectorAction,
 	IClearActiveConnector,
 } from './clear-active-connector';
+import {
+	IUpdateModuleState,
+	updateModuleStateAction,
+} from './update-module-state';
 
 export type IPatchAction =
 	| IAddModule
+	| IBlurInput
 	| ICancelLoadFromCloud
 	| IChangeName
 	| IClearActiveConnector
 	| IClearPatchEditor
 	| IClickConnector
-	| IBlurInput
 	| IFocusInput
 	| IKeyboardEvent
 	| ILoadConnections
@@ -63,10 +66,11 @@ export type IPatchAction =
 	| ISelectModule
 	| ISetActiveConnectorKey
 	| IUpdateModulePosition
-	| IUpdateModule;
+	| IUpdateModuleState;
 
 export const patchActions = {
 	addModuleAction,
+	blurInputAction,
 	cancelLoadFromCloudAction,
 	changeNameAction,
 	clearActiveConnectorAction,
@@ -74,20 +78,19 @@ export const patchActions = {
 	clickConnectorAction,
 	deselectAllModulesAction,
 	deselectModuleAction,
-	blurInputAction,
 	focusInputAction,
 	keyDownAction,
 	keyUpAction,
 	loadConnectionsAction,
 	loadPatchAction,
 	registerConnectorAction,
+	selectionDragCancelAction,
 	selectionDragContinueAction,
 	selectionDragEndAction,
 	selectionDragStartAction,
-	selectionDragCancelAction,
 	selectModuleAction,
 	selectSingleModuleAction,
 	setActiveConnectorKeyAction,
 	updateModulePositionAction,
-	updateModuleAction,
+	updateModuleStateAction,
 };

@@ -1,8 +1,11 @@
-import { connect, connectorInfo, connectorKey } from '../connection';
+import { Input } from 'synth.kitchen-shared';
+import { Output } from 'synth.kitchen-shared';
 import { ILoadConnections } from '../actions/load-connections';
-import { Input, Output } from 'synth.kitchen-shared';
+import { connect } from '../connection';
+import { connectorInfo } from '../connection';
+import { connectorKey } from '../connection';
+import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
-import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	state,
@@ -12,7 +15,7 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 		output = connectorInfo(connectors, connectorKey(output))[0] as Output;
 		input = connectorInfo(connectors, connectorKey(input))[0] as Input;
 
-		let { connectors: newConnectors } = connect(
+		const { connectors: newConnectors } = connect(
 			state.connections,
 			connectors,
 			output,

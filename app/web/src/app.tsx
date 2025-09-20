@@ -2,12 +2,12 @@ import React from 'react';
 import { Redirect, Route, Switch, useRoute } from 'wouter';
 
 import { AccountRoute } from './routes/account';
+import { DashboardRoute } from './routes/dashboard';
 import { IndexRoute } from './routes/index';
 import { LoginRoute } from './routes/login';
 import { LogoutRoute } from './routes/logout';
 import { PatchRoute } from './routes/patch';
 import { ResetPasswordRoute } from './routes/reset-password';
-import { DashboardRoute } from './routes/dashboard';
 
 const RedirectToPatch = () => {
 	const [match, params] = useRoute('/p/:slug');

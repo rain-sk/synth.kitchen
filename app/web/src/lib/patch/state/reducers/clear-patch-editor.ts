@@ -1,6 +1,7 @@
-import { blankPatch, blankPatchToClearCanvas } from '..';
-import { IPatchState } from '../types/patch';
+import { blankPatch } from '..';
+import { blankPatchToClearCanvas } from '..';
 import { IClearPatchEditor } from '../actions/clear-patch-editor';
+import { IPatchState } from '../types/patch';
 
 export const clearPatchEditor: React.Reducer<IPatchState, IClearPatchEditor> = (
 	state,

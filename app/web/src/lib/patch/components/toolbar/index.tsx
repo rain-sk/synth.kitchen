@@ -1,11 +1,9 @@
 import React from 'react';
-
+import { Link } from 'wouter';
+import icon from './icon.png';
 import { PatchNameField } from './patch-name-field';
 import { Record } from './record';
 import { SaveToCloud } from './save-to-cloud';
-import { Link } from 'wouter';
-
-import icon from './icon.png';
 
 export const Toolbar: React.FC<{}> = () => {
 	return (

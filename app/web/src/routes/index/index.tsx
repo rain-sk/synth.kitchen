@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import { Redirect } from 'wouter';
-
 import { AuthContext } from '../../api/auth/context';
 import { Loader } from '../../lib/shared/components/loader';
 // import { Onboarding } from './onboarding';

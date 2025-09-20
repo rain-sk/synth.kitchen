@@ -1,11 +1,12 @@
-import { Module, ModulePosition } from 'synth.kitchen-shared';
-
-import { ISelectionDrag, SelectionDragType } from '../actions/selection-drag';
-import { Modifier } from '../../constants/key';
-import { IPatchState } from '../types/patch';
-import { INVALID_POSITION } from '../constants/positions';
+import { Module } from 'synth.kitchen-shared';
+import { ModulePosition } from 'synth.kitchen-shared';
 import { convertRemToPixels } from '../../../shared/utils/rem-to-px';
-import { cloneAndApply } from '../utils/clone-and-apply';
+import { Modifier } from '../../constants/key';
+import { ISelectionDrag } from '../actions/selection-drag';
+import { SelectionDragType } from '../actions/selection-drag';
+import { INVALID_POSITION } from '../constants/positions';
+import { cloneAndApply } from '../types/patch';
+import { IPatchState } from '../types/patch';
 
 type IRectangle = {
 	x: number;

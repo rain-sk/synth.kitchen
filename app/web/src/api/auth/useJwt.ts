@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocalStorage } from 'react-use';
-import { apiBase } from '../uri';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { navigate } from 'wouter/use-browser-location';
+
 import { fetchWithJwt } from '../../utils/fetchWithJwt';
+import { apiBase } from '../uri';
 
 export const useJwt = () => {
 	const syncing = useRef(false);

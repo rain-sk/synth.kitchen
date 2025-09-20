@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { AdminUser, UserInfoAuthenticated } from 'synth.kitchen-shared';
+import { AdminUser, UserInfoAuthenticated } from 'synth.kitchen-shared';
 
 import { apiBase } from '../uri';
 

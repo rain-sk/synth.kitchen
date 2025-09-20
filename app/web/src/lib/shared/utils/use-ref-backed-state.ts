@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
 import isCallable from 'is-callable';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 export const useRefBackedState = <T>(initialValue: T | (() => T)) => {
 	const computedInitialValue: T = useMemo(() => {

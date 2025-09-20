@@ -1,7 +1,7 @@
 import { blankPatch } from '..';
 import { ILoadPatch } from '../actions/load-patch';
+import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
-import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
 	state,

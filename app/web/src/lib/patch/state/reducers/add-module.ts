@@ -1,8 +1,7 @@
 import { randomId, randomName } from 'synth.kitchen-shared';
 
-import { IPatchState } from '../types/patch';
+import { IPatchState, cloneAndApply } from '../types/patch';
 import { IAddModule } from '../actions/add-module';
-import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const addModule: React.Reducer<IPatchState, IAddModule> = (
 	state,

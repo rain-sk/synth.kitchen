@@ -1,4 +1,5 @@
 import { useContext, useEffect } from 'react';
+
 import { AuthContext } from '../api/auth/context';
 
 export const LogoutRoute = () => {

@@ -15,9 +15,9 @@ export const useNode = <NodeType, ModuleType extends Type>(
 ) => {
 	const node = useMemo(nodeFactory, []);
 
-	// Though React calls all effects twice because of a "dummy cycle" in dev mode,
-	// we need to use some special tricks to prevent actually disconnecting the
-	// audio node during the dummy cycle.
+	// React runs all effects twice on mount because of a "dummy cycle"
+	// in dev mode, use some special tricks to prevent actually
+	// disconnecting the audio node during the dummy cycle.
 	useEffectOnce(() => () => {
 		if (
 			node &&

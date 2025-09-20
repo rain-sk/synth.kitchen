@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
-import { apiBase } from '../../../api/uri';
 import { Patch, PatchQuery as SharedPatchQuery } from 'synth.kitchen-shared';
+
+import { apiBase } from '../../../api/uri';
 
 type PatchQuery = Exclude<SharedPatchQuery, { creatorId: string }>;
 type PatchesQuery = Exclude<

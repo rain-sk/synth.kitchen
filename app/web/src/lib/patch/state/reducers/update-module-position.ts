@@ -1,6 +1,6 @@
 import { IUpdateModulePosition } from '../actions/update-module-position';
+import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
-import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const updateModulePosition: React.Reducer<
 	IPatchState,

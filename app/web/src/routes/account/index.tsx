@@ -1,7 +1,7 @@
 import { useContext } from 'react';
+import { Redirect } from 'wouter';
 
 import { AuthContext } from '../../api/auth/context';
-import { Redirect } from 'wouter';
 
 export const AccountRoute: React.FC = () => {
 	const { user, loading } = useContext(AuthContext);

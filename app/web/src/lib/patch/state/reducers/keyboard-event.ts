@@ -1,13 +1,16 @@
-import { IKeyboardEvent, KeyboardEventType } from '../actions/keyboard-event';
+import { IKeyboardEvent } from '../actions/keyboard-event';
+import { KeyboardEventType } from '../actions/keyboard-event';
+import { connectorInfo } from '../connection';
+import { disconnectSet } from '../connection';
+import { moduleConnectors } from '../connection';
+import { cloneAndApply } from '../types/patch';
+import { IPatchState } from '../types/patch';
 import {
 	KeyCode,
 	keyCodeModifierMap,
 	keyCodeMovementMap,
 	Modifier,
 } from '../../constants/key';
-import { connectorInfo, disconnectSet, moduleConnectors } from '../connection';
-import { IPatchState } from '../types/patch';
-import { cloneAndApply } from '../utils/clone-and-apply';
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	state,

@@ -1,8 +1,8 @@
-import { AudioContext } from 'standardized-audio-context';
 import { connect } from 'extendable-media-recorder-wav-encoder';
+import { register } from 'extendable-media-recorder';
+import { AudioContext } from 'standardized-audio-context';
 
 import { initAudioProcessors } from './processors';
-import { register } from 'extendable-media-recorder';
 
 export const audioContext = new AudioContext();
 

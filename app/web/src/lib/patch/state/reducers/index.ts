@@ -1,23 +1,22 @@
-import { IPatchState } from '../types/patch';
 import { IPatchAction } from '../actions';
-
+import { IPatchState } from '../types/patch';
 import { addModule } from './add-module';
 import { cancelLoadFromCloud } from './cancel-load-from-cloud';
 import { changeName } from './change-name';
-import { keyboardEvent } from './keyboard-event';
-import { loadPatch } from './load-patch';
-import { selectionDrag } from './selection-drag';
-import { selectModule } from './select-module';
-import { updateModule } from './update-module';
-import { updateModulePosition } from './update-module-position';
-import { setActiveConnectorKey } from './set-active-connector-key';
-import { registerConnector } from './connector-registration';
-import { clickConnector } from './click-connector';
-import { loadConnections } from './load-connections';
-import { focusInput } from './input-focus';
-import { blurInput } from './input-blur';
-import { clearPatchEditor } from './clear-patch-editor';
 import { clearActiveConnector } from './clear-active-connector';
+import { clearPatchEditor } from './clear-patch-editor';
+import { clickConnector } from './click-connector';
+import { registerConnector } from './connector-registration';
+import { blurInput } from './input-blur';
+import { focusInput } from './input-focus';
+import { keyboardEvent } from './keyboard-event';
+import { loadConnections } from './load-connections';
+import { loadPatch } from './load-patch';
+import { selectModule } from './select-module';
+import { selectionDrag } from './selection-drag';
+import { setActiveConnectorKey } from './set-active-connector-key';
+import { updateModulePosition } from './update-module-position';
+import { updateModuleState } from './update-module-state';
 
 export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 	state,
@@ -72,8 +71,8 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		case 'UpdateModulePosition': {
 			return updateModulePosition(state, action);
 		}
-		case 'UpdateModule': {
-			return updateModule(state, action);
+		case 'UpdateModuleState': {
+			return updateModuleState(state, action);
 		}
 		default: {
 			return state;

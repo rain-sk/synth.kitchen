@@ -1,8 +1,7 @@
-import { connectorKey } from '../connection';
-
-import { IPatchState } from '../types/patch';
 import { IRegisterConnector } from '../actions/connector-registration';
-import { cloneAndApply } from '../utils/clone-and-apply';
+import { connectorKey } from '../connection';
+import { cloneAndApply } from '../types/patch';
+import { IPatchState } from '../types/patch';
 
 export const registerConnector: React.Reducer<
 	IPatchState,
