@@ -20,7 +20,7 @@ export const addModule: React.Reducer<IPatchState, IAddModule> = (
 				name: randomName(action.payload.type.toLocaleLowerCase()),
 				id,
 				type: action.payload.type,
-			},
+			} as any,
 		},
 		modulePositions: {
 			...state.modulePositions,

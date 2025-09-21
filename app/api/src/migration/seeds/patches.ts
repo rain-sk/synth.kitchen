@@ -1,3 +1,5 @@
+import { channel } from "diagnostics_channel";
+
 const aaa = {
   id: "c090f09e-77de-406a-b708-5f922d0c2b4c",
   name: "agile-able-attitude",
@@ -162,6 +164,7 @@ const aaa = {
           },
           {
             moduleId: "c98da833-4498-478b-8a98-323fb400eb79",
+            name: "frequency",
           },
         ],
       "ae0fa3c1-7ca2-46a1-b138-b860e097f6cf_1_0|9701db09-b62d-4635-bafa-1fecb8c695a0_frequency":
@@ -173,6 +176,7 @@ const aaa = {
           },
           {
             moduleId: "9701db09-b62d-4635-bafa-1fecb8c695a0",
+            name: "frequency",
           },
         ],
       "50590d50-2888-4a2a-bffa-32e2c4bb2b92_1_0|9701db09-b62d-4635-bafa-1fecb8c695a0_frequency":
@@ -184,6 +188,7 @@ const aaa = {
           },
           {
             moduleId: "9701db09-b62d-4635-bafa-1fecb8c695a0",
+            name: "frequency",
           },
         ],
       "ae0fa3c1-7ca2-46a1-b138-b860e097f6cf_1_0|50590d50-2888-4a2a-bffa-32e2c4bb2b92_0_0":
@@ -1425,6 +1430,7 @@ const nnn = {
           },
           {
             moduleId: "68f148ca-e4c3-46bb-a09a-cf6043844484",
+            name: "frequency",
           },
         ],
       "de8f594e-7535-4a01-96e9-daa6012db465_1_0|fda1bed3-34b5-41aa-a858-3cef8c90bede_0_0":
@@ -1449,6 +1455,7 @@ const nnn = {
           },
           {
             moduleId: "13c810a0-6a78-4ab7-80a1-1f763810a8e0",
+            name: "frequency",
           },
         ],
       "ee9efcba-4a38-4be0-a543-40be198c17ba_1_0|6ca372b2-8e40-4399-8678-1a92c5001795_0_0":
@@ -1577,6 +1584,7 @@ const nnn = {
           },
           {
             moduleId: "448eda2b-9944-429d-8688-0a9806c72791",
+            name: "release",
           },
         ],
       "3964cd81-605b-4af4-a1b9-8d3cad889b8d_1_0|1bdcabc2-b756-48ad-8abc-2100b10654e5_0_0":
@@ -1991,14 +1999,14 @@ const jjj = {
             channel: 0,
           },
         ],
-      "f4c4409b-b3ac-49d4-b45b-885e2eabba0f_1_0|1c978fa2-d3a1-46b6-b941-12c63d687aa7_step 1":
+      "f4c4409b-b3ac-49d4-b45b-885e2eabba0f_1_0|1c978fa2-d3a1-46b6-b941-12c63d687aa7_step_1":
         [
           {
             moduleId: "f4c4409b-b3ac-49d4-b45b-885e2eabba0f",
             channel: 0,
             type: 1,
           },
-          { moduleId: "1c978fa2-d3a1-46b6-b941-12c63d687aa7", name: "step 1" },
+          { moduleId: "1c978fa2-d3a1-46b6-b941-12c63d687aa7", name: "step_1" },
         ],
       "8794ec0d-c56b-47bb-8110-0175f8d7da5d_1_0|b6b978fb-4e28-43e1-9704-a0b008abcd5c_0_0":
         [
@@ -2122,43 +2130,44 @@ const jjj = {
           },
           {
             moduleId: "6c98b4fe-417b-476b-9da6-a41e9dddbfac",
+            name: "frequency",
           },
         ],
-      "f4c4409b-b3ac-49d4-b45b-885e2eabba0f_1_0|1c978fa2-d3a1-46b6-b941-12c63d687aa7_step 5":
+      "f4c4409b-b3ac-49d4-b45b-885e2eabba0f_1_0|1c978fa2-d3a1-46b6-b941-12c63d687aa7_step_5":
         [
           {
             moduleId: "f4c4409b-b3ac-49d4-b45b-885e2eabba0f",
             channel: 0,
             type: 1,
           },
-          { moduleId: "1c978fa2-d3a1-46b6-b941-12c63d687aa7", name: "step 5" },
+          { moduleId: "1c978fa2-d3a1-46b6-b941-12c63d687aa7", name: "step_5" },
         ],
-      "f4c4409b-b3ac-49d4-b45b-885e2eabba0f_1_0|1c978fa2-d3a1-46b6-b941-12c63d687aa7_step 4":
+      "f4c4409b-b3ac-49d4-b45b-885e2eabba0f_1_0|1c978fa2-d3a1-46b6-b941-12c63d687aa7_step_4":
         [
           {
             moduleId: "f4c4409b-b3ac-49d4-b45b-885e2eabba0f",
             channel: 0,
             type: 1,
           },
-          { moduleId: "1c978fa2-d3a1-46b6-b941-12c63d687aa7", name: "step 4" },
+          { moduleId: "1c978fa2-d3a1-46b6-b941-12c63d687aa7", name: "step_4" },
         ],
-      "f4c4409b-b3ac-49d4-b45b-885e2eabba0f_1_0|1c978fa2-d3a1-46b6-b941-12c63d687aa7_step 3":
+      "f4c4409b-b3ac-49d4-b45b-885e2eabba0f_1_0|1c978fa2-d3a1-46b6-b941-12c63d687aa7_step_3":
         [
           {
             moduleId: "f4c4409b-b3ac-49d4-b45b-885e2eabba0f",
             channel: 0,
             type: 1,
           },
-          { moduleId: "1c978fa2-d3a1-46b6-b941-12c63d687aa7", name: "step 3" },
+          { moduleId: "1c978fa2-d3a1-46b6-b941-12c63d687aa7", name: "step_3" },
         ],
-      "f4c4409b-b3ac-49d4-b45b-885e2eabba0f_1_0|1c978fa2-d3a1-46b6-b941-12c63d687aa7_step 2":
+      "f4c4409b-b3ac-49d4-b45b-885e2eabba0f_1_0|1c978fa2-d3a1-46b6-b941-12c63d687aa7_step_2":
         [
           {
             moduleId: "f4c4409b-b3ac-49d4-b45b-885e2eabba0f",
             channel: 0,
             type: 1,
           },
-          { moduleId: "1c978fa2-d3a1-46b6-b941-12c63d687aa7", name: "step 2" },
+          { moduleId: "1c978fa2-d3a1-46b6-b941-12c63d687aa7", name: "step_2" },
         ],
     },
   },
@@ -2750,6 +2759,7 @@ const rrr = {
           },
           {
             moduleId: "786259d2-dcef-4018-ac73-eb45c1dfc7b0",
+            name: "release",
           },
         ],
       "1f208b2b-5ac7-4e9c-b7fa-a70f0371e6b6_1_0|cb5fa0cf-6e53-4bde-8988-37a2dc187a96_0_0":
@@ -2774,6 +2784,7 @@ const rrr = {
           },
           {
             moduleId: "87ce788a-268a-46cf-b112-cd5e25ea6238",
+            name: "frequency",
           },
         ],
       "b91021db-66d7-4b37-8900-de6044b43b66_1_0|dad2461c-db63-47ad-835e-f8b8a9c09cc9_detune":
@@ -3208,6 +3219,7 @@ const rrr = {
           },
           {
             moduleId: "786259d2-dcef-4018-ac73-eb45c1dfc7b0",
+            name: "release",
           },
         ],
       "769cccc7-90cf-49be-818f-340991406339_1_0|923f6ea9-60f0-4002-a3ff-573f4ff18a29_0_0":
@@ -3598,6 +3610,7 @@ const sss = {
           },
           {
             moduleId: "c9c10948-358d-478a-9494-2f13857eee09",
+            name: "frequency",
           },
         ],
       "9db9ecc0-8953-42d2-a584-9629ed4f2de1_1_0|70c9b944-e8f4-463d-a8b8-970089483865_0_0":
@@ -6545,6 +6558,7 @@ const sss3 = {
           },
           {
             moduleId: "7a41ad7b-f428-42c3-962d-7530fc8f7ee5",
+            name: "frequency",
           },
         ],
       "7a41ad7b-f428-42c3-962d-7530fc8f7ee5_1_0|fd150261-4967-44a7-8de5-b5b38eb5fc7f_0_0":
@@ -6599,6 +6613,7 @@ const sss3 = {
           },
           {
             moduleId: "3118f3b1-e57c-4986-a41a-a5c5b783afc2",
+            name: "frequency",
           },
         ],
       "378ec741-1159-48d9-9433-58b7e5a700e9_1_0|0cbb0165-653e-40a4-85ff-ba4c143c7dfc_0_0":
@@ -7536,6 +7551,7 @@ const ggg2 = {
           },
           {
             moduleId: "dd529a9d-0e86-4afe-9919-94517314c78e",
+            name: "frequency",
           },
         ],
       "b640cf15-f741-46aa-91b0-d9da14ac59b1_1_0|19d16360-9b0d-48a8-9ae1-9560603d0bab_0_0":
@@ -8013,6 +8029,7 @@ const aaa2 = {
           },
           {
             moduleId: "ca355888-0854-4263-9766-3ccbcf3dbfa5",
+            name: "frequency",
           },
         ],
       "94f09936-4ea8-4272-82d2-7f103d0c71bd_1_0|1dff4e67-e779-4a40-a094-916291e7ad1a_0_0":
@@ -8110,6 +8127,7 @@ const aaa2 = {
           },
           {
             moduleId: "ca355888-0854-4263-9766-3ccbcf3dbfa5",
+            name: "frequency",
           },
         ],
       "94f09936-4ea8-4272-82d2-7f103d0c71bd_1_0|9d29c20e-de1d-440d-aac5-9f265d2358c7_0_0":
@@ -8147,6 +8165,7 @@ const aaa2 = {
           },
           {
             moduleId: "cd5cb559-4d89-4849-ad87-6d0e20fa10f0",
+            name: "frequency",
           },
         ],
       "cd5cb559-4d89-4849-ad87-6d0e20fa10f0_1_0|64859d73-c6ba-4950-9083-d289ee3bc40f_0_0":
@@ -9325,6 +9344,7 @@ const sss4 = {
           },
           {
             moduleId: "7c9e66b3-892d-4a76-acf9-f21cb46e87d4",
+            name: "frequency",
           },
         ],
       "de5cd8ba-8efb-4360-b724-9e2ec71f0f2d_1_0|34b7bf2e-72e9-4afc-892f-60361356e09c_0_0":
@@ -9790,6 +9810,7 @@ const www = {
           },
           {
             moduleId: "5cfcdfca-67a2-459f-9e7a-b38ed0971452",
+            name: "output-max",
           },
         ],
       "5cfcdfca-67a2-459f-9e7a-b38ed0971452_1_0|dfa15098-e8a9-4e9d-b408-d49a5a619291_0_0":

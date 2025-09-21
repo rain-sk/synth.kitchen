@@ -56,6 +56,38 @@ export class PatchController {
     res.status(500).send("");
   };
 
+  static getPatchInfo = async (req, res) => {
+    try {
+      const query: Exclude<PatchQuery, "random"> = req.query;
+
+      let queryParamCount = Object.keys(query).length;
+      if (queryParamCount !== 1) {
+        throw new Error("Invalid number of query parameters");
+      } else if (!("id" in query || "slug" in query || "creatorId" in query)) {
+        throw new Error(
+          "Missing expected query params ('id', 'slug' or 'creatorId')"
+        );
+      } else if ("random" in query) {
+        throw new Error("Unsupported 'random' for getting patch info");
+      }
+
+      const result = await PatchService.getPatchInfo(query);
+      if (Array.isArray(result)) {
+        res.json({ patches: result });
+      } else if (result) {
+        res.json({ patch: result });
+      } else {
+        res.sendStatus(404);
+      }
+
+      return;
+    } catch (error) {
+      console.error(`GET /patch/: ${error}`);
+    }
+
+    res.status(500).send("");
+  };
+
   static createPatch = async (req, res) => {
     try {
       const patchData: Partial<Patch> = req.body;

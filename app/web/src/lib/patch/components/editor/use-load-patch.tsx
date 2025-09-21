@@ -76,9 +76,9 @@ export const useLoadPatch = (
 							id: patch.id,
 							name: patch.name,
 							slug: patch.slug,
-							modules: patch.state.modules,
-							modulePositions: patch.state.modulePositions,
-							connections: patch.state.connections,
+							modules: patch.state.state.modules,
+							modulePositions: patch.state.state.modulePositions,
+							connections: patch.state.state.connections,
 						}),
 					);
 					setLoadConnections(true);
@@ -101,9 +101,9 @@ export const useLoadPatch = (
 							id: patch.id,
 							name: patch.name,
 							slug: patch.slug,
-							modules: patch.state.modules,
-							modulePositions: patch.state.modulePositions,
-							connections: patch.state.connections,
+							modules: patch.state.state.modules,
+							modulePositions: patch.state.state.modulePositions,
+							connections: patch.state.state.connections,
 						}),
 					);
 					setLoadConnections(true);

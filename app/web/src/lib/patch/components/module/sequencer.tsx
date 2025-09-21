@@ -324,14 +324,14 @@ export const SequencerModule: React.FC<{
 				<NumberParameter
 					moduleId={module.id}
 					paramAccessor={step0Accessor}
-					name="step 1"
+					name="step_1"
 					value={state.step0}
 					commitValueCallback={commitStep0Change}
 				/>
 				<NumberParameter
 					moduleId={module.id}
 					paramAccessor={step1Accessor}
-					name="step 2"
+					name="step_2"
 					value={state.step1}
 					commitValueCallback={commitStep1Change}
 				/>
@@ -339,7 +339,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step2Accessor}
-						name="step 3"
+						name="step_3"
 						value={state.step2}
 						commitValueCallback={commitStep2Change}
 					/>
@@ -348,7 +348,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step3Accessor}
-						name="step 4"
+						name="step_4"
 						value={state.step3}
 						commitValueCallback={commitStep3Change}
 					/>
@@ -357,7 +357,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step4Accessor}
-						name="step 5"
+						name="step_5"
 						value={state.step4}
 						commitValueCallback={commitStep4Change}
 					/>
@@ -366,7 +366,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step5Accessor}
-						name="step 6"
+						name="step_6"
 						value={state.step5}
 						commitValueCallback={commitStep5Change}
 					/>
@@ -375,7 +375,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step6Accessor}
-						name="step 7"
+						name="step_7"
 						value={state.step6}
 						commitValueCallback={commitStep6Change}
 					/>
@@ -384,7 +384,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step7Accessor}
-						name="step 8"
+						name="step_8"
 						value={state.step7}
 						commitValueCallback={commitStep7Change}
 					/>
@@ -393,7 +393,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step8Accessor}
-						name="step 9"
+						name="step_9"
 						value={state.step8}
 						commitValueCallback={commitStep8Change}
 					/>
@@ -402,7 +402,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step9Accessor}
-						name="step 10"
+						name="step_10"
 						value={state.step9}
 						commitValueCallback={commitStep9Change}
 					/>
@@ -411,7 +411,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step10Accessor}
-						name="step 11"
+						name="step_11"
 						value={state.step10}
 						commitValueCallback={commitStep10Change}
 					/>
@@ -420,7 +420,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step11Accessor}
-						name="step 12"
+						name="step_12"
 						value={state.step11}
 						commitValueCallback={commitStep11Change}
 					/>
@@ -429,7 +429,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step12Accessor}
-						name="step 13"
+						name="step_13"
 						value={state.step12}
 						commitValueCallback={commitStep12Change}
 					/>
@@ -438,7 +438,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step13Accessor}
-						name="step 14"
+						name="step_14"
 						value={state.step13}
 						commitValueCallback={commitStep13Change}
 					/>
@@ -447,7 +447,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step14Accessor}
-						name="step 15"
+						name="step_15"
 						value={state.step14}
 						commitValueCallback={commitStep14Change}
 					/>
@@ -456,7 +456,7 @@ export const SequencerModule: React.FC<{
 					<NumberParameter
 						moduleId={module.id}
 						paramAccessor={step15Accessor}
-						name="step 16"
+						name="step_16"
 						value={state.step15}
 						commitValueCallback={commitStep15Change}
 					/>

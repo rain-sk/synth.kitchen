@@ -36,7 +36,7 @@ export type PatchState = {
 };
 
 export type Patch = PatchInfo & {
-  state: PatchState;
+  state: SavedPatchState;
 };
 
 export {

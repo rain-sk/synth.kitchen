@@ -103,6 +103,24 @@ export class PatchService {
     }
   };
 
+  static getPatchInfo = async (
+    info: PatchQuery
+  ): Promise<Patch | Patch[] | undefined> => {
+    const [where, params] = getPatchParams(info);
+
+    try {
+      const query = AppDataSource.getRepository(Patch)
+        .createQueryBuilder("patch")
+        .where(where, params);
+      const result = info.creatorId
+        ? await query.getMany()
+        : await query.getOneOrFail();
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   static getRandomPatch = async (): Promise<Patch | null> => {
     try {
       const patch = await AppDataSource.getRepository(Patch)

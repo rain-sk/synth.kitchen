@@ -3,11 +3,8 @@ import { Patch, PatchQuery as SharedPatchQuery } from 'synth.kitchen-shared';
 
 import { apiBase } from '../../../api/uri';
 
-type PatchQuery = Exclude<SharedPatchQuery, { creatorId: string }>;
-type PatchesQuery = Exclude<
-	SharedPatchQuery,
-	{ id: string } | { slug: string }
->;
+type PatchQuery = Pick<SharedPatchQuery, 'id' | 'slug' | 'random'>;
+type PatchesQuery = Pick<SharedPatchQuery, 'creatorId'>;
 
 export const useApi = () => {
 	const getPatch = useCallback(
@@ -52,7 +49,7 @@ export const useApi = () => {
 				const encodedKey = encodeURIComponent(key);
 				const encodedValue = encodeURIComponent(value);
 				const result = await fetch(
-					`${apiBase}/patch/?${encodedKey}=${encodedValue}`,
+					`${apiBase}/patch/info/?${encodedKey}=${encodedValue}`,
 					{
 						headers,
 						method: 'get',

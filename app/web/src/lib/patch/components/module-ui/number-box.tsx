@@ -207,7 +207,7 @@ export const NumberBox: React.FunctionComponent<{
 	return (
 		<div>
 			<label htmlFor={id}>
-				<h3>{name}</h3>
+				<h3>{name.replace('_', ' ')}</h3>
 			</label>
 			<input
 				id={id}

@@ -9,14 +9,14 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Patch as SharedPatch } from "synth.kitchen-shared";
+
 import { User } from "./User";
-import { PatchInfo } from "synth.kitchen-shared";
 import { Sample } from "./Sample";
 import { SavedPatchState } from "./SavedPatchState";
-import { AppDataSource } from "../data-source";
 
 @Entity()
-export class Patch implements PatchInfo {
+export class Patch implements SharedPatch {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
