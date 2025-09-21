@@ -96,24 +96,28 @@ const connectionsInRange = (
 ): Set<string> => {
 	const keysInRange = new Set<string>();
 
-	const connectorCache: Record<string, HTMLButtonElement> = {};
+	const main = document.getElementById('main');
+	const scrollX = main?.scrollLeft ?? 0;
+	const scrollY = main?.scrollTop ?? 0;
+	const connectorCache: Record<string, DOMRect> = {};
 	for (const [id, connection] of Object.entries(connections)) {
 		const [output, input] = connection;
 		const outputKey = connectorKey(output);
 		const inputKey = connectorKey(input);
 
-		const outputButton =
-			connectorCache[outputKey] ?? document.getElementById(outputKey);
-		const inputButton =
-			connectorCache[inputKey] ?? document.getElementById(inputKey);
-		connectorCache[outputKey] = outputButton;
-		connectorCache[inputKey] = inputButton;
-		const outputRect = outputButton.getBoundingClientRect();
-		const inputRect = inputButton.getBoundingClientRect();
-		const outputX = outputRect.x;
-		const outputY = outputRect.y;
-		const inputX = inputRect.x;
-		const inputY = inputRect.y;
+		const outputRect =
+			connectorCache[outputKey] ??
+			document.getElementById(outputKey)?.getBoundingClientRect();
+		const inputRect =
+			connectorCache[inputKey] ??
+			document.getElementById(inputKey)?.getBoundingClientRect();
+		connectorCache[outputKey] = outputRect;
+		connectorCache[inputKey] = inputRect;
+
+		const outputX = outputRect.x + scrollX;
+		const outputY = outputRect.y + scrollY;
+		const inputX = inputRect.x + scrollX;
+		const inputY = inputRect.y + scrollY;
 
 		if (
 			outputX >= rect.x &&

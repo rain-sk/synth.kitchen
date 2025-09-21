@@ -1,26 +1,23 @@
-const jwtHeaders = (jwt: string) => ({
-	authorization: `Bearer ${jwt}`,
-	Accept: 'application/json',
+const jwtHeaders = () => ({
+	authorization: `Bearer ${localStorage.getItem('jwt') ?? ''}`,
 });
 
 export const fetchWithJwt = async (
 	path: string,
-	jwt: string,
-	init: RequestInit = { headers: {} },
-): Promise<Response> => {
-	return await fetch(
+	init: RequestInit = { headers: { Accept: 'application/json' } },
+): Promise<Response> =>
+	await fetch(
 		path,
 		'headers' in init
 			? {
 					...init,
 					headers: {
 						...init.headers,
-						...jwtHeaders(jwt),
+						...jwtHeaders(),
 					},
 			  }
 			: {
 					...init,
-					headers: jwtHeaders(jwt),
+					headers: jwtHeaders(),
 			  },
 	);
-};

@@ -3,6 +3,8 @@ import { PatchQuery, randomId, randomName } from "synth.kitchen-shared";
 import { AppDataSource } from "../data-source";
 import { Patch } from "../entity/Patch";
 import { User } from "../entity/User";
+import { SavedPatchState } from "../entity/SavedPatchState";
+import { UnauthorizedError } from "express-jwt";
 
 const uniquePatchId = async () => {
   for (let i = 0; i < 10; i++) {
@@ -125,6 +127,7 @@ export class PatchService {
     try {
       const patch = await AppDataSource.getRepository(Patch)
         .createQueryBuilder("patch")
+        .leftJoinAndSelect("patch.state", "state")
         .orderBy("RANDOM()")
         .limit(1)
         .getOne();
@@ -135,18 +138,43 @@ export class PatchService {
     }
   };
 
-  static savePatch = async (patchData: Partial<Patch>): Promise<Patch> => {
+  static savePatch = async (
+    userId: string,
+    patchData: Partial<Patch>
+  ): Promise<Patch> => {
+    const creator = await AppDataSource.getRepository(User).findOneOrFail({
+      where: { id: userId },
+    });
+
     const { id, name, slug } = await PatchService.getUniquePatchId();
     const patch = AppDataSource.getRepository(Patch).create({
+      ...patchData,
       id,
       name,
       slug,
-      ...patchData,
+      creator,
     });
-    return await AppDataSource.getRepository(Patch).save(patch);
+
+    const state = AppDataSource.getRepository(SavedPatchState).create({
+      state: patch.state.state,
+    });
+
+    await AppDataSource.getRepository(SavedPatchState).save(state);
+    await AppDataSource.getRepository(Patch).save(patch);
+
+    patch.state = state;
+    state.patch = patch;
+
+    await AppDataSource.getRepository(SavedPatchState).save(state);
+    await AppDataSource.getRepository(Patch).save(patch);
+
+    return await AppDataSource.getRepository(Patch).findOneOrFail({
+      where: { id },
+    });
   };
 
   static updatePatch = async (
+    userId: string,
     id: string,
     patchData: Partial<Patch>
   ): Promise<Patch> => {
@@ -155,8 +183,32 @@ export class PatchService {
     if (!existingPatch) {
       throw new Error("Patch not found");
     }
+    if (existingPatch.creator.id !== userId) {
+      throw new UnauthorizedError(
+        "credentials_required",
+        new Error("Invalid attempt to update another user's patch.")
+      );
+    }
+    if ("state" in patchData) {
+      const existingState = await AppDataSource.getRepository(
+        SavedPatchState
+      ).findOneOrFail({ where: { id: existingPatch.state.id } });
+      const newState = AppDataSource.getRepository(SavedPatchState).create(
+        patchData.state
+      );
+      newState.ancestor = existingState;
+      newState.patch = existingPatch;
+      AppDataSource.getRepository(SavedPatchState).save(existingState);
+      AppDataSource.getRepository(SavedPatchState).save(newState);
+      patchData.state = newState;
+    }
+
     const updatedPatch = Object.assign(existingPatch, patchData);
-    return await patchRepository.save(updatedPatch);
+    await patchRepository.save(updatedPatch);
+
+    return await AppDataSource.getRepository(Patch).findOneOrFail({
+      where: { id },
+    });
   };
 
   static getUniquePatchId = async (): Promise<{

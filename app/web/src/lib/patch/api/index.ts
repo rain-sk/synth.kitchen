@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { Patch, PatchQuery as SharedPatchQuery } from 'synth.kitchen-shared';
 
 import { apiBase } from '../../../api/uri';
+import { fetchWithJwt } from '../../../utils/fetchWithJwt';
 
 type PatchQuery = Pick<SharedPatchQuery, 'id' | 'slug' | 'random'>;
 type PatchesQuery = Pick<SharedPatchQuery, 'creatorId'>;
@@ -68,7 +69,7 @@ export const useApi = () => {
 		[],
 	);
 
-	const savePatch = useCallback(async (patch: Patch) => {
+	const savePatch = useCallback(async (patch: Partial<Patch>) => {
 		const headers = {
 			Accept: 'application/json',
 			'Content-Type': 'application/json',
@@ -76,7 +77,7 @@ export const useApi = () => {
 
 		if (!patch.id) {
 			try {
-				const result = await fetch(`${apiBase}/patch/`, {
+				const result = await fetchWithJwt(`${apiBase}/patch/`, {
 					headers,
 					method: 'post',
 					body: JSON.stringify(patch),
@@ -93,7 +94,7 @@ export const useApi = () => {
 			}
 		} else {
 			try {
-				const result = await fetch(`${apiBase}/patch/${patch.id}`, {
+				const result = await fetchWithJwt(`${apiBase}/patch/${patch.id}`, {
 					headers,
 					method: 'patch',
 					body: JSON.stringify(patch),

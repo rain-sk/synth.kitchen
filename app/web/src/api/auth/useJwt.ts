@@ -36,10 +36,9 @@ export const useJwt = () => {
 		if (jwt) {
 			syncing.current = true;
 			try {
-				const response = await fetchWithJwt(
-					`${apiBase}/token/refresh`,
-					jwt,
-				).then((res) => res.json());
+				const response = await fetchWithJwt(`${apiBase}/token/refresh`).then(
+					(res) => res.json(),
+				);
 				if (response.jwt && typeof response.jwt === 'string') {
 					setJwt(response.jwt);
 				}
@@ -52,7 +51,7 @@ export const useJwt = () => {
 
 	const checkToken = useCallback(async () => {
 		if (!syncing.current && jwt) {
-			const response = await fetchWithJwt(`${apiBase}/token`, jwt);
+			const response = await fetchWithJwt(`${apiBase}/token`);
 			if (!syncing.current && response.status !== 200) {
 				await sync();
 			}

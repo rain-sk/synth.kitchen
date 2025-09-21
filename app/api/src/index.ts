@@ -1,6 +1,6 @@
 import { server } from "./server";
 import { AppDataSource } from "./data-source";
-import { apiHost, apiPort } from "./env";
+import { apiBase, apiHost, apiPort } from "./env";
 import { Patch } from "./entity/Patch";
 import {
   PatchState,

@@ -88,10 +88,11 @@ export class PatchController {
     res.status(500).send("");
   };
 
-  static createPatch = async (req, res) => {
+  static createPatch = async (req: ExpressJwtRequest, res) => {
     try {
+      const userId = req.auth.id;
       const patchData: Partial<Patch> = req.body;
-      const savedPatch = await PatchService.savePatch(patchData);
+      const savedPatch = await PatchService.savePatch(userId, patchData);
       res.status(200).json({ patch: savedPatch });
     } catch (error) {
       console.error(`POST /patch/: ${error}`);
@@ -99,8 +100,9 @@ export class PatchController {
     }
   };
 
-  static updatePatch = async (req, res) => {
+  static updatePatch = async (req: ExpressJwtRequest, res) => {
     try {
+      const userId = req.auth.id;
       const patchId: string = req.params.id;
       const patchData: Partial<Patch> = req.body;
 
@@ -112,7 +114,11 @@ export class PatchController {
       }
 
       // Update the patch
-      const updatedPatch = await PatchService.updatePatch(patchId, patchData);
+      const updatedPatch = await PatchService.updatePatch(
+        userId,
+        patchId,
+        patchData
+      );
 
       res.status(200).json({ patch: updatedPatch });
     } catch (error) {
