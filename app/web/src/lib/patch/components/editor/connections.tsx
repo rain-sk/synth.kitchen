@@ -245,7 +245,7 @@ const Connections: React.FC<{
 
 	useEffect(() => {
 		drawConnections();
-	}, []);
+	}, [drawConnections]);
 	useEffect(() => {
 		drawConnections();
 	}, [activeConnectorKey, connections, connectors, modulePositions]);
