@@ -47,7 +47,6 @@ export const useApi = () => {
 			const [key, value] = param as [string, string];
 			const headers = {
 				Accept: 'application/json',
-				'Content-Type': 'application/json',
 			};
 			try {
 				const encodedKey = encodeURIComponent(key);

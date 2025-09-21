@@ -37,7 +37,7 @@ export const useNode = <NodeType, ModuleType extends Type>(
 
 	useEffect(() => {
 		if (state) {
-			dispatch(patchActions.updateModuleAction(module.moduleKey, { state }));
+			dispatch(patchActions.updateModuleStateAction(module.moduleKey, state));
 		}
 	}, [dispatch, module.moduleKey, state]);
 

@@ -8,6 +8,7 @@ import { LoginRoute } from './routes/login';
 import { LogoutRoute } from './routes/logout';
 import { PatchRoute } from './routes/patch';
 import { ResetPasswordRoute } from './routes/reset-password';
+import { Nav } from './lib/shared/components/nav';
 
 const RedirectToPatch = () => {
 	const [match, params] = useRoute('/p/:slug');
@@ -20,22 +21,25 @@ const RedirectToPatch = () => {
 
 export const SynthKitchen: React.FC = () => {
 	return (
-		<Switch>
-			<Route path="/" component={IndexRoute} />
-			<Route path="/dashboard" component={DashboardRoute} />
+		<>
+			<Nav />
+			<Switch>
+				<Route path="/" component={IndexRoute} />
+				<Route path="/dashboard" component={DashboardRoute} />
 
-			<Route path="/p" component={RedirectToPatch} />
-			<Route path="/p/:slug" component={RedirectToPatch} />
+				<Route path="/p" component={RedirectToPatch} />
+				<Route path="/p/:slug" component={RedirectToPatch} />
 
-			<Route path="/patch" component={PatchRoute} />
-			<Route path="/patch/:slug" component={PatchRoute} />
+				<Route path="/patch" component={PatchRoute} />
+				<Route path="/patch/:slug" component={PatchRoute} />
 
-			<Route path="/account" component={AccountRoute} />
-			<Route path="/login" component={LoginRoute} />
-			<Route path="/register" component={LoginRoute} />
-			<Route path="/logout" component={LogoutRoute} />
-			<Route path="/reset-password" component={ResetPasswordRoute} />
-			<Route path="/reset-password/:key" component={ResetPasswordRoute} />
-		</Switch>
+				<Route path="/account" component={AccountRoute} />
+				<Route path="/login" component={LoginRoute} />
+				<Route path="/register" component={LoginRoute} />
+				<Route path="/logout" component={LogoutRoute} />
+				<Route path="/reset-password" component={ResetPasswordRoute} />
+				<Route path="/reset-password/:key" component={ResetPasswordRoute} />
+			</Switch>
+		</>
 	);
 };
