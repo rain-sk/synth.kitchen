@@ -50,6 +50,10 @@ h1 {
 	bottom: 0;
 }
 
+#overview.minimized #scrub-outline {
+	display: none;
+}
+
 #overview > span {
 	position: relative;
 	display: block;
@@ -112,15 +116,15 @@ nav {
 	top: 0;
 	left: 0;
 	right: 0;
-	background: #5999a5;
+	background: #182f34;
 	border-bottom: 0.05rem white solid;
-	height: 2rem;
-	padding: 0.33rem 0;
+	height: 2.5rem;
+	padding: 0.125rem 0.5rem;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 	z-index: 20;
-	box-sizing: content-box;
+	box-sizing: border-box;
 }
 
 nav ul.nav-links {
@@ -136,12 +140,18 @@ nav ul.nav-links li {
 	align-items: center;
 }
 
+nav ul.nav-links a,
+nav ul.nav-links a:visited {
+	color: #7cd2e2;
+}
+
 #toolbar {
 	position: fixed;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	padding: 1rem 0.75rem;
+	padding: 0.5rem;
+	background-color: #7cd2e2;
 	box-sizing: content-box;
 	height: 1.5rem;
 	display: flex;
