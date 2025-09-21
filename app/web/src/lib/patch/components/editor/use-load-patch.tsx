@@ -44,6 +44,7 @@ export const useLoadPatch = (
 	const { connections, connectors } = state;
 
 	const [newPatch] = useRoute('/patch/new');
+	const [randomPatch] = useRoute('/patch/random');
 	const [, navigate] = useLocation();
 	const { getPatch } = useApi();
 	const [loadConnections, setLoadConnections] = useState(false);
@@ -63,6 +64,30 @@ export const useLoadPatch = (
 						initialized ? blankPatchToLoad() : blankPatch(),
 					),
 				);
+			} else if (randomPatch) {
+				// Load a random patch
+				loadingRef.current = true;
+				setLoading(loadingRef.current);
+				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
+				const patch = await getPatch({ random: true });
+				if (patch) {
+					dispatch(
+						patchActions.loadPatchAction({
+							id: patch.id,
+							name: patch.name,
+							slug: patch.slug,
+							modules: patch.state.modules,
+							modulePositions: patch.state.modulePositions,
+							connections: patch.state.connections,
+						}),
+					);
+					setLoadConnections(true);
+					navigate(`/patch/${patch.slug}`);
+				} else {
+					navigate('/patch/new');
+				}
+				loadingRef.current = false;
+				setLoading(loadingRef.current);
 			} else if (slug && state.slug === '') {
 				loadingRef.current = true;
 				setLoading(loadingRef.current);
@@ -94,7 +119,7 @@ export const useLoadPatch = (
 				navigate('/patch/new');
 			}
 		})();
-	}, [initialized, newPatch, slug, state.slug]);
+	}, [initialized, newPatch, randomPatch, slug, state.slug]);
 
 	const loadConnectionsRef = useRef(false);
 	useEffect(() => {

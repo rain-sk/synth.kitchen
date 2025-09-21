@@ -1,7 +1,7 @@
 import { AppDataSource } from "../data-source";
 import { EmailVerificationRequest } from "../entity/EmailVerificationRequest";
 import { User } from "../entity/User";
-import { sendVerificationEmail } from "../utils/email";
+import { sendVerificationEmail } from "../utils/send-email";
 import { appOrigin } from "../env";
 
 type GetVerificationInfo = { id: string } | { userId: string };

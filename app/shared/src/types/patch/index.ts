@@ -7,9 +7,11 @@ export type PatchQuery =
       id: string;
       slug?: never;
       creatorId?: never;
+      random?: never;
     }
-  | { id?: never; slug: string; creatorId?: never }
-  | { id?: never; slug?: never; creatorId: string };
+  | { id?: never; slug: string; creatorId?: never; random?: never }
+  | { id?: never; slug?: never; creatorId: string; random?: never }
+  | { id?: never; slug?: never; creatorId?: never; random: true };
 
 export type PatchInfo = {
   id: string;

@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors";
 
-import { AuthRouter } from "./routes/auth";
-import { HealthCheckRouter } from "./routes/health";
-import { PatchRouter } from "./routes/patch";
-import { TokenRouter } from "./routes/token";
+import { AuthRouter } from "./routers/auth.router";
+import { HealthCheckRouter } from "./routers/health.router";
+import { PatchRouter } from "./routers/patch.router";
+import { TokenRouter } from "./routers/token.router";
 
 import { apiBase, appOrigin, healthRoute } from "./env";
 

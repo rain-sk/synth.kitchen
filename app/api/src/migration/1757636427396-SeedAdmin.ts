@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 import { User } from "../entity/User";
 import { PasswordResetRequest } from "../entity/PasswordResetRequest";
 import { EmailVerificationRequest } from "../entity/EmailVerificationRequest";
-import { sendResetPasswordEmail } from "../utils/email";
+import { sendResetPasswordEmail } from "../utils/send-email";
 import { adminEmail, appOrigin } from "../env";
 
 export class SeedAdmin1757636427396 implements MigrationInterface {

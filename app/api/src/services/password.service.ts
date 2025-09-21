@@ -3,7 +3,7 @@ import { PasswordResetRequest } from "../entity/PasswordResetRequest";
 import {
   sendPasswordChangedEmail,
   sendResetPasswordEmail,
-} from "../utils/email";
+} from "../utils/send-email";
 import { UserService } from "./user.service";
 import { appOrigin, bcryptCost } from "../env";
 import { User } from "../entity/User";

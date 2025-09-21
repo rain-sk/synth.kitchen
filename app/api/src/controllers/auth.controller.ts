@@ -2,8 +2,8 @@ import { Request as JwtRequest } from "express-jwt";
 import { UserInfoAuthenticated } from "synth.kitchen-shared";
 
 import { User } from "../entity/User";
-import { jwtSign } from "../utils/jwtSign";
-import { ValidationError } from "./validate/registration";
+import { jwtSign } from "../utils/jwt-sign";
+import { ValidationError } from "../services/validate/registration";
 
 import { UserService } from "../services/user.service";
 import { PasswordService } from "../services/password.service";

@@ -1,6 +1,6 @@
 import express from "express";
 
-import { TokenController } from "../controllers/token";
+import { TokenController } from "../controllers/token.controller";
 import { jwt } from "../middleware/jwt";
 
 export const TokenRouter = express.Router();

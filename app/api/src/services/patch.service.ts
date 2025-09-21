@@ -76,6 +76,20 @@ export class PatchService {
     }
   };
 
+  static getRandomPatch = async (): Promise<Patch | null> => {
+    try {
+      const patch = await AppDataSource.getRepository(Patch)
+        .createQueryBuilder("patch")
+        .orderBy("RANDOM()")
+        .limit(1)
+        .getOne();
+      return patch || null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
   static savePatch = async (patchData: Partial<Patch>): Promise<Patch> => {
     const { id, name, slug } = await PatchService.getUniquePatchId();
     const patch = AppDataSource.getRepository(Patch).create({

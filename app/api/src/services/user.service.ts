@@ -1,10 +1,7 @@
 import { compare, hash } from "bcrypt";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
-import {
-  validateRegistration,
-  ValidationError,
-} from "../controllers/validate/registration";
+import { validateRegistration, ValidationError } from "./validate/registration";
 import { bcryptCost } from "../env";
 import { VerificationService } from "./verification.service";
 

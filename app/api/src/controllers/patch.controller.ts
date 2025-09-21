@@ -22,13 +22,23 @@ export class PatchController {
       let queryParamCount = Object.keys(query).length;
       if (queryParamCount !== 1) {
         throw new Error("Invalid number of query parameters");
-      } else if (!("id" in query || "slug" in query || "creatorId" in query)) {
+      } else if (
+        !(
+          "id" in query ||
+          "slug" in query ||
+          "creatorId" in query ||
+          "random" in query
+        )
+      ) {
         throw new Error(
-          "Missing expected query params ('id', 'slug', or 'creatorId')"
+          "Missing expected query params ('id', 'slug', 'creatorId', or 'random')"
         );
       }
 
-      const result = await PatchService.getPatch(query);
+      const getRandom = "random" in query;
+      const result = getRandom
+        ? await PatchService.getRandomPatch()
+        : await PatchService.getPatch(query);
       if (Array.isArray(result)) {
         res.json({ patches: result });
       } else if (result) {

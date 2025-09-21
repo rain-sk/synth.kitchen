@@ -2,7 +2,7 @@ import express from "express";
 
 import { jwt } from "../middleware/jwt";
 
-import { AuthController } from "../controllers/auth";
+import { AuthController } from "../controllers/auth.controller";
 
 export const AuthRouter = express.Router();
 

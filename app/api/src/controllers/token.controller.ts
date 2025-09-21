@@ -1,7 +1,7 @@
 import { Request as JwtRequest } from "express-jwt";
 import jsonwebtoken from "jsonwebtoken";
 
-import { jwtSign } from "../utils/jwtSign";
+import { jwtSign } from "../utils/jwt-sign";
 
 import { jwtSecret } from "../env";
 
