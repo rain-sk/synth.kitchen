@@ -7,7 +7,6 @@ import { IPatchAction } from '../../state/actions';
 import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
 import { ConnectionsWrapper } from './connections';
-import { Overview } from './overview';
 import { Toolbar } from '../toolbar';
 
 export const ModuleCanvas: React.FC<{

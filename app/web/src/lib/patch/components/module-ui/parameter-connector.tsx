@@ -10,7 +10,7 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 	name,
 	accessor,
 }) => {
-	const [connectorKey] = useState(() => paramKey({ id, name }));
+	const [connectorKey] = useState(() => paramKey({ moduleId, name }));
 
 	const { activeConnectorKey, dispatch } = useContext(PatchContext);
 	const { activeConnectorIsOutput, connectedToActiveConnector } = useContext(
@@ -25,7 +25,7 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 	useEffect(() => {
 		dispatch(
 			patchActions.registerConnectorAction({
-				id,
+				moduleId,
 				name,
 				accessor,
 			}),
@@ -33,7 +33,7 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 	}, []);
 
 	const onClick = () => {
-		dispatch(patchActions.clickConnectorAction({ id, name, accessor }));
+		dispatch(patchActions.clickConnectorAction({ moduleId, name, accessor }));
 	};
 
 	const isActive = activeConnectorKey === connectorKey;

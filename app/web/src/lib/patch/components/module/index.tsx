@@ -31,7 +31,6 @@ import { IPatchState } from '../../state/types/patch';
 import { SequencerModule } from './sequencer';
 import { VcaModule } from './vca';
 import { CompressorModule } from './compressor';
-import { useLongPress } from 'react-use';
 import { queueAnimation } from '../../../../utils/animation';
 import { ShiftModule } from './shift';
 import { Module, ModulePosition, ModuleType } from 'synth.kitchen-shared';

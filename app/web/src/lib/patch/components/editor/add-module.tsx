@@ -45,7 +45,7 @@ export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 	const handleAddModule = useCallback(
 		(e: React.ChangeEvent<HTMLSelectElement>) => {
 			const moduleType = e.target.value;
-			if (moduleType !== '') {
+			if (moduleType !== '' && position) {
 				dispatch(
 					patchActions.addModuleAction(moduleType as ModuleType, position),
 				);

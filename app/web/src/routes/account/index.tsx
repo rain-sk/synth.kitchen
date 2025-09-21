@@ -8,7 +8,7 @@ export const AccountRoute: React.FC = () => {
 	return (
 		<>
 			{user || loading ? (
-				<section>
+				<main>
 					<h2>account</h2>
 
 					<article>
@@ -17,7 +17,7 @@ export const AccountRoute: React.FC = () => {
 						<p>Email: {user?.email}</p>
 						<p>Verified: {user?.verified ? 'verified' : 'not verified'}</p>
 					</article>
-				</section>
+				</main>
 			) : (
 				<Redirect to="/login" />
 			)}

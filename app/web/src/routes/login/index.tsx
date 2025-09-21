@@ -98,7 +98,7 @@ export const LoginRoute: React.FC = () => {
 			<Redirect to="/account" />
 		)
 	) : (
-		<section>
+		<main>
 			<h2>login</h2>
 			<form onSubmit={handleSubmit}>
 				<label htmlFor="email">email address</label>
@@ -132,6 +132,6 @@ export const LoginRoute: React.FC = () => {
 			<p>
 				<Link to="/reset-password">forgot password</Link>
 			</p>
-		</section>
+		</main>
 	);
 };

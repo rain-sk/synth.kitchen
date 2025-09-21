@@ -20,6 +20,14 @@ export type PatchInfo = {
   creator: UserInfo;
 };
 
+export type SavedPatchState = {
+  id: string;
+  patch: PatchInfo;
+  ancestor: SavedPatchState;
+  descendants: SavedPatchState[];
+  state: PatchState;
+};
+
 export type PatchState = {
   name: string;
   modules: Record<string, Module>;

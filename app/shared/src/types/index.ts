@@ -21,4 +21,5 @@ export {
   PatchInfo,
   PatchQuery,
   PatchState,
+  SavedPatchState,
 } from "./patch";

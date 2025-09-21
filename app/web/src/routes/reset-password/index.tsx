@@ -50,7 +50,7 @@ const NewPasswordForm: React.FC<{ resetKey: string }> = ({ resetKey }) => {
 	);
 
 	return (
-		<section>
+		<main>
 			<h2>set your new password</h2>
 			<form onSubmit={handleSubmit}>
 				<label htmlFor="password">new password</label>
@@ -69,7 +69,7 @@ const NewPasswordForm: React.FC<{ resetKey: string }> = ({ resetKey }) => {
 				/>
 				<button>submit</button>
 			</form>
-		</section>
+		</main>
 	);
 };
 function validateEmail(email: string) {
@@ -105,7 +105,7 @@ const RequestPasswordResetLink: React.FC = () => {
 	);
 
 	return (
-		<section>
+		<main>
 			<h2>request a password-reset link</h2>
 			<form onSubmit={handleSubmit}>
 				<label htmlFor="email">email address</label>
@@ -118,7 +118,7 @@ const RequestPasswordResetLink: React.FC = () => {
 				{error ? <p id="email-error">{error}</p> : null}
 				<button disabled={formSubmitted ? true : false}>submit</button>
 			</form>
-		</section>
+		</main>
 	);
 };
 

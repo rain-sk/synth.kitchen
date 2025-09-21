@@ -5,7 +5,6 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import { ModulePosition } from 'synth.kitchen-shared';
 
 import { AddModule } from './add-module';
 import { IPatchState } from '../../state/types/patch';

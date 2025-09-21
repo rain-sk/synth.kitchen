@@ -63,7 +63,6 @@ export class PatchService {
   ): Promise<Patch> => {
     const patchRepository = AppDataSource.getRepository(Patch);
 
-    // Fetch the original patch
     const originalPatch = await patchRepository.findOne({
       where: { id: patchId },
       relations: ["creator", "samples"],
@@ -73,8 +72,7 @@ export class PatchService {
       throw new Error("Original patch not found");
     }
 
-    // Create a new patch with cloned properties
-    const newPatch = new Patch();
+    const newPatch = patchRepository.create();
     newPatch.name = originalPatch.name;
     newPatch.slug = `${originalPatch.slug}-fork-${randomId().substring(0, 5)}`;
     newPatch.state = originalPatch.state;
@@ -83,7 +81,6 @@ export class PatchService {
     newPatch.creator = { id: userId } as User;
     newPatch.forkedFrom = originalPatch;
 
-    // Save the new patch
     return await patchRepository.save(newPatch);
   };
 
@@ -95,11 +92,12 @@ export class PatchService {
     try {
       const query = AppDataSource.getRepository(Patch)
         .createQueryBuilder("patch")
+        .leftJoinAndSelect("patch.state", "state")
         .where(where, params);
-
-      return info.creatorId
+      const result = info.creatorId
         ? await query.getMany()
         : await query.getOneOrFail();
+      return result;
     } catch (error) {
       console.error(error);
     }

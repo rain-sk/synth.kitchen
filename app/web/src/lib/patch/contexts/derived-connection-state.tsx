@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
-import { Connection, ConnectorInfo, IoType } from 'synth.kitchen-shared';
+import { Connection, IoType } from 'synth.kitchen-shared';
 
 import {
 	connectorKey,
 	connectorInfo,
 	connectionInfo,
 } from '../state/connection';
+import { ConnectorInfo } from '../state/types/patch';
 
 type DerivedConnectionState = {
 	activeConnectorIsInput: boolean;

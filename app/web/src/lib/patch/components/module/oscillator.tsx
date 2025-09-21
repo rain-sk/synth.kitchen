@@ -104,7 +104,7 @@ export const OscillatorModule: React.FC<{
 	const commitWaveformChange = useCallback(
 		(type: string) => {
 			if (node) {
-				const waveform = type as OscillatorType;
+				const waveform = type as any;
 				node.type = waveform;
 				setState({
 					...state,

@@ -8,13 +8,15 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import {
+  PatchState,
+  SavedPatchState as SharedSavedPatchState,
+} from "synth.kitchen-shared";
 
-import { User } from "./User";
-import { Sample } from "./Sample";
 import { Patch } from "./Patch";
 
 @Entity()
-export class SavedPatchState {
+export class SavedPatchState implements SharedSavedPatchState {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
@@ -22,19 +24,21 @@ export class SavedPatchState {
   createdAt!: Date;
 
   @Column({ type: "json", nullable: true })
-  state: string;
+  state: PatchState;
 
   @ManyToOne(
     () => SavedPatchState,
     (savedPatchState) => savedPatchState.descendants
   )
-  ancestor: Promise<SavedPatchState>;
+  @JoinColumn()
+  ancestor: SavedPatchState;
 
   @OneToMany(
     () => SavedPatchState,
     (savedPatchState) => savedPatchState.ancestor
   )
-  descendants: Promise<SavedPatchState[]>;
+  @JoinColumn()
+  descendants: SavedPatchState[];
 
   @ManyToOne(() => Patch, (patch) => patch.states)
   @JoinColumn()
