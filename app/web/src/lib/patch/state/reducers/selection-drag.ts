@@ -7,6 +7,7 @@ import { SelectionDragType } from '../actions/selection-drag';
 import { INVALID_POSITION } from '../constants/positions';
 import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
+import { connectorKey } from '../connection';
 
 type IRectangle = {
 	x: number;
@@ -14,6 +15,8 @@ type IRectangle = {
 	width: number;
 	height: number;
 };
+
+const emptySet = new Set<string>();
 
 const rectIntersectsOtherRect = (
 	rect: IRectangle,
@@ -93,7 +96,125 @@ const connectionsInRange = (
 ): Set<string> => {
 	const keysInRange = new Set<string>();
 
-	console.log(rect, connections);
+	const connectorCache: Record<string, HTMLButtonElement> = {};
+	for (const [id, connection] of Object.entries(connections)) {
+		const [output, input] = connection;
+		const outputKey = connectorKey(output);
+		const inputKey = connectorKey(input);
+
+		const outputButton =
+			connectorCache[outputKey] ?? document.getElementById(outputKey);
+		const inputButton =
+			connectorCache[inputKey] ?? document.getElementById(inputKey);
+		connectorCache[outputKey] = outputButton;
+		connectorCache[inputKey] = inputButton;
+		const outputRect = outputButton.getBoundingClientRect();
+		const inputRect = inputButton.getBoundingClientRect();
+		const outputX = outputRect.x;
+		const outputY = outputRect.y;
+		const inputX = inputRect.x;
+		const inputY = inputRect.y;
+
+		if (
+			outputX >= rect.x &&
+			outputX <= rect.x + rect.width &&
+			outputY >= rect.y &&
+			outputY <= rect.y + rect.height
+		) {
+			keysInRange.add(id);
+			continue;
+		}
+
+		if (
+			inputX >= rect.x &&
+			inputX <= rect.x + rect.width &&
+			inputY >= rect.y &&
+			inputY <= rect.y + rect.height
+		) {
+			keysInRange.add(id);
+			continue;
+		}
+
+		const rectLeft = rect.x;
+		const rectTop = rect.y;
+		const rectRight = rect.x + rect.width;
+		const rectBottom = rect.y + rect.height;
+
+		const lineIntersectsRectEdge = (
+			lineStartX: number,
+			lineStartY: number,
+			lineEndX: number,
+			lineEndY: number,
+			edgeLeft: number,
+			edgeTop: number,
+			edgeRight: number,
+			edgeBottom: number,
+		): boolean => {
+			const edgeLines = [
+				{ x1: edgeLeft, y1: edgeTop, x2: edgeRight, y2: edgeTop },
+				{ x1: edgeRight, y1: edgeTop, x2: edgeRight, y2: edgeBottom },
+				{ x1: edgeRight, y1: edgeBottom, x2: edgeLeft, y2: edgeBottom },
+				{ x1: edgeLeft, y1: edgeBottom, x2: edgeLeft, y2: edgeTop },
+			];
+
+			for (const edge of edgeLines) {
+				if (
+					lineIntersectsLine(
+						lineStartX,
+						lineStartY,
+						lineEndX,
+						lineEndY,
+						edge.x1,
+						edge.y1,
+						edge.x2,
+						edge.y2,
+					)
+				) {
+					return true;
+				}
+			}
+
+			return false;
+		};
+
+		const lineIntersectsLine = (
+			x1: number,
+			y1: number,
+			x2: number,
+			y2: number,
+			x3: number,
+			y3: number,
+			x4: number,
+			y4: number,
+		): boolean => {
+			const denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+			if (Math.abs(denominator) < 1e-10) {
+				return false;
+			}
+
+			const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
+			const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denominator;
+
+			return t >= 0 && t <= 1 && u >= 0 && u <= 1;
+		};
+
+		if (
+			lineIntersectsRectEdge(
+				outputX,
+				outputY,
+				inputX,
+				inputY,
+				rectLeft,
+				rectTop,
+				rectRight,
+				rectBottom,
+			)
+		) {
+			keysInRange.add(id);
+		}
+	}
+
 	return keysInRange;
 };
 
@@ -108,7 +229,7 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 			return cloneAndApply(state, {
 				mouseDragStartPosition: action.payload.position,
 				mouseDragPosition: action.payload.position,
-				selectedModules: shift ? state.selectedModules : new Set(),
+				selectedModules: shift ? state.selectedModules : emptySet,
 			});
 		}
 		case SelectionDragType.DRAG_CONTINUE: {
@@ -149,10 +270,40 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 				state.modulePositions,
 			);
 
+			if (modulesInPendingSelection.size > 0) {
+				const newSelection = shift
+					? (() => {
+							const selection = new Set([...state.selectedModules]);
+							modulesInPendingSelection.forEach((id) => {
+								if (selection.has(id)) {
+									selection.delete(id);
+								} else {
+									selection.add(id);
+								}
+							});
+							return selection;
+					  })()
+					: modulesInPendingSelection;
+
+				return cloneAndApply(state, {
+					mouseDragStartPosition: INVALID_POSITION,
+					mouseDragPosition: INVALID_POSITION,
+					selectedConnections: emptySet,
+					selectedModules: newSelection,
+					pendingConnectionSelection: undefined,
+					pendingModuleSelection: undefined,
+				});
+			}
+
+			const connectionsInPendingSelection = connectionsInRange(
+				rect,
+				state.connections,
+			);
+
 			const newSelection = shift
 				? (() => {
-						const selection = new Set([...state.selectedModules]);
-						modulesInPendingSelection.forEach((id) => {
+						const selection = new Set([...state.selectedConnections]);
+						connectionsInPendingSelection.forEach((id) => {
 							if (selection.has(id)) {
 								selection.delete(id);
 							} else {
@@ -161,12 +312,13 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 						});
 						return selection;
 				  })()
-				: modulesInPendingSelection;
+				: connectionsInPendingSelection;
 
 			return cloneAndApply(state, {
 				mouseDragStartPosition: INVALID_POSITION,
 				mouseDragPosition: INVALID_POSITION,
-				selectedModules: newSelection,
+				selectedConnections: newSelection,
+				selectedModules: emptySet,
 				pendingConnectionSelection: undefined,
 				pendingModuleSelection: undefined,
 			});
@@ -175,7 +327,6 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 			return cloneAndApply(state, {
 				mouseDragStartPosition: INVALID_POSITION,
 				mouseDragPosition: INVALID_POSITION,
-				selectedModules: new Set(),
 				pendingConnectionSelection: undefined,
 				pendingModuleSelection: undefined,
 			});

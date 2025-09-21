@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Connection, ModulePosition } from 'synth.kitchen-shared';
 
-import { connectorButton, connectorKey } from '../../state/connection';
+import {
+	connectionKey,
+	connectorButton,
+	connectorKey,
+} from '../../state/connection';
 import { IPatchState } from '../../state/types/patch';
 import { useMouse, useScroll } from 'react-use';
 import { queueAnimation } from '../../../../utils/animation';
@@ -48,13 +52,16 @@ type Segment = [ModulePosition, ModulePosition];
 type Path = Segment[];
 const connectionToPath =
 	(mode: ConnectionDrawMode) =>
-	([output, input]: Connection): Path => {
+	([output, input]: Connection): [string, Path] => {
 		const outputPosition = position(connectorButton(connectorKey(output)));
 		const inputPosition = position(connectorButton(connectorKey(input)));
 
 		switch (mode) {
 			case ConnectionDrawMode.DIRECT:
-				return [[outputPosition, inputPosition]];
+				return [
+					connectionKey(output, input),
+					[[outputPosition, inputPosition]],
+				];
 
 			case ConnectionDrawMode.STEPPED:
 			default: {
@@ -65,7 +72,10 @@ const connectionToPath =
 							Math.pow(inputPosition[1] - outputPosition[1], 2),
 					) < 200
 				) {
-					return [[outputPosition, inputPosition]];
+					return [
+						connectionKey(output, input),
+						[[outputPosition, inputPosition]],
+					];
 				}
 
 				const addSegment = (
@@ -90,7 +100,7 @@ const connectionToPath =
 					previousEndPosition = addSegment(previousEndPosition, inputPosition);
 				}
 
-				return path;
+				return [connectionKey(output, input), path];
 			}
 		}
 	};
@@ -140,7 +150,14 @@ const Connections: React.FC<{
 	state: IPatchState;
 	mainRef: React.RefObject<HTMLElement>;
 }> = ({
-	state: { activeConnectorKey, connections, connectors, modulePositions },
+	state: {
+		activeConnectorKey,
+		connections,
+		connectors,
+		modulePositions,
+		selectedConnections,
+		pendingConnectionSelection,
+	},
 	mainRef,
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>(undefined);
@@ -159,9 +176,12 @@ const Connections: React.FC<{
 			.map(connectionToPath(ConnectionDrawMode.DIRECT));
 		if (activeConnectorKey) {
 			connectionsToDraw.push([
+				'active',
 				[
-					[mouse.posX, mouse.posY],
-					position(connectorButton(activeConnectorKey)),
+					[
+						[mouse.posX, mouse.posY],
+						position(connectorButton(activeConnectorKey)),
+					],
 				],
 			]);
 		}
@@ -191,16 +211,28 @@ const Connections: React.FC<{
 
 				if (activeConnectorKey) {
 					connectionsToDraw.push([
+						'active',
 						[
-							[mouse.elX, mouse.elY],
-							position(connectorButton(activeConnectorKey)),
+							[
+								[mouse.elX, mouse.elY],
+								position(connectorButton(activeConnectorKey)),
+							],
 						],
 					]);
 				}
 
 				connectionsToDraw.forEach((connection) => {
-					const startPosition = connection[0][0];
-					const endPosition = connection[connection.length - 1][1];
+					const [id, path] = connection;
+					const selected = selectedConnections.has(id);
+					const selectionPending = pendingConnectionSelection?.has(id) ?? false;
+					const accentColor = selectionPending
+						? '#ffbf6f'
+						: selected
+						? '#c98900'
+						: '#ffecdc';
+
+					const startPosition = path[0][0];
+					const endPosition = path[path.length - 1][1];
 
 					context2d.fillStyle = '#000';
 					context2d.beginPath();
@@ -211,9 +243,9 @@ const Connections: React.FC<{
 					context2d.arc(endPosition[0], endPosition[1], 5, 0, 2 * Math.PI);
 					context2d.fill();
 
-					connection.forEach((path) => {
-						const [outputX, outputY] = path[0];
-						const [inputX, inputY] = path[1];
+					path.forEach((segment) => {
+						const [outputX, outputY] = segment[0];
+						const [inputX, inputY] = segment[1];
 
 						context2d.beginPath();
 						context2d.strokeStyle = '#000';
@@ -223,14 +255,14 @@ const Connections: React.FC<{
 						context2d.stroke();
 
 						context2d.beginPath();
-						context2d.strokeStyle = '#b9ffce';
+						context2d.strokeStyle = accentColor;
 						context2d.lineWidth = 3;
 						context2d.moveTo(outputX, outputY);
 						context2d.lineTo(inputX, inputY);
 						context2d.stroke();
 					});
 
-					context2d.fillStyle = '#b9ffce';
+					context2d.fillStyle = accentColor;
 					context2d.beginPath();
 					context2d.arc(startPosition[0], startPosition[1], 3, 0, 2 * Math.PI);
 					context2d.fill();
@@ -241,7 +273,15 @@ const Connections: React.FC<{
 				});
 			}
 		}, 'cxn');
-	}, [activeConnectorKey, connections, connectors, scroll, mouse]);
+	}, [
+		activeConnectorKey,
+		connections,
+		connectors,
+		scroll,
+		mouse,
+		selectedConnections,
+		pendingConnectionSelection,
+	]);
 
 	useEffect(() => {
 		drawConnections();

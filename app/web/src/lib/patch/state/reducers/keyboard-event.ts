@@ -53,6 +53,19 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		(keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) &&
 		type === KeyboardEventType.KEY_DOWN
 	) {
+		if (
+			state.selectedModules.size === 0 &&
+			state.selectedConnections.size > 0
+		) {
+			return cloneAndApply(state, {
+				...disconnectSet(
+					state.connections,
+					state.connectors,
+					state.selectedConnections,
+				),
+			});
+		}
+
 		const connectionsOfSelectedModules = new Set(
 			[...state.selectedModules]
 				.filter((id) => id !== '0')
