@@ -82,6 +82,8 @@ const computeVisibleBounds = (
 	};
 };
 
+const noop = () => {};
+
 export const Overview: React.FC<{
 	connectionsCount: number;
 	modulesCount: number;
@@ -162,6 +164,10 @@ export const Overview: React.FC<{
 		});
 	}, []);
 
+	const handleClick = useCallback(() => {
+		setMinimized(!minimized);
+	}, [minimized]);
+
 	const classNames = [];
 	if (minimized) {
 		classNames.push('minimized');
@@ -178,12 +184,16 @@ export const Overview: React.FC<{
 			id="overview"
 			tabIndex={0}
 			onMouseDown={onMouseDown}
-			onClick={() => {
-				setMinimized(!minimized);
-			}}
+			onClick={minimized ? handleClick : noop}
 			className={classNames.join(' ')}
 		>
 			<span>
+				{!minimized && (
+					<button type="button" onClick={handleClick}>
+						<span className="visually-hidden">minimize</span>
+						<span role="presentation">-</span>
+					</button>
+				)}
 				<div
 					id="scrub-area"
 					ref={(scrub) => {

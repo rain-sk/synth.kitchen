@@ -42,7 +42,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			modulePositions: Object.fromEntries(
 				Object.entries(state.modulePositions).map(([id, position]) => [
 					id,
-					state.selectedModuleKeys.has(id)
+					state.selectedModules.has(id)
 						? [position[0] + deltaX, position[1] + deltaY]
 						: position,
 				]),
@@ -54,7 +54,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		type === KeyboardEventType.KEY_DOWN
 	) {
 		const connectionsOfSelectedModules = new Set(
-			[...state.selectedModuleKeys]
+			[...state.selectedModules]
 				.filter((id) => id !== '0')
 				.flatMap((id) => moduleConnectors(state.connectors, id))
 				.map((key) => connectorInfo(state.connectors, key))
@@ -71,27 +71,27 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			Object.entries(newState.connectors).filter(
 				([, [connector]]) =>
 					connector.moduleId === '0' ||
-					!state.selectedModuleKeys.has(connector.moduleId),
+					!state.selectedModules.has(connector.moduleId),
 			),
 		);
 
 		const modules = Object.fromEntries(
 			Object.entries(state.modules).filter(
-				([id]) => !state.selectedModuleKeys.has(id) || id === '0',
+				([id]) => !state.selectedModules.has(id) || id === '0',
 			),
 		);
 
 		const modulePositions = Object.fromEntries(
 			Object.entries(state.modulePositions).filter(
-				([id]) => !state.selectedModuleKeys.has(id) || id === '0',
+				([id]) => !state.selectedModules.has(id) || id === '0',
 			),
 		);
 
 		Object.values(newState.connections).forEach(([output, input]) => {
-			if (state.selectedModuleKeys.has(output.moduleId)) {
+			if (state.selectedModules.has(output.moduleId)) {
 				console.error('failed to delete output');
 			}
-			if (state.selectedModuleKeys.has(input.moduleId)) {
+			if (state.selectedModules.has(input.moduleId)) {
 				console.error('failed to delete input');
 			}
 		});
@@ -105,9 +105,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 					: undefined,
 			modules,
 			modulePositions,
-			selectedModuleKeys: new Set(
-				state.selectedModuleKeys.has('0') ? ['0'] : [],
-			),
+			selectedModules: new Set(state.selectedModules.has('0') ? ['0'] : []),
 		});
 	} else if (
 		keyCode === KeyCode.A &&
@@ -116,7 +114,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			(state.heldModifiers & Modifier.CONTROL) === Modifier.CONTROL)
 	) {
 		return cloneAndApply(state, {
-			selectedModuleKeys: new Set([
+			selectedModules: new Set([
 				...Object.values(state.modules).map((module) => module.id),
 			]),
 		});

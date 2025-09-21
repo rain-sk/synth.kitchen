@@ -61,8 +61,22 @@ h1 {
 	height: 100%;
 }
 
+#overview > span > button {
+	display: none;
+	position: absolute;
+	top: -0.75rem;
+	left: -0.75rem;
+	z-index: 1000;
+	width: 1.5rem;
+	height: 1.5rem;
+	border-radius: 0.75rem;
+}
+
 #overview:hover {
 	background-color: #bf82bb;
+}
+#overview:hover > span > button {
+	display: block;
 }
 
 #overview #scrub-area {
@@ -151,6 +165,7 @@ nav ul.nav-links a:visited {
 	right: 0;
 	bottom: 0;
 	padding: 0.5rem;
+	border-top: 1px solid black;
 	background-color: #7cd2e2;
 	box-sizing: content-box;
 	height: 1.5rem;

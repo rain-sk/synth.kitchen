@@ -15,7 +15,8 @@ export type ConnectorInfo = [Connector, string[]];
 export type IPatchState = PatchInfo &
 	PatchState & {
 		// selection
-		selectedModuleKeys: Set<string>;
+		selectedModules: Set<string>;
+		selectedConnections: Set<string>;
 
 		// i/o
 		activeConnectorKey: string | undefined;
@@ -27,7 +28,8 @@ export type IPatchState = PatchInfo &
 		// mouse info
 		mouseDragStartPosition: ModulePosition;
 		mouseDragPosition: ModulePosition;
-		pendingSelection: Set<string> | undefined;
+		pendingModuleSelection: Set<string> | undefined;
+		pendingConnectionSelection: Set<string> | undefined;
 
 		// keyboard info
 		heldModifiers: Modifier;
@@ -48,7 +50,8 @@ export const cloneAndApply = (
 		// PatchState
 		modules: state.modules,
 		modulePositions: state.modulePositions,
-		selectedModuleKeys: state.selectedModuleKeys,
+		selectedConnections: state.selectedConnections,
+		selectedModules: state.selectedModules,
 
 		// i/o
 		activeConnectorKey: state.activeConnectorKey,
@@ -60,7 +63,8 @@ export const cloneAndApply = (
 		// mouse info
 		mouseDragStartPosition: state.mouseDragStartPosition,
 		mouseDragPosition: state.mouseDragPosition,
-		pendingSelection: state.pendingSelection,
+		pendingConnectionSelection: state.pendingConnectionSelection,
+		pendingModuleSelection: state.pendingModuleSelection,
 
 		// keyboard info
 		heldModifiers: state.heldModifiers,

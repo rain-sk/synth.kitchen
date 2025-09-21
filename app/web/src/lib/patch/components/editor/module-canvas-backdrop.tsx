@@ -23,7 +23,7 @@ export type ModuleCanvasBackdropProps = {
 export const ModuleCanvasBackdrop: React.FC<
 	React.PropsWithChildren<ModuleCanvasBackdropProps>
 > = ({
-	state: { modules, modulePositions, selectedModuleKeys },
+	state: { modules, modulePositions, selectedModules },
 	dispatch,
 	children,
 }) => {
@@ -47,10 +47,10 @@ export const ModuleCanvasBackdrop: React.FC<
 	}, [modules, modulePositions]);
 
 	useEffect(() => {
-		if (selectedModuleKeys.size !== 0) {
+		if (selectedModules.size !== 0) {
 			setDeviceButtonPosition(INVALID_POSITION);
 		}
-	}, [selectedModuleKeys.size]);
+	}, [selectedModules.size]);
 
 	const [draggingSelection, setDraggingSelection] = useState(false);
 
@@ -232,7 +232,7 @@ export const ModuleCanvasBackdrop: React.FC<
 				/>
 				{children}
 				{deviceButtonPosition !== INVALID_POSITION &&
-					selectedModuleKeys.size === 0 && (
+					selectedModules.size === 0 && (
 						<AddModule position={deviceButtonPosition} />
 					)}
 			</main>

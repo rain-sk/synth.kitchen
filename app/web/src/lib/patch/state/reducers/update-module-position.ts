@@ -15,18 +15,18 @@ export const updateModulePosition: React.Reducer<
 	const deltaX = x - currentX;
 	const deltaY = y - currentY;
 
-	const selectedModuleKeys = state.selectedModuleKeys.has(id)
-		? state.selectedModuleKeys
+	const selectedModules = state.selectedModules.has(id)
+		? state.selectedModules
 		: new Set([id]);
 	return cloneAndApply(state, {
 		modulePositions: Object.fromEntries(
 			Object.entries(state.modulePositions).map(([id, position]) => [
 				id,
-				selectedModuleKeys.has(id)
+				selectedModules.has(id)
 					? [position[0] + deltaX, position[1] + deltaY]
 					: position,
 			]),
 		),
-		selectedModuleKeys,
+		selectedModules,
 	});
 };

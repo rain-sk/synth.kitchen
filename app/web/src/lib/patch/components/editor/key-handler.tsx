@@ -5,7 +5,7 @@ import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 
 export const KeyHandler: React.FC = () => {
-	const { selectedModuleKeys, dispatch } = useContext(PatchContext);
+	const { selectedModules, dispatch } = useContext(PatchContext);
 
 	const onKeyDown = useCallback(
 		(e: KeyboardEvent) => {
@@ -22,7 +22,7 @@ export const KeyHandler: React.FC = () => {
 			}
 
 			const handleMovement =
-				e.keyCode in keyCodeMovementMap && selectedModuleKeys.size > 0;
+				e.keyCode in keyCodeMovementMap && selectedModules.size > 0;
 
 			if (handleMovement) {
 				e.preventDefault();
@@ -30,7 +30,7 @@ export const KeyHandler: React.FC = () => {
 
 			dispatch(patchActions.keyDownAction(e.keyCode));
 		},
-		[selectedModuleKeys, dispatch],
+		[selectedModules, dispatch],
 	);
 
 	const onKeyUp = useCallback(

@@ -1,4 +1,4 @@
-import { Module } from 'synth.kitchen-shared';
+import { Connection, Module } from 'synth.kitchen-shared';
 import { ModulePosition } from 'synth.kitchen-shared';
 import { convertRemToPixels } from '../../../shared/utils/rem-to-px';
 import { Modifier } from '../../constants/key';
@@ -37,20 +37,29 @@ const rectIntersectsOtherRect = (
 	);
 };
 
-const modulesInRange = (
+type Rect = {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+};
+
+const selectionRect = (
 	mouseDragStartPosition: ModulePosition,
 	currentMousePosition: ModulePosition,
+): Rect => ({
+	x: Math.min(mouseDragStartPosition[0], currentMousePosition[0]),
+	y: Math.min(mouseDragStartPosition[1], currentMousePosition[1]),
+	width: Math.abs(mouseDragStartPosition[0] - currentMousePosition[0]),
+	height: Math.abs(mouseDragStartPosition[1] - currentMousePosition[1]),
+});
+
+const modulesInRange = (
+	rect: Rect,
 	modules: Record<string, Module>,
 	modulePositions: Record<string, ModulePosition>,
 ): Set<string> => {
 	const idsInRange = new Set<string>();
-
-	const rect = {
-		x: Math.min(mouseDragStartPosition[0], currentMousePosition[0]),
-		y: Math.min(mouseDragStartPosition[1], currentMousePosition[1]),
-		width: Math.abs(mouseDragStartPosition[0] - currentMousePosition[0]),
-		height: Math.abs(mouseDragStartPosition[1] - currentMousePosition[1]),
-	};
 
 	for (let id in modules) {
 		const position = modulePositions[id];
@@ -78,6 +87,16 @@ const modulesInRange = (
 	return idsInRange;
 };
 
+const connectionsInRange = (
+	rect: Rect,
+	connections: Record<string, Connection>,
+): Set<string> => {
+	const keysInRange = new Set<string>();
+
+	console.log(rect, connections);
+	return keysInRange;
+};
+
 export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 	state,
 	action,
@@ -89,35 +108,50 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 			return cloneAndApply(state, {
 				mouseDragStartPosition: action.payload.position,
 				mouseDragPosition: action.payload.position,
-				selectedModuleKeys: shift ? state.selectedModuleKeys : new Set(),
+				selectedModules: shift ? state.selectedModules : new Set(),
 			});
 		}
 		case SelectionDragType.DRAG_CONTINUE: {
-			const modulesInDrag = modulesInRange(
+			const rect = selectionRect(
 				state.mouseDragStartPosition,
 				action.payload.position,
+			);
+			const modulesInDrag = modulesInRange(
+				rect,
 				state.modules,
 				state.modulePositions,
 			);
 
-			console.log('compute pending connection selection');
+			if (modulesInDrag.size > 0) {
+				return cloneAndApply(state, {
+					mouseDragPosition: action.payload.position,
+					pendingModuleSelection: modulesInDrag,
+					pendingConnectionSelection: undefined,
+				});
+			}
+
+			const connectionsInDrag = connectionsInRange(rect, state.connections);
 
 			return cloneAndApply(state, {
 				mouseDragPosition: action.payload.position,
-				pendingSelection: modulesInDrag,
+				pendingConnectionSelection: connectionsInDrag,
+				pendingModuleSelection: undefined,
 			});
 		}
 		case SelectionDragType.DRAG_END: {
-			const modulesInPendingSelection = modulesInRange(
+			const rect = selectionRect(
 				state.mouseDragStartPosition,
 				action.payload.position,
+			);
+			const modulesInPendingSelection = modulesInRange(
+				rect,
 				state.modules,
 				state.modulePositions,
 			);
 
 			const newSelection = shift
 				? (() => {
-						const selection = new Set([...state.selectedModuleKeys]);
+						const selection = new Set([...state.selectedModules]);
 						modulesInPendingSelection.forEach((id) => {
 							if (selection.has(id)) {
 								selection.delete(id);
@@ -132,16 +166,18 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 			return cloneAndApply(state, {
 				mouseDragStartPosition: INVALID_POSITION,
 				mouseDragPosition: INVALID_POSITION,
-				selectedModuleKeys: newSelection,
-				pendingSelection: undefined,
+				selectedModules: newSelection,
+				pendingConnectionSelection: undefined,
+				pendingModuleSelection: undefined,
 			});
 		}
 		case SelectionDragType.DRAG_CANCEL:
 			return cloneAndApply(state, {
 				mouseDragStartPosition: INVALID_POSITION,
 				mouseDragPosition: INVALID_POSITION,
-				selectedModuleKeys: new Set(),
-				pendingSelection: undefined,
+				selectedModules: new Set(),
+				pendingConnectionSelection: undefined,
+				pendingModuleSelection: undefined,
 			});
 	}
 };

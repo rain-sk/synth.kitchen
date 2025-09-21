@@ -57,7 +57,8 @@ export const blankPatch = (): IPatchState => ({
 	// modules and parameters
 	modules: {},
 	modulePositions: {},
-	selectedModuleKeys: new Set(),
+	selectedConnections: new Set(),
+	selectedModules: new Set(),
 
 	// i/o
 	activeConnectorKey: undefined,
@@ -69,7 +70,8 @@ export const blankPatch = (): IPatchState => ({
 	// mouse info
 	mouseDragStartPosition: INVALID_POSITION,
 	mouseDragPosition: INVALID_POSITION,
-	pendingSelection: undefined,
+	pendingConnectionSelection: undefined,
+	pendingModuleSelection: undefined,
 
 	// keyboard info
 	heldModifiers: Modifier.NONE,

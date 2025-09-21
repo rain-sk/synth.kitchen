@@ -192,7 +192,7 @@ export const ModuleWrapper: React.FC<
 		position: ModulePosition;
 	} & ModuleProps
 > = ({
-	state: { selectedModuleKeys, pendingSelection, heldModifiers },
+	state: { selectedModules, pendingModuleSelection, heldModifiers },
 	module,
 	position,
 	dispatch,
@@ -212,13 +212,13 @@ export const ModuleWrapper: React.FC<
 	}, [position]);
 
 	const currentlySelected = useMemo(
-		() => selectedModuleKeys.has(module.id),
-		[module.id, selectedModuleKeys],
+		() => selectedModules.has(module.id),
+		[module.id, selectedModules],
 	);
 
 	const inPendingSelection = useMemo(
-		() => pendingSelection && pendingSelection.has(module.id),
-		[module.id, pendingSelection],
+		() => pendingModuleSelection && pendingModuleSelection.has(module.id),
+		[module.id, pendingModuleSelection],
 	);
 
 	const onFocus = useCallback(() => {
@@ -252,7 +252,7 @@ export const ModuleWrapper: React.FC<
 
 			startDragging(e);
 		},
-		[currentlySelected, dispatch, module.id, selectedModuleKeys, startDragging],
+		[currentlySelected, dispatch, module.id, selectedModules, startDragging],
 	);
 
 	const classNames: string[] = ['module', module.type];
