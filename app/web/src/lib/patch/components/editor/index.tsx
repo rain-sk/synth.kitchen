@@ -6,7 +6,6 @@ import { MidiContextProvider } from '../../contexts/midi';
 import { ModuleCanvas } from './module-canvas';
 import { PatchContextProvider } from '../../contexts/patch';
 import { patchReducer } from '../../state/reducers';
-import { Toolbar } from '../toolbar';
 import { useAudioMidiInit } from './use-audio-midi-init';
 import { Init } from './init';
 import { useTitle } from 'react-use';
@@ -26,7 +25,6 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 		<PatchContextProvider {...state} dispatch={dispatch}>
 			<DerivedConnectionStateContextProvider {...state}>
 				<MidiContextProvider>
-					<Toolbar />
 					{initialized ? (
 						<ModuleCanvas state={state} dispatch={dispatch} />
 					) : (

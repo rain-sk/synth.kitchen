@@ -37,7 +37,7 @@ import { ShiftModule } from './shift';
 import { Module, ModulePosition, ModuleType } from 'synth.kitchen-shared';
 
 const useDragAndDrop = (
-	moduleKey: string,
+	id: string,
 	initialPosition: ModulePosition,
 	containerRef: React.MutableRefObject<HTMLElement | null>,
 ): {
@@ -48,9 +48,9 @@ const useDragAndDrop = (
 	const { dispatch } = useContext(PatchContext);
 	const updateModulePosition = useCallback(
 		(position: ModulePosition) => {
-			dispatch(patchActions.updateModulePositionAction(moduleKey, position));
+			dispatch(patchActions.updateModulePositionAction(id, position));
 		},
-		[dispatch, moduleKey],
+		[dispatch, id],
 	);
 
 	const moveContainerRef = (
@@ -201,7 +201,7 @@ export const ModuleWrapper: React.FC<
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	const { isDragging, startDragging, setPosition } = useDragAndDrop(
-		module.moduleKey,
+		module.id,
 		position,
 		containerRef,
 	);
@@ -213,18 +213,18 @@ export const ModuleWrapper: React.FC<
 	}, [position]);
 
 	const currentlySelected = useMemo(
-		() => selectedModuleKeys.has(module.moduleKey),
-		[module.moduleKey, selectedModuleKeys],
+		() => selectedModuleKeys.has(module.id),
+		[module.id, selectedModuleKeys],
 	);
 
 	const inPendingSelection = useMemo(
-		() => pendingSelection && pendingSelection.has(module.moduleKey),
-		[module.moduleKey, pendingSelection],
+		() => pendingSelection && pendingSelection.has(module.id),
+		[module.id, pendingSelection],
 	);
 
 	const onFocus = useCallback(() => {
-		dispatch(patchActions.selectSingleModuleAction(module.moduleKey));
-	}, [dispatch, module.moduleKey]);
+		dispatch(patchActions.selectSingleModuleAction(module.id));
+	}, [dispatch, module.id]);
 
 	const onMouseDown = useCallback(
 		(e: React.MouseEvent<HTMLDivElement>) => {
@@ -243,23 +243,17 @@ export const ModuleWrapper: React.FC<
 				if (containerRef.current) {
 					containerRef.current.focus();
 				} else {
-					dispatch(patchActions.selectSingleModuleAction(module.moduleKey));
+					dispatch(patchActions.selectSingleModuleAction(module.id));
 				}
 			} else if (shiftClick && currentlySelected) {
-				dispatch(patchActions.deselectModuleAction(module.moduleKey));
+				dispatch(patchActions.deselectModuleAction(module.id));
 			} else if (shiftClick && !currentlySelected) {
-				dispatch(patchActions.selectModuleAction(module.moduleKey));
+				dispatch(patchActions.selectModuleAction(module.id));
 			}
 
 			startDragging(e);
 		},
-		[
-			currentlySelected,
-			dispatch,
-			module.moduleKey,
-			selectedModuleKeys,
-			startDragging,
-		],
+		[currentlySelected, dispatch, module.id, selectedModuleKeys, startDragging],
 	);
 
 	const classNames: string[] = ['module', module.type];
@@ -278,7 +272,7 @@ export const ModuleWrapper: React.FC<
 
 	return (
 		<div
-			id={module.moduleKey}
+			id={module.id}
 			role="treeitem"
 			aria-selected={currentlySelected}
 			tabIndex={0}

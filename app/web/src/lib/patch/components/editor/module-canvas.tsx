@@ -8,6 +8,7 @@ import { ModuleCanvasBackdrop } from './module-canvas-backdrop';
 import { KeyHandler } from './key-handler';
 import { ConnectionsWrapper } from './connections';
 import { Overview } from './overview';
+import { Toolbar } from '../toolbar';
 
 export const ModuleCanvas: React.FC<{
 	state: IPatchState;
@@ -24,8 +25,8 @@ export const ModuleCanvas: React.FC<{
 						Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2)) -
 						Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2)),
 				)
-				.map(([moduleKey, position]): [Module, ModulePosition] => [
-					state.modules[moduleKey],
+				.map(([id, position]): [Module, ModulePosition] => [
+					state.modules[id],
 					position,
 				]),
 		[state.modulePositions, modulesCount],
@@ -38,7 +39,7 @@ export const ModuleCanvas: React.FC<{
 				<section id="module-canvas" role="tree" aria-multiselectable>
 					{sortedModules.map(([module, position]) => (
 						<ModuleWrapper
-							key={module.moduleKey}
+							key={module.id}
 							module={module}
 							position={position}
 							state={state}
@@ -48,7 +49,7 @@ export const ModuleCanvas: React.FC<{
 				</section>
 				<ConnectionsWrapper state={state} />
 			</ModuleCanvasBackdrop>
-			<Overview
+			<Toolbar
 				sortedModules={sortedModules}
 				modulesCount={modulesCount}
 				connectionsCount={connectionsCount}

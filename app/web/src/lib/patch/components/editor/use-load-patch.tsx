@@ -82,9 +82,9 @@ export const useLoadPatch = (
 						}),
 					);
 					setLoadConnections(true);
-					navigate(`/patch/${patch.slug}`);
+					navigate(`/patch/${patch.slug}`, { replace: false });
 				} else {
-					navigate('/patch/new');
+					navigate('/patch/new', { replace: true });
 				}
 				loadingRef.current = false;
 				setLoading(loadingRef.current);
@@ -108,15 +108,15 @@ export const useLoadPatch = (
 					);
 					setLoadConnections(true);
 					if (slug !== patch.slug) {
-						navigate(`/patch/${patch.slug}`);
+						navigate(`/patch/${patch.slug}`, { replace: false });
 					}
 				} else {
-					navigate('/patch/new');
+					navigate('/patch/new', { replace: true });
 				}
 				loadingRef.current = false;
 				setLoading(loadingRef.current);
 			} else if (!slug) {
-				navigate('/patch/new');
+				navigate('/patch/new', { replace: true });
 			}
 		})();
 	}, [initialized, newPatch, randomPatch, slug, state.slug]);

@@ -7,7 +7,7 @@ export const addModule: React.Reducer<IPatchState, IAddModule> = (
 	state,
 	action,
 ) => {
-	const moduleKey = randomId();
+	const id = randomId();
 
 	const position = action.payload.position;
 	const x = position[0];
@@ -16,15 +16,15 @@ export const addModule: React.Reducer<IPatchState, IAddModule> = (
 	return cloneAndApply(state, {
 		modules: {
 			...state.modules,
-			[moduleKey]: {
+			[id]: {
 				name: randomName(action.payload.type.toLocaleLowerCase()),
-				moduleKey,
+				id,
 				type: action.payload.type,
 			},
 		},
 		modulePositions: {
 			...state.modulePositions,
-			[moduleKey]: [x, y],
+			[id]: [x, y],
 		},
 	});
 };

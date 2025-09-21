@@ -106,7 +106,7 @@ export const MidiCcModule: React.FC<{
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{}}
 				outputAccessors={{ output }}
 			/>
@@ -114,26 +114,26 @@ export const MidiCcModule: React.FC<{
 				{inputs.length > 0 ? (
 					<>
 						<RadioParameter
-							moduleKey={module.moduleKey}
+							moduleId={module.id}
 							name="input"
 							options={inputs.map((input) => input.name)}
 							value={node.inputName}
 							commitValueCallback={commitInputChange}
 						/>
 						<NumberParameter
-							moduleKey={module.moduleKey}
+							moduleId={module.id}
 							name="cc"
 							value={node.cc}
 							commitValueCallback={commitCcChange}
 						/>
 						<NumberParameter
-							moduleKey={module.moduleKey}
+							moduleId={module.id}
 							name="max"
 							value={node.max}
 							commitValueCallback={commitMaxChange}
 						/>
 						<NumberParameter
-							moduleKey={module.moduleKey}
+							moduleId={module.id}
 							name="min"
 							value={node.min}
 							commitValueCallback={commitMinChange}

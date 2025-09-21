@@ -57,14 +57,14 @@ export const GainModule: React.FC<{ module: Module<ModuleType.GAIN> }> = ({
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ input }}
 				outputAccessors={{ output }}
 			/>
 
 			<section>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={gainAccessor}
 					name="gain"
 					value={state.gain}

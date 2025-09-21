@@ -64,9 +64,9 @@ export type ModuleState = {
 
 export type Module<T extends ModuleType = ModuleType> = {
   name: string;
-  moduleKey: string;
+  id: string;
   type: T;
-  state?: ModuleState[T];
+  state: ModuleState[T];
 };
 
 export type ModulePosition = [number, number];

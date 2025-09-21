@@ -126,42 +126,42 @@ export const CompressorModule: React.FC<{
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ input }}
 				outputAccessors={{ output }}
 			/>
 
 			<section>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={thresholdAccessor}
 					name="threshold"
 					value={state.threshold}
 					commitValueCallback={commitThresholdChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={kneeAccessor}
 					name="knee"
 					value={state.knee}
 					commitValueCallback={commitKneeChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={ratioAccessor}
 					name="ratio"
 					value={state.ratio}
 					commitValueCallback={commitRatioChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={attackAccessor}
 					name="attack"
 					value={state.attack}
 					commitValueCallback={commitAttackChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={releaseAccessor}
 					name="release"
 					value={state.release}

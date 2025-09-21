@@ -133,49 +133,49 @@ export const EnvelopeModule: React.FC<{
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ sync }}
 				outputAccessors={{ output }}
 			/>
 
 			<section>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={gateAccessor}
 					name="gate"
 					value={state.gate}
 					commitValueCallback={commitGateChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={attackAccessor}
 					name="attack"
 					value={state.attack}
 					commitValueCallback={commitAttackChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={decayAccessor}
 					name="decay"
 					value={state.decay}
 					commitValueCallback={commitDecayChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={sustainAccessor}
 					name="sustain"
 					value={state.sustain}
 					commitValueCallback={commitSustainChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={releaseAccessor}
 					name="release"
 					value={state.release}
 					commitValueCallback={commitReleaseChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={peakAccessor}
 					name="peak"
 					value={state.peak}

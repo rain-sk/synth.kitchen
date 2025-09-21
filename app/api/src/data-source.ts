@@ -10,15 +10,16 @@ import {
   pgUser as username,
 } from "./env";
 
-import { User } from "./entity/User";
+import { EmailVerificationRequest } from "./entity/EmailVerificationRequest";
+import { PasswordResetRequest } from "./entity/PasswordResetRequest";
 import { Patch } from "./entity/Patch";
 import { Sample } from "./entity/Sample";
-import { PasswordResetRequest } from "./entity/PasswordResetRequest";
-import { EmailVerificationRequest } from "./entity/EmailVerificationRequest";
+import { SavedPatchState } from "./entity/SavedPatchState";
+import { User } from "./entity/User";
 
-import { InitialSchema1757636379847 } from "./migration/1757636379847-InitialSchema";
-import { SeedAdmin1757636427396 } from "./migration/1757636427396-SeedAdmin";
-import { SeedPatches1757636495393 } from "./migration/1757636495393-SeedPatches";
+import { InitialSchema1758462191839 } from "./migration/1758462191839-InitialSchema";
+import { SeedAdmin1758462225132 } from "./migration/1758462225132-SeedAdmin";
+import { SeedPatches1758462320300 } from "./migration/1758462320300-SeedPatches";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -30,14 +31,15 @@ export const AppDataSource = new DataSource({
   entities: [
     User,
     Patch,
+    SavedPatchState,
     EmailVerificationRequest,
     PasswordResetRequest,
     Sample,
   ],
   migrations: [
-    InitialSchema1757636379847,
-    SeedAdmin1757636427396,
-    SeedPatches1757636495393,
+    InitialSchema1758462191839,
+    SeedAdmin1758462225132,
+    SeedPatches1758462320300,
   ],
   logging,
 });

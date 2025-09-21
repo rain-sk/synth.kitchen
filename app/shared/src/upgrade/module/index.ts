@@ -149,17 +149,20 @@ const upgradeMap: ModuleUpgradeMap = {
   },
 };
 
-export function moduleNeedsUpgrade<T extends ModuleType>(module: Module<T>) {
-  return module.state && upgradeMap[module.type].needsUpgrade(module.state);
+export function moduleNeedsUpgrade<T extends ModuleType>(
+  type: T,
+  state: ModuleState[T]
+) {
+  return state && upgradeMap[type].needsUpgrade(state);
 }
 
-export function upgradeModule<T extends ModuleType>(module: Module<T>) {
-  if (!module.state || !upgradeMap[module.type].needsUpgrade(module.state)) {
-    return module;
+export function upgradeModule<T extends ModuleType>(
+  type: T,
+  state: ModuleState[T]
+) {
+  if (!state || !upgradeMap[type].needsUpgrade(state)) {
+    return state;
   }
 
-  return {
-    ...module,
-    state: upgradeMap[module.type].upgrade(module.state),
-  };
+  return upgradeMap[type].upgrade(state);
 }

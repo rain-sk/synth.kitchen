@@ -21,6 +21,7 @@ export type PatchInfo = {
 };
 
 export type PatchState = {
+  name: string;
   modules: Record<string, Module>;
   modulePositions: Record<string, ModulePosition>;
   connections: Record<string, Connection>;

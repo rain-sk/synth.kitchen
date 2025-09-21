@@ -32,9 +32,9 @@ h1 {
 }
 
 #overview {
-	position: fixed;
-	bottom: 1rem;
-	right: 1rem;
+	position: relative;
+	bottom: 7.5rem;
+	right: 0;
 	width: 16rem;
 	height: 9rem;
 	border: 0.1rem solid #ffffff;
@@ -42,6 +42,12 @@ h1 {
 	animation: all 1s linear;
 	background-color: #6f5e4b;
 	z-index: 11;
+}
+
+#overview.minimized {
+	height: 1.5rem;
+	width: 2.667rem;
+	bottom: 0;
 }
 
 #overview > span {
@@ -117,18 +123,44 @@ nav {
 	box-sizing: content-box;
 }
 
-nav button {
+nav ul.nav-links {
+	display: flex;
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+}
+
+nav ul.nav-links li {
+	display: flex;
+	margin-right: 1rem;
+	align-items: center;
+}
+
+#toolbar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 1rem 0.75rem;
+	box-sizing: content-box;
+	height: 1.5rem;
+	display: flex;
+	justify-content: space-between;
+	z-index: 999;
+}
+
+#toolbar button {
 	background-color: #3c6a73;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-nav img {
+#toolbar img {
 	height: 100%;
 }
 
-nav > section {
+#toolbar > section {
 	display: flex;
 	flex-direction: row;
 	gap: 0.5rem;

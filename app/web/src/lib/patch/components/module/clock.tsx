@@ -56,13 +56,13 @@ export const ClockModule: React.FC<{ module: Module<ModuleType.CLOCK> }> = ({
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ sync }}
 				outputAccessors={{ output }}
 			/>
 			<section>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={tempoAccessor}
 					name="tempo"
 					value={state.tempo}

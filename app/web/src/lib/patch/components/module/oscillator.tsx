@@ -19,7 +19,7 @@ const oscillatorStateFromNode = (
 	version: '0.5.0',
 	frequency: node.frequency.value,
 	detune: node.detune.value,
-	waveform: node.type,
+	waveform: node.type as any,
 });
 
 const startOnce =
@@ -129,28 +129,28 @@ export const OscillatorModule: React.FC<{
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{}}
 				outputAccessors={{ output }}
 			/>
 
 			<section>
 				<RadioParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					name="waveform"
 					value={state.waveform}
 					options={['sawtooth', 'sine', 'square', 'triangle']}
 					commitValueCallback={commitWaveformChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={frequencyAccessor}
 					name="frequency"
 					value={state.frequency}
 					commitValueCallback={commitFrequencyChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={detuneAccessor}
 					name="detune"
 					value={state.detune}

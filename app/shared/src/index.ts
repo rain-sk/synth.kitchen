@@ -31,7 +31,7 @@ export { randomId, randomName } from "./utils";
 
 export {
   moduleNeedsUpgrade,
-  patchNeedsUpgrade,
+  patchStateNeedsUpgrade,
   upgradeModule,
-  upgradePatch,
+  upgradePatchState,
 } from "./upgrade";

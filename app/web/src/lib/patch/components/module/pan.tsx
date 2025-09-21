@@ -57,14 +57,14 @@ export const PanModule: React.FC<{ module: Module<ModuleType.PAN> }> = ({
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ input }}
 				outputAccessors={{ output }}
 			/>
 
 			<section>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={panAccessor}
 					name="pan"
 					value={state.pan}

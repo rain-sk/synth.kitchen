@@ -6,11 +6,14 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "./User";
 import { PatchInfo } from "synth.kitchen-shared";
 import { Sample } from "./Sample";
+import { SavedPatchState } from "./SavedPatchState";
+import { AppDataSource } from "../data-source";
 
 @Entity()
 export class Patch implements PatchInfo {
@@ -26,8 +29,12 @@ export class Patch implements PatchInfo {
   @Column({ type: "text" })
   slug: string;
 
-  @Column({ type: "json", nullable: true })
-  state: string;
+  @OneToOne(() => SavedPatchState, (savedPatchState) => savedPatchState.patch)
+  @JoinColumn()
+  state: SavedPatchState;
+
+  @OneToMany(() => SavedPatchState, (savedPatchState) => savedPatchState.patch)
+  states: Promise<SavedPatchState[]>;
 
   @ManyToMany(() => Sample, (sample) => sample.patches, { eager: true })
   samples: Sample[];
@@ -44,7 +51,4 @@ export class Patch implements PatchInfo {
 
   @ManyToOne(() => Patch, (patch) => patch.forks, { eager: true })
   forkedFrom: Patch;
-
-  @Column({ type: "boolean", default: true })
-  needsUpgrade: boolean;
 }

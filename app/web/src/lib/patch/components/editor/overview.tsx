@@ -87,6 +87,7 @@ export const Overview: React.FC<{
 	modulesCount: number;
 	sortedModules: [Module, ModulePosition][];
 }> = ({ connectionsCount, modulesCount, sortedModules }) => {
+	const [minimized, setMinimized] = useState(true);
 	const containerRef = useRef<HTMLDivElement>(undefined);
 	const scrubRef = useRef<HTMLDivElement>(undefined);
 	const [mainRef, setMainRef] = useState<RefObject<HTMLElement>>({
@@ -136,7 +137,7 @@ export const Overview: React.FC<{
 			}, 500);
 			delayedUpdateRef.current = timeout;
 		}
-	}, [connectionsCount, modulesCount, sortedModules]);
+	}, [connectionsCount, modulesCount, sortedModules, minimized]);
 
 	const [draggingRef, dragging, setDragging] = useRefBackedState(false);
 	const onMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -161,6 +162,14 @@ export const Overview: React.FC<{
 		});
 	}, []);
 
+	const classNames = [];
+	if (minimized) {
+		classNames.push('minimized');
+	}
+	if (dragging) {
+		classNames.push('dragging');
+	}
+
 	return (
 		<div
 			ref={(div) => {
@@ -169,7 +178,10 @@ export const Overview: React.FC<{
 			id="overview"
 			tabIndex={0}
 			onMouseDown={onMouseDown}
-			className={dragging ? 'dragging' : ''}
+			onClick={() => {
+				setMinimized(!minimized);
+			}}
+			className={classNames.join(' ')}
 		>
 			<span>
 				<div

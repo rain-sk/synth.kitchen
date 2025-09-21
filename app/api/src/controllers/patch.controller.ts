@@ -1,7 +1,8 @@
-import { PatchService } from "../services/patch.service";
+import { ExpressJwtRequest } from "express-jwt";
 import { PatchQuery } from "synth.kitchen-shared";
 
 import { Patch } from "../entity/Patch";
+import { PatchService } from "../services/patch.service";
 
 export class PatchController {
   static getUniquePatchId = async (req, res) => {
@@ -84,6 +85,19 @@ export class PatchController {
       res.status(200).json({ patch: updatedPatch });
     } catch (error) {
       console.error(`PATCH /patch/: ${error}`);
+      res.status(500).send("");
+    }
+  };
+
+  static forkPatch = async (req: ExpressJwtRequest, res) => {
+    try {
+      const patchId: string = req.params.id;
+      const userId: string = req.auth.id; // Get user ID from JWT request
+
+      const forkedPatch = await PatchService.forkPatch(patchId, userId);
+      res.status(200).json({ patch: forkedPatch });
+    } catch (error) {
+      console.error(`POST /patch/fork/: ${error}`);
       res.status(500).send("");
     }
   };

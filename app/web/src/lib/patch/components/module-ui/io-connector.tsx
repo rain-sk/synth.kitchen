@@ -8,18 +8,18 @@ import { DerivedConnectionStateContext } from '../../contexts/derived-connection
 
 export const IoConnector = <Type extends IoType>({
 	name,
-	moduleKey,
+	moduleId,
 	type,
 	channel,
 	accessor,
 }: {
 	name: string;
-	moduleKey: string;
+	moduleId: string;
 	channel: number;
 	type: Type;
 	accessor: () => IAudioNode<IAudioContext>;
 }) => {
-	const [connectorKey] = useState(() => ioKey({ moduleKey, channel, type }));
+	const [connectorKey] = useState(() => ioKey({ moduleId, channel, type }));
 
 	const { activeConnectorKey, dispatch } = useContext(PatchContext);
 	const {
@@ -37,7 +37,7 @@ export const IoConnector = <Type extends IoType>({
 	useEffect(() => {
 		dispatch(
 			patchActions.registerConnectorAction({
-				moduleKey,
+				moduleId,
 				channel,
 				type,
 				accessor,
@@ -48,7 +48,7 @@ export const IoConnector = <Type extends IoType>({
 	const onClick = () => {
 		dispatch(
 			patchActions.clickConnectorAction({
-				moduleKey,
+				moduleId,
 				type,
 				channel,
 				accessor,
@@ -67,6 +67,7 @@ export const IoConnector = <Type extends IoType>({
 	);
 
 	const isOutput = !isInput;
+
 	return (
 		<span className="io" data-omit>
 			{isOutput && <p>{name}</p>}

@@ -5,17 +5,17 @@ import { NumberBox } from './number-box';
 import { ParameterConnector } from './parameter-connector';
 
 export const NumberParameter: React.FunctionComponent<{
-	moduleKey: string;
+	moduleId: string;
 	name: string;
 	paramAccessor?: () => IAudioParam;
 	value: number;
 	commitValueCallback: (newValue: number) => void;
-}> = ({ moduleKey, paramAccessor, name, value, commitValueCallback }) => {
+}> = ({ moduleId, paramAccessor, name, value, commitValueCallback }) => {
 	return (
 		<section className="numparam" data-omit>
 			{paramAccessor && (
 				<ParameterConnector
-					moduleKey={moduleKey}
+					moduleId={moduleId}
 					name={name}
 					accessor={paramAccessor}
 				/>

@@ -53,13 +53,13 @@ export const GateModule: React.FC<{ module: Module<ModuleType.GATE> }> = ({
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ sync }}
 				outputAccessors={{ output }}
 			/>
 			<section>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={gateAccessor}
 					name="gate"
 					value={state.gate}

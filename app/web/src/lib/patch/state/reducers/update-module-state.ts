@@ -6,7 +6,7 @@ export const updateModuleState: React.Reducer<
 	IPatchState,
 	IUpdateModuleState
 > = (state, action) => {
-	const module = state.modules[action.payload.moduleKey];
+	const module = state.modules[action.payload.id];
 	const update = {
 		...module,
 		state: action.payload.state,
@@ -14,7 +14,7 @@ export const updateModuleState: React.Reducer<
 	return cloneAndApply(state, {
 		modules: {
 			...state.modules,
-			[action.payload.moduleKey]: update,
+			[action.payload.id]: update,
 		},
 	});
 };

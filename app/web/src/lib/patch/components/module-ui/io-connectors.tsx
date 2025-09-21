@@ -7,19 +7,19 @@ import { IoType } from 'synth.kitchen-shared';
 const Connector =
 	(type: IoType) =>
 	({
-		moduleKey,
+		moduleId,
 		accessor,
 		channel,
 		name,
 	}: {
 		channel: number;
-		moduleKey: string;
+		moduleId: string;
 		accessor: () => IAudioNode<IAudioContext>;
 		name: string;
 	}) =>
 		(
 			<IoConnector
-				moduleKey={moduleKey}
+				moduleId={moduleId}
 				accessor={accessor}
 				type={type}
 				channel={channel}
@@ -32,10 +32,10 @@ const InputConnector = Connector(IoType.input);
 const OutputConnector = Connector(IoType.output);
 
 export const IoConnectors: React.FunctionComponent<{
-	moduleKey: string;
+	moduleId: string;
 	inputAccessors: Record<string, () => IAudioNode<IAudioContext>>;
 	outputAccessors: Record<string, () => IAudioNode<IAudioContext>>;
-}> = ({ moduleKey, inputAccessors, outputAccessors }) => {
+}> = ({ moduleId, inputAccessors, outputAccessors }) => {
 	return (
 		<section className="connectors">
 			<h3 className="visually-hidden">Connectors</h3>
@@ -43,7 +43,7 @@ export const IoConnectors: React.FunctionComponent<{
 				<h4 className="visually-hidden">Inputs</h4>
 				{Object.entries(inputAccessors).map(([key, accessor], i) => (
 					<InputConnector
-						moduleKey={moduleKey}
+						moduleId={moduleId}
 						accessor={accessor}
 						channel={i}
 						key={key}
@@ -55,7 +55,7 @@ export const IoConnectors: React.FunctionComponent<{
 				<h4 className="visually-hidden">Outputs</h4>
 				{Object.entries(outputAccessors).map(([key, accessor], i) => (
 					<OutputConnector
-						moduleKey={moduleKey}
+						moduleId={moduleId}
 						accessor={accessor}
 						channel={i}
 						key={key}

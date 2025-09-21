@@ -134,14 +134,14 @@ export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ input }}
 				outputAccessors={{ output }}
 			/>
 
 			<section>
 				<RadioParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					name="type"
 					value={state.type}
 					options={[
@@ -157,28 +157,28 @@ export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 					commitValueCallback={commitTypeChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={frequencyAccessor}
 					name="frequency"
 					value={state.frequency}
 					commitValueCallback={commitFrequencyChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={detuneAccessor}
 					name="detune"
 					value={state.detune}
 					commitValueCallback={commitDetuneChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={qAccessor}
 					name="Q"
 					value={state.Q}
 					commitValueCallback={commitQChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={gainAccessor}
 					name="gain"
 					value={state.gain}

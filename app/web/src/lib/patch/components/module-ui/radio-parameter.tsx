@@ -1,19 +1,19 @@
 import React, { useCallback, useState } from 'react';
 
 export const RadioParameter: React.FunctionComponent<{
-	moduleKey: string;
+	moduleId: string;
 	name: string;
 	options: string[];
 	value: string;
 	commitValueCallback: (newValue: string) => void;
-}> = ({ moduleKey, name, options, value, commitValueCallback }) => {
-	const [id] = useState(() => `${moduleKey}_${name}`);
+}> = ({ moduleId, name, options, value, commitValueCallback }) => {
+	const [id] = useState(() => `${moduleId}_${name}`);
 
 	const onChange = useCallback(
 		(e: React.ChangeEvent<HTMLSelectElement>) => {
 			commitValueCallback(e.target.value);
 		},
-		[commitValueCallback]
+		[commitValueCallback],
 	);
 
 	const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLSelectElement>) => {

@@ -54,12 +54,12 @@ export const OutputModule: React.FC<{ module: Module<ModuleType.OUTPUT> }> = ({
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ speaker }}
 				outputAccessors={{ resampling }}
 			/>
 			<NumberParameter
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				paramAccessor={gainAccessor}
 				name="gain"
 				value={state.gain}

@@ -97,34 +97,34 @@ export const ShiftModule: React.FC<{ module: Module<ModuleType.SHIFT> }> = ({
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ input }}
 				outputAccessors={{ output }}
 			/>
 			<section>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={inputMinAccessor}
 					name="input-min"
 					value={state.inputMin}
 					commitValueCallback={commitInputMinChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={inputMaxAccessor}
 					name="input-max"
 					value={state.inputMax}
 					commitValueCallback={commitInputMaxChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={outputMinAccessor}
 					name="output-min"
 					value={state.outputMin}
 					commitValueCallback={commitOutputMinChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={outputMaxAccessor}
 					name="output-max"
 					value={state.outputMax}

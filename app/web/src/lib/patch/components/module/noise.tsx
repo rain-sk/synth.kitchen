@@ -25,7 +25,7 @@ export const NoiseModule: React.FC<{ module: Module<ModuleType.NOISE> }> = ({
 
 	return enabled ? (
 		<IoConnectors
-			moduleKey={module.moduleKey}
+			moduleId={module.id}
 			inputAccessors={{}}
 			outputAccessors={{ output }}
 		/>

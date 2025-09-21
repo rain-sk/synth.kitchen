@@ -1,8 +1,8 @@
-import type { PatchQuery } from "synth.kitchen-shared";
-import { randomId, randomName } from "synth.kitchen-shared";
+import { PatchQuery, randomId, randomName } from "synth.kitchen-shared";
 
 import { AppDataSource } from "../data-source";
 import { Patch } from "../entity/Patch";
+import { User } from "../entity/User";
 
 const uniquePatchId = async () => {
   for (let i = 0; i < 10; i++) {
@@ -54,8 +54,37 @@ export class PatchService {
     } catch (error) {
       console.error(error);
     }
-
     return false;
+  };
+
+  static forkPatch = async (
+    patchId: string,
+    userId: string
+  ): Promise<Patch> => {
+    const patchRepository = AppDataSource.getRepository(Patch);
+
+    // Fetch the original patch
+    const originalPatch = await patchRepository.findOne({
+      where: { id: patchId },
+      relations: ["creator", "samples"],
+    });
+
+    if (!originalPatch) {
+      throw new Error("Original patch not found");
+    }
+
+    // Create a new patch with cloned properties
+    const newPatch = new Patch();
+    newPatch.name = originalPatch.name;
+    newPatch.slug = `${originalPatch.slug}-fork-${randomId().substring(0, 5)}`;
+    newPatch.state = originalPatch.state;
+    newPatch.samples = originalPatch.samples;
+    newPatch.public = originalPatch.public;
+    newPatch.creator = { id: userId } as User;
+    newPatch.forkedFrom = originalPatch;
+
+    // Save the new patch
+    return await patchRepository.save(newPatch);
   };
 
   static getPatch = async (

@@ -60,14 +60,14 @@ export const DelayModule: React.FC<{ module: Module<ModuleType.DELAY> }> = ({
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ input }}
 				outputAccessors={{ output }}
 			/>
 
 			<section>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={delayTimeAccessor}
 					name="time"
 					value={state.delayTime}

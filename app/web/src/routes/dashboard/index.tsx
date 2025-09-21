@@ -1,17 +1,12 @@
-import { Link } from 'wouter';
-import { navigate } from 'wouter/use-browser-location';
+import { Link, Redirect } from 'wouter';
 import { useContext, useEffect, useState } from 'react';
 
 import { useApi } from '../../lib/patch/api';
 import { AuthContext } from '../../api/auth/context';
 
 export const DashboardRoute = () => {
-	const { user, loading: userLoading } = useContext(AuthContext);
-	useEffect(() => {
-		if (!user && !userLoading) {
-			navigate('/login', { replace: true });
-		}
-	}, [user, userLoading]);
+	const { user } = useContext(AuthContext);
+
 	const { getPatches } = useApi();
 	const [patches, setPatches] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -33,13 +28,14 @@ export const DashboardRoute = () => {
 		};
 
 		fetchPatches();
-	}, [getPatches, user, user?.id]);
+	}, [getPatches, user]);
 
-	if (loading) return <div>Loading patches...</div>;
+	if (loading) return <div>Loading...</div>;
+	else if (!user) return <Redirect to="/login" replace />;
 	if (error) return <div>Error: {error}</div>;
 
 	return (
-		<div>
+		<main>
 			<h1>Dashboard</h1>
 			<h2>Your Patches</h2>
 			{patches.length === 0 ? (
@@ -55,6 +51,6 @@ export const DashboardRoute = () => {
 					))}
 				</ul>
 			)}
-		</div>
+		</main>
 	);
 };

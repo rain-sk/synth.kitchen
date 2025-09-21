@@ -36,10 +36,10 @@ export const connectorButtonExists = (key: string) =>
 
 export const moduleConnectors = (
 	connectors: Record<string, ConnectorInfo>,
-	moduleKey: string,
+	moduleId: string,
 ) => {
 	return Object.entries(connectors)
-		.filter(([, [connector]]) => connector.moduleKey === moduleKey)
+		.filter(([, [connector]]) => connector.moduleId === moduleId)
 		.map(([key]) => key);
 };
 

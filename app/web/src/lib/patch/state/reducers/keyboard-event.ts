@@ -40,9 +40,9 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 
 		return cloneAndApply(state, {
 			modulePositions: Object.fromEntries(
-				Object.entries(state.modulePositions).map(([moduleKey, position]) => [
-					moduleKey,
-					state.selectedModuleKeys.has(moduleKey)
+				Object.entries(state.modulePositions).map(([id, position]) => [
+					id,
+					state.selectedModuleKeys.has(id)
 						? [position[0] + deltaX, position[1] + deltaY]
 						: position,
 				]),
@@ -55,8 +55,8 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	) {
 		const connectionsOfSelectedModules = new Set(
 			[...state.selectedModuleKeys]
-				.filter((moduleKey) => moduleKey !== '0')
-				.flatMap((moduleKey) => moduleConnectors(state.connectors, moduleKey))
+				.filter((id) => id !== '0')
+				.flatMap((id) => moduleConnectors(state.connectors, id))
 				.map((key) => connectorInfo(state.connectors, key))
 				.flatMap(([, connections]) => connections),
 		);
@@ -70,30 +70,28 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		newState.connectors = Object.fromEntries(
 			Object.entries(newState.connectors).filter(
 				([, [connector]]) =>
-					connector.moduleKey === '0' ||
-					!state.selectedModuleKeys.has(connector.moduleKey),
+					connector.moduleId === '0' ||
+					!state.selectedModuleKeys.has(connector.moduleId),
 			),
 		);
 
 		const modules = Object.fromEntries(
 			Object.entries(state.modules).filter(
-				([moduleKey]) =>
-					!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
+				([id]) => !state.selectedModuleKeys.has(id) || id === '0',
 			),
 		);
 
 		const modulePositions = Object.fromEntries(
 			Object.entries(state.modulePositions).filter(
-				([moduleKey]) =>
-					!state.selectedModuleKeys.has(moduleKey) || moduleKey === '0',
+				([id]) => !state.selectedModuleKeys.has(id) || id === '0',
 			),
 		);
 
 		Object.values(newState.connections).forEach(([output, input]) => {
-			if (state.selectedModuleKeys.has(output.moduleKey)) {
+			if (state.selectedModuleKeys.has(output.moduleId)) {
 				console.error('failed to delete output');
 			}
-			if (state.selectedModuleKeys.has(input.moduleKey)) {
+			if (state.selectedModuleKeys.has(input.moduleId)) {
 				console.error('failed to delete input');
 			}
 		});
@@ -119,7 +117,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	) {
 		return cloneAndApply(state, {
 			selectedModuleKeys: new Set([
-				...Object.values(state.modules).map((module) => module.moduleKey),
+				...Object.values(state.modules).map((module) => module.id),
 			]),
 		});
 	} else {

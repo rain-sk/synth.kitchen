@@ -17,7 +17,7 @@ export const blankPatchToClearCanvas = (): ISerializedPatch => ({
 
 export const outputModule: () => Module = () => ({
 	name: 'output',
-	moduleKey: '0',
+	id: '0',
 	type: ModuleType.OUTPUT,
 	state: { version: '0.5.0', gain: 0.45 },
 });

@@ -5,13 +5,13 @@ import {
 } from "standardized-audio-context";
 
 export type Parameter = {
-  moduleKey: string;
+  id: string;
   name: string;
   accessor: () => IAudioParam;
 };
 
 export const paramKey = (param: Omit<Parameter, "accessor">) =>
-  `${param.moduleKey}_${param.name}`;
+  `${param.id}_${param.name}`;
 
 export enum IoType {
   input,
@@ -19,7 +19,7 @@ export enum IoType {
 }
 
 export type Io<Type extends IoType = IoType> = {
-  moduleKey: string;
+  id: string;
   channel: number;
   type: Type;
   accessor: () => IAudioNode<IAudioContext>;
@@ -35,5 +35,5 @@ export type ConnectionInfo = {
 export type Connection = [Output, Input] | [Output, Input, ConnectionInfo];
 
 export const ioKey = (io: Omit<Io, "accessor">): string => {
-  return `${io.moduleKey}_${io.type}_${io.channel}`;
+  return `${io.id}_${io.type}_${io.channel}`;
 };

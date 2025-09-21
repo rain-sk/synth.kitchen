@@ -309,27 +309,27 @@ export const SequencerModule: React.FC<{
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{ clock }}
 				outputAccessors={{ output }}
 			/>
 			<section>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={stepsAccessor}
 					name="steps"
 					value={state.steps}
 					commitValueCallback={commitStepsChange}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={step0Accessor}
 					name="step 1"
 					value={state.step0}
 					commitValueCallback={commitStep0Change}
 				/>
 				<NumberParameter
-					moduleKey={module.moduleKey}
+					moduleId={module.id}
 					paramAccessor={step1Accessor}
 					name="step 2"
 					value={state.step1}
@@ -337,7 +337,7 @@ export const SequencerModule: React.FC<{
 				/>
 				{state.steps >= 3 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step2Accessor}
 						name="step 3"
 						value={state.step2}
@@ -346,7 +346,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 4 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step3Accessor}
 						name="step 4"
 						value={state.step3}
@@ -355,7 +355,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 5 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step4Accessor}
 						name="step 5"
 						value={state.step4}
@@ -364,7 +364,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 6 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step5Accessor}
 						name="step 6"
 						value={state.step5}
@@ -373,7 +373,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 7 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step6Accessor}
 						name="step 7"
 						value={state.step6}
@@ -382,7 +382,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 8 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step7Accessor}
 						name="step 8"
 						value={state.step7}
@@ -391,7 +391,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 9 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step8Accessor}
 						name="step 9"
 						value={state.step8}
@@ -400,7 +400,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 10 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step9Accessor}
 						name="step 10"
 						value={state.step9}
@@ -409,7 +409,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 11 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step10Accessor}
 						name="step 11"
 						value={state.step10}
@@ -418,7 +418,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 12 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step11Accessor}
 						name="step 12"
 						value={state.step11}
@@ -427,7 +427,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 13 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step12Accessor}
 						name="step 13"
 						value={state.step12}
@@ -436,7 +436,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 14 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step13Accessor}
 						name="step 14"
 						value={state.step13}
@@ -445,7 +445,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 15 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step14Accessor}
 						name="step 15"
 						value={state.step14}
@@ -454,7 +454,7 @@ export const SequencerModule: React.FC<{
 				) : null}
 				{state.steps >= 16 ? (
 					<NumberParameter
-						moduleKey={module.moduleKey}
+						moduleId={module.id}
 						paramAccessor={step15Accessor}
 						name="step 16"
 						value={state.step15}

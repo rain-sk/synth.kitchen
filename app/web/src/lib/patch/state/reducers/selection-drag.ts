@@ -43,7 +43,7 @@ const modulesInRange = (
 	modules: Record<string, Module>,
 	modulePositions: Record<string, ModulePosition>,
 ): Set<string> => {
-	const moduleKeysInRange = new Set<string>();
+	const idsInRange = new Set<string>();
 
 	const rect = {
 		x: Math.min(mouseDragStartPosition[0], currentMousePosition[0]),
@@ -52,11 +52,11 @@ const modulesInRange = (
 		height: Math.abs(mouseDragStartPosition[1] - currentMousePosition[1]),
 	};
 
-	for (let moduleKey in modules) {
-		const position = modulePositions[moduleKey];
+	for (let id in modules) {
+		const position = modulePositions[id];
 
 		const navElement = document.getElementsByTagName('nav')[0];
-		const moduleElement = document.getElementById(moduleKey);
+		const moduleElement = document.getElementById(id);
 
 		const width = moduleElement?.clientWidth ?? 0,
 			height = moduleElement?.clientHeight ?? 0;
@@ -71,11 +71,11 @@ const modulesInRange = (
 		};
 
 		if (rectIntersectsOtherRect(rect, moduleRect)) {
-			moduleKeysInRange.add(moduleKey);
+			idsInRange.add(id);
 		}
 	}
 
-	return moduleKeysInRange;
+	return idsInRange;
 };
 
 export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
@@ -100,6 +100,8 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 				state.modulePositions,
 			);
 
+			console.log('compute pending connection selection');
+
 			return cloneAndApply(state, {
 				mouseDragPosition: action.payload.position,
 				pendingSelection: modulesInDrag,
@@ -116,11 +118,11 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 			const newSelection = shift
 				? (() => {
 						const selection = new Set([...state.selectedModuleKeys]);
-						modulesInPendingSelection.forEach((moduleKey) => {
-							if (selection.has(moduleKey)) {
-								selection.delete(moduleKey);
+						modulesInPendingSelection.forEach((id) => {
+							if (selection.has(id)) {
+								selection.delete(id);
 							} else {
-								selection.add(moduleKey);
+								selection.add(id);
 							}
 						});
 						return selection;

@@ -95,7 +95,7 @@ export const MidiTriggerModule: React.FC<{
 	return enabled ? (
 		<>
 			<IoConnectors
-				moduleKey={module.moduleKey}
+				moduleId={module.id}
 				inputAccessors={{}}
 				outputAccessors={{ output }}
 			/>
@@ -103,14 +103,14 @@ export const MidiTriggerModule: React.FC<{
 				{inputs.length > 0 ? (
 					<>
 						<RadioParameter
-							moduleKey={module.moduleKey}
+							moduleId={module.id}
 							name="input"
 							options={inputs.map((input) => input.name)}
 							value={node.inputName}
 							commitValueCallback={commitInputChange}
 						/>
 						<RadioParameter
-							moduleKey={module.moduleKey}
+							moduleId={module.id}
 							name="note"
 							options={noteOptions}
 							value={`${node.note}`}

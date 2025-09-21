@@ -7,10 +7,10 @@ export const selectModule: React.Reducer<IPatchState, ISelectModule> = (
 	state,
 	action,
 ) => {
-	const { moduleKey, type } = action.payload;
+	const { id, type } = action.payload;
 	const { selectedModuleKeys } = state;
 
-	const moduleIsSelected = moduleKey && selectedModuleKeys.has(moduleKey);
+	const moduleIsSelected = id && selectedModuleKeys.has(id);
 
 	switch (type) {
 		case SelectModuleType.DESELECT_ALL: {
@@ -22,7 +22,7 @@ export const selectModule: React.Reducer<IPatchState, ISelectModule> = (
 			return moduleIsSelected
 				? cloneAndApply(state, {
 						selectedModuleKeys: new Set(
-							[...selectedModuleKeys].filter((key) => key != moduleKey),
+							[...selectedModuleKeys].filter((key) => key != id),
 						),
 				  })
 				: state;
@@ -31,14 +31,14 @@ export const selectModule: React.Reducer<IPatchState, ISelectModule> = (
 			return moduleIsSelected
 				? state
 				: cloneAndApply(state, {
-						selectedModuleKeys: new Set([...selectedModuleKeys, moduleKey]),
+						selectedModuleKeys: new Set([...selectedModuleKeys, id]),
 				  });
 		}
 		case SelectModuleType.SELECT_SINGLE: {
 			return moduleIsSelected
 				? state
 				: cloneAndApply(state, {
-						selectedModuleKeys: new Set([moduleKey]),
+						selectedModuleKeys: new Set([id]),
 				  });
 		}
 	}

@@ -9,11 +9,11 @@ export type ISelectModule = {
 	type: 'SelectModule';
 	payload:
 		| {
-				moduleKey: string;
+				id: string;
 				type: SelectModuleType;
 		  }
 		| {
-				moduleKey?: undefined;
+				id?: undefined;
 				type: SelectModuleType.DESELECT_ALL;
 		  };
 };
@@ -25,26 +25,26 @@ export const deselectAllModulesAction = (): ISelectModule => ({
 	},
 });
 
-export const deselectModuleAction = (moduleKey: string): ISelectModule => ({
+export const deselectModuleAction = (id: string): ISelectModule => ({
 	type: 'SelectModule',
 	payload: {
-		moduleKey,
+		id,
 		type: SelectModuleType.DESELECT,
 	},
 });
 
-export const selectModuleAction = (moduleKey: string): ISelectModule => ({
+export const selectModuleAction = (id: string): ISelectModule => ({
 	type: 'SelectModule',
 	payload: {
-		moduleKey,
+		id,
 		type: SelectModuleType.SELECT,
 	},
 });
 
-export const selectSingleModuleAction = (moduleKey: string): ISelectModule => ({
+export const selectSingleModuleAction = (id: string): ISelectModule => ({
 	type: 'SelectModule',
 	payload: {
-		moduleKey,
+		id,
 		type: SelectModuleType.SELECT_SINGLE,
 	},
 });

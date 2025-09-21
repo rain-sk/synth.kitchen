@@ -6,11 +6,11 @@ import { DerivedConnectionStateContext } from '../../contexts/derived-connection
 import { Parameter, paramKey } from 'synth.kitchen-shared';
 
 export const ParameterConnector: React.FunctionComponent<Parameter> = ({
-	moduleKey,
+	moduleId,
 	name,
 	accessor,
 }) => {
-	const [connectorKey] = useState(() => paramKey({ moduleKey, name }));
+	const [connectorKey] = useState(() => paramKey({ id, name }));
 
 	const { activeConnectorKey, dispatch } = useContext(PatchContext);
 	const { activeConnectorIsOutput, connectedToActiveConnector } = useContext(
@@ -25,7 +25,7 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 	useEffect(() => {
 		dispatch(
 			patchActions.registerConnectorAction({
-				moduleKey,
+				id,
 				name,
 				accessor,
 			}),
@@ -33,7 +33,7 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 	}, []);
 
 	const onClick = () => {
-		dispatch(patchActions.clickConnectorAction({ moduleKey, name, accessor }));
+		dispatch(patchActions.clickConnectorAction({ id, name, accessor }));
 	};
 
 	const isActive = activeConnectorKey === connectorKey;

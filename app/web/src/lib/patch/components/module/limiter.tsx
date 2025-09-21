@@ -27,7 +27,7 @@ export const LimiterModule: React.FC<{
 
 	return enabled ? (
 		<IoConnectors
-			moduleKey={module.moduleKey}
+			moduleId={module.id}
 			inputAccessors={{ input }}
 			outputAccessors={{ output }}
 		/>

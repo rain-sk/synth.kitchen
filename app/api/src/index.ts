@@ -2,7 +2,12 @@ import { server } from "./server";
 import { AppDataSource } from "./data-source";
 import { apiHost, apiPort } from "./env";
 import { Patch } from "./entity/Patch";
-import { upgradePatch } from "synth.kitchen-shared";
+import {
+  PatchState,
+  patchStateNeedsUpgrade,
+  upgradePatchState,
+} from "synth.kitchen-shared";
+import { SavedPatchState } from "./entity/SavedPatchState";
 
 const initDatabaseConnection = async () => {
   return new Promise(async (resolve) => {
@@ -27,27 +32,21 @@ const initDatabaseConnection = async () => {
 };
 
 const executePendingUpgrades = async () => {
-  const patchQueryBuilder = AppDataSource.manager.createQueryBuilder(
-    Patch,
-    "patch"
-  );
+  const stateRepository = AppDataSource.getRepository(SavedPatchState);
 
-  const patchesToUpgrade = await patchQueryBuilder
-    .where("patch.needsUpgrade = :needsUpgrade", { needsUpgrade: true })
-    .select(["patch.id", "patch.name", "patch.slug", "patch.state"])
-    .getMany();
+  const statesToUpgrade = await stateRepository.find({
+    where: { needsUpgrade: true },
+  });
 
-  await Promise.all(
-    patchesToUpgrade.map(async (patch) => {
-      const upgradedPatch = upgradePatch(patch);
+  const repo = AppDataSource.getRepository(SavedPatchState);
+  for (const state of statesToUpgrade) {
+    if (await patchStateNeedsUpgrade(state.state as any as PatchState)) {
+      state.state = upgradePatchState(state.state as any as PatchState) as any;
+      await repo.save(state);
+    }
+  }
 
-      return await AppDataSource.manager
-        .getRepository(Patch)
-        .save({ ...upgradedPatch, needsUpgrade: false });
-    })
-  );
-
-  if (patchesToUpgrade.length > 0) {
+  if (statesToUpgrade.length > 0) {
     console.log("Executed pending database upgrades");
   }
 };
