@@ -1,10 +1,8 @@
-import { useCallback, useContext } from 'react';
+import { useCallback } from 'react';
 import { Patch, PatchQuery as SharedPatchQuery } from 'synth.kitchen-shared';
 
 import { apiBase } from '../../../api/uri';
 import { fetchWithJwt } from '../../../utils/fetchWithJwt';
-import { PatchContext } from '../contexts/patch';
-import { patchActions } from '../state/actions';
 import { navigate } from 'wouter/use-browser-location';
 
 type PatchQuery = Pick<SharedPatchQuery, 'id' | 'slug' | 'random'>;
@@ -119,5 +117,41 @@ export const useApi = () => {
 		}
 	}, []);
 
-	return { getPatch, getPatches, savePatch };
+	const deletePatch = useCallback(async (patchId: string) => {
+		try {
+			const result = await fetchWithJwt(`${apiBase}/patch/${patchId}`, {
+				method: 'delete',
+			}).then((res) => res.json());
+
+			if (!('success' in result && typeof result.success === 'boolean')) {
+				throw new Error('Failed to delete patch');
+			}
+
+			return result.success;
+		} catch (error) {
+			console.error('Failed to delete patch:', error);
+			throw error;
+		}
+	}, []);
+
+	const forkPatch = useCallback(async (patchId: string) => {
+		try {
+			const result = await fetchWithJwt(`${apiBase}/patch/fork/${patchId}`, {
+				headers: { Accepts: 'application/json' },
+				method: 'get',
+			}).then((res) => res.json());
+
+			if (!('patch' in result && typeof result.patch === 'object')) {
+				throw new Error('Failed to fork patch');
+			}
+
+			navigate(`/patch/${result.patch.slug}`);
+			return result.patch as Patch;
+		} catch (error) {
+			console.error('Failed to fork patch:', error);
+			throw error;
+		}
+	}, []);
+
+	return { getPatch, getPatches, savePatch, deletePatch, forkPatch };
 };

@@ -60,30 +60,30 @@ export class PatchService {
   };
 
   static forkPatch = async (
-    patchId: string,
-    userId: string
+    userId: string,
+    patchId: string
   ): Promise<Patch> => {
+    const authenticatedUser = await AppDataSource.getRepository(
+      User
+    ).findOneOrFail({ where: { id: userId } });
+
     const patchRepository = AppDataSource.getRepository(Patch);
+    const originalPatch = await this.getPatch({ id: patchId });
 
-    const originalPatch = await patchRepository.findOne({
-      where: { id: patchId },
-      relations: ["creator", "samples"],
-    });
-
-    if (!originalPatch) {
+    if (!originalPatch || Array.isArray(originalPatch)) {
       throw new Error("Original patch not found");
     }
 
     const newPatch = patchRepository.create();
     newPatch.name = originalPatch.name;
-    newPatch.slug = `${originalPatch.slug}-fork-${randomId().substring(0, 5)}`;
+    newPatch.slug = `${originalPatch.slug}-fork-${randomId().split("-")[0]}`;
     newPatch.state = originalPatch.state;
     newPatch.samples = originalPatch.samples;
     newPatch.public = originalPatch.public;
-    newPatch.creator = { id: userId } as User;
+    newPatch.creator = authenticatedUser;
     newPatch.forkedFrom = originalPatch;
 
-    return await patchRepository.save(newPatch);
+    return await this.savePatch(userId, newPatch);
   };
 
   static getPatch = async (
@@ -113,6 +113,7 @@ export class PatchService {
     try {
       const query = AppDataSource.getRepository(Patch)
         .createQueryBuilder("patch")
+        .leftJoinAndSelect("patch.creator", "creator")
         .where(where, params);
       const result = info.creatorId
         ? await query.getMany()
@@ -146,7 +147,9 @@ export class PatchService {
       where: { id: userId },
     });
 
-    const { id, name, slug } = await PatchService.getUniquePatchId();
+    if (!("slug" in patchData)) {
+      const { id, name, slug } = await PatchService.getUniquePatchId();
+    }
     const patch = AppDataSource.getRepository(Patch).create({
       ...patchData,
       id,

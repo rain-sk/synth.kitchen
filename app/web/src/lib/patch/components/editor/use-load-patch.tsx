@@ -115,8 +115,6 @@ export const useLoadPatch = (
 				}
 				loadingRef.current = false;
 				setLoading(loadingRef.current);
-			} else if (!slug) {
-				navigate('/patch/new', { replace: true });
 			}
 		})();
 	}, [initialized, newPatch, randomPatch, slug, state.slug]);

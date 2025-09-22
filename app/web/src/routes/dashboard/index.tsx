@@ -1,8 +1,11 @@
-import { Link, Redirect } from 'wouter';
+import { Redirect } from 'wouter';
 import { useContext, useEffect, useState } from 'react';
 
 import { useApi } from '../../lib/patch/api';
 import { AuthContext } from '../../api/auth/context';
+import { PatchPreviews } from './patch-previews';
+
+import './styles.css';
 
 export const DashboardRoute = () => {
 	const { user } = useContext(AuthContext);
@@ -41,15 +44,7 @@ export const DashboardRoute = () => {
 			{patches.length === 0 ? (
 				<p>No patches found.</p>
 			) : (
-				<ul>
-					{patches.map((patch) => (
-						<li key={patch.id}>
-							<Link to={`/patch/${patch.slug}`}>
-								<h3>{patch.name || 'Unnamed Patch'}</h3>
-							</Link>
-						</li>
-					))}
-				</ul>
+				<PatchPreviews patches={patches} />
 			)}
 		</main>
 	);

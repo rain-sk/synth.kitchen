@@ -14,9 +14,8 @@ const RedirectToPatch = () => {
 	const [match, params] = useRoute('/p/:slug');
 	return match ? (
 		<Redirect to={`/patch/${params.slug}`} />
-	) : (
-		<Redirect to="/patch/new" />
-	);
+	) : null;
+	// <Redirect to="/patch/new" />
 };
 
 export const SynthKitchen: React.FC = () => {

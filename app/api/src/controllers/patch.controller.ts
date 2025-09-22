@@ -142,9 +142,9 @@ export class PatchController {
   static forkPatch = async (req: JwtRequest, res) => {
     try {
       const patchId: string = req.params.id;
-      const userId: string = req.auth.id; // Get user ID from JWT request
+      const userId: string = req.auth.id;
 
-      const forkedPatch = await PatchService.forkPatch(patchId, userId);
+      const forkedPatch = await PatchService.forkPatch(userId, patchId);
       res.status(200).json({ patch: forkedPatch });
     } catch (error) {
       console.error(`POST /patch/fork/: ${error}`);
