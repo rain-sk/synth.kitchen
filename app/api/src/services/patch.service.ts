@@ -1,4 +1,9 @@
-import { PatchQuery, randomId, randomName } from "synth.kitchen-shared";
+import {
+  PatchInfo,
+  PatchQuery,
+  randomId,
+  randomName,
+} from "synth.kitchen-shared";
 
 import { AppDataSource } from "../data-source";
 import { Patch } from "../entity/Patch";
@@ -62,7 +67,7 @@ export class PatchService {
   static forkPatch = async (
     userId: string,
     patchId: string
-  ): Promise<Patch> => {
+  ): Promise<PatchInfo> => {
     const authenticatedUser = await AppDataSource.getRepository(
       User
     ).findOneOrFail({ where: { id: userId } });
@@ -94,6 +99,7 @@ export class PatchService {
     try {
       const query = AppDataSource.getRepository(Patch)
         .createQueryBuilder("patch")
+        .leftJoinAndSelect("patch.creator", "creator")
         .leftJoinAndSelect("patch.state", "state")
         .where(where, params);
       const result = info.creatorId
@@ -107,7 +113,7 @@ export class PatchService {
 
   static getPatchInfo = async (
     info: PatchQuery
-  ): Promise<Patch | Patch[] | undefined> => {
+  ): Promise<PatchInfo | PatchInfo[] | undefined> => {
     const [where, params] = getPatchParams(info);
 
     try {
@@ -147,31 +153,36 @@ export class PatchService {
       where: { id: userId },
     });
 
-    if (!("slug" in patchData)) {
-      const { id, name, slug } = await PatchService.getUniquePatchId();
-    }
     const patch = AppDataSource.getRepository(Patch).create({
       ...patchData,
-      id,
-      name,
-      slug,
+      id: randomId(),
       creator,
     });
 
+    if (!("slug" in patchData)) {
+      const { id, name, slug } = await PatchService.getUniquePatchId();
+
+      patch.id = id;
+      patch.name = name;
+      patch.slug = slug;
+    }
+
     const state = AppDataSource.getRepository(SavedPatchState).create({
-      state: { ...patch.state.state, name },
+      state: { ...patch.state.state, name: patch.name },
     });
 
-    await AppDataSource.getRepository(SavedPatchState).save(state);
+    state.patch = null;
+    patch.state = null;
     await AppDataSource.getRepository(Patch).save(patch);
+    await AppDataSource.getRepository(SavedPatchState).save(state);
 
-    patch.state = state;
     state.patch = patch;
-
-    await AppDataSource.getRepository(SavedPatchState).save(state);
+    state.ancestor = patch.forkedFrom.state;
+    patch.state = state;
     await AppDataSource.getRepository(Patch).save(patch);
+    await AppDataSource.getRepository(SavedPatchState).save(state);
 
-    return (await this.getPatch({ id })) as Patch;
+    return (await this.getPatch({ id: patch.id })) as Patch;
   };
 
   static updatePatch = async (
@@ -220,12 +231,9 @@ export class PatchService {
     const savedPatchStateRepository =
       AppDataSource.getRepository(SavedPatchState);
 
-    const patch = await patchRepository.findOne({
-      where: { id: patchId },
-      relations: ["state"],
-    });
+    const patch = await this.getPatch({ id: patchId });
 
-    if (!patch) {
+    if (!patch || Array.isArray(patch)) {
       throw new Error("Patch not found");
     }
 
@@ -236,21 +244,15 @@ export class PatchService {
       );
     }
 
-    const stateId = patch.state.id;
     const orphanedStates = await savedPatchStateRepository
-      .createQueryBuilder("state")
-      .leftJoinAndSelect("state.patch", "patch")
-      .leftJoinAndSelect("state.ancestor", "ancestor")
-      .where("state.id = :id", { id: stateId })
-      .andWhere("patch.id IS NULL OR patch.id = :id", { id: stateId })
+      .createQueryBuilder("saved_patch_state")
+      .where("saved_patch_state.patchId = :id", { id: patch.id })
       .getMany();
 
-    for (const orphanedState of orphanedStates) {
-      await savedPatchStateRepository.remove(orphanedState);
-    }
-
-    // Delete the patch
-    await patchRepository.remove(patch);
+    patch.state = null;
+    await patchRepository.save(patch);
+    await savedPatchStateRepository.delete({ patch: patch });
+    await patchRepository.delete({ id: patch.id });
   };
 
   static getUniquePatchId = async (): Promise<{

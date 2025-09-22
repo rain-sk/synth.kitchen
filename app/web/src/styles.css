@@ -141,9 +141,13 @@ nav {
 	box-sizing: border-box;
 }
 
+nav section {
+	display: flex;
+}
+
 nav ul.nav-links {
 	display: flex;
-	padding: 0;
+	padding-left: 1rem;
 	margin: 0;
 	list-style-type: none;
 }

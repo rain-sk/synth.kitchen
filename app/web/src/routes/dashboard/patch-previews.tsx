@@ -6,12 +6,14 @@ import { MenuDots } from '../../lib/patch/components/toolbar/svg/menu-dots';
 import { useRefBackedState } from '../../lib/shared/utils/use-ref-backed-state';
 import { AuthContext } from '../../api/auth/context';
 import { useApi } from '../../lib/patch/api';
+import { DashboardContext } from './context';
 
 export const PatchPreview: React.FC<{ patchInfo: PatchInfo }> = ({
 	patchInfo,
 }) => {
 	const { user } = useContext(AuthContext);
-	const { forkPatch } = useApi();
+	const { refresh } = useContext(DashboardContext);
+	const { deletePatch, forkPatch } = useApi();
 	const [showMenu, setShowMenu] = useState(false);
 	const [menuRef, menu, setMenu] = useRefBackedState<HTMLElement | undefined>(
 		undefined,
@@ -52,14 +54,31 @@ export const PatchPreview: React.FC<{ patchInfo: PatchInfo }> = ({
 		} catch (e) {
 			console.error(e);
 		}
-
+		refresh();
 		setForking(false);
 		setShowMenu(false);
-	}, [patchInfo]);
+	}, [patchInfo, refresh]);
+
+	const [deletingRef, deleting, setDeleting] = useRefBackedState(false);
+	const handleDelete = useCallback(async () => {
+		if (deletingRef.current) {
+			return;
+		}
+		setDeleting(true);
+
+		try {
+			await deletePatch(patchInfo.id);
+		} catch (e) {
+			console.error(e);
+		}
+		refresh();
+		setDeleting(false);
+		setShowMenu(false);
+	}, [patchInfo, refresh]);
 
 	const deleteEnabled = user && user.id === patchInfo.creator.id;
 
-	const doShowMenu = showMenu || forking;
+	const doShowMenu = showMenu || forking || deleting;
 
 	return (
 		<li>
@@ -85,7 +104,9 @@ export const PatchPreview: React.FC<{ patchInfo: PatchInfo }> = ({
 						</li>
 						{deleteEnabled && (
 							<li>
-								<button type="button">delete</button>
+								<button type="button" onClick={handleDelete}>
+									delete
+								</button>
 							</li>
 						)}
 					</ul>
