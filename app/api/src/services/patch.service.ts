@@ -156,7 +156,7 @@ export class PatchService {
     });
 
     const state = AppDataSource.getRepository(SavedPatchState).create({
-      state: patch.state.state,
+      state: { ...patch.state.state, name },
     });
 
     await AppDataSource.getRepository(SavedPatchState).save(state);
@@ -168,9 +168,7 @@ export class PatchService {
     await AppDataSource.getRepository(SavedPatchState).save(state);
     await AppDataSource.getRepository(Patch).save(patch);
 
-    return await AppDataSource.getRepository(Patch).findOneOrFail({
-      where: { id },
-    });
+    return (await this.getPatch({ id })) as Patch;
   };
 
   static updatePatch = async (
@@ -209,6 +207,47 @@ export class PatchService {
     return await AppDataSource.getRepository(Patch).findOneOrFail({
       where: { id },
     });
+  };
+
+  static deletePatch = async (
+    userId: string,
+    patchId: string
+  ): Promise<void> => {
+    const patchRepository = AppDataSource.getRepository(Patch);
+    const savedPatchStateRepository =
+      AppDataSource.getRepository(SavedPatchState);
+
+    const patch = await patchRepository.findOne({
+      where: { id: patchId },
+      relations: ["state"],
+    });
+
+    if (!patch) {
+      throw new Error("Patch not found");
+    }
+
+    if (patch.creator.id !== userId) {
+      throw new UnauthorizedError(
+        "credentials_required",
+        new Error("Invalid attempt to delete another user's patch.")
+      );
+    }
+
+    const stateId = patch.state.id;
+    const orphanedStates = await savedPatchStateRepository
+      .createQueryBuilder("state")
+      .leftJoinAndSelect("state.patch", "patch")
+      .leftJoinAndSelect("state.ancestor", "ancestor")
+      .where("state.id = :id", { id: stateId })
+      .andWhere("patch.id IS NULL OR patch.id = :id", { id: stateId })
+      .getMany();
+
+    for (const orphanedState of orphanedStates) {
+      await savedPatchStateRepository.remove(orphanedState);
+    }
+
+    // Delete the patch
+    await patchRepository.remove(patch);
   };
 
   static getUniquePatchId = async (): Promise<{

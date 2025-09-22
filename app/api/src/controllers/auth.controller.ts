@@ -11,9 +11,15 @@ import { PasswordService } from "../services/password.service";
 export class AuthController {
   static getUser = async (req: JwtRequest, res) => {
     try {
-      if (!req.auth.id || !UserService.userExists({ id: req.auth.id })) {
+      if (
+        !req.auth ||
+        !req.auth.id ||
+        !UserService.userExists({ id: req.auth.id })
+      ) {
         throw new Error("JWT represents non-existent user");
       }
+
+      const user = UserService.getUser({ id: req.auth.id });
 
       const authorizedUser: UserInfoAuthenticated = {
         id: req.auth.id,

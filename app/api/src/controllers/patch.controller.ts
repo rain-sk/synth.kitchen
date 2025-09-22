@@ -1,4 +1,4 @@
-import { ExpressJwtRequest } from "express-jwt";
+import { Request as JwtRequest } from "express-jwt";
 import { PatchQuery } from "synth.kitchen-shared";
 
 import { Patch } from "../entity/Patch";
@@ -82,13 +82,13 @@ export class PatchController {
 
       return;
     } catch (error) {
-      console.error(`GET /patch/: ${error}`);
+      console.error(`GET /patch/info/: ${error}`);
     }
 
     res.status(500).send("");
   };
 
-  static createPatch = async (req: ExpressJwtRequest, res) => {
+  static createPatch = async (req: JwtRequest, res) => {
     try {
       const userId = req.auth.id;
       const patchData: Partial<Patch> = req.body;
@@ -100,7 +100,7 @@ export class PatchController {
     }
   };
 
-  static updatePatch = async (req: ExpressJwtRequest, res) => {
+  static updatePatch = async (req: JwtRequest, res) => {
     try {
       const userId = req.auth.id;
       const patchId: string = req.params.id;
@@ -127,7 +127,19 @@ export class PatchController {
     }
   };
 
-  static forkPatch = async (req: ExpressJwtRequest, res) => {
+  static deletePatch = async (req: JwtRequest, res) => {
+    try {
+      const userId = req.auth.id;
+      const patchId: string = req.params.id;
+      await PatchService.deletePatch(userId, patchId);
+      res.sendStatus(200);
+    } catch (error) {
+      console.error(`DELETE /patch/: ${error}`);
+      res.status(500).send("");
+    }
+  };
+
+  static forkPatch = async (req: JwtRequest, res) => {
     try {
       const patchId: string = req.params.id;
       const userId: string = req.auth.id; // Get user ID from JWT request

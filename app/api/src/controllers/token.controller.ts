@@ -28,6 +28,7 @@ export class TokenController {
 
     try {
       const jwt = jsonwebtoken.verify(token, jwtSecret, {
+        algorithms: ["HS256"],
         complete: true,
       }).signature;
       if (jwt) {
@@ -40,6 +41,7 @@ export class TokenController {
 
     try {
       const jwt = jsonwebtoken.verify(token, jwtSecret, {
+        algorithms: ["HS256"],
         complete: true,
         ignoreExpiration: true,
       });

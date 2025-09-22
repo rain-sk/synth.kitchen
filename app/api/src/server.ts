@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors";
 
-import { AuthRouter } from "./routers/auth.router";
-import { HealthCheckRouter } from "./routers/health.router";
-import { PatchRouter } from "./routers/patch.router";
-import { TokenRouter } from "./routers/token.router";
+import { AuthRouter } from "./routes/auth.router";
+import { HealthCheckRouter } from "./routes/health.router";
+import { PatchRouter } from "./routes/patch.router";
+import { TokenRouter } from "./routes/token.router";
 
 import { apiBase, appOrigin, healthRoute } from "./env";
 
@@ -21,4 +21,4 @@ export const server = express();
 server.use(cors({ origin: appOrigin }));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
-server.use(apiBase || "/", ServerRouter);
+server.use(apiBase, ServerRouter);

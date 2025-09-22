@@ -1,5 +1,5 @@
 const jwtHeaders = () => ({
-	authorization: `Bearer ${localStorage.getItem('jwt') ?? ''}`,
+	authorization: `Bearer ${localStorage.getItem('jwt')?.slice(1, -1) ?? ''}`,
 });
 
 export const fetchWithJwt = async (

@@ -1,13 +1,18 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import { Patch, PatchQuery as SharedPatchQuery } from 'synth.kitchen-shared';
 
 import { apiBase } from '../../../api/uri';
 import { fetchWithJwt } from '../../../utils/fetchWithJwt';
+import { PatchContext } from '../contexts/patch';
+import { patchActions } from '../state/actions';
+import { navigate } from 'wouter/use-browser-location';
 
 type PatchQuery = Pick<SharedPatchQuery, 'id' | 'slug' | 'random'>;
 type PatchesQuery = Pick<SharedPatchQuery, 'creatorId'>;
 
 export const useApi = () => {
+	// const { dispatch } = useContext(PatchContext);
+
 	const getPatch = useCallback(
 		async (query: PatchQuery): Promise<Patch | undefined> => {
 			const param = Object.entries(query)[0];
@@ -87,6 +92,7 @@ export const useApi = () => {
 					throw new Error('Failed to create patch');
 				}
 
+				navigate(`/patch/${result.patch.slug}`);
 				return result.patch as Patch;
 			} catch (error) {
 				console.error('Failed to create patch:', error);
@@ -104,6 +110,7 @@ export const useApi = () => {
 					throw new Error('Failed to update patch');
 				}
 
+				navigate(`/patch/${result.patch.slug}`);
 				return result.patch as Patch;
 			} catch (error) {
 				console.error('Failed to update patch:', error);
