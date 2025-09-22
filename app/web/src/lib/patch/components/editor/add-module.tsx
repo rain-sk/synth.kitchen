@@ -35,7 +35,11 @@ const effectModules: ModuleType[] = [
 	ModuleType.PAN,
 ];
 
-const utilModules: ModuleType[] = [ModuleType.GAIN, ModuleType.SHIFT];
+const utilModules: ModuleType[] = [
+	ModuleType.GAIN,
+	ModuleType.SHIFT,
+	ModuleType.OUTPUT,
+];
 
 export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 	position,
