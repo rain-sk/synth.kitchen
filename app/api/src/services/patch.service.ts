@@ -198,15 +198,18 @@ export class PatchService {
       typeof patchOrId === "string"
         ? await patchRepository.findOne({ where: { id: patchOrId } })
         : patchOrId;
+
     if (!existingPatch) {
       throw new Error("Patch not found");
     }
+
     if (existingPatch.creator.id !== userId) {
       throw new UnauthorizedError(
         "credentials_required",
         new Error("Invalid attempt to update another user's patch.")
       );
     }
+
     if ("state" in patchData) {
       const existingState = await stateRepository.findOneOrFail({
         where: { id: existingPatch.state.id },
@@ -215,15 +218,14 @@ export class PatchService {
       newState.id = randomId();
       newState.ancestor = existingState;
       newState.patch = existingPatch;
-      stateRepository.save(existingState);
-      stateRepository.save(newState);
+      await stateRepository.save(newState);
       patchData.state = newState;
     }
 
-    const updatedPatch = Object.assign(existingPatch, patchData);
-    await patchRepository.save(updatedPatch);
+    await patchRepository.save(Object.assign(existingPatch, patchData));
 
-    return updatedPatch;
+    const patch = await this.getPatch({ id: existingPatch.id });
+    return Array.isArray(patch) ? patch[0] : patch;
   };
 
   static deletePatch = async (

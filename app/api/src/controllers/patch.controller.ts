@@ -124,10 +124,6 @@ export class PatchController {
         patchData
       );
 
-      updatedPatch.state.patch = {
-        id: updatedPatch.id,
-      } as any;
-
       res.status(200).json({ patch: updatedPatch });
     } catch (error) {
       console.error(`PUT /patch/: ${error}`);
