@@ -11,6 +11,7 @@ import { connectorButtonExists, connectorKey } from '../../state/connection';
 import { IPatchState } from '../../state/types/patch';
 
 import { useApi } from '../../api';
+import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
 
 const uuidRegex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -49,8 +50,7 @@ export const useLoadPatch = (
 	const { getPatch } = useApi();
 	const [loadConnections, setLoadConnections] = useState(false);
 
-	const [loading, setLoading] = useState(false);
-	const loadingRef = useRef(loading);
+	const [loadingRef, loading, setLoading] = useRefBackedState(false);
 
 	useEffect(() => {
 		if (loadingRef.current) {
@@ -66,8 +66,7 @@ export const useLoadPatch = (
 				);
 			} else if (randomPatch) {
 				// Load a random patch
-				loadingRef.current = true;
-				setLoading(loadingRef.current);
+				setLoading(true);
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 				const patch = await getPatch({ random: true });
 				if (patch) {
@@ -86,11 +85,9 @@ export const useLoadPatch = (
 				} else {
 					navigate('/patch/new', { replace: true });
 				}
-				loadingRef.current = false;
-				setLoading(loadingRef.current);
+				setLoading(false);
 			} else if (slug && state.slug === '') {
-				loadingRef.current = true;
-				setLoading(loadingRef.current);
+				setLoading(true);
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 				const patch = await getPatch(
 					uuidRegex.test(slug) ? { id: slug } : { slug },
@@ -113,8 +110,7 @@ export const useLoadPatch = (
 				} else {
 					navigate('/patch/new', { replace: true });
 				}
-				loadingRef.current = false;
-				setLoading(loadingRef.current);
+				setLoading(false);
 			}
 		})();
 	}, [initialized, newPatch, randomPatch, slug, state.slug]);
