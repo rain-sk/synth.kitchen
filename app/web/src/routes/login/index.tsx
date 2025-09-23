@@ -68,7 +68,7 @@ export const LoginRoute: React.FC = () => {
 						if (password !== confirmPassword) {
 							error = 'Passwords do not match.';
 						} else if (await register(email.trim(), password)) {
-							navigate('/account');
+							navigate('/dashboard');
 						}
 					} catch (e) {
 						console.error(e);
@@ -127,7 +127,9 @@ export const LoginRoute: React.FC = () => {
 					</>
 				)}
 				{error ? <p id="email-error">{error}</p> : null}
-				<button disabled={formSubmitted ? true : false}>login</button>
+				<button disabled={formSubmitted ? true : false}>
+					{registration ? 'register' : 'login'}
+				</button>
 			</form>
 			<p>
 				<Link to="/reset-password">forgot password</Link>
