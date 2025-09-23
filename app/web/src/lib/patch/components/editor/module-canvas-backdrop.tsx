@@ -149,6 +149,7 @@ export const ModuleCanvasBackdrop: React.FC<
 
 			queueAnimation(drawSelection);
 
+			setDeviceButtonPosition(INVALID_POSITION);
 			dispatch(patchActions.selectionDragContinueAction(selection.current.end));
 		},
 		[dispatch],
