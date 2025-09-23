@@ -13,9 +13,10 @@ import { Nav } from './lib/shared/components/nav';
 const RedirectToPatch = () => {
 	const [match, params] = useRoute('/p/:slug');
 	return match ? (
-		<Redirect to={`/patch/${params.slug}`} />
-	) : null;
-	// <Redirect to="/patch/new" />
+		<Redirect to={`/patch/${params.slug}`} replace />
+	) : (
+		<Redirect to="/patch/new" replace />
+	);
 };
 
 export const SynthKitchen: React.FC = () => {
@@ -28,8 +29,9 @@ export const SynthKitchen: React.FC = () => {
 
 				<Route path="/p" component={RedirectToPatch} />
 				<Route path="/p/:slug" component={RedirectToPatch} />
+				<Route path="/patch" component={RedirectToPatch} />
 
-				<Route path="/patch" component={PatchRoute} />
+				<Route path="/patch/new" component={PatchRoute} />
 				<Route path="/patch/:slug" component={PatchRoute} />
 
 				<Route path="/account" component={AccountRoute} />
