@@ -42,6 +42,7 @@ const executePendingUpgrades = async () => {
   for (const state of statesToUpgrade) {
     if (await patchStateNeedsUpgrade(state.state as any as PatchState)) {
       state.state = upgradePatchState(state.state as any as PatchState) as any;
+      state.needsUpgrade = false;
       await repo.save(state);
     }
   }
