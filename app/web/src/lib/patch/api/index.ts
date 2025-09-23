@@ -91,7 +91,6 @@ export const useApi = () => {
 				}
 
 				navigate(`/patch/${result.patch.slug}`);
-				return result.patch as Patch;
 			} catch (error) {
 				console.error('Failed to create patch:', error);
 				throw error;
@@ -100,16 +99,13 @@ export const useApi = () => {
 			try {
 				const result = await fetchWithJwt(`${apiBase}/patch/${patch.id}`, {
 					headers,
-					method: 'patch',
+					method: 'put',
 					body: JSON.stringify(patch),
 				}).then((res) => res.json());
 
 				if (!('patch' in result && typeof result.patch === 'object')) {
 					throw new Error('Failed to update patch');
 				}
-
-				navigate(`/patch/${result.patch.slug}`);
-				return result.patch as Patch;
 			} catch (error) {
 				console.error('Failed to update patch:', error);
 				throw error;

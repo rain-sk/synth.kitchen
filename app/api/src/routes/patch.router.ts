@@ -10,5 +10,5 @@ PatchRouter.get("/info/", PatchController.getPatchInfo);
 PatchRouter.get("/id", PatchController.getUniquePatchId);
 PatchRouter.get("/fork/:id", jwt, PatchController.forkPatch);
 PatchRouter.post("/", jwt, PatchController.createPatch);
-PatchRouter.patch("/:id", jwt, PatchController.updatePatch);
+PatchRouter.put("/:id", jwt, PatchController.updatePatch);
 PatchRouter.delete("/:id", jwt, PatchController.deletePatch);

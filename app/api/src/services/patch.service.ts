@@ -187,11 +187,16 @@ export class PatchService {
 
   static updatePatch = async (
     userId: string,
-    id: string,
+    patchOrId: Patch | string,
     patchData: Partial<Patch>
   ): Promise<Patch> => {
     const patchRepository = AppDataSource.getRepository(Patch);
-    const existingPatch = await patchRepository.findOne({ where: { id } });
+    const stateRepository = AppDataSource.getRepository(SavedPatchState);
+
+    const existingPatch: Patch =
+      typeof patchOrId === "string"
+        ? await patchRepository.findOne({ where: { id: patchOrId } })
+        : patchOrId;
     if (!existingPatch) {
       throw new Error("Patch not found");
     }
@@ -202,25 +207,22 @@ export class PatchService {
       );
     }
     if ("state" in patchData) {
-      const existingState = await AppDataSource.getRepository(
-        SavedPatchState
-      ).findOneOrFail({ where: { id: existingPatch.state.id } });
-      const newState = AppDataSource.getRepository(SavedPatchState).create(
-        patchData.state
-      );
+      const existingState = await stateRepository.findOneOrFail({
+        where: { id: existingPatch.state.id },
+      });
+      const newState = stateRepository.create(patchData.state);
+      newState.id = randomId();
       newState.ancestor = existingState;
       newState.patch = existingPatch;
-      AppDataSource.getRepository(SavedPatchState).save(existingState);
-      AppDataSource.getRepository(SavedPatchState).save(newState);
+      stateRepository.save(existingState);
+      stateRepository.save(newState);
       patchData.state = newState;
     }
 
     const updatedPatch = Object.assign(existingPatch, patchData);
     await patchRepository.save(updatedPatch);
 
-    return await AppDataSource.getRepository(Patch).findOneOrFail({
-      where: { id },
-    });
+    return updatedPatch;
   };
 
   static deletePatch = async (

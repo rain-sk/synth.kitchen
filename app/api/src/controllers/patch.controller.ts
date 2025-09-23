@@ -109,20 +109,28 @@ export class PatchController {
       // Find the existing patch
       const existingPatch = await PatchService.getPatch({ id: patchId });
 
-      if (!existingPatch) {
-        return res.status(404).send("Patch not found");
+      if (!existingPatch || Array.isArray(existingPatch)) {
+        return res.sendStatus(404);
+      }
+
+      if (existingPatch.creator.id !== userId) {
+        return res.sendStatus(401);
       }
 
       // Update the patch
       const updatedPatch = await PatchService.updatePatch(
         userId,
-        patchId,
+        existingPatch,
         patchData
       );
 
+      updatedPatch.state.patch = {
+        id: updatedPatch.id,
+      } as any;
+
       res.status(200).json({ patch: updatedPatch });
     } catch (error) {
-      console.error(`PATCH /patch/: ${error}`);
+      console.error(`PUT /patch/: ${error}`);
       res.status(500).send("");
     }
   };
