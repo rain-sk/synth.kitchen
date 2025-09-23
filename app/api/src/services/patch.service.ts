@@ -134,6 +134,7 @@ export class PatchService {
     try {
       const patch = await AppDataSource.getRepository(Patch)
         .createQueryBuilder("patch")
+        .where({ public: true })
         .leftJoinAndSelect("patch.state", "state")
         .orderBy("RANDOM()")
         .limit(1)
