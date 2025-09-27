@@ -1,5 +1,5 @@
 import { IPatchAction } from '../actions';
-import { IPatchState } from '../types/patch';
+import { cloneAndApply, IPatchState } from '../types/patch';
 import { addModule } from './add-module';
 import { cancelLoadFromCloud } from './cancel-load-from-cloud';
 import { changeName } from './change-name';
@@ -23,6 +23,14 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 	state,
 	action,
 ): IPatchState => {
+	if (action === state.asyncActionQueue[0]) {
+		state.asyncActionQueue = state.asyncActionQueue.slice(1);
+	} else if (state.asyncActionQueue.length > 0) {
+		return cloneAndApply(state, {
+			asyncActionQueue: [...state.asyncActionQueue, action],
+		});
+	}
+
 	switch (action.type) {
 		case 'AddModule': {
 			return addModule(state, action);
