@@ -7,7 +7,9 @@ export const addModule: React.Reducer<IPatchState, IAddModule> = (
 	state,
 	action,
 ) => {
-	const id = randomId();
+	const id = action.payload.options?.id
+		? action.payload.options.id
+		: randomId();
 
 	const position = action.payload.position;
 	const x = position[0];
