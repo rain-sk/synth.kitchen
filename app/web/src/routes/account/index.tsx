@@ -2,8 +2,10 @@ import { useContext } from 'react';
 import { Redirect } from 'wouter';
 
 import { AuthContext } from '../../api/auth/context';
+import { useTitle } from 'react-use';
 
 export const AccountRoute: React.FC = () => {
+	useTitle('synth.kitchen | account');
 	const { user, loading } = useContext(AuthContext);
 	return (
 		<>

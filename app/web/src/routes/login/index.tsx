@@ -13,6 +13,7 @@ import {
 	useMemo,
 	useState,
 } from 'react';
+import { useTitle } from 'react-use';
 
 const validate = (email: string, password: string): string | undefined => {
 	email + password;
@@ -26,6 +27,7 @@ export const LoginRoute: React.FC = () => {
 	const registration = useMemo(() => {
 		return path.includes('register');
 	}, [path]);
+	useTitle(registration ? 'synth.kitchen | register' : 'synth.kitchen | login');
 
 	const [redirect, setRedirect] = useState<string | null>(null);
 	useEffectOnce(() => {

@@ -1,5 +1,6 @@
 import { Redirect } from 'wouter';
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { useTitle } from 'react-use';
 
 import { useApi } from '../../lib/patch/api';
 import { AuthContext } from '../../api/auth/context';
@@ -9,6 +10,7 @@ import './styles.css';
 import { DashboardContext } from './context';
 
 export const DashboardRoute = () => {
+	useTitle('synth.kitchen | dashboard');
 	const { user } = useContext(AuthContext);
 
 	const { getPatches } = useApi();

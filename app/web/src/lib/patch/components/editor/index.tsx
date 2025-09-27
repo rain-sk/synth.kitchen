@@ -1,4 +1,6 @@
 import React, { useReducer } from 'react';
+import { useTitle } from 'react-use';
+import { useRoute } from 'wouter';
 
 import { blankPatch } from '../../state';
 import { DerivedConnectionStateContextProvider } from '../../contexts/derived-connection-state';
@@ -14,10 +16,11 @@ import { AsyncQueue } from './utils/async-queue';
 const initialState = { ...blankPatch() };
 
 export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
+	const [random] = useRoute('/patch/random');
 	const { initialized, status, initAudioMidi } = useAudioMidiInit();
 	const [state, dispatch] = useReducer(patchReducer, initialState);
 
-	useTitle(`patch/${state.name ? state.name : 'untitled'}`);
+	useTitle(random ? '...' : `patch/${state.name ? state.name : 'untitled'}`);
 
 	const loading = useLoadPatch(state, dispatch, initialized, slug);
 
