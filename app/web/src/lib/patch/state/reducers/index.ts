@@ -24,7 +24,9 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 	action,
 ): IPatchState => {
 	if (action === state.asyncActionQueue[0]) {
-		state.asyncActionQueue = state.asyncActionQueue.slice(1);
+		state = cloneAndApply(state, {
+			asyncActionQueue: state.asyncActionQueue.slice(1),
+		});
 	}
 
 	switch (action.type) {
