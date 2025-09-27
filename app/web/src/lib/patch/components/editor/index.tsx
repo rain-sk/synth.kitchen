@@ -8,8 +8,8 @@ import { PatchContextProvider } from '../../contexts/patch';
 import { patchReducer } from '../../state/reducers';
 import { useAudioMidiInit } from './use-audio-midi-init';
 import { Init } from './init';
-import { useTitle } from 'react-use';
 import { useLoadPatch } from './use-load-patch';
+import { AsyncQueue } from './utils/async-queue';
 
 const initialState = { ...blankPatch() };
 
@@ -23,6 +23,10 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>
+			<AsyncQueue
+				asyncActionQueue={state.asyncActionQueue}
+				dispatch={dispatch}
+			/>
 			<DerivedConnectionStateContextProvider {...state}>
 				<MidiContextProvider>
 					{initialized ? (

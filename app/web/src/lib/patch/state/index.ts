@@ -76,6 +76,8 @@ export const blankPatch = (): IPatchState => ({
 	// keyboard info
 	heldModifiers: Modifier.NONE,
 	focusedInput: undefined,
+
+	asyncActionQueue: [],
 });
 
 export { patchReducer } from './reducers';

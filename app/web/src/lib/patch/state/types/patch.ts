@@ -9,6 +9,7 @@ import {
 } from 'synth.kitchen-shared';
 
 import { Modifier } from '../../constants/key';
+import { IPatchAction } from '../actions';
 
 export type ConnectorInfo = [Connector, string[]];
 
@@ -34,6 +35,9 @@ export type IPatchState = PatchInfo &
 		// keyboard info
 		heldModifiers: Modifier;
 		focusedInput: string | undefined;
+
+		// async work queue
+		asyncActionQueue: IPatchAction[];
 	};
 
 export const cloneAndApply = (
@@ -69,6 +73,8 @@ export const cloneAndApply = (
 		// keyboard info
 		heldModifiers: state.heldModifiers,
 		focusedInput: state.focusedInput,
+
+		asyncActionQueue: state.asyncActionQueue,
 	};
 	for (let key in update) {
 		(newState as any)[key] = (update as any)[key];
