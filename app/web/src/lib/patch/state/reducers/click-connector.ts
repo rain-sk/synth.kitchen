@@ -16,7 +16,14 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 	state,
 	action,
 ) => {
-	const clicked = action.payload;
+	const clickedKey = connectorKey(action.payload);
+	if (!(clickedKey in state.connectors)) {
+		return cloneAndApply(state, {
+			asyncActionQueue: [action, ...state.asyncActionQueue],
+		});
+	}
+
+	const [clicked] = state.connectors[connectorKey(action.payload)];
 
 	if (!state.activeConnectorKey) {
 		return cloneAndApply(state, { activeConnectorKey: connectorKey(clicked) });
