@@ -121,6 +121,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			selectedModules: new Set(state.selectedModules.has('0') ? ['0'] : []),
 		});
 	} else if (
+		!state.focusedInput &&
 		keyCode === KeyCode.A &&
 		type === KeyboardEventType.KEY_DOWN &&
 		((state.heldModifiers & Modifier.SPECIAL) === Modifier.SPECIAL ||
