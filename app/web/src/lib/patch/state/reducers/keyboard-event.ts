@@ -1,3 +1,13 @@
+import {
+	Input,
+	IoType,
+	ModulePosition,
+	ModuleType,
+	Output,
+	randomId,
+} from 'synth.kitchen-shared';
+
+import { IPatchAction, patchActions } from '../actions';
 import { IKeyboardEvent } from '../actions/keyboard-event';
 import { KeyboardEventType } from '../actions/keyboard-event';
 import { connectorInfo } from '../connection';
@@ -131,6 +141,54 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			selectedModules: new Set([
 				...Object.values(state.modules).map((module) => module.id),
 			]),
+		});
+	} else if (
+		!state.focusedInput &&
+		keyCode === KeyCode.G &&
+		type === KeyboardEventType.KEY_DOWN &&
+		state.heldModifiers === 0 &&
+		state.selectedConnections &&
+		state.selectedConnections.size === 1
+	) {
+		const selectedConnection = [...state.selectedConnections][0];
+
+		const [output, input] = state.connections[selectedConnection];
+
+		const sourceModulePosition = state.modulePositions[output.moduleId];
+		const targetModulePosition = state.modulePositions[input.moduleId];
+
+		const newGainPosition: ModulePosition = [
+			(sourceModulePosition[0] + targetModulePosition[0]) / 2,
+			(sourceModulePosition[1] + targetModulePosition[1]) / 2,
+		];
+
+		const gainId = randomId();
+		const gainInput = {
+			moduleId: gainId,
+			channel: 0,
+			type: IoType.input,
+		} as Input;
+		const gainOutput = {
+			moduleId: gainId,
+			channel: 0,
+			type: IoType.output,
+		} as Output;
+
+		const actions: IPatchAction[] = [...state.asyncActionQueue];
+		actions.push(patchActions.clickConnectorAction(output));
+		actions.push(patchActions.clickConnectorAction(input));
+		actions.push(
+			patchActions.addModuleAction(ModuleType.GAIN, newGainPosition, {
+				id: gainId,
+			}),
+		);
+		actions.push(patchActions.clickConnectorAction(output));
+		actions.push(patchActions.clickConnectorAction(gainInput));
+		actions.push(patchActions.clickConnectorAction(gainOutput));
+		actions.push(patchActions.clickConnectorAction(input));
+		actions.push(patchActions.selectModuleAction(gainId));
+		return cloneAndApply(state, {
+			asyncActionQueue: actions,
 		});
 	} else {
 		return state;
