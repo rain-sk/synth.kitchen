@@ -151,7 +151,9 @@ export const disconnect = (
 			'name' in e &&
 			e.name === 'InvalidAccessError'
 		) {
-			console.log('Captured expected InvalidAccessError in React dev-mode.');
+			console.log(`Captured expected InvalidAccessError in React dev-mode.
+
+Printed below as a warning:`);
 			console.warn(e);
 		} else {
 			console.error(e);
