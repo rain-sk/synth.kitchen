@@ -48,6 +48,10 @@ import {
 	IUpdateModuleState,
 	updateModuleStateAction,
 } from './update-module-state';
+import {
+	IUpdateModuleName,
+	updateModuleNameAction,
+} from './update-module-name';
 
 export type IPatchAction =
 	| IAddModule
@@ -65,6 +69,7 @@ export type IPatchAction =
 	| ISelectionDrag
 	| ISelectModule
 	| ISetActiveConnectorKey
+	| IUpdateModuleName
 	| IUpdateModulePosition
 	| IUpdateModuleState;
 
@@ -91,6 +96,7 @@ export const patchActions = {
 	selectModuleAction,
 	selectSingleModuleAction,
 	setActiveConnectorKeyAction,
+	updateModuleNameAction,
 	updateModulePositionAction,
 	updateModuleStateAction,
 };

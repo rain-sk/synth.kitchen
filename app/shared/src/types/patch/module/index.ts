@@ -63,7 +63,7 @@ export type ModuleState = {
 };
 
 export type Module<T extends ModuleType = ModuleType> = {
-  name: string;
+  name?: string;
   id: string;
   type: T;
   state: ModuleState[T];

@@ -15,6 +15,7 @@ import { loadPatch } from './load-patch';
 import { selectModule } from './select-module';
 import { selectionDrag } from './selection-drag';
 import { setActiveConnectorKey } from './set-active-connector-key';
+import { updateModuleName } from './update-module-name';
 import { updateModulePosition } from './update-module-position';
 import { updateModuleState } from './update-module-state';
 
@@ -67,6 +68,9 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		}
 		case 'SetActiveConnectorKey': {
 			return setActiveConnectorKey(state, action);
+		}
+		case 'UpdateModuleName': {
+			return updateModuleName(state, action);
 		}
 		case 'UpdateModulePosition': {
 			return updateModulePosition(state, action);

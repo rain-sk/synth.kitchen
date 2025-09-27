@@ -7,6 +7,7 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
+import { Module, ModulePosition, ModuleType } from 'synth.kitchen-shared';
 
 import { Modifier } from '../../constants/key';
 import { ModuleHeader } from '../module-ui/module-header';
@@ -33,7 +34,6 @@ import { VcaModule } from './vca';
 import { CompressorModule } from './compressor';
 import { queueAnimation } from '../../../../utils/animation';
 import { ShiftModule } from './shift';
-import { Module, ModulePosition, ModuleType } from 'synth.kitchen-shared';
 
 const useDragAndDrop = (
 	id: string,
@@ -277,7 +277,6 @@ export const ModuleWrapper: React.FC<
 			tabIndex={0}
 			onFocus={onFocus}
 			className={classNames.join(' ')}
-			data-name={module.name}
 			ref={containerRef}
 			onMouseDown={onMouseDown}
 		>
