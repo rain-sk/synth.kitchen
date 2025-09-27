@@ -4,11 +4,6 @@ import { AuthContext } from '../../../../api/auth/context';
 
 export const Nav: React.FC = () => {
 	const { user, loading } = useContext(AuthContext);
-	const navItems = [
-		{ id: 'dashboard', label: 'Dashboard', to: '/dashboard', weight: 10 },
-		{ id: 'account', label: 'Account', to: '/account', weight: 20 },
-		{ id: 'about', label: 'About', to: '/about', weight: 30 },
-	];
 
 	const authenticated = !loading && user !== undefined;
 
