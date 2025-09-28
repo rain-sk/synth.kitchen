@@ -145,11 +145,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			}
 		});
 
-		newState.activeConnectorKey =
-			state.activeConnectorKey &&
-			state.activeConnectorKey in newState.connectors
-				? state.activeConnectorKey
-				: undefined;
+		newState.activeConnectorKey = undefined;
 
 		newState.selectedModules = new Set(
 			state.selectedModules.has('0') ? ['0'] : [],
