@@ -433,6 +433,10 @@ button {
 	height: 200%;
 }
 
+main.block {
+	pointer-events: none;
+}
+
 main.selection-drag .connector:hover:before {
 	display: none;
 }

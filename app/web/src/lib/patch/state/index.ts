@@ -1,6 +1,6 @@
 import { Module, ModulePosition, ModuleType } from 'synth.kitchen-shared';
 
-import { IPatchState } from './types/patch';
+import { History, IPatchState } from './types/patch';
 import { Modifier } from '../constants/key';
 import { ISerializedPatch } from './types/serialized-patch';
 import { INVALID_POSITION } from './constants/positions';
@@ -77,7 +77,7 @@ export const blankPatch = (): IPatchState => ({
 	heldModifiers: Modifier.NONE,
 	focusedInput: undefined,
 
-	history: [],
+	history: new History(),
 	historyPointer: -1,
 	blockHistory: false,
 	asyncActionQueue: [],

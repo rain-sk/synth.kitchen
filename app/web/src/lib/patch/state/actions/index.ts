@@ -64,6 +64,13 @@ import {
 	unblockHistoryAction,
 	undoAction,
 } from './history';
+import { flushAsyncQueueAction, IFlushAsyncQueue } from './flush-async-queue';
+import {
+	connectAction,
+	disconnectAction,
+	IConnect,
+	IDisconnect,
+} from './connection';
 
 export type IPatchAction =
 	| IAddModule
@@ -74,6 +81,9 @@ export type IPatchAction =
 	| IClearActiveConnector
 	| IClearPatchEditor
 	| IClickConnector
+	| IConnect
+	| IDisconnect
+	| IFlushAsyncQueue
 	| IFocusInput
 	| IKeyboardEvent
 	| ILoadConnections
@@ -99,8 +109,11 @@ export const patchActions = {
 	clearActiveConnectorAction,
 	clearPatchEditorAction,
 	clickConnectorAction,
+	connectAction,
 	deselectAllModulesAction,
 	deselectModuleAction,
+	disconnectAction,
+	flushAsyncQueueAction,
 	focusInputAction,
 	keyDownAction,
 	keyUpAction,

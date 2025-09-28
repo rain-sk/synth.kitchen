@@ -10,8 +10,61 @@ import {
 
 import { Modifier } from '../../constants/key';
 import { IPatchAction } from '../actions';
+import { MD5 } from '../../../shared/utils/md5';
+import { compressToBase64, decompressFromBase64 } from 'lz-string';
+import { pushToHistory } from '../reducers/history';
 
 export type ConnectorInfo = [Connector, string[]];
+
+type HistorySnapshot = {
+	md5: string;
+	state: string;
+};
+
+export class History {
+	private stack: HistorySnapshot[] = [];
+	private registry = new Set<string>();
+
+	slice = (historyPointer: number): History => {
+		const history = new History();
+
+		history.stack = this.stack.slice(historyPointer);
+		history.registry = new Set(Array.from(this.registry));
+
+		return history;
+	};
+
+	push = (state: PatchState, historyPointer: number): History => {
+		const json = JSON.stringify(state);
+		const compressed = compressToBase64(json);
+		const md5 = MD5(compressed);
+
+		if (this.registry.has(md5)) {
+			return this;
+		}
+
+		const snapshot: HistorySnapshot = {
+			md5,
+			state: compressed,
+		};
+
+		const history = new History();
+		history.stack = [snapshot, ...this.stack.slice(historyPointer)];
+		history.registry = new Set([md5, ...this.registry]);
+
+		return history;
+	};
+
+	load = (historyPointer: number): PatchState => {
+		const snapshot = this.stack[historyPointer];
+		const json = decompressFromBase64(snapshot.state);
+		return JSON.parse(json);
+	};
+
+	get length() {
+		return this.stack.length;
+	}
+}
 
 export type IPatchState = PatchInfo &
 	PatchState & {
@@ -37,7 +90,7 @@ export type IPatchState = PatchInfo &
 		focusedInput: string | undefined;
 
 		// history
-		history: PatchState[];
+		history: History;
 		historyPointer: number;
 		blockHistory: boolean;
 
@@ -90,3 +143,9 @@ export const cloneAndApply = (
 	}
 	return newState;
 };
+
+export const cloneAndApplyWithHistory = (
+	state: IPatchState,
+	update: Partial<Omit<IPatchState, 'historyPointer'>>,
+): IPatchState =>
+	cloneAndApply(pushToHistory(state), { ...update, historyPointer: -1 });

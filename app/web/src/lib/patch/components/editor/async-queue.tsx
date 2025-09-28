@@ -7,7 +7,6 @@ export const AsyncQueue: React.FC<{
 }> = ({ asyncActionQueue, dispatch }) => {
 	useEffect(() => {
 		if (asyncActionQueue.length > 0) {
-			console.log(asyncActionQueue);
 			dispatch(asyncActionQueue[0]);
 		}
 	}, [asyncActionQueue]);

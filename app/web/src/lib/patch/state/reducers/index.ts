@@ -6,7 +6,9 @@ import { changeName } from './change-name';
 import { clearActiveConnector } from './clear-active-connector';
 import { clearPatchEditor } from './clear-patch-editor';
 import { clickConnector } from './click-connector';
+import { connect, disconnect } from './connection';
 import { registerConnector } from './connector-registration';
+import { flushAsyncQueue } from './flush-async-queue';
 import {
 	blockHistory,
 	pushToHistory,
@@ -34,6 +36,13 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		state = cloneAndApply(state, {
 			asyncActionQueue: state.asyncActionQueue.slice(1),
 		});
+	} else if (
+		state.asyncActionQueue.length > 0 &&
+		action.type !== 'RegisterConnector'
+	) {
+		return cloneAndApply(state, {
+			asyncActionQueue: [...state.asyncActionQueue, action],
+		});
 	}
 
 	switch (action.type) {
@@ -58,8 +67,17 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		case 'ClickConnector': {
 			return clickConnector(state, action);
 		}
+		case 'Connect': {
+			return connect(state, action);
+		}
+		case 'FlushAsyncQueue': {
+			return flushAsyncQueue(state, patchReducer);
+		}
 		case 'FocusInput': {
 			return focusInput(state, action);
+		}
+		case 'Disconnect': {
+			return disconnect(state, action);
 		}
 		case 'BlurInput': {
 			return blurInput(state, action);

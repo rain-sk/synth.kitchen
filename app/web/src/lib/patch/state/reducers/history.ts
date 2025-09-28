@@ -1,8 +1,8 @@
-import { PatchState } from 'synth.kitchen-shared';
+import { Input, Output, PatchState } from 'synth.kitchen-shared';
 import { cloneAndApply, IPatchState } from '../types/patch';
 import { IPushToHistory } from '../actions/history';
 import { patchActions } from '../actions';
-import { MD5 } from '../../../shared/utils/md5';
+import { connect, connectorKey, disconnectSet } from '../connection';
 
 export const blockHistory = (state: IPatchState) => {
 	return cloneAndApply(state, { blockHistory: true });
@@ -30,12 +30,7 @@ export const pushToHistory = (
 		connections: state.connections,
 		name: state.name,
 	};
-	const history = [
-		patchState,
-		...(state.historyPointer <= 0
-			? state.history
-			: state.history.slice(state.historyPointer)),
-	];
+	const history = state.history.push(patchState, state.historyPointer);
 	return cloneAndApply(state, {
 		history,
 		historyPointer: 0,
@@ -52,7 +47,7 @@ const syncConnections = (
 	const currentConnectionKeys = Object.keys(state.connections);
 	const incomingConnectionKeys = Object.keys(stateToLoad.connections);
 
-	const deletionsToDelay = currentConnectionKeys
+	const connectionsToDelete = currentConnectionKeys
 		.filter((key) => !new Set(incomingConnectionKeys).has(key))
 		.filter((key) => {
 			const [output, input] = state.connections[key];
@@ -61,21 +56,14 @@ const syncConnections = (
 				input.moduleId in stateToLoad.modules
 			);
 		});
-	deletionsToDelay.forEach((key) => {
-		const connection = state.connections[key];
-		stateToLoad = {
-			...stateToLoad,
-			connections: {
-				...stateToLoad.connections,
-				[key]: connection,
-			},
-		};
-
-		const [output, input] = connection;
-		asyncActionQueue.push(patchActions.clearActiveConnectorAction());
-		asyncActionQueue.push(patchActions.clickConnectorAction(output));
-		asyncActionQueue.push(patchActions.clickConnectorAction(input));
-	});
+	state = cloneAndApply(
+		state,
+		disconnectSet(
+			state.connections,
+			state.connectors,
+			new Set(connectionsToDelete),
+		),
+	);
 
 	const connectionsToDelay = new Set(
 		incomingConnectionKeys.filter(
@@ -84,47 +72,46 @@ const syncConnections = (
 	);
 
 	connectionsToDelay.forEach((key) => {
-		const [output, input] = stateToLoad.connections[key];
-		asyncActionQueue.push(patchActions.clearActiveConnectorAction());
-		asyncActionQueue.push(patchActions.clickConnectorAction(output));
-		asyncActionQueue.push(patchActions.clickConnectorAction(input));
+		let [output, input] = stateToLoad.connections[key];
+		const outputKey = connectorKey(output);
+		const inputKey = connectorKey(input);
+		if (outputKey in state.connectors && inputKey in state.connectors) {
+			output = state.connectors[outputKey][0] as Output;
+			input = state.connectors[inputKey][0] as Input;
+			state = cloneAndApply(
+				state,
+				connect(state.connections, state.connectors, output, input),
+			);
+		} else {
+			asyncActionQueue.push(patchActions.clearActiveConnectorAction());
+			asyncActionQueue.push(patchActions.clickConnectorAction(output));
+			asyncActionQueue.push(patchActions.clickConnectorAction(input));
+		}
 	});
 
 	stateToLoad = {
 		...stateToLoad,
 		connections: Object.fromEntries(
 			Object.entries(stateToLoad.connections).filter(
-				([key]) => !connectionsToDelay.has(key),
+				([key]) => !connectionsToDelay.has(key) || key in state.connections,
 			),
 		),
 	};
 
 	asyncActionQueue.push(patchActions.unblockHistoryAction());
-	const newState = cloneAndApply(state, {
+	return cloneAndApply(state, {
 		...stateToLoad,
 		asyncActionQueue,
 	});
-
-	return newState;
 };
 
 const incrementHistoryPointer = (state: IPatchState, direction: 1 | -1) => {
-	console.log(`INCREMENT HISTORY: ${direction}`);
-	console.log('history', state.history);
-	console.log('historyPointer', state.historyPointer);
 	const historyPointer = state.historyPointer + direction;
-	const stateToLoad = state.history[historyPointer];
+	const stateToLoad = state.history.load(historyPointer);
 
-	const newState = cloneAndApply(syncConnections(state, stateToLoad), {
+	return cloneAndApply(syncConnections(state, stateToLoad), {
 		historyPointer,
 	});
-
-	// DEBUG
-	const stateMd5 = MD5(JSON.stringify(state));
-	const stateToLoadMd5 = MD5(JSON.stringify(stateToLoad));
-	console.log({ stateMd5, stateToLoadMd5 });
-	console.log(newState.asyncActionQueue);
-	return newState;
 };
 
 export const undo = (state: IPatchState) => {
@@ -135,8 +122,16 @@ export const undo = (state: IPatchState) => {
 	if (state.historyPointer === -1) {
 		state = pushToHistory(state);
 	}
-
-	return incrementHistoryPointer(state, 1);
+	return cloneAndApply(incrementHistoryPointer(state, 1), {
+		activeConnectorKey: undefined,
+		selectedConnections: new Set(),
+		selectedModules: new Set(),
+		asyncActionQueue: [
+			...state.asyncActionQueue,
+			patchActions.deselectAllModulesAction(),
+			patchActions.clearActiveConnectorAction(),
+		],
+	});
 };
 
 export const redo = (state: IPatchState) => {
@@ -144,5 +139,14 @@ export const redo = (state: IPatchState) => {
 		return state;
 	}
 
-	return incrementHistoryPointer(state, -1);
+	return cloneAndApply(incrementHistoryPointer(state, -1), {
+		activeConnectorKey: undefined,
+		selectedConnections: new Set(),
+		selectedModules: new Set(),
+		asyncActionQueue: [
+			...state.asyncActionQueue,
+			patchActions.deselectAllModulesAction(),
+			patchActions.clearActiveConnectorAction(),
+		],
+	});
 };

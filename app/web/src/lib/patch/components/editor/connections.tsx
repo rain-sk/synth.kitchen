@@ -152,6 +152,7 @@ const Connections: React.FC<{
 }> = ({
 	state: {
 		activeConnectorKey,
+		blockHistory,
 		connections,
 		connectors,
 		modulePositions,
@@ -209,7 +210,7 @@ const Connections: React.FC<{
 					connectionToPath(ConnectionDrawMode.DIRECT),
 				);
 
-				if (activeConnectorKey) {
+				if (activeConnectorKey && !blockHistory) {
 					connectionsToDraw.push([
 						'active',
 						[
@@ -275,6 +276,7 @@ const Connections: React.FC<{
 		}, 'cxn');
 	}, [
 		activeConnectorKey,
+		blockHistory,
 		connections,
 		connectors,
 		scroll,
@@ -288,8 +290,14 @@ const Connections: React.FC<{
 	}, [drawConnections]);
 	useEffect(() => {
 		drawConnections();
-	}, [activeConnectorKey, connections, connectors, modulePositions]);
-	useEffect(drawConnections, [scroll]);
+	}, [
+		activeConnectorKey,
+		blockHistory,
+		connections,
+		connectors,
+		modulePositions,
+		scroll,
+	]);
 	useEffect(() => {
 		if (activeConnectorKey) {
 			drawConnections();

@@ -1,5 +1,6 @@
+import { Module } from 'synth.kitchen-shared';
 import { IUpdateModuleState } from '../actions/update-module-state';
-import { cloneAndApply } from '../types/patch';
+import { cloneAndApplyWithHistory } from '../types/patch';
 import { IPatchState } from '../types/patch';
 
 export const updateModuleState: React.Reducer<
@@ -7,14 +8,18 @@ export const updateModuleState: React.Reducer<
 	IUpdateModuleState
 > = (state, action) => {
 	const module = state.modules[action.payload.id];
-	const update = {
-		...module,
-		state: action.payload.state,
-	};
-	return cloneAndApply(state, {
-		modules: {
-			...state.modules,
-			[action.payload.id]: update,
-		},
+
+	const modules: Record<string, Module> = {};
+	for (const id of Object.keys(state.modules)) {
+		modules[id] =
+			id === action.payload.id
+				? {
+						...module,
+						state: action.payload.state,
+				  }
+				: state.modules[id];
+	}
+	return cloneAndApplyWithHistory(state, {
+		modules,
 	});
 };

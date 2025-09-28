@@ -1,19 +1,25 @@
 import {
+	Connection,
 	Input,
 	IoType,
+	Module,
 	ModulePosition,
 	ModuleType,
 	Output,
 	randomId,
 } from 'synth.kitchen-shared';
 
-import { IPatchAction, patchActions } from '../actions';
+import { patchActions } from '../actions';
 import { IKeyboardEvent } from '../actions/keyboard-event';
 import { KeyboardEventType } from '../actions/keyboard-event';
 import { connectorInfo } from '../connection';
 import { disconnectSet } from '../connection';
 import { moduleConnectors } from '../connection';
-import { cloneAndApply } from '../types/patch';
+import {
+	cloneAndApply,
+	cloneAndApplyWithHistory,
+	ConnectorInfo,
+} from '../types/patch';
 import { IPatchState } from '../types/patch';
 import {
 	KeyCode,
@@ -92,7 +98,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			state.selectedModules.size === 0 &&
 			state.selectedConnections.size > 0
 		) {
-			return cloneAndApply(
+			return cloneAndApplyWithHistory(
 				state,
 				disconnectSet(
 					state.connections,
@@ -110,52 +116,60 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 				.flatMap(([, connections]) => connections),
 		);
 
-		const newState = disconnectSet(
+		const newState: {
+			connections: Record<string, Connection>;
+			connectors: Record<string, ConnectorInfo>;
+		} & Partial<IPatchState> = disconnectSet(
 			state.connections,
 			state.connectors,
 			connectionsOfSelectedModules,
 		);
 
-		newState.connectors = Object.fromEntries(
-			Object.entries(newState.connectors).filter(
-				([, [connector]]) =>
+		{
+			newState.connectors = {};
+			for (const entry of Object.entries(newState.connectors)) {
+				const [key, connectorInfo] = entry;
+				const [connector] = connectorInfo;
+				if (
 					connector.moduleId === '0' ||
-					!state.selectedModules.has(connector.moduleId),
-			),
-		);
+					!state.selectedModules.has(connector.moduleId)
+				) {
+					newState.connectors[key] = connectorInfo;
+				}
+			}
+		}
 
-		const modules = Object.fromEntries(
-			Object.entries(state.modules).filter(
-				([id]) => !state.selectedModules.has(id) || id === '0',
-			),
-		);
-
-		const modulePositions = Object.fromEntries(
-			Object.entries(state.modulePositions).filter(
-				([id]) => !state.selectedModules.has(id) || id === '0',
-			),
-		);
+		{
+			newState.modules = {} as Record<string, Module>;
+			newState.modulePositions = {} as Record<string, ModulePosition>;
+			for (const id of Object.keys(state.modules)) {
+				if (!state.selectedModules.has(id) || id === '0') {
+					newState.modules[id] = state.modules[id];
+					newState.modulePositions[id] = state.modulePositions[id];
+				}
+			}
+		}
 
 		Object.values(newState.connections).forEach(([output, input]) => {
 			if (state.selectedModules.has(output.moduleId)) {
-				console.error('failed to delete output');
+				debugger;
 			}
 			if (state.selectedModules.has(input.moduleId)) {
-				console.error('failed to delete input');
+				debugger;
 			}
 		});
 
-		return cloneAndApply(state, {
-			...newState,
-			activeConnectorKey:
-				state.activeConnectorKey &&
-				state.activeConnectorKey in newState.connectors
-					? state.activeConnectorKey
-					: undefined,
-			modules,
-			modulePositions,
-			selectedModules: new Set(state.selectedModules.has('0') ? ['0'] : []),
-		});
+		newState.activeConnectorKey =
+			state.activeConnectorKey &&
+			state.activeConnectorKey in newState.connectors
+				? state.activeConnectorKey
+				: undefined;
+
+		newState.selectedModules = new Set(
+			state.selectedModules.has('0') ? ['0'] : [],
+		);
+
+		return cloneAndApplyWithHistory(state, newState);
 	} else if (
 		!state.focusedInput &&
 		keyCode === KeyCode.A &&
@@ -173,60 +187,64 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		type === KeyboardEventType.KEY_DOWN &&
 		state.heldModifiers === 0 &&
 		state.selectedConnections &&
-		state.selectedConnections.size === 1
+		state.selectedConnections.size > 0
 	) {
-		const selectedConnection = Array.from(state.selectedConnections)[0];
+		if (state.activeConnectorKey) {
+			state = cloneAndApply(state, { activeConnectorKey: undefined });
+		}
 
-		const [output, input] = state.connections[selectedConnection];
-
-		const sourceModulePosition = state.modulePositions[output.moduleId];
-		const targetModulePosition = state.modulePositions[input.moduleId];
-
-		const newModulePosition: ModulePosition = [
-			(sourceModulePosition[0] + targetModulePosition[0]) / 2,
-			(sourceModulePosition[1] + targetModulePosition[1]) / 2,
-		];
-
-		const moduleId = randomId();
-		const moduleInput = {
-			moduleId: moduleId,
-			channel: 0,
-			type: IoType.input,
-		} as Input;
-		const moduleOutput = {
-			moduleId: moduleId,
-			channel: 0,
-			type: IoType.output,
-		} as Output;
-
-		const asyncActionQueue: IPatchAction[] = state.asyncActionQueue.slice();
-		asyncActionQueue.push(patchActions.pushToHistoryAction());
-		asyncActionQueue.push(patchActions.blockHistoryAction());
-		asyncActionQueue.push(patchActions.clearActiveConnectorAction());
-		asyncActionQueue.push(patchActions.clickConnectorAction(output));
-		asyncActionQueue.push(patchActions.clickConnectorAction(input));
-		asyncActionQueue.push(
-			patchActions.addModuleAction(quickKeyMap[keyCode], newModulePosition, {
-				id: moduleId,
-			}),
+		const newState: Partial<IPatchState> = disconnectSet(
+			state.connections,
+			state.connectors,
+			state.selectedConnections,
 		);
-		asyncActionQueue.push(patchActions.clickConnectorAction(output));
-		asyncActionQueue.push(patchActions.clickConnectorAction(moduleInput));
-		asyncActionQueue.push(patchActions.clickConnectorAction(moduleOutput));
-		asyncActionQueue.push(patchActions.clickConnectorAction(input));
-		asyncActionQueue.push(patchActions.selectModuleAction(moduleId));
-		asyncActionQueue.push(patchActions.pushToHistoryAction(true));
-		return cloneAndApply(state, {
-			asyncActionQueue,
-		});
+		newState.asyncActionQueue = state.asyncActionQueue.slice();
+		newState.selectedConnections = new Set();
+
+		for (const connectionKey of state.selectedConnections) {
+			const [output, input] = state.connections[connectionKey];
+
+			const sourceModulePosition = state.modulePositions[output.moduleId];
+			const targetModulePosition = state.modulePositions[input.moduleId];
+			const newModulePosition: ModulePosition = [
+				(sourceModulePosition[0] + targetModulePosition[0]) / 2,
+				(sourceModulePosition[1] + targetModulePosition[1]) / 2,
+			];
+			const moduleId = randomId();
+			const moduleInput = {
+				moduleId: moduleId,
+				channel: 0,
+				type: IoType.input,
+			} as Input;
+			const moduleOutput = {
+				moduleId: moduleId,
+				channel: 0,
+				type: IoType.output,
+			} as Output;
+
+			newState.asyncActionQueue.push(patchActions.blockHistoryAction());
+			newState.asyncActionQueue.push(
+				patchActions.addModuleAction(quickKeyMap[keyCode], newModulePosition, {
+					id: moduleId,
+				}),
+			);
+			newState.asyncActionQueue.push(
+				patchActions.connectAction(output, moduleInput),
+			);
+			newState.asyncActionQueue.push(
+				patchActions.connectAction(moduleOutput, input),
+			);
+			newState.asyncActionQueue.push(patchActions.selectModuleAction(moduleId));
+			newState.asyncActionQueue.push(patchActions.pushToHistoryAction(true));
+		}
+
+		return cloneAndApplyWithHistory(state, newState);
 	} else if (
 		keyCode === KeyCode.Z &&
 		type === KeyboardEventType.KEY_DOWN &&
 		cmdOrCtrl
 	) {
-		const newState = shift ? redo(state) : undo(state);
-		console.log(shift ? 'redo' : 'undo');
-		return newState;
+		return shift ? redo(state) : undo(state);
 	} else {
 		return state;
 	}

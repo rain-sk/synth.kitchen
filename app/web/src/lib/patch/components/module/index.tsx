@@ -262,6 +262,27 @@ export const ModuleWrapper: React.FC<
 		[currentlySelected, dispatch, module.id, selectedModules, startDragging],
 	);
 
+	useEffect(() => {
+		const main = document.getElementById('main');
+		if (main && container) {
+			if (singleSelected) {
+				const scrollTop = main?.scrollTop ?? 0;
+				const scrollLeft = main?.scrollLeft ?? 0;
+				container.focus();
+				main?.scrollTo({
+					left: scrollLeft,
+					top: scrollTop,
+					behavior: 'instant',
+				});
+				container.scrollIntoView({
+					block: 'center',
+					inline: 'center',
+					behavior: 'smooth',
+				});
+			}
+		}
+	}, [container]);
+
 	const classNames: string[] = ['module', module.type];
 	if (isDragging) {
 		classNames.push('dragging');
@@ -284,12 +305,7 @@ export const ModuleWrapper: React.FC<
 			tabIndex={0}
 			onFocus={onFocus}
 			className={classNames.join(' ')}
-			ref={(ref) => {
-				if (singleSelected) {
-					ref?.focus();
-				}
-				setContainer(ref);
-			}}
+			ref={setContainer}
 			onMouseDown={onMouseDown}
 		>
 			<ModuleHeader module={module} />

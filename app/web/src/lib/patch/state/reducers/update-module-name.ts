@@ -1,5 +1,5 @@
 import { IUpdateModuleName } from '../actions/update-module-name';
-import { cloneAndApply } from '../types/patch';
+import { cloneAndApplyWithHistory } from '../types/patch';
 import { IPatchState } from '../types/patch';
 
 export const updateModuleName: React.Reducer<IPatchState, IUpdateModuleName> = (
@@ -11,7 +11,7 @@ export const updateModuleName: React.Reducer<IPatchState, IUpdateModuleName> = (
 		...module,
 		name: action.payload.name,
 	};
-	return cloneAndApply(state, {
+	return cloneAndApplyWithHistory(state, {
 		modules: {
 			...state.modules,
 			[action.payload.id]: update,

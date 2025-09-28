@@ -14,6 +14,7 @@ import { UseScrollContext } from '../../contexts/use-scroll';
 import { INVALID_POSITION } from '../../state/constants/positions';
 import { clearActiveConnectorAction } from '../../state/actions/clear-active-connector';
 import { positionFromMouseEvent } from './utils/position-from-mouse-event';
+import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
 
 export type ModuleCanvasBackdropProps = {
 	state: IPatchState;
@@ -23,11 +24,13 @@ export type ModuleCanvasBackdropProps = {
 export const ModuleCanvasBackdrop: React.FC<
 	React.PropsWithChildren<ModuleCanvasBackdropProps>
 > = ({
-	state: { modules, modulePositions, selectedModules },
+	state: { blockHistory, modules, modulePositions, selectedModules },
 	dispatch,
 	children,
 }) => {
-	const container = useRef<HTMLElement | undefined>(undefined);
+	const [containerRef, _, setContainer] = useRefBackedState<HTMLElement | null>(
+		null,
+	);
 	const spacer = useRef<HTMLDivElement | undefined>(undefined);
 	const selection = useRef({
 		element: undefined as HTMLDivElement | undefined,
@@ -35,7 +38,7 @@ export const ModuleCanvasBackdrop: React.FC<
 		end: INVALID_POSITION,
 	});
 	const isInitialized = () =>
-		!!container.current && !!spacer.current && !!selection.current.element;
+		!!containerRef.current && !!spacer.current && !!selection.current.element;
 
 	const [initialized, setInitialized] = useState(false);
 
@@ -87,7 +90,7 @@ export const ModuleCanvasBackdrop: React.FC<
 
 	const onResize = useCallback(() => {
 		queueAnimation(() => {
-			if (container.current) {
+			if (containerRef.current) {
 				drawSelection();
 			}
 		});
@@ -95,8 +98,8 @@ export const ModuleCanvasBackdrop: React.FC<
 
 	const onScroll = useCallback(() => {
 		queueAnimation(() => {
-			if (container.current && spacer.current) {
-				const mainRect = container.current.getBoundingClientRect();
+			if (containerRef.current && spacer.current) {
+				const mainRect = containerRef.current.getBoundingClientRect();
 				const spacerRect = spacer.current.getBoundingClientRect();
 
 				const expandTop = spacerRect.top - mainRect.top < 300;
@@ -123,19 +126,19 @@ export const ModuleCanvasBackdrop: React.FC<
 	const { current: onMouseout } = useRef((/*e: MouseEvent*/) => {});
 
 	useEffect(() => {
-		if (container.current) {
+		if (containerRef.current) {
 			onResize();
 
 			window.addEventListener('resize', onResize, false);
 			document.addEventListener('resize', onResize, false);
 			window.addEventListener('mouseout', onMouseout, false);
-			container.current.addEventListener('scroll', onScroll, false);
+			containerRef.current.addEventListener('scroll', onScroll, false);
 
 			return () => {
 				window.removeEventListener('resize', onResize, false);
 				document.removeEventListener('resize', onResize, false);
 				window.addEventListener('mouseout', onMouseout, false);
-				container.current?.removeEventListener('scroll', onScroll, false);
+				containerRef.current?.removeEventListener('scroll', onScroll, false);
 			};
 		}
 	}, [initialized, onResize]);
@@ -144,7 +147,7 @@ export const ModuleCanvasBackdrop: React.FC<
 		(e: MouseEvent) => {
 			selection.current.end = positionFromMouseEvent(
 				e,
-				container.current as HTMLElement,
+				containerRef.current as HTMLElement,
 			);
 
 			queueAnimation(drawSelection);
@@ -159,7 +162,7 @@ export const ModuleCanvasBackdrop: React.FC<
 		(e: MouseEvent) => {
 			dispatch(
 				patchActions.selectionDragEndAction(
-					positionFromMouseEvent(e, container.current as HTMLElement),
+					positionFromMouseEvent(e, containerRef.current as HTMLElement),
 				),
 			);
 
@@ -185,7 +188,7 @@ export const ModuleCanvasBackdrop: React.FC<
 		(e: ReactMouseEvent<HTMLDivElement>) => {
 			const position = positionFromMouseEvent(
 				e.nativeEvent,
-				container.current as HTMLElement,
+				containerRef.current as HTMLElement,
 			);
 
 			selection.current.start = position;
@@ -203,15 +206,23 @@ export const ModuleCanvasBackdrop: React.FC<
 		[dispatch],
 	);
 
+	const classNames = [];
+	if (draggingSelection) {
+		classNames.push('selection-drag');
+	}
+	if (blockHistory) {
+		classNames.push('block');
+	}
+
 	return (
 		<UseScrollContext.Provider
-			value={container as React.RefObject<HTMLElement>}
+			value={containerRef as React.RefObject<HTMLElement>}
 		>
 			<main
 				id="main"
-				className={draggingSelection ? 'selection-drag' : ''}
+				className={classNames.join(' ')}
 				ref={(main) => {
-					container.current = main ?? undefined;
+					setContainer(main);
 					setInitialized(isInitialized());
 				}}
 				onMouseDown={initialized ? onMouseDown : () => {}}

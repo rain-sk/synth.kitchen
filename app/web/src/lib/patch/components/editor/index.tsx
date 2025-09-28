@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import { useTitle } from 'react-use';
 import { useRoute } from 'wouter';
 
