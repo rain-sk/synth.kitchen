@@ -61,7 +61,6 @@ export const useLoadPatch = (
 
 		(async () => {
 			if (newPatch) {
-				dispatch(patchActions.blockHistoryAction());
 				dispatch(
 					patchActions.loadPatchAction(
 						initialized ? blankPatchToLoad() : blankPatch(),
@@ -71,7 +70,6 @@ export const useLoadPatch = (
 			} else if (randomPatch) {
 				// Load a random patch
 				setLoading(true);
-				dispatch(patchActions.blockHistoryAction());
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 				const patch = await getPatch({ random: true });
 				if (patch) {
@@ -94,7 +92,6 @@ export const useLoadPatch = (
 				setLoading(false);
 			} else if (slug && state.slug === '') {
 				setLoading(true);
-				dispatch(patchActions.blockHistoryAction());
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 				const patch = await getPatch(isUuid(slug) ? { id: slug } : { slug });
 				if (patch) {

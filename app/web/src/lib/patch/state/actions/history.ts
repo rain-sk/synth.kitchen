@@ -17,6 +17,7 @@ export const unblockHistoryAction = (): IUnblockHistory => ({
 export type IPushToHistory = {
 	type: 'PushToHistory';
 	force?: boolean;
+	historyPointer?: number;
 };
 
 export const pushToHistoryAction = (force?: boolean): IPushToHistory => ({

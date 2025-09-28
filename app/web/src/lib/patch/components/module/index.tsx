@@ -79,6 +79,7 @@ const useDragAndDrop = (
 		setIsDragging(false);
 		dragOffset.current.x = 0;
 		dragOffset.current.y = 0;
+		dispatch(patchActions.pushToHistoryAction(true));
 	};
 
 	const onDrag = useRef((e: MouseEvent) => {
@@ -102,6 +103,7 @@ const useDragAndDrop = (
 		e.stopPropagation();
 
 		if (e.nativeEvent.button == 0) {
+			dispatch(patchActions.blockHistoryAction());
 			setIsDragging(true);
 
 			dragOffset.current.x = e.clientX - x;

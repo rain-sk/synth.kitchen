@@ -4,6 +4,8 @@ import { Record } from './record';
 import { SaveToCloud } from './save-to-cloud';
 import { Module, ModulePosition } from 'synth.kitchen-shared';
 import { Overview } from '../editor/overview';
+import { Undo } from './undo';
+import { Redo } from './redo';
 
 export const Toolbar: React.FC<{
 	sortedModules: [Module, ModulePosition][];
@@ -16,6 +18,8 @@ export const Toolbar: React.FC<{
 				<section>
 					<PatchNameField />
 					<SaveToCloud />
+					<Undo />
+					<Redo />
 				</section>
 				<section>
 					<Record />

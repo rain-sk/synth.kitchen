@@ -14,7 +14,7 @@ export const unblockHistory = (state: IPatchState) => {
 
 export const pushToHistory = (
 	state: IPatchState,
-	action?: IPushToHistory,
+	action?: Partial<IPushToHistory>,
 ): IPatchState => {
 	if (state.blockHistory) {
 		if (action?.force) {
@@ -30,10 +30,11 @@ export const pushToHistory = (
 		connections: state.connections,
 		name: state.name,
 	};
-	const history = state.history.push(patchState, state.historyPointer);
+	const history = state.history.slice(state.historyPointer).push(patchState, 0);
+	const historyPointer = 0;
 	return cloneAndApply(state, {
 		history,
-		historyPointer: 0,
+		historyPointer,
 	});
 };
 
@@ -65,13 +66,13 @@ const syncConnections = (
 		),
 	);
 
-	const connectionsToDelay = new Set(
+	const newConnections = new Set(
 		incomingConnectionKeys.filter(
 			(key) => !new Set(currentConnectionKeys).has(key),
 		),
 	);
 
-	connectionsToDelay.forEach((key) => {
+	newConnections.forEach((key) => {
 		let [output, input] = stateToLoad.connections[key];
 		const outputKey = connectorKey(output);
 		const inputKey = connectorKey(input);
@@ -89,14 +90,13 @@ const syncConnections = (
 		}
 	});
 
-	stateToLoad = {
-		...stateToLoad,
-		connections: Object.fromEntries(
-			Object.entries(stateToLoad.connections).filter(
-				([key]) => !connectionsToDelay.has(key) || key in state.connections,
-			),
-		),
-	};
+	const connectionsToLoad = stateToLoad.connections;
+	stateToLoad.connections = {};
+	Object.entries(connectionsToLoad)
+		.filter(([key]) => !newConnections.has(key) || key in state.connections)
+		.forEach(([key, value]) => {
+			stateToLoad.connections[key] = value;
+		});
 
 	asyncActionQueue.push(patchActions.unblockHistoryAction());
 	return cloneAndApply(state, {
@@ -126,27 +126,17 @@ export const undo = (state: IPatchState) => {
 		activeConnectorKey: undefined,
 		selectedConnections: new Set(),
 		selectedModules: new Set(),
-		asyncActionQueue: [
-			...state.asyncActionQueue,
-			patchActions.deselectAllModulesAction(),
-			patchActions.clearActiveConnectorAction(),
-		],
 	});
 };
 
 export const redo = (state: IPatchState) => {
 	if (state.historyPointer <= 0) {
-		return state;
+		return state.historyPointer === 0 ? state : pushToHistory(state);
 	}
 
 	return cloneAndApply(incrementHistoryPointer(state, -1), {
 		activeConnectorKey: undefined,
 		selectedConnections: new Set(),
 		selectedModules: new Set(),
-		asyncActionQueue: [
-			...state.asyncActionQueue,
-			patchActions.deselectAllModulesAction(),
-			patchActions.clearActiveConnectorAction(),
-		],
 	});
 };

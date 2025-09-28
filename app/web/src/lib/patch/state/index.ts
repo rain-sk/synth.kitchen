@@ -1,10 +1,11 @@
 import { Module, ModulePosition, ModuleType } from 'synth.kitchen-shared';
 
-import { History, IPatchState } from './types/patch';
+import { IPatchState } from './types/patch';
 import { Modifier } from '../constants/key';
 import { ISerializedPatch } from './types/serialized-patch';
 import { INVALID_POSITION } from './constants/positions';
 import { convertRemToPixels } from '../../shared/utils/rem-to-px';
+import { History } from './types/history';
 
 export const blankPatchToClearCanvas = (): ISerializedPatch => ({
 	id: '',
@@ -79,7 +80,7 @@ export const blankPatch = (): IPatchState => ({
 
 	history: new History(),
 	historyPointer: -1,
-	blockHistory: false,
+	blockHistory: true,
 	asyncActionQueue: [],
 });
 
