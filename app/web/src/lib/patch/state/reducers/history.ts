@@ -63,7 +63,13 @@ const syncConnections = (
 		});
 	deletionsToDelay.forEach((key) => {
 		const connection = state.connections[key];
-		stateToLoad.connections[key] = connection;
+		stateToLoad = {
+			...stateToLoad,
+			connections: {
+				...stateToLoad.connections,
+				[key]: connection,
+			},
+		};
 
 		const [output, input] = connection;
 		asyncActionQueue.push(patchActions.clearActiveConnectorAction());
@@ -84,11 +90,14 @@ const syncConnections = (
 		asyncActionQueue.push(patchActions.clickConnectorAction(input));
 	});
 
-	stateToLoad.connections = Object.fromEntries(
-		Object.entries(stateToLoad.connections).filter(
-			([key]) => !connectionsToDelay.has(key),
+	stateToLoad = {
+		...stateToLoad,
+		connections: Object.fromEntries(
+			Object.entries(stateToLoad.connections).filter(
+				([key]) => !connectionsToDelay.has(key),
+			),
 		),
-	);
+	};
 
 	asyncActionQueue.push(patchActions.unblockHistoryAction());
 	const newState = cloneAndApply(state, {

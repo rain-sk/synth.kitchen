@@ -20,10 +20,6 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 	const { initialized, status, initAudioMidi } = useAudioMidiInit();
 	const [state, dispatch] = useReducer(patchReducer, initialState);
 
-	// useEffect(() => {
-	// 	console.log(state.asyncActionQueue);
-	// }, [state.asyncActionQueue]);
-
 	useTitle(random ? '...' : `patch/${state.name ? state.name : 'untitled'}`);
 
 	const loading = useLoadPatch(state, dispatch, initialized, slug);
