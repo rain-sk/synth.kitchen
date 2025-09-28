@@ -126,20 +126,6 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		);
 
 		{
-			newState.connectors = {};
-			for (const entry of Object.entries(newState.connectors)) {
-				const [key, connectorInfo] = entry;
-				const [connector] = connectorInfo;
-				if (
-					connector.moduleId === '0' ||
-					!state.selectedModules.has(connector.moduleId)
-				) {
-					newState.connectors[key] = connectorInfo;
-				}
-			}
-		}
-
-		{
 			newState.modules = {} as Record<string, Module>;
 			newState.modulePositions = {} as Record<string, ModulePosition>;
 			for (const id of Object.keys(state.modules)) {
