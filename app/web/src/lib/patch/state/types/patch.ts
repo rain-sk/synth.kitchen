@@ -36,6 +36,11 @@ export type IPatchState = PatchInfo &
 		heldModifiers: Modifier;
 		focusedInput: string | undefined;
 
+		// history
+		history: PatchState[];
+		historyPointer: number;
+		blockHistory: boolean;
+
 		// async work queue
 		asyncActionQueue: IPatchAction[];
 	};
@@ -73,6 +78,10 @@ export const cloneAndApply = (
 		// keyboard info
 		heldModifiers: state.heldModifiers,
 		focusedInput: state.focusedInput,
+
+		history: state.history,
+		historyPointer: state.historyPointer,
+		blockHistory: state.blockHistory,
 
 		asyncActionQueue: state.asyncActionQueue,
 	};

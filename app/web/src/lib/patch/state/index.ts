@@ -77,6 +77,9 @@ export const blankPatch = (): IPatchState => ({
 	heldModifiers: Modifier.NONE,
 	focusedInput: undefined,
 
+	history: [],
+	historyPointer: -1,
+	blockHistory: false,
 	asyncActionQueue: [],
 });
 

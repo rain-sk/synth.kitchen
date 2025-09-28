@@ -18,6 +18,7 @@ export enum KeyCode {
 	DELETE = 46,
 	A = 65,
 	G = 71,
+	Z = 90,
 	SPECIAL = 224,
 }
 

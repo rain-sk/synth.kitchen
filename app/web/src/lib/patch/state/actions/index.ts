@@ -52,9 +52,22 @@ import {
 	IUpdateModuleName,
 	updateModuleNameAction,
 } from './update-module-name';
+import {
+	blockHistoryAction,
+	IBlockHistory,
+	IPushToHistory,
+	IRedo,
+	IUnblockHistory,
+	IUndo,
+	pushToHistoryAction,
+	redoAction,
+	unblockHistoryAction,
+	undoAction,
+} from './history';
 
 export type IPatchAction =
 	| IAddModule
+	| IBlockHistory
 	| IBlurInput
 	| ICancelLoadFromCloud
 	| IChangeName
@@ -65,16 +78,21 @@ export type IPatchAction =
 	| IKeyboardEvent
 	| ILoadConnections
 	| ILoadPatch
+	| IRedo
+	| IPushToHistory
 	| IRegisterConnector
 	| ISelectionDrag
 	| ISelectModule
 	| ISetActiveConnectorKey
+	| IUnblockHistory
+	| IUndo
 	| IUpdateModuleName
 	| IUpdateModulePosition
 	| IUpdateModuleState;
 
 export const patchActions = {
 	addModuleAction,
+	blockHistoryAction,
 	blurInputAction,
 	cancelLoadFromCloudAction,
 	changeNameAction,
@@ -88,6 +106,8 @@ export const patchActions = {
 	keyUpAction,
 	loadConnectionsAction,
 	loadPatchAction,
+	pushToHistoryAction,
+	redoAction,
 	registerConnectorAction,
 	selectionDragCancelAction,
 	selectionDragContinueAction,
@@ -96,6 +116,8 @@ export const patchActions = {
 	selectModuleAction,
 	selectSingleModuleAction,
 	setActiveConnectorKeyAction,
+	unblockHistoryAction,
+	undoAction,
 	updateModuleNameAction,
 	updateModulePositionAction,
 	updateModuleStateAction,

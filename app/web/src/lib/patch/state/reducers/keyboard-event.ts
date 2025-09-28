@@ -21,11 +21,26 @@ import {
 	keyCodeMovementMap,
 	Modifier,
 } from '../../constants/key';
+import { blockHistory, redo, undo } from './history';
+
+const isShift = (heldModifiers: number) => {
+	return (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
+};
+
+const isCmdOrCtrl = (heldModifiers: number) => {
+	return (
+		(heldModifiers & Modifier.SPECIAL) === Modifier.SPECIAL ||
+		(heldModifiers & Modifier.CONTROL) === Modifier.CONTROL
+	);
+};
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	state,
 	{ payload: { type, keyCode } },
 ) => {
+	const cmdOrCtrl = isCmdOrCtrl(state.heldModifiers);
+	const shift = isShift(state.heldModifiers);
+
 	if (keyCode in keyCodeModifierMap) {
 		const modifier = keyCodeModifierMap[keyCode];
 
@@ -67,13 +82,14 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			state.selectedModules.size === 0 &&
 			state.selectedConnections.size > 0
 		) {
-			return cloneAndApply(state, {
-				...disconnectSet(
+			return cloneAndApply(
+				state,
+				disconnectSet(
 					state.connections,
 					state.connectors,
 					state.selectedConnections,
 				),
-			});
+			);
 		}
 
 		const connectionsOfSelectedModules = new Set(
@@ -134,8 +150,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		!state.focusedInput &&
 		keyCode === KeyCode.A &&
 		type === KeyboardEventType.KEY_DOWN &&
-		((state.heldModifiers & Modifier.SPECIAL) === Modifier.SPECIAL ||
-			(state.heldModifiers & Modifier.CONTROL) === Modifier.CONTROL)
+		cmdOrCtrl
 	) {
 		return cloneAndApply(state, {
 			selectedModules: new Set([
@@ -174,22 +189,37 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			type: IoType.output,
 		} as Output;
 
-		const actions: IPatchAction[] = [...state.asyncActionQueue];
-		actions.push(patchActions.clickConnectorAction(output));
-		actions.push(patchActions.clickConnectorAction(input));
-		actions.push(
+		const asyncActionQueue: IPatchAction[] = [...state.asyncActionQueue];
+		asyncActionQueue.push(patchActions.pushToHistoryAction());
+		asyncActionQueue.push(patchActions.blockHistoryAction());
+		asyncActionQueue.push(patchActions.clickConnectorAction(output));
+		asyncActionQueue.push(patchActions.clickConnectorAction(input));
+		asyncActionQueue.push(
 			patchActions.addModuleAction(ModuleType.GAIN, newGainPosition, {
 				id: gainId,
 			}),
 		);
-		actions.push(patchActions.clickConnectorAction(output));
-		actions.push(patchActions.clickConnectorAction(gainInput));
-		actions.push(patchActions.clickConnectorAction(gainOutput));
-		actions.push(patchActions.clickConnectorAction(input));
-		actions.push(patchActions.selectModuleAction(gainId));
+		asyncActionQueue.push(patchActions.clickConnectorAction(output));
+		asyncActionQueue.push(patchActions.clickConnectorAction(gainInput));
+		asyncActionQueue.push(patchActions.clickConnectorAction(gainOutput));
+		asyncActionQueue.push(patchActions.clickConnectorAction(input));
+		asyncActionQueue.push(patchActions.selectModuleAction(gainId));
+		asyncActionQueue.push(patchActions.pushToHistoryAction(true));
 		return cloneAndApply(state, {
-			asyncActionQueue: actions,
+			asyncActionQueue: asyncActionQueue,
 		});
+	} else if (
+		keyCode === KeyCode.Z &&
+		type === KeyboardEventType.KEY_DOWN &&
+		cmdOrCtrl
+	) {
+		const newState = shift ? redo(state) : undo(state);
+		console.log({
+			history: state.history,
+			historyPointer: state.historyPointer,
+			blockHistory: state.blockHistory,
+		});
+		return newState;
 	} else {
 		return state;
 	}

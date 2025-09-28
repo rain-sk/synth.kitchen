@@ -7,6 +7,13 @@ import { clearActiveConnector } from './clear-active-connector';
 import { clearPatchEditor } from './clear-patch-editor';
 import { clickConnector } from './click-connector';
 import { registerConnector } from './connector-registration';
+import {
+	blockHistory,
+	pushToHistory,
+	redo,
+	unblockHistory,
+	undo,
+} from './history';
 import { blurInput } from './input-blur';
 import { focusInput } from './input-focus';
 import { keyboardEvent } from './keyboard-event';
@@ -32,6 +39,9 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 	switch (action.type) {
 		case 'AddModule': {
 			return addModule(state, action);
+		}
+		case 'BlockHistory': {
+			return blockHistory(state);
 		}
 		case 'CancelLoadFromCloud': {
 			return cancelLoadFromCloud(state, action);
@@ -63,6 +73,12 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		case 'LoadPatch': {
 			return loadPatch(state, action);
 		}
+		case 'PushToHistory': {
+			return pushToHistory(state, action);
+		}
+		case 'Redo': {
+			return redo(state);
+		}
 		case 'RegisterConnector': {
 			return registerConnector(state, action);
 		}
@@ -74,6 +90,12 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		}
 		case 'SetActiveConnectorKey': {
 			return setActiveConnectorKey(state, action);
+		}
+		case 'UnblockHistory': {
+			return unblockHistory(state);
+		}
+		case 'Undo': {
+			return undo(state);
 		}
 		case 'UpdateModuleName': {
 			return updateModuleName(state, action);
