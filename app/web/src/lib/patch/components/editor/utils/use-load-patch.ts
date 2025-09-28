@@ -5,16 +5,18 @@ import {
 	blankPatch,
 	blankPatchToClearCanvas,
 	blankPatchToLoad,
-} from '../../state';
-import { IPatchAction, patchActions } from '../../state/actions';
-import { connectorButtonExists, connectorKey } from '../../state/connection';
-import { IPatchState } from '../../state/types/patch';
+} from '../../../state';
+import { IPatchAction, patchActions } from '../../../state/actions';
+import { connectorButtonExists, connectorKey } from '../../../state/connection';
+import { IPatchState } from '../../../state/types/patch';
 
-import { useApi } from '../../api';
-import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
+import { useApi } from '../../../api';
+import { useRefBackedState } from '../../../../shared/utils/use-ref-backed-state';
 
 const uuidRegex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+const isUuid = (string: string) => uuidRegex.test(string);
 
 const doLoadConnections = async (
 	connectedConnectors: Set<string>,
@@ -89,9 +91,7 @@ export const useLoadPatch = (
 			} else if (slug && state.slug === '') {
 				setLoading(true);
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
-				const patch = await getPatch(
-					uuidRegex.test(slug) ? { id: slug } : { slug },
-				);
+				const patch = await getPatch(isUuid(slug) ? { id: slug } : { slug });
 				if (patch) {
 					dispatch(
 						patchActions.loadPatchAction({
@@ -127,7 +127,7 @@ export const useLoadPatch = (
 				});
 				if (
 					connectedConnectors.size > 0 &&
-					[...connectedConnectors].every((key) => key in connectors)
+					Array.from(connectedConnectors).every((key) => key in connectors)
 				) {
 					setLoadConnections(false);
 					await doLoadConnections(connectedConnectors, dispatch);

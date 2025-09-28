@@ -60,6 +60,7 @@ export const DerivedConnectionStateContextProvider: React.FC<
 			return new Set<string>();
 		}
 		const connectedConnectors = activeConnectorConnections
+			.filter((key) => key in connections)
 			.map((key) => connectionInfo(connections, key))
 			.map(([output, input]) =>
 				activeConnectorIsOutput ? connectorKey(input) : connectorKey(output),

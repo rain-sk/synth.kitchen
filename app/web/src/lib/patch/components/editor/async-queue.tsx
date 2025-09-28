@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { IPatchAction } from '../../../state/actions';
+import { IPatchAction } from '../../state/actions';
 
 export const AsyncQueue: React.FC<{
 	asyncActionQueue: IPatchAction[];
@@ -7,10 +7,8 @@ export const AsyncQueue: React.FC<{
 }> = ({ asyncActionQueue, dispatch }) => {
 	useEffect(() => {
 		if (asyncActionQueue.length > 0) {
-			console.log('flushing asyncActionQueue', asyncActionQueue);
+			console.log(asyncActionQueue);
 			dispatch(asyncActionQueue[0]);
-		} else {
-			console.log('asyncActionQueue flushed');
 		}
 	}, [asyncActionQueue]);
 

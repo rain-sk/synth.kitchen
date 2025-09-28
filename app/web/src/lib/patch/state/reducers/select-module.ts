@@ -22,7 +22,7 @@ export const selectModule: React.Reducer<IPatchState, ISelectModule> = (
 			return moduleIsSelected
 				? cloneAndApply(state, {
 						selectedModules: new Set(
-							[...selectedModules].filter((key) => key != id),
+							Array.from(selectedModules).filter((key) => key != id),
 						),
 				  })
 				: state;

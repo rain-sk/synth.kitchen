@@ -17,7 +17,13 @@ export enum KeyCode {
 	ARROW_DOWN = 40,
 	DELETE = 46,
 	A = 65,
+	C = 67,
+	D = 68,
+	F = 70,
 	G = 71,
+	L = 76,
+	P = 80,
+	S = 83,
 	Z = 90,
 	SPECIAL = 224,
 }

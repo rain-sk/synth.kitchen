@@ -55,6 +55,7 @@ export const connectionInfo = (
 	const connection = connections[connectionKey];
 
 	if (!connection) {
+		debugger;
 		throw Error(`Connection with key ${connectionKey} not found`);
 	}
 

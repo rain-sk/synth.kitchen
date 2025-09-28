@@ -277,7 +277,7 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 			if (modulesInPendingSelection.size > 0) {
 				const newSelection = shift
 					? (() => {
-							const selection = new Set([...state.selectedModules]);
+							const selection = new Set(Array.from(state.selectedModules));
 							modulesInPendingSelection.forEach((id) => {
 								if (selection.has(id)) {
 									selection.delete(id);
@@ -306,7 +306,7 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 
 			const newSelection = shift
 				? (() => {
-						const selection = new Set([...state.selectedConnections]);
+						const selection = new Set(Array.from(state.selectedConnections));
 						connectionsInPendingSelection.forEach((id) => {
 							if (selection.has(id)) {
 								selection.delete(id);

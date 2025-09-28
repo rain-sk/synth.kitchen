@@ -21,7 +21,7 @@ import {
 	keyCodeMovementMap,
 	Modifier,
 } from '../../constants/key';
-import { blockHistory, redo, undo } from './history';
+import { redo, undo } from './history';
 
 const isShift = (heldModifiers: number) => {
 	return (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
@@ -32,6 +32,16 @@ const isCmdOrCtrl = (heldModifiers: number) => {
 		(heldModifiers & Modifier.SPECIAL) === Modifier.SPECIAL ||
 		(heldModifiers & Modifier.CONTROL) === Modifier.CONTROL
 	);
+};
+
+const quickKeyMap: Record<number, ModuleType> = {
+	[KeyCode.C]: ModuleType.COMPRESSOR,
+	[KeyCode.D]: ModuleType.DELAY,
+	[KeyCode.F]: ModuleType.FILTER,
+	[KeyCode.G]: ModuleType.GAIN,
+	[KeyCode.L]: ModuleType.LIMITER,
+	[KeyCode.P]: ModuleType.PAN,
+	[KeyCode.S]: ModuleType.SHIFT,
 };
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
@@ -93,7 +103,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		}
 
 		const connectionsOfSelectedModules = new Set(
-			[...state.selectedModules]
+			Array.from(state.selectedModules)
 				.filter((id) => id !== '0')
 				.flatMap((id) => moduleConnectors(state.connectors, id))
 				.map((key) => connectorInfo(state.connectors, key))
@@ -159,54 +169,55 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		});
 	} else if (
 		!state.focusedInput &&
-		keyCode === KeyCode.G &&
+		keyCode in quickKeyMap &&
 		type === KeyboardEventType.KEY_DOWN &&
 		state.heldModifiers === 0 &&
 		state.selectedConnections &&
 		state.selectedConnections.size === 1
 	) {
-		const selectedConnection = [...state.selectedConnections][0];
+		const selectedConnection = Array.from(state.selectedConnections)[0];
 
 		const [output, input] = state.connections[selectedConnection];
 
 		const sourceModulePosition = state.modulePositions[output.moduleId];
 		const targetModulePosition = state.modulePositions[input.moduleId];
 
-		const newGainPosition: ModulePosition = [
+		const newModulePosition: ModulePosition = [
 			(sourceModulePosition[0] + targetModulePosition[0]) / 2,
 			(sourceModulePosition[1] + targetModulePosition[1]) / 2,
 		];
 
-		const gainId = randomId();
-		const gainInput = {
-			moduleId: gainId,
+		const moduleId = randomId();
+		const moduleInput = {
+			moduleId: moduleId,
 			channel: 0,
 			type: IoType.input,
 		} as Input;
-		const gainOutput = {
-			moduleId: gainId,
+		const moduleOutput = {
+			moduleId: moduleId,
 			channel: 0,
 			type: IoType.output,
 		} as Output;
 
-		const asyncActionQueue: IPatchAction[] = [...state.asyncActionQueue];
+		const asyncActionQueue: IPatchAction[] = state.asyncActionQueue.slice();
 		asyncActionQueue.push(patchActions.pushToHistoryAction());
 		asyncActionQueue.push(patchActions.blockHistoryAction());
+		asyncActionQueue.push(patchActions.clearActiveConnectorAction());
 		asyncActionQueue.push(patchActions.clickConnectorAction(output));
 		asyncActionQueue.push(patchActions.clickConnectorAction(input));
 		asyncActionQueue.push(
-			patchActions.addModuleAction(ModuleType.GAIN, newGainPosition, {
-				id: gainId,
+			patchActions.addModuleAction(quickKeyMap[keyCode], newModulePosition, {
+				id: moduleId,
 			}),
 		);
 		asyncActionQueue.push(patchActions.clickConnectorAction(output));
-		asyncActionQueue.push(patchActions.clickConnectorAction(gainInput));
-		asyncActionQueue.push(patchActions.clickConnectorAction(gainOutput));
+		asyncActionQueue.push(patchActions.clickConnectorAction(moduleInput));
+		asyncActionQueue.push(patchActions.clickConnectorAction(moduleOutput));
 		asyncActionQueue.push(patchActions.clickConnectorAction(input));
-		asyncActionQueue.push(patchActions.selectModuleAction(gainId));
+		asyncActionQueue.push(patchActions.selectModuleAction(moduleId));
 		asyncActionQueue.push(patchActions.pushToHistoryAction(true));
 		return cloneAndApply(state, {
-			asyncActionQueue: asyncActionQueue,
+			asyncActionQueue,
 		});
 	} else if (
 		keyCode === KeyCode.Z &&
@@ -214,11 +225,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		cmdOrCtrl
 	) {
 		const newState = shift ? redo(state) : undo(state);
-		console.log({
-			history: state.history,
-			historyPointer: state.historyPointer,
-			blockHistory: state.blockHistory,
-		});
+		console.log(shift ? 'redo' : 'undo');
 		return newState;
 	} else {
 		return state;

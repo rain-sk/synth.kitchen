@@ -34,6 +34,7 @@ import { VcaModule } from './vca';
 import { CompressorModule } from './compressor';
 import { queueAnimation } from '../../../../utils/animation';
 import { ShiftModule } from './shift';
+import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
 
 const useDragAndDrop = (
 	id: string,
@@ -197,7 +198,8 @@ export const ModuleWrapper: React.FC<
 	position,
 	dispatch,
 }) => {
-	const containerRef = useRef<HTMLDivElement>(null);
+	const [containerRef, container, setContainer] =
+		useRefBackedState<HTMLDivElement | null>(null);
 
 	const { isDragging, startDragging, setPosition } = useDragAndDrop(
 		module.id,
@@ -213,6 +215,11 @@ export const ModuleWrapper: React.FC<
 
 	const currentlySelected = useMemo(
 		() => selectedModules.has(module.id),
+		[module.id, selectedModules],
+	);
+
+	const singleSelected = useMemo(
+		() => currentlySelected && selectedModules.size === 1,
 		[module.id, selectedModules],
 	);
 
@@ -277,7 +284,12 @@ export const ModuleWrapper: React.FC<
 			tabIndex={0}
 			onFocus={onFocus}
 			className={classNames.join(' ')}
-			ref={containerRef}
+			ref={(ref) => {
+				if (singleSelected) {
+					ref?.focus();
+				}
+				setContainer(ref);
+			}}
 			onMouseDown={onMouseDown}
 		>
 			<ModuleHeader module={module} />

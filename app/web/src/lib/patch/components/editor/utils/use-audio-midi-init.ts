@@ -1,7 +1,8 @@
 import { useCallback, useRef } from 'react';
 import { createGlobalState } from 'react-use';
-import { audioContext, initAudio } from '../../audio';
-import { initMidi } from '../../midi';
+
+import { audioContext, initAudio } from '../../../audio';
+import { initMidi } from '../../../midi';
 
 const audioInitialized = () => audioContext.state === 'running';
 

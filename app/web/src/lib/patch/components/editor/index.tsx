@@ -1,17 +1,17 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { useTitle } from 'react-use';
 import { useRoute } from 'wouter';
 
 import { blankPatch } from '../../state';
+import { patchReducer } from '../../state/reducers';
 import { DerivedConnectionStateContextProvider } from '../../contexts/derived-connection-state';
 import { MidiContextProvider } from '../../contexts/midi';
 import { ModuleCanvas } from './module-canvas';
 import { PatchContextProvider } from '../../contexts/patch';
-import { patchReducer } from '../../state/reducers';
-import { useAudioMidiInit } from './use-audio-midi-init';
 import { Init } from './init';
-import { useLoadPatch } from './use-load-patch';
-import { AsyncQueue } from './utils/async-queue';
+import { AsyncQueue } from './async-queue';
+import { useAudioMidiInit } from './utils/use-audio-midi-init';
+import { useLoadPatch } from './utils/use-load-patch';
 
 const initialState = { ...blankPatch() };
 
@@ -19,6 +19,10 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 	const [random] = useRoute('/patch/random');
 	const { initialized, status, initAudioMidi } = useAudioMidiInit();
 	const [state, dispatch] = useReducer(patchReducer, initialState);
+
+	// useEffect(() => {
+	// 	console.log(state.asyncActionQueue);
+	// }, [state.asyncActionQueue]);
 
 	useTitle(random ? '...' : `patch/${state.name ? state.name : 'untitled'}`);
 

@@ -5,6 +5,7 @@
 	"type": "module",
 	"dependencies": {
 		"@types/is-callable": "^1.1.2",
+		"diff": "^8.0.2",
 		"extendable-media-recorder": "^9.2.29",
 		"extendable-media-recorder-wav-encoder": "^7.0.131",
 		"hhmmss": "^1.0.0",
