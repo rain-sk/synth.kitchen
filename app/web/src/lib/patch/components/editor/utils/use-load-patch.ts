@@ -61,14 +61,17 @@ export const useLoadPatch = (
 
 		(async () => {
 			if (newPatch) {
+				dispatch(patchActions.blockHistoryAction());
 				dispatch(
 					patchActions.loadPatchAction(
 						initialized ? blankPatchToLoad() : blankPatch(),
 					),
 				);
+				dispatch(patchActions.pushToHistoryAction(true));
 			} else if (randomPatch) {
 				// Load a random patch
 				setLoading(true);
+				dispatch(patchActions.blockHistoryAction());
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 				const patch = await getPatch({ random: true });
 				if (patch) {
@@ -82,6 +85,7 @@ export const useLoadPatch = (
 							connections: patch.state.state.connections,
 						}),
 					);
+					dispatch(patchActions.pushToHistoryAction(true));
 					setLoadConnections(true);
 					navigate(`/patch/${patch.slug}`, { replace: false });
 				} else {
@@ -90,6 +94,7 @@ export const useLoadPatch = (
 				setLoading(false);
 			} else if (slug && state.slug === '') {
 				setLoading(true);
+				dispatch(patchActions.blockHistoryAction());
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 				const patch = await getPatch(isUuid(slug) ? { id: slug } : { slug });
 				if (patch) {
@@ -103,6 +108,7 @@ export const useLoadPatch = (
 							connections: patch.state.state.connections,
 						}),
 					);
+					dispatch(patchActions.pushToHistoryAction(true));
 					setLoadConnections(true);
 					if (slug !== patch.slug) {
 						navigate(`/patch/${patch.slug}`, { replace: false });
