@@ -23,6 +23,7 @@ export type IPatchState = PatchInfo &
 
 		// i/o
 		activeConnectorKey: string | undefined;
+		connectionsToLoad: Record<string, Connection>;
 		connections: Record<string, Connection>;
 		connectors: Record<string, ConnectorInfo>;
 		io: Record<string, Io>;
@@ -67,6 +68,7 @@ export const cloneAndApply = (
 		// i/o
 		activeConnectorKey: state.activeConnectorKey,
 		connections: state.connections,
+		connectionsToLoad: state.connectionsToLoad,
 		connectors: state.connectors,
 		io: state.io,
 		parameters: state.parameters,

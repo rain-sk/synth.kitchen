@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useLocation, useRoute } from 'wouter';
 
 import {
@@ -7,7 +7,6 @@ import {
 	blankPatchToLoad,
 } from '../../../state';
 import { IPatchAction, patchActions } from '../../../state/actions';
-import { connectorButtonExists, connectorKey } from '../../../state/connection';
 import { IPatchState } from '../../../state/types/patch';
 
 import { useApi } from '../../../api';
@@ -18,39 +17,18 @@ const uuidRegex =
 
 const isUuid = (string: string) => uuidRegex.test(string);
 
-const doLoadConnections = async (
-	connectedConnectors: Set<string>,
-	dispatch: React.Dispatch<IPatchAction>,
-) => {
-	await new Promise((resolve) => {
-		const tryLoad = async () => {
-			const connectorButtonsExist = [...connectedConnectors].every((key) =>
-				connectorButtonExists(key),
-			);
-			if (connectorButtonsExist) {
-				dispatch(patchActions.loadConnectionsAction());
-				resolve(undefined);
-			} else {
-				tryLoad();
-			}
-		};
-		tryLoad();
-	});
-};
-
 export const useLoadPatch = (
 	state: IPatchState,
 	dispatch: React.Dispatch<IPatchAction>,
 	initialized: boolean,
 	slug?: string,
 ) => {
-	const { connections, connectors } = state;
+	const { connectionsToLoad } = state;
 
 	const [newPatch] = useRoute('/patch/new');
 	const [randomPatch] = useRoute('/patch/random');
 	const [, navigate] = useLocation();
 	const { getPatch } = useApi();
-	const [loadConnections, setLoadConnections] = useState(false);
 
 	const [loadingRef, loading, setLoading] = useRefBackedState(false);
 
@@ -84,7 +62,7 @@ export const useLoadPatch = (
 						}),
 					);
 					dispatch(patchActions.pushToHistoryAction(true));
-					setLoadConnections(true);
+
 					navigate(`/patch/${patch.slug}`, { replace: false });
 				} else {
 					navigate('/patch/new', { replace: true });
@@ -106,7 +84,6 @@ export const useLoadPatch = (
 						}),
 					);
 					dispatch(patchActions.pushToHistoryAction(true));
-					setLoadConnections(true);
 					if (slug !== patch.slug) {
 						navigate(`/patch/${patch.slug}`, { replace: false });
 					}
@@ -118,27 +95,17 @@ export const useLoadPatch = (
 		})();
 	}, [initialized, newPatch, randomPatch, slug, state.slug]);
 
-	const loadConnectionsRef = useRef(false);
+	const loadingConnectionsRef = useRef(false);
 	useEffect(() => {
-		(async () => {
-			if (!loadConnectionsRef.current && loadConnections) {
-				loadConnectionsRef.current = true;
-				const connectedConnectors = new Set<string>();
-				Object.values(connections).forEach(([output, input]) => {
-					connectedConnectors.add(connectorKey(output));
-					connectedConnectors.add(connectorKey(input));
-				});
-				if (
-					connectedConnectors.size > 0 &&
-					Array.from(connectedConnectors).every((key) => key in connectors)
-				) {
-					setLoadConnections(false);
-					await doLoadConnections(connectedConnectors, dispatch);
-				}
-				loadConnectionsRef.current = false;
-			}
-		})();
-	}, [loadConnections, connections, connectors]);
+		if (
+			!loadingConnectionsRef.current &&
+			Object.keys(connectionsToLoad).length > 0
+		) {
+			dispatch(patchActions.loadConnectionsAction());
+		} else if (Object.keys(connectionsToLoad).length === 0) {
+			loadingConnectionsRef.current = false;
+		}
+	}, [connectionsToLoad]);
 
 	return loading;
 };

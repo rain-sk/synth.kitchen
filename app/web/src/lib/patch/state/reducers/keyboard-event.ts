@@ -1,5 +1,4 @@
 import {
-	Connection,
 	Input,
 	IoType,
 	Module,
@@ -15,11 +14,7 @@ import { KeyboardEventType } from '../actions/keyboard-event';
 import { connectorInfo } from '../connection';
 import { disconnectSet } from '../connection';
 import { moduleConnectors } from '../connection';
-import {
-	cloneAndApply,
-	cloneAndApplyWithHistory,
-	ConnectorInfo,
-} from '../types/patch';
+import { cloneAndApply, cloneAndApplyWithHistory } from '../types/patch';
 import { IPatchState } from '../types/patch';
 import {
 	KeyCode,

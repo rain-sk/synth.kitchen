@@ -32,9 +32,6 @@ export const connectorButton = (key: string) => {
 	return button;
 };
 
-export const connectorButtonExists = (key: string) =>
-	!!document.getElementById(key);
-
 export const moduleConnectors = (
 	connectors: Record<string, ConnectorInfo>,
 	moduleId: string,

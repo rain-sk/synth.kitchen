@@ -65,6 +65,7 @@ export const blankPatch = (): IPatchState => ({
 	activeConnectorKey: undefined,
 	connectors: {},
 	connections: {},
+	connectionsToLoad: {},
 	io: {},
 	parameters: {},
 

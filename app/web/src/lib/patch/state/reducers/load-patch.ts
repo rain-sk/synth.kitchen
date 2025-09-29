@@ -7,9 +7,17 @@ export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
 	state,
 	action,
 ) => {
-	action.payload;
-	return cloneAndApply(blankPatch(), {
-		...action.payload,
+	const newState: Partial<IPatchState> = {
+		id: action.payload.id,
+		name: action.payload.name,
+		slug: action.payload.slug,
+		creator: action.payload.creator,
+		modules: action.payload.modules,
+		modulePositions: action.payload.modulePositions,
+		connections: action.payload.connections,
+		connectionsToLoad: action.payload.connections,
 		heldModifiers: state.heldModifiers,
-	});
+	};
+
+	return cloneAndApply(blankPatch(), newState);
 };

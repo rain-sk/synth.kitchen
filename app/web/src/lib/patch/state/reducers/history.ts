@@ -1,10 +1,10 @@
-import { Input, Output, PatchState } from 'synth.kitchen-shared';
+import { PatchState } from 'synth.kitchen-shared';
 import { cloneAndApply, IPatchState } from '../types/patch';
 import { IPushToHistory } from '../actions/history';
-import { patchActions } from '../actions';
-import { connect, connectorKey, disconnectSet } from '../connection';
+import { connectionKey, connectorKey, disconnectSet } from '../connection';
 import { updateModuleState } from './update-module-state';
 import { IUpdateModuleState } from '../actions/update-module-state';
+import { connect } from './connection';
 
 export const blockHistory = (state: IPatchState) => {
 	console.log('blocking');
@@ -46,14 +46,17 @@ export const pushToHistory = (
 
 const syncConnections = (
 	state: IPatchState,
-	stateToLoad: PatchState,
+	stateToLoad: PatchState & Partial<IPatchState>,
 ): IPatchState => {
-	const asyncActionQueue = state.asyncActionQueue.slice();
-	asyncActionQueue.push(patchActions.blockHistoryAction());
+	const blocked = state.blockHistory;
+	if (!blocked) {
+		state = blockHistory(state);
+	}
 
 	const currentConnectionKeys = Object.keys(state.connections);
 	const incomingConnectionKeys = Object.keys(stateToLoad.connections);
 
+	// Delete outgoing connections
 	const connectionsToDelete = currentConnectionKeys
 		.filter((key) => !new Set(incomingConnectionKeys).has(key))
 		.filter((key) => {
@@ -72,41 +75,32 @@ const syncConnections = (
 		),
 	);
 
-	const newConnections = new Set(
-		incomingConnectionKeys.filter(
-			(key) => !new Set(currentConnectionKeys).has(key),
-		),
+	// Connect what we can
+	const connectionsToLoadNow = incomingConnectionKeys
+		.map((key) => stateToLoad.connections[key])
+		.filter(
+			([output, input]) =>
+				output.moduleId in state.modules &&
+				input.moduleId in state.modules &&
+				connectorKey(output) in state.connectors &&
+				connectorKey(input) in state.connectors,
+		);
+	const loaded = new Set<string>();
+	for (const [output, input] of connectionsToLoadNow) {
+		const key = connectionKey(output, input);
+		state = connect(state, { payload: [output, input], type: 'Connect' });
+		if (key in state.connections) {
+			loaded.add(key);
+		}
+	}
+
+	// Defer the rest
+	stateToLoad.connectionsToLoad = Object.fromEntries(
+		incomingConnectionKeys
+			.filter((key) => !loaded.has(key))
+			.map((key) => [key, stateToLoad.connections[key]]),
 	);
 
-	newConnections.forEach((key) => {
-		let [output, input] = stateToLoad.connections[key];
-		const outputKey = connectorKey(output);
-		const inputKey = connectorKey(input);
-		if (outputKey in state.connectors && inputKey in state.connectors) {
-			output = state.connectors[outputKey][0] as Output;
-			input = state.connectors[inputKey][0] as Input;
-			state = cloneAndApply(
-				state,
-				connect(state.connections, state.connectors, output, input),
-			);
-		} else {
-			asyncActionQueue.push(patchActions.clearActiveConnectorAction());
-			asyncActionQueue.push(patchActions.clickConnectorAction(output));
-			asyncActionQueue.push(patchActions.clickConnectorAction(input));
-		}
-	});
-
-	const connectionsToLoad = stateToLoad.connections;
-	stateToLoad.connections = {};
-	Object.entries(connectionsToLoad)
-		.filter(([key]) => !newConnections.has(key) || key in state.connections)
-		.forEach(([key, value]) => {
-			stateToLoad.connections[key] = value;
-		});
-
-	asyncActionQueue.push(patchActions.unblockHistoryAction());
-	const historyBlocked = state.blockHistory;
-	state = blockHistory(state);
 	for (const id in stateToLoad.modules) {
 		if (id in state.modules) {
 			state = updateModuleState(state, {
@@ -114,17 +108,10 @@ const syncConnections = (
 			} as IUpdateModuleState);
 		}
 	}
-	return historyBlocked
-		? cloneAndApply(state, {
-				...stateToLoad,
-				asyncActionQueue,
-		  })
-		: unblockHistory(
-				cloneAndApply(state, {
-					...stateToLoad,
-					asyncActionQueue,
-				}),
-		  );
+
+	return blocked
+		? cloneAndApply(state, stateToLoad)
+		: unblockHistory(cloneAndApply(state, stateToLoad));
 };
 
 const incrementHistoryPointer = (state: IPatchState, direction: 1 | -1) => {
