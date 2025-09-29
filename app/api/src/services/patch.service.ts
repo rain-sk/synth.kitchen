@@ -179,7 +179,7 @@ export class PatchService {
     await AppDataSource.getRepository(SavedPatchState).save(state);
 
     state.patch = patch;
-    state.ancestor = patch.forkedFrom.state;
+    state.ancestor = patch.forkedFrom?.state ?? null;
     patch.state = state;
     await AppDataSource.getRepository(Patch).save(patch);
     await AppDataSource.getRepository(SavedPatchState).save(state);
