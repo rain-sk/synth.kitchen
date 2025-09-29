@@ -16,6 +16,7 @@ export const pushToHistory = (
 	state: IPatchState,
 	action?: Partial<IPushToHistory>,
 ): IPatchState => {
+	console.log('push-to-history');
 	if (state.blockHistory) {
 		if (action?.force) {
 			state = unblockHistory(state);
@@ -30,7 +31,11 @@ export const pushToHistory = (
 		connections: state.connections,
 		name: state.name,
 	};
-	const history = state.history.slice(state.historyPointer).push(patchState, 0);
+	const history = state.history
+		.slice(
+			action?.historyPointer ? action.historyPointer : state.historyPointer,
+		)
+		.push(patchState, 0);
 	const historyPointer = 0;
 	return cloneAndApply(state, {
 		history,
