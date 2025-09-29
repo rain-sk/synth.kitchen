@@ -1,7 +1,8 @@
 import { randomId } from 'synth.kitchen-shared';
 
-import { IPatchState, cloneAndApply } from '../types/patch';
+import { IPatchState, cloneAndApplyWithHistory } from '../types/patch';
 import { IAddModule } from '../actions/add-module';
+import { blockHistory } from './history';
 
 export const addModule: React.Reducer<IPatchState, IAddModule> = (
 	state,
@@ -15,17 +16,19 @@ export const addModule: React.Reducer<IPatchState, IAddModule> = (
 	const x = position[0];
 	const y = position[1];
 
-	return cloneAndApply(state, {
-		modules: {
-			...state.modules,
-			[id]: {
-				id,
-				type: action.payload.type,
-			} as any,
-		},
-		modulePositions: {
-			...state.modulePositions,
-			[id]: [x, y],
-		},
-	});
+	return blockHistory(
+		cloneAndApplyWithHistory(state, {
+			modules: {
+				...state.modules,
+				[id]: {
+					id,
+					type: action.payload.type,
+				} as any,
+			},
+			modulePositions: {
+				...state.modulePositions,
+				[id]: [x, y],
+			},
+		}),
+	);
 };

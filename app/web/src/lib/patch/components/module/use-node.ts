@@ -4,6 +4,7 @@ import { Module, ModuleState, ModuleType as Type } from 'synth.kitchen-shared';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 import { useEffectOnce } from './use-effect-once';
+import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
 
 export const useNode = <NodeType, ModuleType extends Type>(
 	module: Module,
@@ -35,9 +36,15 @@ export const useNode = <NodeType, ModuleType extends Type>(
 
 	const { dispatch } = useContext(PatchContext);
 
+	const [firstUpdate, _, setFirstUpdate] = useRefBackedState(true);
 	useEffect(() => {
 		if (state) {
-			dispatch(patchActions.updateModuleStateAction(module.id, state));
+			if (firstUpdate.current) {
+				setFirstUpdate(false);
+				dispatch(patchActions.updateModuleStateAction(module.id, state, true));
+			} else {
+				dispatch(patchActions.updateModuleStateAction(module.id, state));
+			}
 		}
 	}, [dispatch, module.id, state]);
 
