@@ -40,7 +40,11 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 						payload: { connectionKey: key },
 				  })
 				: connect(state, { type: 'Connect', payload: [output, input] }),
-			{ activeConnectorKey: undefined },
+			{
+				activeConnectorKey: undefined,
+				selectedConnections: new Set([connectionKey(output, input)]),
+				selectedModules: new Set(),
+			},
 		);
 	}
 
