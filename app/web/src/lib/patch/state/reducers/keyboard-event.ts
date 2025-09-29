@@ -107,25 +107,22 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 				),
 			);
 		}
-
-		const connectionsOfSelectedModules = new Set(
-			Array.from(state.selectedModules)
-				.filter((id) => id !== '0')
-				.flatMap((id) => moduleConnectors(state.connectors, id))
-				.map((key) => connectorInfo(state.connectors, key))
-				.flatMap(([, connections]) => connections),
-		);
-
-		const newState: {
-			connections: Record<string, Connection>;
-			connectors: Record<string, ConnectorInfo>;
-		} & Partial<IPatchState> = disconnectSet(
-			state.connections,
-			state.connectors,
-			connectionsOfSelectedModules,
-		);
+		let newState: Partial<IPatchState> = {};
 
 		{
+			const connectionsOfSelectedModules = new Set(
+				Array.from(state.selectedModules)
+					.filter((id) => id !== '0')
+					.flatMap((id) => moduleConnectors(state.connectors, id))
+					.map((key) => connectorInfo(state.connectors, key))
+					.flatMap(([, connections]) => connections),
+			);
+			newState = disconnectSet(
+				state.connections,
+				state.connectors,
+				connectionsOfSelectedModules,
+			);
+
 			newState.modules = {} as Record<string, Module>;
 			newState.modulePositions = {} as Record<string, ModulePosition>;
 			for (const id of Object.keys(state.modules)) {
@@ -134,9 +131,16 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 					newState.modulePositions[id] = state.modulePositions[id];
 				}
 			}
+
+			newState.activeConnectorKey = undefined;
+			newState.selectedConnections = new Set();
+			newState.selectedModules = new Set(
+				state.selectedModules.has('0') ? ['0'] : [],
+			);
 		}
 
-		Object.values(newState.connections).forEach(([output, input]) => {
+		// DEBUG
+		Object.values(newState.connections ?? []).forEach(([output, input]) => {
 			if (state.selectedModules.has(output.moduleId)) {
 				debugger;
 			}
@@ -144,12 +148,6 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 				debugger;
 			}
 		});
-
-		newState.activeConnectorKey = undefined;
-
-		newState.selectedModules = new Set(
-			state.selectedModules.has('0') ? ['0'] : [],
-		);
 
 		return cloneAndApplyWithHistory(state, newState);
 	} else if (
