@@ -33,12 +33,15 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 
 		const key = connectionKey(output, input);
 
-		return key in state.connections
-			? disconnect(state, {
-					type: 'Disconnect',
-					payload: { connectionKey: key },
-			  })
-			: connect(state, { type: 'Connect', payload: [output, input] });
+		return cloneAndApply(
+			key in state.connections
+				? disconnect(state, {
+						type: 'Disconnect',
+						payload: { connectionKey: key },
+				  })
+				: connect(state, { type: 'Connect', payload: [output, input] }),
+			{ activeConnectorKey: undefined },
+		);
 	}
 
 	return cloneAndApply(state, {
