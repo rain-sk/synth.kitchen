@@ -222,8 +222,10 @@ export const ModuleCanvasBackdrop: React.FC<
 				id="main"
 				className={classNames.join(' ')}
 				ref={(main) => {
-					setContainer(main);
-					setInitialized(isInitialized());
+					if (main !== containerRef.current) {
+						setContainer(main);
+						setInitialized(isInitialized());
+					}
 				}}
 				onMouseDown={initialized ? onMouseDown : () => {}}
 				onScroll={initialized ? onResize : () => {}}
