@@ -20,7 +20,9 @@ export type IPushToHistory = {
 	historyPointer?: number;
 };
 
-export const pushToHistoryAction = (force?: boolean): IPushToHistory => ({
+export const pushToHistoryAction = (
+	force: boolean = false,
+): IPushToHistory => ({
 	type: 'PushToHistory',
 	force,
 });
