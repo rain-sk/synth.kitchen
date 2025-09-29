@@ -3,7 +3,6 @@ import { cloneAndApply, IPatchState } from '../types/patch';
 import { IPushToHistory } from '../actions/history';
 import { connectionKey, connectorKey, disconnectSet } from '../connection';
 import { updateModuleState } from './update-module-state';
-import { IUpdateModuleState } from '../actions/update-module-state';
 import { connect } from './connection';
 
 export const blockHistory = (state: IPatchState) => {
@@ -104,8 +103,9 @@ const syncConnections = (
 	for (const id in stateToLoad.modules) {
 		if (id in state.modules) {
 			state = updateModuleState(state, {
+				type: 'UpdateModuleState',
 				payload: { id, state: stateToLoad.modules[id].state },
-			} as IUpdateModuleState);
+			});
 		}
 	}
 
