@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
@@ -43,6 +43,17 @@ export const OutputModule: React.FC<{ module: Module<ModuleType.OUTPUT> }> = ({
 		},
 		[setState, state],
 	);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.gain !== node.gain.value) {
+			commitGainChange(module.state.gain);
+		}
+	}, [module.state, commitGainChange]);
 
 	const gainAccessor = useCallback(() => {
 		return node.gain;

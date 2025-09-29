@@ -62,6 +62,126 @@ export type ModuleState = {
   [ModuleType.VCA]: VCA_STATE[VCA_STATE_VERSIONS[0]];
 };
 
+const DefaultModuleStates: ModuleState = {
+  [ModuleType.CLOCK]: {
+    version: "0.5.0",
+    tempo: 120,
+  },
+  [ModuleType.COMPRESSOR]: {
+    version: "0.5.0",
+    attack: 0.003,
+    release: 0.25,
+    knee: 30,
+    ratio: 12,
+    threshold: -24,
+  },
+  [ModuleType.DELAY]: {
+    version: "0.5.0",
+    delayTime: 0,
+  },
+  [ModuleType.ENVELOPE]: {
+    version: "0.5.0",
+    gate: 0.5,
+    attack: 0.1,
+    decay: 0.1,
+    sustain: 0.6,
+    release: 0.1,
+    peak: 100,
+  },
+  [ModuleType.FILTER]: {
+    version: "0.5.0",
+    frequency: 500,
+    detune: 0,
+    Q: 0.3,
+    gain: 1,
+    type: "lowpass",
+  },
+  [ModuleType.GAIN]: {
+    version: "0.5.0",
+    gain: 1,
+  },
+  [ModuleType.LIMITER]: {
+    version: "0.5.0",
+  },
+  [ModuleType.MIDI_CC]: {
+    version: "0.5.0",
+    input: "",
+    cc: 32,
+    min: -1,
+    max: 1,
+  },
+  [ModuleType.MIDI_CLOCK]: {
+    version: "0.5.0",
+    input: "",
+  },
+  [ModuleType.MIDI_TRIGGER]: {
+    version: "0.5.0",
+    input: "",
+    note: "all",
+  },
+  [ModuleType.NOISE]: { version: "0.5.0" },
+  [ModuleType.GATE]: {
+    version: "0.5.0",
+    gate: 0.5,
+  },
+  [ModuleType.OSCILLATOR]: {
+    version: "0.5.0",
+    frequency: 440,
+    detune: 0,
+    waveform: "sine",
+  },
+  [ModuleType.PAN]: {
+    version: "0.5.0",
+    pan: 0,
+  },
+  [ModuleType.SEQUENCER]: {
+    version: "0.5.1",
+    steps: 0,
+    step0: 0,
+    step1: 0,
+    step2: 0,
+    step3: 0,
+    step4: 0,
+    step5: 0,
+    step6: 0,
+    step7: 0,
+    step8: 0,
+    step9: 0,
+    step10: 0,
+    step11: 0,
+    step12: 0,
+    step13: 0,
+    step14: 0,
+    step15: 0,
+  },
+  [ModuleType.SHIFT]: {
+    version: "0.5.0",
+    inputMin: -1,
+    inputMax: 1,
+    outputMin: 0,
+    outputMax: 100,
+  },
+  [ModuleType.OUTPUT]: {
+    version: "0.5.0",
+    gain: 0.45,
+  },
+  [ModuleType.VCA]: {
+    version: "0.5.0",
+    gate: 0.5,
+    attack: 0.1,
+    decay: 0.1,
+    sustain: 0.6,
+    release: 0.1,
+    peak: 1,
+  },
+};
+
+export const defaultModuleState = <T extends ModuleType>(
+  type: T
+): ModuleState[T] => {
+  return DefaultModuleStates[type];
+};
+
 export type Module<T extends ModuleType = ModuleType> = {
   name?: string;
   id: string;

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
@@ -126,6 +126,36 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 	);
 
 	const peakAccessor = useCallback(() => node.peak, [enabled]);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.gate !== node.gate.value) {
+			commitGateChange(module.state.gate);
+		}
+		if (module.state.attack !== node.attack.value) {
+			commitAttackChange(module.state.attack);
+		}
+		if (module.state.sustain !== node.sustain.value) {
+			commitSustainChange(module.state.sustain);
+		}
+		if (module.state.release !== node.release.value) {
+			commitReleaseChange(module.state.release);
+		}
+		if (module.state.peak !== node.peak.value) {
+			commitPeakChange(module.state.peak);
+		}
+	}, [
+		module.state,
+		commitGateChange,
+		commitAttackChange,
+		commitSustainChange,
+		commitReleaseChange,
+		commitPeakChange,
+	]);
 
 	return enabled ? (
 		<>

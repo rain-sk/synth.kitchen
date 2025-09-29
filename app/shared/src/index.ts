@@ -11,6 +11,7 @@ export {
   Module,
   ModulePosition,
   ModuleState,
+  defaultModuleState,
   ModuleType,
   Output,
   Parameter,

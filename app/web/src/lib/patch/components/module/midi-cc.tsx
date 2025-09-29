@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 
 import { MidiCcNode } from '../../audio/nodes/midi-cc';
 
@@ -102,6 +102,32 @@ export const MidiCcModule: React.FC<{
 		},
 		[state],
 	);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.input !== node.inputName) {
+			commitInputChange(module.state.input);
+		}
+		if (module.state.cc !== node.cc) {
+			commitCcChange(module.state.cc);
+		}
+		if (module.state.max !== node.max) {
+			commitMaxChange(module.state.max);
+		}
+		if (module.state.min !== node.min) {
+			commitMinChange(module.state.min);
+		}
+	}, [
+		module.state,
+		commitInputChange,
+		commitCcChange,
+		commitMaxChange,
+		commitMinChange,
+	]);
 
 	return enabled ? (
 		<>

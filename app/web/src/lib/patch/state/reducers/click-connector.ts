@@ -4,25 +4,13 @@ import { Output } from 'synth.kitchen-shared';
 import { IClickConnector } from '../actions/click-connector';
 import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
-import {
-	connect,
-	connectionKey,
-	connectorInfo,
-	connectorKey,
-	disconnect,
-} from '../connection';
+import { connectionKey, connectorInfo, connectorKey } from '../connection';
+import { connect, disconnect } from './connection';
 
 export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 	state,
 	action,
 ) => {
-	const clickedKey = connectorKey(action.payload);
-	if (!(clickedKey in state.connectors)) {
-		return cloneAndApply(state, {
-			asyncActionQueue: [action, ...state.asyncActionQueue],
-		});
-	}
-
 	const [clicked] = state.connectors[connectorKey(action.payload)];
 
 	if (!state.activeConnectorKey) {
@@ -45,15 +33,15 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 
 		const key = connectionKey(output, input);
 
-		const { connections, connectors } =
+		return cloneAndApply(
 			key in state.connections
-				? disconnect(state.connections, state.connectors, output, input)
-				: connect(state.connections, state.connectors, output, input);
-		return cloneAndApply(state, {
-			activeConnectorKey: undefined,
-			connections,
-			connectors,
-		});
+				? disconnect(state, {
+						type: 'Disconnect',
+						payload: { connectionKey: key },
+				  })
+				: connect(state, { type: 'Connect', payload: [output, input] }),
+			{ activeConnectorKey: undefined },
+		);
 	}
 
 	return cloneAndApply(state, {

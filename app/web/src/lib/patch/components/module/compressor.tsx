@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
 	IAudioContext,
 	IDynamicsCompressorNode,
@@ -122,6 +122,36 @@ export const CompressorModule: React.FC<{
 	);
 
 	const releaseAccessor = useCallback(() => node.release, [enabled]);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.threshold !== node.threshold.value) {
+			commitThresholdChange(module.state.threshold);
+		}
+		if (module.state.knee !== node.knee.value) {
+			commitKneeChange(module.state.knee);
+		}
+		if (module.state.ratio !== node.ratio.value) {
+			commitRatioChange(module.state.ratio);
+		}
+		if (module.state.attack !== node.attack.value) {
+			commitAttackChange(module.state.attack);
+		}
+		if (module.state.release !== node.release.value) {
+			commitReleaseChange(module.state.release);
+		}
+	}, [
+		module.state,
+		commitThresholdChange,
+		commitKneeChange,
+		commitRatioChange,
+		commitAttackChange,
+		commitReleaseChange,
+	]);
 
 	return enabled ? (
 		<>

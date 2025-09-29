@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 
 import { MidiClockNode } from '../../audio/nodes/midi-clock';
 
@@ -56,6 +56,17 @@ export const MidiClockModule: React.FC<{
 		},
 		[state],
 	);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.input !== node.inputName) {
+			commitInputChange(module.state.input);
+		}
+	}, [module.state, commitInputChange]);
 
 	return enabled ? (
 		<>

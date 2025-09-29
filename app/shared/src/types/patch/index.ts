@@ -51,4 +51,10 @@ export {
   Parameter,
   paramKey,
 } from "./connection";
-export { ModuleType, Module, ModuleState, ModulePosition } from "./module";
+export {
+  ModuleType,
+  Module,
+  ModuleState,
+  defaultModuleState,
+  ModulePosition,
+} from "./module";

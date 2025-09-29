@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
 	IAudioContext,
 	IAudioParam,
@@ -114,6 +114,28 @@ export const OscillatorModule: React.FC<{
 		},
 		[state],
 	);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.detune !== node.detune.value) {
+			commitDetuneChange(module.state.detune);
+		}
+		if (module.state.frequency !== node.frequency.value) {
+			commitFrequencyChange(module.state.frequency);
+		}
+		if (module.state.waveform !== node.type) {
+			commitWaveformChange(module.state.waveform);
+		}
+	}, [
+		module.state,
+		commitDetuneChange,
+		commitFrequencyChange,
+		commitWaveformChange,
+	]);
 
 	const enabled = state != undefined;
 

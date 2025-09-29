@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { Module, ModuleState, ModuleType as Type } from 'synth.kitchen-shared';
 
 import { patchActions } from '../../state/actions';
@@ -30,21 +30,15 @@ export const useNode = <NodeType, ModuleType extends Type>(
 		}
 	});
 
-	const [state, setState] = useState(() =>
+	const [_, state, setState] = useRefBackedState(() =>
 		moduleInit(node as NodeType, module.state as ModuleState[ModuleType]),
 	);
 
 	const { dispatch } = useContext(PatchContext);
 
-	const [firstUpdate, _, setFirstUpdate] = useRefBackedState(true);
 	useEffect(() => {
 		if (state) {
-			if (firstUpdate.current) {
-				setFirstUpdate(false);
-				dispatch(patchActions.updateModuleStateAction(module.id, state, true));
-			} else {
-				dispatch(patchActions.updateModuleStateAction(module.id, state));
-			}
+			dispatch(patchActions.updateModuleStateAction(module.id, state));
 		}
 	}, [dispatch, module.id, state]);
 

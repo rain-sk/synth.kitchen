@@ -28,7 +28,7 @@ export const ModuleCanvas: React.FC<{
 					state.modules[id],
 					position,
 				]),
-		[state.modulePositions, modulesCount],
+		[state, state.modulePositions, modulesCount],
 	);
 
 	return (

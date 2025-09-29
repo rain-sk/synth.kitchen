@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { IAudioParam } from 'standardized-audio-context';
 
 import { audioContext } from '../../audio';
@@ -247,6 +247,84 @@ export const SequencerModule: React.FC<{
 		},
 		[state],
 	);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.steps !== node.steps.value) {
+			commitStepsChange(module.state.steps);
+		}
+		if (module.state.step0 !== node.step0.value) {
+			commitStep0Change(module.state.step0);
+		}
+		if (module.state.step1 !== node.step1.value) {
+			commitStep1Change(module.state.step1);
+		}
+		if (module.state.step2 !== node.step2.value) {
+			commitStep2Change(module.state.step2);
+		}
+		if (module.state.step3 !== node.step3.value) {
+			commitStep3Change(module.state.step3);
+		}
+		if (module.state.step4 !== node.step4.value) {
+			commitStep4Change(module.state.step4);
+		}
+		if (module.state.step5 !== node.step5.value) {
+			commitStep5Change(module.state.step5);
+		}
+		if (module.state.step6 !== node.step6.value) {
+			commitStep6Change(module.state.step6);
+		}
+		if (module.state.step7 !== node.step7.value) {
+			commitStep7Change(module.state.step7);
+		}
+		if (module.state.step8 !== node.step8.value) {
+			commitStep8Change(module.state.step8);
+		}
+		if (module.state.step9 !== node.step9.value) {
+			commitStep9Change(module.state.step9);
+		}
+		if (module.state.step10 !== node.step10.value) {
+			commitStep10Change(module.state.step10);
+		}
+		if (module.state.step11 !== node.step11.value) {
+			commitStep11Change(module.state.step11);
+		}
+		if (module.state.step12 !== node.step12.value) {
+			commitStep12Change(module.state.step12);
+		}
+		if (module.state.step13 !== node.step13.value) {
+			commitStep13Change(module.state.step13);
+		}
+		if (module.state.step14 !== node.step14.value) {
+			commitStep14Change(module.state.step14);
+		}
+		if (module.state.step15 !== node.step15.value) {
+			commitStep15Change(module.state.step15);
+		}
+	}, [
+		module.state,
+		commitStepsChange,
+		commitStep0Change,
+		commitStep1Change,
+		commitStep2Change,
+		commitStep3Change,
+		commitStep4Change,
+		commitStep5Change,
+		commitStep6Change,
+		commitStep7Change,
+		commitStep8Change,
+		commitStep9Change,
+		commitStep10Change,
+		commitStep11Change,
+		commitStep12Change,
+		commitStep13Change,
+		commitStep14Change,
+		commitStep15Change,
+	]);
 
 	const enabled = state != undefined;
 

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { IAudioContext, IGainNode } from 'standardized-audio-context';
 
 import { audioContext } from '../../audio';
@@ -51,6 +51,17 @@ export const GainModule: React.FC<{ module: Module<ModuleType.GAIN> }> = ({
 		},
 		[state],
 	);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.gain !== node.gain.value) {
+			commitGainChange(module.state.gain);
+		}
+	}, [module.state, commitGainChange]);
 
 	const gainAccessor = useCallback(() => node.gain, [enabled]);
 

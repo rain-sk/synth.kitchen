@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { randomId } from 'synth.kitchen-shared';
 
 import { patchActions } from '../../state/actions';
@@ -30,7 +30,11 @@ export const NumberBox: React.FunctionComponent<{
 	const { dispatch } = useContext(PatchContext);
 
 	const [id] = useState(makeId);
-	const [tempValue, setTempValue] = useState<string | void>();
+	const [tempValue, setTempValue] = useState<string | undefined>(undefined);
+
+	useEffect(() => {
+		setTempValue(undefined);
+	}, [value]);
 
 	const valueToCommit = useCallback(() => {
 		return tempValue ? parseFloat(tempValue) : value;
@@ -93,7 +97,7 @@ export const NumberBox: React.FunctionComponent<{
 
 	const onBlur = useCallback(() => {
 		commitValueCallback(valueToCommit());
-		setTempValue();
+		setTempValue(undefined);
 		dispatch(patchActions.blurInputAction());
 	}, [commitValueCallback, dispatch, setTempValue, valueToCommit]);
 

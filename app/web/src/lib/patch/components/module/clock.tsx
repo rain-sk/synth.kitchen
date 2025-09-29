@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { audioContext } from '../../audio';
 import { ClockNode } from '../../audio/nodes/clock';
@@ -48,6 +48,17 @@ export const ClockModule: React.FC<{ module: Module<ModuleType.CLOCK> }> = ({
 	const enabled = state !== undefined;
 
 	const tempoAccessor = useCallback(() => node.tempo, [enabled]);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.tempo !== node.tempo.value) {
+			commitTempoChange(module.state.tempo);
+		}
+	}, [module.state, commitTempoChange]);
 
 	const sync = useCallback(() => node.node(), [enabled]);
 

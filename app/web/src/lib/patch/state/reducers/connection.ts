@@ -1,9 +1,14 @@
 import React from 'react';
-import { cloneAndApply, IPatchState } from '../types/patch';
+import {
+	cloneAndApply,
+	cloneAndApplyWithHistory,
+	IPatchState,
+} from '../types/patch';
 import { IConnect, IDisconnect } from '../actions/connection';
 import {
+	connect as connectConnection,
 	connectionKey,
-	connectOrDisconnect,
+	disconnect as disconnectConnection,
 	connectorKey,
 } from '../connection';
 import { Input, Output } from 'synth.kitchen-shared';
@@ -25,12 +30,13 @@ export const connect: React.Reducer<IPatchState, IConnect> = (
 		});
 	}
 
+	// load registered connectors with valid accessors
 	output = state.connectors[outputKey][0] as Output;
 	input = state.connectors[inputKey][0] as Input;
 
-	return cloneAndApply(
+	return cloneAndApplyWithHistory(
 		state,
-		connectOrDisconnect(state.connections, state.connectors, output, input),
+		connectConnection(state.connections, state.connectors, output, input),
 	);
 };
 
@@ -42,11 +48,9 @@ export const disconnect: React.Reducer<IPatchState, IDisconnect> = (
 		return state;
 	}
 	const [output, input] = state.connections[action.payload.connectionKey];
-	const newState = connectOrDisconnect(
-		state.connections,
-		state.connectors,
-		output,
-		input,
+
+	return cloneAndApplyWithHistory(
+		state,
+		disconnectConnection(state.connections, state.connectors, output, input),
 	);
-	return cloneAndApply(state, newState);
 };
