@@ -7,10 +7,13 @@ export const updateModuleState: React.Reducer<
 	IPatchState,
 	IUpdateModuleState
 > = (state, action) => {
+	if (!(action.payload.id in state.modules)) {
+		return state;
+	}
+
 	const module = state.modules[action.payload.id];
 	const newState = action.payload.state;
 	if (
-		module.state &&
 		Object.keys(newState).every(
 			(key) => (module.state as any)[key] === (newState as any)[key],
 		)

@@ -39,12 +39,11 @@ export const useLoadPatch = (
 
 		(async () => {
 			if (newPatch) {
-				dispatch(
-					patchActions.loadPatchAction(
-						initialized ? blankPatchToLoad() : blankPatch(),
-					),
-				);
-				dispatch(patchActions.pushToHistoryAction(true));
+				dispatch(patchActions.loadPatchAction(blankPatch()));
+				setTimeout(() => {
+					dispatch(patchActions.loadPatchAction(blankPatchToLoad()));
+					dispatch(patchActions.pushToHistoryAction(true));
+				}, 100);
 			} else if (randomPatch) {
 				// Load a random patch
 				setLoading(true);

@@ -38,7 +38,8 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		});
 	} else if (
 		state.asyncActionQueue.length > 0 &&
-		action.type !== 'RegisterConnector'
+		action.type !== 'RegisterConnector' &&
+		action.type !== 'UpdateModuleState'
 	) {
 		return cloneAndApply(state, {
 			asyncActionQueue: [...state.asyncActionQueue, action],
