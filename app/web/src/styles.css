@@ -107,6 +107,11 @@ h1 {
 	margin: 1rem;
 }
 
+main > h1,
+main > h2 {
+	padding: 0 0.75rem;
+}
+
 main section > h2,
 main ul li a,
 main ul li a:visited {
