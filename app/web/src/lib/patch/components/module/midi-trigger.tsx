@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { MidiTriggerNode } from '../../audio/nodes/midi-trigger';
@@ -91,6 +91,19 @@ export const MidiTriggerModule: React.FC<{
 		},
 		[state],
 	);
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.input !== node.inputName) {
+			commitInputChange(module.state.input);
+		}
+		if (module.state.note !== node.note) {
+			commitNoteChange(`${module.state.note}`);
+		}
+	}, [module.state, commitInputChange, commitNoteChange]);
 
 	return enabled ? (
 		<>

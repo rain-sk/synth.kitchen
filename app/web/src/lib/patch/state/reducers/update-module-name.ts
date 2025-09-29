@@ -11,6 +11,7 @@ export const updateModuleName: React.Reducer<IPatchState, IUpdateModuleName> = (
 		...module,
 		name: action.payload.name,
 	};
+
 	return cloneAndApplyWithHistory(state, {
 		modules: {
 			...state.modules,

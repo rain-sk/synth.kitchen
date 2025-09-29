@@ -3,12 +3,16 @@ import { cloneAndApply, IPatchState } from '../types/patch';
 import { IPushToHistory } from '../actions/history';
 import { patchActions } from '../actions';
 import { connect, connectorKey, disconnectSet } from '../connection';
+import { updateModuleState } from './update-module-state';
+import { IUpdateModuleState } from '../actions/update-module-state';
 
 export const blockHistory = (state: IPatchState) => {
+	console.log('blocking');
 	return cloneAndApply(state, { blockHistory: true });
 };
 
 export const unblockHistory = (state: IPatchState) => {
+	console.log('unblocking');
 	return cloneAndApply(state, { blockHistory: false });
 };
 
@@ -16,7 +20,6 @@ export const pushToHistory = (
 	state: IPatchState,
 	action?: Partial<IPushToHistory>,
 ): IPatchState => {
-	console.log('push-to-history');
 	if (state.blockHistory) {
 		if (action?.force) {
 			state = unblockHistory(state);
@@ -32,9 +35,7 @@ export const pushToHistory = (
 		name: state.name,
 	};
 	const history = state.history
-		.slice(
-			action?.historyPointer ? action.historyPointer : state.historyPointer,
-		)
+		.slice(action?.historyPointer ?? state.historyPointer)
 		.push(patchState, 0);
 	const historyPointer = 0;
 	return cloneAndApply(state, {
@@ -104,10 +105,26 @@ const syncConnections = (
 		});
 
 	asyncActionQueue.push(patchActions.unblockHistoryAction());
-	return cloneAndApply(state, {
-		...stateToLoad,
-		asyncActionQueue,
-	});
+	const historyBlocked = state.blockHistory;
+	state = blockHistory(state);
+	for (const id in stateToLoad.modules) {
+		if (id in state.modules) {
+			state = updateModuleState(state, {
+				payload: { id, state: stateToLoad.modules[id].state },
+			} as IUpdateModuleState);
+		}
+	}
+	return historyBlocked
+		? cloneAndApply(state, {
+				...stateToLoad,
+				asyncActionQueue,
+		  })
+		: unblockHistory(
+				cloneAndApply(state, {
+					...stateToLoad,
+					asyncActionQueue,
+				}),
+		  );
 };
 
 const incrementHistoryPointer = (state: IPatchState, direction: 1 | -1) => {

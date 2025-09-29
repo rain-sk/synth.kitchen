@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { ShiftNode } from '../../audio/nodes/shift';
@@ -85,6 +85,32 @@ export const ShiftModule: React.FC<{ module: Module<ModuleType.SHIFT> }> = ({
 		},
 		[state],
 	);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.inputMin !== node.inputMin.value) {
+			commitInputMinChange(module.state.inputMin);
+		}
+		if (module.state.inputMax !== node.inputMax.value) {
+			commitInputMaxChange(module.state.inputMax);
+		}
+		if (module.state.outputMin !== node.outputMin.value) {
+			commitOutputMinChange(module.state.outputMin);
+		}
+		if (module.state.outputMax !== node.outputMax.value) {
+			commitOutputMaxChange(module.state.outputMax);
+		}
+	}, [
+		module.state,
+		commitInputMinChange,
+		commitInputMaxChange,
+		commitOutputMinChange,
+		commitOutputMaxChange,
+	]);
 
 	const inputMinAccessor = useCallback(() => node.inputMin, [enabled]);
 	const inputMaxAccessor = useCallback(() => node.inputMax, [enabled]);

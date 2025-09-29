@@ -8,18 +8,26 @@ export const updateModuleState: React.Reducer<
 	IUpdateModuleState
 > = (state, action) => {
 	const module = state.modules[action.payload.id];
+	const newState = action.payload.state;
+	if (
+		module.state &&
+		Object.keys(newState).every(
+			(key) => (module.state as any)[key] === (newState as any)[key],
+		)
+	) {
+		return state;
+	}
 
 	const modules: Record<string, Module> = {};
 	for (const id of Object.keys(state.modules)) {
-		modules[id] =
-			id === action.payload.id
-				? {
-						...module,
-						state: action.payload.state,
-				  }
-				: state.modules[id];
+		if (id === action.payload.id) {
+			modules[id] = {
+				...module,
+				state: action.payload.state,
+			};
+		} else {
+			modules[id] = state.modules[id];
+		}
 	}
-	return cloneAndApplyWithHistory(state, {
-		modules,
-	});
+	return cloneAndApplyWithHistory(state, { modules });
 };

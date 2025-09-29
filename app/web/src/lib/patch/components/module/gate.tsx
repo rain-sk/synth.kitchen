@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { GateNode } from '../../audio/nodes/gate';
@@ -43,6 +43,17 @@ export const GateModule: React.FC<{ module: Module<ModuleType.GATE> }> = ({
 		},
 		[state],
 	);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.gate !== node.gate.value) {
+			commitGateChange(module.state.gate);
+		}
+	}, [module.state, commitGateChange]);
 
 	const gateAccessor = useCallback(() => node.gate, [enabled]);
 

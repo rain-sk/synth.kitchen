@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
 	IAudioContext,
 	IAudioParam,
@@ -110,6 +110,36 @@ export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 		},
 		[state],
 	);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.frequency !== node.frequency.value) {
+			commitFrequencyChange(module.state.frequency);
+		}
+		if (module.state.detune !== node.detune.value) {
+			commitDetuneChange(module.state.detune);
+		}
+		if (module.state.Q !== node.Q.value) {
+			commitQChange(module.state.Q);
+		}
+		if (module.state.gain !== node.gain.value) {
+			commitGainChange(module.state.gain);
+		}
+		if (module.state.type !== node.type) {
+			commitTypeChange(module.state.type);
+		}
+	}, [
+		module.state,
+		commitFrequencyChange,
+		commitDetuneChange,
+		commitTypeChange,
+		commitQChange,
+		commitGainChange,
+	]);
 
 	const frequencyAccessor = useCallback(() => {
 		return node.frequency as IAudioParam;

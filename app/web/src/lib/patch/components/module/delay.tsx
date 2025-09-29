@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { IAudioContext, IDelayNode } from 'standardized-audio-context';
 import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
@@ -56,6 +56,17 @@ export const DelayModule: React.FC<{ module: Module<ModuleType.DELAY> }> = ({
 	);
 
 	const delayTimeAccessor = useCallback(() => node.delayTime, [enabled]);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.delayTime !== node.delayTime.value) {
+			commitTimeChange(module.state.delayTime);
+		}
+	}, [module.state, commitTimeChange]);
 
 	return enabled ? (
 		<>

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { IAudioContext, IStereoPannerNode } from 'standardized-audio-context';
 
 import { audioContext } from '../../audio';
@@ -51,6 +51,17 @@ export const PanModule: React.FC<{ module: Module<ModuleType.PAN> }> = ({
 		},
 		[audioContext, state],
 	);
+
+	const moduleStateRef = useRef(module.state);
+	useEffect(() => {
+		if (moduleStateRef.current === module.state) {
+			return;
+		}
+		moduleStateRef.current = module.state;
+		if (module.state.pan !== node.pan.value) {
+			commitPanChange(module.state.pan);
+		}
+	}, [module.state, commitPanChange]);
 
 	const panAccessor = useCallback(() => node.pan, [enabled]);
 

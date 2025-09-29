@@ -8,8 +8,13 @@ type HistorySnapshot = {
 };
 
 export class History {
-	private stack: HistorySnapshot[] = [];
-	private registry = new Set<string>();
+	constructor(
+		private stack: HistorySnapshot[] = [],
+		private registry = new Set<string>(),
+	) {
+		this.stack = this.stack.slice(0, 50);
+		this.registry = new Set([...this.registry]);
+	}
 
 	slice = (historyPointer: number): History => {
 		const history = new History();
@@ -25,7 +30,13 @@ export class History {
 		const compressed = compressToBase64(json);
 		const md5 = MD5(compressed);
 
-		if (this.registry.has(md5)) {
+		if (this.stack[0] && this.stack[0].md5 === md5) {
+			// cache hit
+			return this;
+		}
+
+		if (Object.values(state.modules).some((module) => !module.state)) {
+			// incomplete module state
 			return this;
 		}
 
@@ -34,13 +45,10 @@ export class History {
 			state: compressed,
 		};
 
-		const history = new History();
-
-		history.stack = [
-			snapshot,
-			...this.stack.slice(Math.max(0, historyPointer)),
-		].slice(0, 50);
-		history.registry = new Set([md5, ...this.registry]);
+		const history = new History(
+			[snapshot, ...this.stack.slice(Math.max(0, historyPointer))],
+			this.registry,
+		);
 
 		return history;
 	};
