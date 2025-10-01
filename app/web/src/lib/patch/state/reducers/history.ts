@@ -6,12 +6,10 @@ import { updateModuleState } from './update-module-state';
 import { connect } from './connection';
 
 export const blockHistory = (state: IPatchState) => {
-	console.log('blocking');
 	return cloneAndApply(state, { blockHistory: true });
 };
 
 export const unblockHistory = (state: IPatchState) => {
-	console.log('unblocking');
 	return cloneAndApply(state, { blockHistory: false });
 };
 
