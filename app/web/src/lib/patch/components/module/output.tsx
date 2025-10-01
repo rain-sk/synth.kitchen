@@ -9,6 +9,7 @@ import { NumberParameter } from '../module-ui/number-parameter';
 import { Oscilloscope } from '../module-ui/webaudio-oscilloscope';
 import { useNode } from './use-node';
 import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
+import { useAsync, useScroll } from 'react-use';
 
 const outputStateFromNode = (node: OutputNode): ModuleState['OUTPUT'] => ({
 	version: '0.5.0',
@@ -22,6 +23,37 @@ const initOutput = (output: OutputNode, state?: ModuleState['OUTPUT']) => {
 	} else {
 		return outputStateFromNode(output);
 	}
+};
+
+function isInViewport(el: HTMLElement) {
+	const rect = el.getBoundingClientRect();
+
+	return (
+		rect.bottom > 0 &&
+		rect.right > 0 &&
+		rect.top < (window.innerHeight || document.documentElement.clientHeight) &&
+		rect.left < (window.innerWidth || document.documentElement.clientWidth)
+	);
+}
+
+const main = () => document.getElementById('main');
+
+const getMain = (): Promise<HTMLElement> => {
+	let timeout: any;
+	let knownMain: HTMLElement | null = null;
+	return new Promise<HTMLElement>((resolve) => {
+		const checkForMain = () => {
+			knownMain = knownMain ?? main();
+			if (knownMain) {
+				if (timeout) {
+					clearTimeout(timeout);
+				}
+				return resolve(knownMain);
+			}
+			timeout = setTimeout(checkForMain, 2);
+		};
+		checkForMain();
+	});
 };
 
 export const OutputModule: React.FC<{ module: Module<ModuleType.OUTPUT> }> = ({
@@ -84,6 +116,19 @@ export const OutputModule: React.FC<{ module: Module<ModuleType.OUTPUT> }> = ({
 		}
 		return clear;
 	}, [oscContainer]);
+
+	const main = useAsync(getMain);
+	const scroll = useScroll({ current: main.value as any });
+	useEffect(() => {
+		if (!oscContainer || !oscRef.current) {
+			return;
+		}
+		if (isInViewport(oscContainer) && oscRef.current.isPaused) {
+			oscRef.current.start();
+		} else if (!isInViewport(oscContainer) && !oscRef.current.isPaused) {
+			oscRef.current.pause();
+		}
+	}, [oscContainer, scroll]);
 
 	return enabled ? (
 		<>
