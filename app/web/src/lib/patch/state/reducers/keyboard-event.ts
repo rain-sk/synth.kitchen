@@ -102,6 +102,21 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 				),
 			);
 		}
+
+		if (state.activeConnectorKey !== undefined) {
+			const [_, connections] = state.connectors[state.activeConnectorKey];
+			return cloneAndApplyWithHistory(state, {
+				...disconnectSet(
+					state.connections,
+					state.connectors,
+					new Set(connections),
+				),
+				activeConnectorKey: undefined,
+				selectedConnections: new Set(),
+				selectedModules: new Set(),
+			});
+		}
+
 		let newState: Partial<IPatchState> = {};
 
 		{
