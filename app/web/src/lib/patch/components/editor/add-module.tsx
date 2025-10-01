@@ -6,36 +6,47 @@ import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 import { INVALID_POSITION } from '../../state/constants/positions';
 
-const controlModules = (): ModuleType[] =>
+const modules = (): ModuleType[] =>
 	midi.initialized
 		? [
 				ModuleType.CLOCK,
+				ModuleType.COMPRESSOR,
+				ModuleType.DELAY,
+				ModuleType.ENVELOPE,
+				ModuleType.FILTER,
+				ModuleType.GAIN,
+				ModuleType.GATE,
+				ModuleType.LIMITER,
 				ModuleType.MIDI_CC,
 				ModuleType.MIDI_CLOCK,
 				ModuleType.MIDI_TRIGGER,
-				ModuleType.GATE,
-				ModuleType.ENVELOPE,
+				ModuleType.NOISE,
+				ModuleType.OSCILLATOR,
+				ModuleType.OUTPUT,
+				ModuleType.PAN,
+				ModuleType.SCOPE,
 				ModuleType.SEQUENCER,
+				ModuleType.SHIFT,
+				ModuleType.VCA,
 		  ]
 		: [
 				ModuleType.CLOCK,
-				ModuleType.GATE,
+				ModuleType.COMPRESSOR,
+				ModuleType.DELAY,
 				ModuleType.ENVELOPE,
+				ModuleType.FILTER,
+				ModuleType.GAIN,
+				ModuleType.GATE,
+				ModuleType.LIMITER,
+				ModuleType.NOISE,
+				ModuleType.OSCILLATOR,
+				ModuleType.OUTPUT,
+				ModuleType.PAN,
+				ModuleType.SCOPE,
 				ModuleType.SEQUENCER,
+				ModuleType.SHIFT,
+				ModuleType.VCA,
 		  ];
-
-const soundModules: ModuleType[] = [ModuleType.OSCILLATOR, ModuleType.NOISE];
-
-const effectModules: ModuleType[] = [
-	ModuleType.COMPRESSOR,
-	ModuleType.DELAY,
-	ModuleType.FILTER,
-	ModuleType.LIMITER,
-	ModuleType.VCA,
-	ModuleType.PAN,
-];
-
-const utilModules: ModuleType[] = [ModuleType.GAIN, ModuleType.SHIFT];
 
 export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 	position,
@@ -74,38 +85,9 @@ export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 			}
 		>
 			<option value="">add module</option>
-			<optgroup label="Control">
-				{controlModules().map((type) => (
-					<option
-						key={type}
-						value={type}
-					>{`${type.toLocaleLowerCase()}`}</option>
-				))}
-			</optgroup>
-			<optgroup label="Sounds">
-				{soundModules.map((type) => (
-					<option
-						key={type}
-						value={type}
-					>{`${type.toLocaleLowerCase()}`}</option>
-				))}
-			</optgroup>
-			<optgroup label="Effects">
-				{effectModules.map((type) => (
-					<option
-						key={type}
-						value={type}
-					>{`${type.toLocaleLowerCase()}`}</option>
-				))}
-			</optgroup>
-			<optgroup label="Utils">
-				{utilModules.map((type) => (
-					<option
-						key={type}
-						value={type}
-					>{`${type.toLocaleLowerCase()}`}</option>
-				))}
-			</optgroup>
+			{modules().map((type) => (
+				<option key={type} value={type}>{`${type.toLocaleLowerCase()}`}</option>
+			))}
 		</select>
 	);
 };
