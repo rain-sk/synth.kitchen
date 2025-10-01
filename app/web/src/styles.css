@@ -400,6 +400,10 @@ button {
 	z-index: 1;
 }
 
+.module.OUTPUT {
+	width: 18rem;
+}
+
 .connectors {
 	margin-bottom: 0.5rem;
 	display: flex;

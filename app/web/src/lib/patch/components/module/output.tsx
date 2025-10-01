@@ -11,7 +11,9 @@ import { OutputNode } from '../../audio/nodes/output';
 
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
+import { Oscilloscope } from '../module-ui/webaudio-oscilloscope';
 import { useNode } from './use-node';
+import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
 
 const outputStateFromNode = (node: OutputNode): ModuleState['OUTPUT'] => ({
 	version: OUTPUT_STATE_VERSIONS[0],
@@ -67,8 +69,30 @@ export const OutputModule: React.FC<{ module: Module<ModuleType.OUTPUT> }> = ({
 	const speaker = node.speaker;
 	const resampling = node.resampling;
 
+	const [_, oscContainer, setOscContainer] =
+		useRefBackedState<HTMLCanvasElement | null>(null);
+
+	const oscRef = useRef<Oscilloscope>(undefined);
+	useEffect(() => {
+		const clear = () => {
+			oscRef.current = undefined;
+		};
+		if (oscContainer && !oscRef.current) {
+			oscRef.current = new Oscilloscope(
+				audioContext,
+				resampling(),
+				oscContainer,
+			);
+			oscRef.current.start();
+		} else if (!oscContainer) {
+			clear();
+		}
+		return clear;
+	}, [oscContainer]);
+
 	return enabled ? (
 		<>
+			<canvas ref={setOscContainer}></canvas>
 			<IoConnectors
 				moduleId={module.id}
 				inputAccessors={{ speaker }}
