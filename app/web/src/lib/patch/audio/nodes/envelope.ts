@@ -10,7 +10,7 @@ import { AdsrNode } from './adsr';
 
 export class EnvelopeNode {
 	private _adsr = new AdsrNode();
-	private _gain = audioContext.createGain();
+	private _gain = audioContext.current.createGain();
 
 	constructor() {
 		this._adsr.node().connect(this._gain);

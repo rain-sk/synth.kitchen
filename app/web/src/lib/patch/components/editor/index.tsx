@@ -17,13 +17,18 @@ import { patchActions } from '../../state/actions';
 const initialState = { ...blankPatch() };
 
 export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
-	const [random] = useRoute('/patch/random');
+	const [newPatch] = useRoute('/patch/new');
+	const [randomPatch] = useRoute('/patch/random');
 	const { initialized, status, initAudioMidi } = useAudioMidiInit();
 	const [state, dispatch] = useReducer(patchReducer, initialState);
 
-	useTitle(random ? '...' : `patch/${state.name ? state.name : 'untitled'}`);
+	useTitle(
+		!newPatch && randomPatch
+			? '...'
+			: `patch/${state.name ? state.name : 'untitled'}`,
+	);
 
-	const loading = useLoadPatch(state, dispatch, initialized, slug);
+	const loading = useLoadPatch(state, dispatch, initialized, slug ?? '');
 
 	const init = useCallback(async () => {
 		await initAudioMidi();

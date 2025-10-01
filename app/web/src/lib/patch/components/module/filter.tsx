@@ -52,7 +52,7 @@ export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 	const { node, state, setState } = useNode<
 		IBiquadFilterNode<IAudioContext>,
 		ModuleType.FILTER
-	>(module, initFilter, () => audioContext.createBiquadFilter());
+	>(module, initFilter, () => audioContext.current.createBiquadFilter());
 
 	const enabled = state !== undefined;
 

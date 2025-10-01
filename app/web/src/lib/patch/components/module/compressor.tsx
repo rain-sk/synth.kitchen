@@ -52,7 +52,9 @@ export const CompressorModule: React.FC<{
 	const { node, state, setState } = useNode<
 		IDynamicsCompressorNode<IAudioContext>,
 		ModuleType.COMPRESSOR
-	>(module, initCompressor, () => audioContext.createDynamicsCompressor());
+	>(module, initCompressor, () =>
+		audioContext.current.createDynamicsCompressor(),
+	);
 
 	const enabled = state !== undefined;
 

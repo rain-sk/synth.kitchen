@@ -31,7 +31,6 @@ export const SynthKitchen: React.FC = () => {
 				<Route path="/p/:slug" component={RedirectToPatch} />
 				<Route path="/patch" component={RedirectToPatch} />
 
-				<Route path="/patch/new" component={PatchRoute} />
 				<Route path="/patch/:slug" component={PatchRoute} />
 
 				<Route path="/account" component={AccountRoute} />

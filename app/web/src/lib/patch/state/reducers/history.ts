@@ -21,12 +21,16 @@ export const pushToHistory = (
 	state: IPatchState,
 	action?: Partial<IPushToHistory>,
 ): IPatchState => {
-	if (
-		state.blockHistory ||
-		(state.connectionsToLoad &&
-			Object.keys(state.connectionsToLoad.state).length > 0)
-	) {
-		if (action?.force) {
+	const loadingConnections =
+		state.connectionsToLoad && state.connectionsToLoad.state
+			? Object.keys(state.connectionsToLoad.state).length > 0
+			: false;
+	// console.log({
+	// 	connectionsToLoad: state.connectionsToLoad,
+	// 	loadingConnections,
+	// });
+	if (state.blockHistory || loadingConnections) {
+		if (action?.force && !loadingConnections) {
 			state = unblockHistory(state);
 		} else {
 			return state;

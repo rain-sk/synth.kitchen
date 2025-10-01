@@ -22,9 +22,9 @@ export type PatchInfo = {
 
 export type SavedPatchState = {
   id: string;
-  patch: PatchInfo;
-  ancestor: SavedPatchState;
-  descendants: SavedPatchState[];
+  patch?: PatchInfo;
+  ancestor?: SavedPatchState;
+  descendants?: SavedPatchState[];
   state: PatchState;
 };
 

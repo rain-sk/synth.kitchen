@@ -79,8 +79,8 @@ export const OutputModule: React.FC<{ module: Module<ModuleType.OUTPUT> }> = ({
 		};
 		if (oscContainer && !oscRef.current) {
 			oscRef.current = new Oscilloscope(
-				audioContext,
-				resampling(),
+				audioContext.current,
+				speaker(),
 				oscContainer,
 			);
 			oscRef.current.start();

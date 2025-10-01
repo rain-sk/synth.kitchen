@@ -43,7 +43,7 @@ export const Nav: React.FC = () => {
 						<Link to="/patch/random">Random</Link>
 					</li>
 					<li>
-						<a href="/patch/new">Blank</a>
+						<Link href="/patch/new">Blank</Link>
 					</li>
 				</ul>
 			</section>

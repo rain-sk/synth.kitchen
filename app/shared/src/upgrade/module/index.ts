@@ -57,6 +57,10 @@ import {
 } from "./output";
 import { needsUpgrade as panNeedsUpgrade, upgrade as upgradePan } from "./pan";
 import {
+  needsUpgrade as scopeNeedsUpgrade,
+  upgrade as upgradeScope,
+} from "./scope";
+import {
   needsUpgrade as sequencerNeedsUpgrade,
   upgrade as upgradeSequencer,
 } from "./sequencer";
@@ -134,6 +138,10 @@ const upgradeMap: ModuleUpgradeMap = {
   PAN: {
     needsUpgrade: panNeedsUpgrade,
     upgrade: upgradePan,
+  },
+  SCOPE: {
+    needsUpgrade: scopeNeedsUpgrade,
+    upgrade: upgradeScope,
   },
   SEQUENCER: {
     needsUpgrade: sequencerNeedsUpgrade,

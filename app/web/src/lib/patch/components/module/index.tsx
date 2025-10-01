@@ -35,6 +35,7 @@ import { CompressorModule } from './compressor';
 import { queueAnimation } from '../../../shared/utils/animation';
 import { ShiftModule } from './shift';
 import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
+import { ScopeModule } from './scope';
 
 const useDragAndDrop = (
 	id: string,
@@ -168,6 +169,8 @@ const ModuleUi: React.FC<{ module: Module }> = ({ module }) => {
 			return <OutputModule module={module as Module<ModuleType.OUTPUT>} />;
 		case 'PAN':
 			return <PanModule module={module as Module<ModuleType.PAN>} />;
+		case 'SCOPE':
+			return <ScopeModule module={module as Module<ModuleType.SCOPE>} />;
 		case 'SEQUENCER':
 			return (
 				<SequencerModule module={module as Module<ModuleType.SEQUENCER>} />

@@ -3,6 +3,7 @@ import { useCallback, useContext } from 'react';
 import { ISerializedPatch } from '../../state/types/serialized-patch';
 import { PatchContext } from '../../contexts/patch';
 import { SaveToDiskSvg } from './svg';
+import { PATCH_STATE_VERSIONS } from 'synth.kitchen-shared';
 
 export const SaveToDisk = () => {
 	const { id, name, slug, modules, modulePositions, connections } =
@@ -13,9 +14,13 @@ export const SaveToDisk = () => {
 			id,
 			name,
 			slug,
-			modules,
-			modulePositions,
-			connections,
+			state: {
+				version: PATCH_STATE_VERSIONS[0],
+				name,
+				modules,
+				modulePositions,
+				connections,
+			},
 		};
 
 		// https://code.tutsplus.com/tutorials/how-to-save-a-file-with-javascript--cms-41105

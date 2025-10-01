@@ -15,27 +15,28 @@ const effectModules: ModuleType[] = [
 	ModuleType.GAIN,
 	ModuleType.LIMITER,
 	ModuleType.PAN,
-	ModuleType.SHIFT,
 ];
 
-const controlModules = (): ModuleType[] =>
+const utilModules = (): ModuleType[] =>
 	midi.initialized
 		? [
 				ModuleType.CLOCK,
+				ModuleType.SEQUENCER,
+				ModuleType.ENVELOPE,
+				ModuleType.VCA,
+				ModuleType.SHIFT,
+				ModuleType.SCOPE,
 				ModuleType.MIDI_CC,
 				ModuleType.MIDI_CLOCK,
 				ModuleType.MIDI_TRIGGER,
-				ModuleType.GATE,
-				ModuleType.ENVELOPE,
-				ModuleType.SEQUENCER,
-				ModuleType.VCA,
 		  ]
 		: [
 				ModuleType.CLOCK,
-				ModuleType.GATE,
-				ModuleType.ENVELOPE,
 				ModuleType.SEQUENCER,
+				ModuleType.ENVELOPE,
 				ModuleType.VCA,
+				ModuleType.SHIFT,
+				ModuleType.SCOPE,
 		  ];
 
 export const AddModule: React.FC<{ position?: ModulePosition }> = ({
@@ -92,7 +93,7 @@ export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 				))}
 			</optgroup>
 			<optgroup label="Control">
-				{controlModules().map((type) => (
+				{utilModules().map((type) => (
 					<option
 						key={type}
 						value={type}

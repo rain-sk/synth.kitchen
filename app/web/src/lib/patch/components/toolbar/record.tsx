@@ -60,7 +60,8 @@ export const Record: React.FC = () => {
 	const handleRecord = useCallback(() => {
 		setRecording(true);
 		recordingStartTimeRef.current = audioContext.currentTime;
-		const streamDestination = audioContext.createMediaStreamDestination();
+		const streamDestination =
+			audioContext.current.createMediaStreamDestination();
 		mediaRecorder.current = new MediaRecorder(streamDestination.stream, {
 			mimeType: 'audio/wav',
 		});
@@ -71,7 +72,7 @@ export const Record: React.FC = () => {
 				audioContext.currentTime - recordingStartTimeRef.current,
 			);
 		};
-		resampling.connect(streamDestination);
+		resampling.current.connect(streamDestination);
 		mediaRecorder.current.start();
 	}, []);
 

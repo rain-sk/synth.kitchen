@@ -38,7 +38,7 @@ export const GainModule: React.FC<{ module: Module<ModuleType.GAIN> }> = ({
 	const { node, state, setState } = useNode<
 		IGainNode<IAudioContext>,
 		ModuleType.GAIN
-	>(module, initGain, () => audioContext.createGain());
+	>(module, initGain, () => audioContext.current.createGain());
 
 	const enabled = state !== undefined;
 

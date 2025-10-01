@@ -7,9 +7,9 @@ import {
 import { audioContext } from '..';
 
 export class OscillatorNode {
-	private _oscillator = audioContext.createOscillator();
-	private _transposeInput = audioContext.createConstantSource();
-	private _tranposeGain = audioContext.createGain();
+	private _oscillator = audioContext.current.createOscillator();
+	private _transposeInput = audioContext.current.createConstantSource();
+	private _tranposeGain = audioContext.current.createGain();
 
 	constructor() {
 		this._transposeInput.offset.setValueAtTime(0, audioContext.currentTime);

@@ -4,7 +4,7 @@ import { createGlobalState } from 'react-use';
 import { audioContext, initAudio } from '../../../audio';
 import { initMidi } from '../../../midi';
 
-const audioInitialized = () => audioContext.state === 'running';
+const audioInitialized = () => audioContext.current.state === 'running';
 
 const useAudioInitialized = createGlobalState(audioInitialized);
 

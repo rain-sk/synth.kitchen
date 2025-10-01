@@ -19,6 +19,7 @@ import { SEQUENCER_STATE, SEQUENCER_STATE_VERSIONS } from "./sequencer";
 import { SHIFT_STATE, SHIFT_STATE_VERSIONS } from "./shift";
 import { OUTPUT_STATE, OUTPUT_STATE_VERSIONS } from "./output";
 import { VCA_STATE, VCA_STATE_VERSIONS } from "./vca";
+import { SCOPE_STATE, SCOPE_STATE_VERSIONS } from "./scope";
 
 export enum ModuleType {
   CLOCK = "CLOCK",
@@ -36,6 +37,7 @@ export enum ModuleType {
   OSCILLATOR = "OSCILLATOR",
   OUTPUT = "OUTPUT",
   PAN = "PAN",
+  SCOPE = "SCOPE",
   SEQUENCER = "SEQUENCER",
   SHIFT = "SHIFT",
   VCA = "VCA",
@@ -56,6 +58,7 @@ export type ModuleState = {
   [ModuleType.GATE]: GATE_STATE[GATE_STATE_VERSIONS[0]];
   [ModuleType.OSCILLATOR]: OSCILLATOR_STATE[OSCILLATOR_STATE_VERSIONS[0]];
   [ModuleType.PAN]: PAN_STATE[PAN_STATE_VERSIONS[0]];
+  [ModuleType.SCOPE]: SCOPE_STATE[SCOPE_STATE_VERSIONS[0]];
   [ModuleType.SEQUENCER]: SEQUENCER_STATE[SEQUENCER_STATE_VERSIONS[0]];
   [ModuleType.SHIFT]: SHIFT_STATE[SHIFT_STATE_VERSIONS[0]];
   [ModuleType.OUTPUT]: OUTPUT_STATE[OUTPUT_STATE_VERSIONS[0]];
@@ -135,6 +138,9 @@ const DefaultModuleStates: ModuleState = {
     version: "0.5.0",
     pan: 0,
   },
+  [ModuleType.SCOPE]: {
+    version: "0.5.7",
+  },
   [ModuleType.SEQUENCER]: {
     version: "0.5.1",
     steps: 2,
@@ -209,6 +215,7 @@ export { FILTER_STATE, FILTER_STATE_VERSIONS } from "./filter";
 export { GATE_STATE, GATE_STATE_VERSIONS } from "./gate";
 export { OSCILLATOR_STATE, OSCILLATOR_STATE_VERSIONS } from "./oscillator";
 export { PAN_STATE, PAN_STATE_VERSIONS } from "./pan";
+export { SCOPE_STATE, SCOPE_STATE_VERSIONS } from "./scope";
 export { SEQUENCER_STATE, SEQUENCER_STATE_VERSIONS } from "./sequencer";
 export { SHIFT_STATE, SHIFT_STATE_VERSIONS } from "./shift";
 export { OUTPUT_STATE, OUTPUT_STATE_VERSIONS } from "./output";

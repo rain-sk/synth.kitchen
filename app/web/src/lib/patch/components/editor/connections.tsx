@@ -10,27 +10,10 @@ import { IPatchState } from '../../state/types/patch';
 import { useMouse, useScroll } from 'react-use';
 import { queueAnimation } from '../../../shared/utils/animation';
 import { INVALID_POSITION } from '../../state/constants/positions';
+import { getMain } from '../../../shared/utils/get-main';
 
 const root = () => document.getElementById('root');
 const main = () => document.getElementById('main');
-
-const getMain = (): Promise<HTMLElement> => {
-	let timeout: any;
-	let knownMain: HTMLElement | null = null;
-	return new Promise<HTMLElement>((resolve) => {
-		const checkForMain = () => {
-			knownMain = knownMain ?? main();
-			if (knownMain) {
-				if (timeout) {
-					clearTimeout(timeout);
-				}
-				return resolve(knownMain);
-			}
-			timeout = setTimeout(checkForMain, 10);
-		};
-		checkForMain();
-	});
-};
 
 const position = (button: HTMLButtonElement): ModulePosition => {
 	if (!button) {

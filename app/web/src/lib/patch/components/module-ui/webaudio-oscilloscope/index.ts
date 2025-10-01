@@ -82,4 +82,8 @@ export class Oscilloscope {
 			drawRawOsc(this.cctx, this.u8ar, this.width, this.height);
 		});
 	};
+
+	get isPaused() {
+		return this.paused;
+	}
 }

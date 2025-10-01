@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useRoute } from 'wouter';
 
 import { blankPatchToClearCanvas, blankPatchToLoad } from '../../../state';
@@ -7,7 +7,9 @@ import { IPatchState } from '../../../state/types/patch';
 
 import { useApi } from '../../../api';
 import { useRefBackedState } from '../../../../shared/utils/use-ref-backed-state';
-import { Patch } from 'synth.kitchen-shared';
+import { resetAudioContext } from '../../../audio';
+import { PatchQuery } from 'synth.kitchen-shared';
+import { ISerializedPatch } from '../../../state/types/serialized-patch';
 
 const uuidRegex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -18,18 +20,14 @@ export const useLoadPatch = (
 	state: IPatchState,
 	dispatch: React.Dispatch<IPatchAction>,
 	initialized: boolean,
-	slug?: string,
+	slug: string,
 ) => {
-	const { connectionsToLoad } = state;
-
-	const [newPatch] = useRoute('/patch/new');
-	const [randomPatch] = useRoute('/patch/random');
 	const [, navigate] = useLocation();
 	const { getPatch } = useApi();
 
-	const [loadingRef, loading, setLoading] = useRefBackedState(false);
+	const [_, loading, setLoading] = useRefBackedState(false);
 
-	const [patchToLoad, setPatchToLoad] = useState<Patch>();
+	const [patchToLoad, setPatchToLoad] = useState<ISerializedPatch>();
 	useEffect(() => {
 		if (initialized && !loading && patchToLoad) {
 			dispatch(
@@ -37,84 +35,58 @@ export const useLoadPatch = (
 					id: patchToLoad.id,
 					name: patchToLoad.name,
 					slug: patchToLoad.slug,
-					modules: patchToLoad.state.state.modules,
-					modulePositions: patchToLoad.state.state.modulePositions,
-					connections: patchToLoad.state.state.connections,
+					state: patchToLoad.state,
 				}),
 			);
 			dispatch(patchActions.pushToHistoryAction(true));
+			navigate(`/patch/${patchToLoad.slug}`, { replace: false });
 		}
 	}, [loading, patchToLoad, initialized]);
 
-	useEffect(() => {
-		if (loadingRef.current || patchToLoad) {
-			return;
-		}
+	const [newPatch] = useRoute('/patch/new');
+	const [randomPatch] = useRoute('/patch/random');
+	const onRouteChange = useCallback(async () => {
+		setLoading(true);
+		dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
+		await resetAudioContext();
+		if (newPatch) {
+			setPatchToLoad(blankPatchToLoad());
+		} else if (slug) {
+			const query: PatchQuery = randomPatch
+				? { random: true }
+				: isUuid(slug ?? '')
+				? { id: slug }
+				: { slug };
 
-		(async () => {
-			if (newPatch) {
-				dispatch(patchActions.loadPatchAction(blankPatchToLoad()));
-				dispatch(patchActions.pushToHistoryAction(true));
-			} else if (randomPatch) {
-				// Load a random patch
-				setLoading(true);
-				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
-				const patch = await getPatch({ random: true });
-
-				setPatchToLoad(patch);
-				setLoading(false);
-
+			try {
+				const patch = await getPatch(query);
 				if (patch) {
-					dispatch(
-						patchActions.loadPatchAction({
-							id: patch.id,
-							name: patch.name,
-							slug: patch.slug,
-							modulePositions: {},
-							modules: {},
-							connections: {},
-						}),
-					);
-					navigate(`/patch/${patch.slug}`, { replace: false });
-				} else {
-					navigate('/patch/new', { replace: true });
+					setPatchToLoad({
+						id: patch.id,
+						name: patch.name,
+						slug: patch.slug,
+						state: patch.state.state,
+					});
 				}
-			} else if (slug && state.slug === '') {
-				setLoading(true);
-				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
-				const patch = await getPatch(isUuid(slug) ? { id: slug } : { slug });
-
-				setPatchToLoad(patch);
-				setLoading(false);
-
-				if (patch) {
-					dispatch(
-						patchActions.loadPatchAction({
-							id: patch.id,
-							name: patch.name,
-							slug: patch.slug,
-							modulePositions: {},
-							modules: {},
-							connections: {},
-						}),
-					);
-					if (slug !== patch.slug) {
-						navigate(`/patch/${patch.slug}`, { replace: false });
-					}
-				} else {
-					navigate('/patch/new', { replace: true });
-				}
+			} catch (e) {
+				console.error(e);
+				navigate('/patch/new', { replace: false });
 			}
-		})();
-	}, [initialized, newPatch, randomPatch, slug, state.slug]);
+		}
+		setLoading(false);
+	}, [newPatch, randomPatch, slug]);
 
+	useEffect(() => {
+		onRouteChange();
+	}, [onRouteChange]);
+
+	const { connectionsToLoad } = state;
 	const loadingConnectionsRef = useRef(false);
 	useEffect(() => {
 		if (
 			initialized &&
 			!loadingConnectionsRef.current &&
 			connectionsToLoad &&
-			connectionsToLoad.state &&
 			Object.keys(connectionsToLoad.state).length > 0
 		) {
 			loadingConnectionsRef.current = true;
@@ -122,9 +94,7 @@ export const useLoadPatch = (
 			dispatch(patchActions.loadConnectionsAction());
 		} else if (
 			!connectionsToLoad ||
-			(connectionsToLoad &&
-				connectionsToLoad.state &&
-				Object.keys(connectionsToLoad.state).length === 0)
+			(connectionsToLoad && Object.keys(connectionsToLoad.state).length === 0)
 		) {
 			loadingConnectionsRef.current = false;
 		}

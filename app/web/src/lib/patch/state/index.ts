@@ -3,6 +3,7 @@ import {
 	Module,
 	ModulePosition,
 	ModuleType,
+	OUTPUT_STATE_VERSIONS,
 	PATCH_STATE_VERSIONS,
 } from 'synth.kitchen-shared';
 
@@ -17,16 +18,20 @@ export const blankPatchToClearCanvas = (): ISerializedPatch => ({
 	id: '',
 	name: '',
 	slug: '',
-	modules: {},
-	modulePositions: {},
-	connections: { version: CONNECTIONS_STATE_VERSIONS[0], state: {} },
+	state: {
+		version: PATCH_STATE_VERSIONS[0],
+		name: '',
+		modules: {},
+		modulePositions: {},
+		connections: { version: CONNECTIONS_STATE_VERSIONS[0], state: {} },
+	},
 });
 
 export const outputModule: () => Module = () => ({
 	name: 'output',
 	id: '0',
 	type: ModuleType.OUTPUT,
-	state: { version: '0.5.0', gain: 0.45 },
+	state: { version: OUTPUT_STATE_VERSIONS[0], gain: 0.45 },
 });
 
 const outputModulePosition = (): ModulePosition => {
@@ -45,13 +50,17 @@ export const blankPatchToLoad = (): ISerializedPatch => ({
 	id: '', // no id
 	name: '', // 'Untitled'
 	slug: '', // no slug
-	modules: {
-		['0']: outputModule(),
+	state: {
+		version: PATCH_STATE_VERSIONS[0],
+		name: '',
+		modules: {
+			['0']: outputModule(),
+		},
+		modulePositions: {
+			['0']: outputModulePosition(),
+		},
+		connections: { version: CONNECTIONS_STATE_VERSIONS[0], state: {} },
 	},
-	modulePositions: {
-		['0']: outputModulePosition(),
-	},
-	connections: { version: CONNECTIONS_STATE_VERSIONS[0], state: {} },
 });
 
 export const blankPatch = (): IPatchState => ({

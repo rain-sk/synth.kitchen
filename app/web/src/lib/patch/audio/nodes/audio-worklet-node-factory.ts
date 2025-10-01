@@ -12,5 +12,5 @@ export const audioWorkletNodeFactory = (
 	if (!AudioWorkletNode) {
 		throw Error('no AudioWorkletNode constructor');
 	}
-	return new AudioWorkletNode(audioContext, id);
+	return new AudioWorkletNode(audioContext.current, id);
 };

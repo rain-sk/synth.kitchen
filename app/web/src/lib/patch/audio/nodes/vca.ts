@@ -10,8 +10,8 @@ import { AdsrNode } from './adsr';
 
 export class VcaNode {
 	private _adsr = new AdsrNode();
-	private _adsrPeak = audioContext.createGain();
-	private _signalGain = audioContext.createGain();
+	private _adsrPeak = audioContext.current.createGain();
+	private _signalGain = audioContext.current.createGain();
 
 	constructor() {
 		this._signalGain.gain.setValueAtTime(0, audioContext.currentTime);

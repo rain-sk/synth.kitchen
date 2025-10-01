@@ -38,7 +38,7 @@ export const DelayModule: React.FC<{ module: Module<ModuleType.DELAY> }> = ({
 	const { node, state, setState } = useNode<
 		IDelayNode<IAudioContext>,
 		ModuleType.DELAY
-	>(module, initDelay, () => audioContext.createDelay(179.99999999999));
+	>(module, initDelay, () => audioContext.current.createDelay(179.99999999999));
 
 	const enabled = state !== undefined;
 

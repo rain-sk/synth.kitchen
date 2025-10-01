@@ -4,13 +4,27 @@ import { AudioContext } from 'standardized-audio-context';
 
 import { initAudioProcessors } from './processors';
 
-export const audioContext = new AudioContext();
+export const audioContext = {
+	current: new AudioContext(),
+	get currentTime() {
+		return audioContext.current.currentTime;
+	},
+};
 
-export const resampling = audioContext.createDelay();
-resampling.delayTime.value = 256 / audioContext.sampleRate;
+export const resampling = { current: audioContext.current.createDelay() };
+
+export const resetAudioContext = async () => {
+	const close = audioContext.current.close;
+	(audioContext.current.close as any) = () => {};
+	await close();
+	audioContext.current = new AudioContext();
+	audioContext.current.resume();
+	resampling.current = audioContext.current.createDelay();
+	resampling.current.delayTime.value = 256 / audioContext.current.sampleRate;
+	await initAudioProcessors(audioContext.current)();
+};
 
 export const initAudio = async () => {
 	await register(await connect());
-	await audioContext.resume();
-	await initAudioProcessors(audioContext)();
+	await resetAudioContext();
 };

@@ -38,7 +38,7 @@ export const PanModule: React.FC<{ module: Module<ModuleType.PAN> }> = ({
 	const { node, state, setState } = useNode<
 		IStereoPannerNode<IAudioContext>,
 		ModuleType.PAN
-	>(module, initPan, () => audioContext.createStereoPanner());
+	>(module, initPan, () => audioContext.current.createStereoPanner());
 
 	const enabled = state != undefined;
 
