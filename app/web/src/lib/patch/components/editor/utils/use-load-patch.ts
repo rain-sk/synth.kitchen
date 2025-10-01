@@ -1,16 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useRoute } from 'wouter';
 
-import {
-	blankPatch,
-	blankPatchToClearCanvas,
-	blankPatchToLoad,
-} from '../../../state';
+import { blankPatchToClearCanvas, blankPatchToLoad } from '../../../state';
 import { IPatchAction, patchActions } from '../../../state/actions';
 import { IPatchState } from '../../../state/types/patch';
 
 import { useApi } from '../../../api';
 import { useRefBackedState } from '../../../../shared/utils/use-ref-backed-state';
+import { Patch } from 'synth.kitchen-shared';
 
 const uuidRegex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -32,52 +29,73 @@ export const useLoadPatch = (
 
 	const [loadingRef, loading, setLoading] = useRefBackedState(false);
 
+	const [patchToLoad, setPatchToLoad] = useState<Patch>();
 	useEffect(() => {
-		if (loadingRef.current) {
+		if (initialized && !loading && patchToLoad) {
+			dispatch(
+				patchActions.loadPatchAction({
+					id: patchToLoad.id,
+					name: patchToLoad.name,
+					slug: patchToLoad.slug,
+					modules: patchToLoad.state.state.modules,
+					modulePositions: patchToLoad.state.state.modulePositions,
+					connections: patchToLoad.state.state.connections,
+				}),
+			);
+			dispatch(patchActions.pushToHistoryAction(true));
+		}
+	}, [loading, patchToLoad, initialized]);
+
+	useEffect(() => {
+		if (loadingRef.current || patchToLoad) {
 			return;
 		}
 
 		(async () => {
 			if (newPatch) {
-				dispatch(patchActions.loadPatchAction(blankPatch()));
-				setTimeout(() => {
-					dispatch(patchActions.loadPatchAction(blankPatchToLoad()));
-					dispatch(patchActions.pushToHistoryAction(true));
-				}, 100);
+				dispatch(patchActions.loadPatchAction(blankPatchToLoad()));
+				dispatch(patchActions.pushToHistoryAction(true));
 			} else if (randomPatch) {
 				// Load a random patch
 				setLoading(true);
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 				const patch = await getPatch({ random: true });
+
+				setPatchToLoad(patch);
+				setLoading(false);
+
 				if (patch) {
 					dispatch(
 						patchActions.loadPatchAction({
 							id: patch.id,
 							name: patch.name,
 							slug: patch.slug,
-							modules: patch.state.state.modules,
-							modulePositions: patch.state.state.modulePositions,
-							connections: patch.state.state.connections,
+							modulePositions: {},
+							modules: {},
+							connections: {},
 						}),
 					);
 					navigate(`/patch/${patch.slug}`, { replace: false });
 				} else {
 					navigate('/patch/new', { replace: true });
 				}
-				setLoading(false);
 			} else if (slug && state.slug === '') {
 				setLoading(true);
 				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 				const patch = await getPatch(isUuid(slug) ? { id: slug } : { slug });
+
+				setPatchToLoad(patch);
+				setLoading(false);
+
 				if (patch) {
 					dispatch(
 						patchActions.loadPatchAction({
 							id: patch.id,
 							name: patch.name,
 							slug: patch.slug,
-							modules: patch.state.state.modules,
-							modulePositions: patch.state.state.modulePositions,
-							connections: patch.state.state.connections,
+							modulePositions: {},
+							modules: {},
+							connections: {},
 						}),
 					);
 					if (slug !== patch.slug) {
@@ -86,7 +104,6 @@ export const useLoadPatch = (
 				} else {
 					navigate('/patch/new', { replace: true });
 				}
-				setLoading(false);
 			}
 		})();
 	}, [initialized, newPatch, randomPatch, slug, state.slug]);
