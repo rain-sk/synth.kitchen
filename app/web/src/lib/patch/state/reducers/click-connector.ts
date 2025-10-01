@@ -14,8 +14,15 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 	const key = connectorKey(action.payload);
 	const [clicked] = state.connectors[key];
 
+	state = cloneAndApply(state, {
+		selectedConnections: new Set(),
+		selectedModules: new Set(),
+	});
+
 	if (!state.activeConnectorKey) {
-		return cloneAndApply(state, { activeConnectorKey: connectorKey(clicked) });
+		return cloneAndApply(state, {
+			activeConnectorKey: connectorKey(clicked),
+		});
 	}
 
 	const active = connectorInfo(state.connectors, state.activeConnectorKey);
@@ -44,7 +51,6 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 			{
 				activeConnectorKey: undefined,
 				selectedConnections: new Set([connectionKey(output, input)]),
-				selectedModules: new Set(),
 			},
 		);
 	}
