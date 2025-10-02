@@ -177,7 +177,7 @@ export const OscillatorModule: React.FC<{
 				<NumberParameter
 					moduleId={module.id}
 					paramAccessor={detuneAccessor}
-					name="detune"
+					name="transpose"
 					value={state.detune}
 					commitValueCallback={commitDetuneChange}
 				/>
