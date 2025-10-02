@@ -6,6 +6,7 @@ import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
 import { connectionKey, connectorInfo, connectorKey } from '../connection';
 import { connect, disconnect } from './connection';
+import { Modifier } from '../../constants/key';
 
 export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 	state,
@@ -40,6 +41,7 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 		) as Input;
 
 		const key = connectionKey(output, input);
+		const shift = (state.heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
 		return cloneAndApply(
 			key in state.connections
@@ -49,7 +51,7 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 				  })
 				: connect(state, { type: 'Connect', payload: [output, input] }),
 			{
-				activeConnectorKey: undefined,
+				activeConnectorKey: shift ? state.activeConnectorKey : undefined,
 				selectedConnections: new Set([connectionKey(output, input)]),
 			},
 		);
