@@ -29,8 +29,8 @@ export function upgrade(
   }
 
   switch (state.version) {
-    case "0.5.0":
-      state = {
+    case "0.5.0": {
+      const newState: SEQUENCER_STATE["0.5.1"] = {
         ...state,
         version: "0.5.1",
         step8: 0,
@@ -42,6 +42,9 @@ export function upgrade(
         step14: 0,
         step15: 0,
       };
+      state = newState;
+    }
+
     case "0.5.1":
     case SEQUENCER_STATE_VERSIONS[0]:
       return state;

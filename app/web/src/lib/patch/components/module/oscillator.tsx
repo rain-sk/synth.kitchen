@@ -1,9 +1,4 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import {
-	IAudioContext,
-	IAudioParam,
-	IOscillatorNode,
-} from 'standardized-audio-context';
 import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
@@ -12,40 +7,33 @@ import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { RadioParameter } from '../module-ui/radio-parameter';
 import { useNode } from './use-node';
+import { OscillatorNode } from '../../audio/nodes/oscillator';
 
-const oscillatorStateFromNode = (
-	node: IOscillatorNode<IAudioContext>,
-): ModuleState['OSCILLATOR'] => ({
-	version: '0.5.0',
-	frequency: node.frequency.value,
-	detune: node.detune.value,
-	waveform: node.type as any,
-});
-
-const startOnce =
-	(
-		self: IOscillatorNode<IAudioContext> & {
-			startCalled: boolean;
-			oldStart: () => void;
-		},
-	) =>
-	() => {
-		if (self.startCalled) {
-			return;
-		}
-		self.startCalled = true;
-		self.oldStart();
-	};
-const replaceStart = (self: IOscillatorNode<IAudioContext>) => {
-	if (('startCalled' in self) as any) {
-		return;
-	}
-	(self as any).oldStart = self.start;
-	(self as any).start = startOnce(self as any);
+const nodeTranspose = (detune: number) => {
+	const sign = detune > 0 ? 1 : -1;
+	return sign * Math.floor(Math.abs(detune) / 100);
 };
 
+const nodeDetune = (detune: number) => {
+	const sign = detune > 0 ? 1 : -1;
+	return sign * (Math.abs(detune) % 100);
+};
+
+const effectiveDetune = (transpose: number, detune: number) =>
+	transpose * 100 + detune;
+
+const oscillatorStateFromNode = (
+	node: OscillatorNode,
+): ModuleState['OSCILLATOR'] => ({
+	version: '0.5.2',
+	frequency: node.frequency.value,
+	transpose: node.transpose.value,
+	detune: node.detune.value,
+	waveform: node.waveform,
+});
+
 const initOscillator = (
-	oscillator: IOscillatorNode<IAudioContext>,
+	oscillator: OscillatorNode,
 	state?: ModuleState['OSCILLATOR'],
 ) => {
 	if (!oscillator) {
@@ -53,17 +41,20 @@ const initOscillator = (
 	}
 
 	if (state) {
-		oscillator.detune.setValueAtTime(state.detune, audioContext.currentTime);
+		const computedDetune = effectiveDetune(state.transpose, state.detune);
+		const transpose = nodeTranspose(computedDetune);
+		const detune = nodeDetune(computedDetune);
+		oscillator.transpose.setValueAtTime(transpose, audioContext.currentTime);
+		oscillator.detune.setValueAtTime(detune, audioContext.currentTime);
 		oscillator.frequency.setValueAtTime(
 			state.frequency,
 			audioContext.currentTime,
 		);
-		oscillator.type = state.waveform;
+		oscillator.waveform = state.waveform;
 	} else {
 		state = oscillatorStateFromNode(oscillator);
 	}
 
-	replaceStart(oscillator);
 	oscillator.start();
 	return state;
 };
@@ -72,9 +63,9 @@ export const OscillatorModule: React.FC<{
 	module: Module<ModuleType.OSCILLATOR>;
 }> = ({ module }) => {
 	const { node, state, setState } = useNode<
-		IOscillatorNode<IAudioContext>,
+		OscillatorNode,
 		ModuleType.OSCILLATOR
-	>(module, initOscillator, () => audioContext.createOscillator());
+	>(module, initOscillator, () => new OscillatorNode());
 
 	const commitFrequencyChange = useCallback(
 		(frequency: number) => {
@@ -90,11 +81,42 @@ export const OscillatorModule: React.FC<{
 		[state],
 	);
 
-	const commitDetuneChange = useCallback(
-		(detune: number) => {
-			node.detune.linearRampToValueAtTime(detune, audioContext.currentTime);
+	const commitTransposeChange = useCallback(
+		(transpose: number) => {
+			node.transpose.linearRampToValueAtTime(
+				transpose,
+				audioContext.currentTime,
+			);
 			setState({
 				...state,
+				transpose,
+			});
+		},
+		[state],
+	);
+
+	const commitDetuneChange = useCallback(
+		(detune: number) => {
+			let transpose = state.transpose;
+			if (
+				(detune > 0 !== transpose > 0 && detune !== 0 && transpose !== 0) ||
+				Math.abs(detune) >= 100
+			) {
+				const computedDetune = effectiveDetune(state.transpose, detune);
+				transpose = nodeTranspose(computedDetune);
+				detune = nodeDetune(computedDetune);
+				node.transpose.linearRampToValueAtTime(
+					transpose,
+					audioContext.currentTime,
+				);
+				node.detune.linearRampToValueAtTime(detune, audioContext.currentTime);
+			} else {
+				node.detune.linearRampToValueAtTime(detune, audioContext.currentTime);
+			}
+
+			setState({
+				...state,
+				transpose,
 				detune,
 			});
 		},
@@ -102,10 +124,9 @@ export const OscillatorModule: React.FC<{
 	);
 
 	const commitWaveformChange = useCallback(
-		(type: string) => {
+		(waveform: any) => {
 			if (node) {
-				const waveform = type as any;
-				node.type = waveform;
+				node.waveform = waveform;
 				setState({
 					...state,
 					waveform,
@@ -121,13 +142,16 @@ export const OscillatorModule: React.FC<{
 			return;
 		}
 		moduleStateRef.current = module.state;
+		if (module.state.transpose !== node.transpose.value) {
+			commitTransposeChange(module.state.transpose);
+		}
 		if (module.state.detune !== node.detune.value) {
 			commitDetuneChange(module.state.detune);
 		}
 		if (module.state.frequency !== node.frequency.value) {
 			commitFrequencyChange(module.state.frequency);
 		}
-		if (module.state.waveform !== node.type) {
+		if (module.state.waveform !== node.waveform) {
 			commitWaveformChange(module.state.waveform);
 		}
 	}, [
@@ -140,13 +164,16 @@ export const OscillatorModule: React.FC<{
 	const enabled = state != undefined;
 
 	const frequencyAccessor = useCallback(() => {
-		return node.frequency as IAudioParam;
+		return node.frequency;
 	}, [enabled]);
 	const detuneAccessor = useCallback(() => {
-		return node.detune as IAudioParam;
+		return node.detune;
+	}, [enabled]);
+	const transposeAccessor = useCallback(() => {
+		return node.transpose;
 	}, [enabled]);
 
-	const output = useCallback(() => node, [enabled]);
+	const output = useCallback(() => node.output(), [enabled]);
 
 	return enabled ? (
 		<>
@@ -161,7 +188,7 @@ export const OscillatorModule: React.FC<{
 					moduleId={module.id}
 					name="waveform"
 					value={state.waveform}
-					options={['sawtooth', 'sine', 'square', 'triangle']}
+					options={['sine', 'triangle', 'square', 'sawtooth']}
 					commitValueCallback={commitWaveformChange}
 				/>
 				<NumberParameter
@@ -170,6 +197,13 @@ export const OscillatorModule: React.FC<{
 					name="frequency"
 					value={state.frequency}
 					commitValueCallback={commitFrequencyChange}
+				/>
+				<NumberParameter
+					moduleId={module.id}
+					paramAccessor={transposeAccessor}
+					name="transpose"
+					value={state.transpose}
+					commitValueCallback={commitTransposeChange}
 				/>
 				<NumberParameter
 					moduleId={module.id}

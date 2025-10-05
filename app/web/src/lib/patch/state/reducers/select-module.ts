@@ -16,6 +16,8 @@ export const selectModule: React.Reducer<IPatchState, ISelectModule> = (
 		case SelectModuleType.DESELECT_ALL: {
 			return cloneAndApply(state, {
 				selectedModules: new Set(),
+				selectedConnections: new Set(),
+				activeConnectorKey: undefined,
 			});
 		}
 		case SelectModuleType.DESELECT: {
@@ -24,21 +26,27 @@ export const selectModule: React.Reducer<IPatchState, ISelectModule> = (
 						selectedModules: new Set(
 							Array.from(selectedModules).filter((key) => key != id),
 						),
+						selectedConnections: new Set(),
+						activeConnectorKey: undefined,
 				  })
 				: state;
 		}
 		case SelectModuleType.SELECT: {
-			return moduleIsSelected
+			return moduleIsSelected || state.activeConnectorKey
 				? state
 				: cloneAndApply(state, {
 						selectedModules: new Set([...selectedModules, id]),
+						selectedConnections: new Set(),
+						activeConnectorKey: undefined,
 				  });
 		}
 		case SelectModuleType.SELECT_SINGLE: {
-			return moduleIsSelected
+			return moduleIsSelected || state.activeConnectorKey
 				? state
 				: cloneAndApply(state, {
 						selectedModules: new Set([id]),
+						selectedConnections: new Set(),
+						activeConnectorKey: undefined,
 				  });
 		}
 	}

@@ -35,24 +35,6 @@ export const Record: React.FC = () => {
 		}
 	}, [recording]);
 
-	const handleRecord = useCallback(() => {
-		setRecording(true);
-		recordingStartTimeRef.current = audioContext.currentTime;
-		const streamDestination = audioContext.createMediaStreamDestination();
-		mediaRecorder.current = new MediaRecorder(streamDestination.stream, {
-			mimeType: 'audio/wav',
-		});
-		chunks.current = [];
-		mediaRecorder.current.ondataavailable = (chunk: BlobEvent) => {
-			chunks.current?.push(chunk.data);
-			setRecordingTime(
-				audioContext.currentTime - recordingStartTimeRef.current,
-			);
-		};
-		resampling.connect(streamDestination);
-		mediaRecorder.current.start();
-	}, [recording, setRecording, recordingStartTimeRef, setRecordingTime]);
-
 	const handleStop = useCallback(() => {
 		if (mediaRecorder.current) {
 			recordingStartTimeRef.current = 0;
@@ -73,7 +55,25 @@ export const Record: React.FC = () => {
 			};
 			mediaRecorder.current.stop();
 		}
-	}, [recording, setRecording]);
+	}, []);
+
+	const handleRecord = useCallback(() => {
+		setRecording(true);
+		recordingStartTimeRef.current = audioContext.currentTime;
+		const streamDestination = audioContext.createMediaStreamDestination();
+		mediaRecorder.current = new MediaRecorder(streamDestination.stream, {
+			mimeType: 'audio/wav',
+		});
+		chunks.current = [];
+		mediaRecorder.current.ondataavailable = (chunk: BlobEvent) => {
+			chunks.current?.push(chunk.data);
+			setRecordingTime(
+				audioContext.currentTime - recordingStartTimeRef.current,
+			);
+		};
+		resampling.connect(streamDestination);
+		mediaRecorder.current.start();
+	}, []);
 
 	return (
 		<button type="button" onClick={recording ? handleStop : handleRecord}>

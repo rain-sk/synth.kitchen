@@ -23,7 +23,25 @@ export function upgrade(
   }
 
   switch (state.version) {
-    case "0.5.0":
+    case "0.5.0": {
+      const detuneSign = state.detune >= 0 ? 1 : -1;
+      let transpose = 0;
+      let detune = state.detune;
+      const detuneAbs = Math.abs(detune);
+      if (detuneAbs > 100) {
+        transpose = detuneSign * Math.floor(detuneAbs / 100);
+        detune = detuneSign * (detuneAbs % 100);
+      }
+      const newState: OSCILLATOR_STATE["0.5.2"] = {
+        ...state,
+        version: "0.5.2",
+        transpose,
+        detune,
+      };
+      state = newState;
+    }
+
+    case "0.5.2":
     case OSCILLATOR_STATE_VERSIONS[0]:
       return state;
   }

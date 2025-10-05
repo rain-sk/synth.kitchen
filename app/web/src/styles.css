@@ -248,7 +248,7 @@ button {
 	z-index: 10;
 	pointer-events: none;
 	position: absolute;
-	top: 0;
+	top: 2.5rem;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -273,6 +273,7 @@ button {
 	transition: border linear 100ms;
 	width: 9rem;
 	transform: translate(-50%, -50%);
+	z-index: 9;
 }
 
 .module::before {
@@ -288,6 +289,7 @@ button {
 	border: 0.1rem solid #ffffff66;
 	border-top-left-radius: 0.2rem;
 	border-top-right-radius: 0.2rem;
+	z-index: 9;
 }
 
 .module h2 {
@@ -433,7 +435,7 @@ button {
 	background: rgb(63, 94, 251);
 	background: radial-gradient(circle, #b9ffce 0%, #7aa888 100%);
 	border: 1px solid #4f4658;
-	z-index: 999;
+	z-index: 11;
 }
 
 .connector::after {

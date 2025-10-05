@@ -125,8 +125,9 @@ const DefaultModuleStates: ModuleState = {
     gate: 0.5,
   },
   [ModuleType.OSCILLATOR]: {
-    version: "0.5.0",
+    version: "0.5.2",
     frequency: 440,
+    transpose: 0,
     detune: 0,
     waveform: "sine",
   },

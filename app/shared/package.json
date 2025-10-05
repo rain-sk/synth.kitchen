@@ -1,6 +1,6 @@
 {
   "name": "synth.kitchen-shared",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "shared types and utils for synth.kitchen-api and synth.kitchen-web",
   "license": "MIT",
   "keywords": [],
