@@ -6,6 +6,18 @@ import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 import { INVALID_POSITION } from '../../state/constants/positions';
 
+const soundModules: ModuleType[] = [ModuleType.OSCILLATOR, ModuleType.NOISE];
+
+const effectModules: ModuleType[] = [
+	ModuleType.COMPRESSOR,
+	ModuleType.DELAY,
+	ModuleType.FILTER,
+	ModuleType.GAIN,
+	ModuleType.LIMITER,
+	ModuleType.PAN,
+	ModuleType.SHIFT,
+];
+
 const controlModules = (): ModuleType[] =>
 	midi.initialized
 		? [
@@ -16,26 +28,15 @@ const controlModules = (): ModuleType[] =>
 				ModuleType.GATE,
 				ModuleType.ENVELOPE,
 				ModuleType.SEQUENCER,
+				ModuleType.VCA,
 		  ]
 		: [
 				ModuleType.CLOCK,
 				ModuleType.GATE,
 				ModuleType.ENVELOPE,
 				ModuleType.SEQUENCER,
+				ModuleType.VCA,
 		  ];
-
-const soundModules: ModuleType[] = [ModuleType.OSCILLATOR, ModuleType.NOISE];
-
-const effectModules: ModuleType[] = [
-	ModuleType.COMPRESSOR,
-	ModuleType.DELAY,
-	ModuleType.FILTER,
-	ModuleType.LIMITER,
-	ModuleType.VCA,
-	ModuleType.PAN,
-];
-
-const utilModules: ModuleType[] = [ModuleType.GAIN, ModuleType.SHIFT];
 
 export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 	position,
@@ -74,14 +75,6 @@ export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 			}
 		>
 			<option value="">add module</option>
-			<optgroup label="Control">
-				{controlModules().map((type) => (
-					<option
-						key={type}
-						value={type}
-					>{`${type.toLocaleLowerCase()}`}</option>
-				))}
-			</optgroup>
 			<optgroup label="Sounds">
 				{soundModules.map((type) => (
 					<option
@@ -98,8 +91,8 @@ export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 					>{`${type.toLocaleLowerCase()}`}</option>
 				))}
 			</optgroup>
-			<optgroup label="Utils">
-				{utilModules.map((type) => (
+			<optgroup label="Control">
+				{controlModules().map((type) => (
 					<option
 						key={type}
 						value={type}
