@@ -20,6 +20,7 @@ import { User } from "./entity/User";
 import { InitialSchema1758462191839 } from "./migration/1758462191839-InitialSchema";
 import { SeedAdmin1758462225132 } from "./migration/1758462225132-SeedAdmin";
 import { SeedPatches1758462320300 } from "./migration/1758462320300-SeedPatches";
+import { RemoveNeedsUpgradeColumn1759697039708 } from "./migration/1759697039708-RemoveNeedsUpgradeColumn";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -40,6 +41,7 @@ export const AppDataSource = new DataSource({
     InitialSchema1758462191839,
     SeedAdmin1758462225132,
     SeedPatches1758462320300,
+    RemoveNeedsUpgradeColumn1759697039708,
   ],
   logging,
 });

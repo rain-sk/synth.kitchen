@@ -43,7 +43,4 @@ export class SavedPatchState implements SharedSavedPatchState {
   @ManyToOne(() => Patch, (patch) => patch.states)
   @JoinColumn()
   patch: Patch;
-
-  @Column({ type: "boolean", default: true })
-  needsUpgrade: boolean;
 }

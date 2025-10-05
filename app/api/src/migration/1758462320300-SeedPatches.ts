@@ -27,7 +27,7 @@ export class SeedPatches1758462320300 implements MigrationInterface {
 
       const savedPatchState = patchStateRepository.create();
       savedPatchState.state = { ...p.state, name: p.name } as any;
-      savedPatchState.needsUpgrade = true;
+      (savedPatchState as any).needsUpgrade = true;
 
       await patchRepository.save(patch);
       await patchStateRepository.save(savedPatchState);
