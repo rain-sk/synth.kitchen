@@ -273,7 +273,6 @@ button {
 	transition: border linear 100ms;
 	width: 9rem;
 	transform: translate(-50%, -50%);
-	z-index: 9;
 }
 
 .module::before {
@@ -289,7 +288,15 @@ button {
 	border: 0.1rem solid #ffffff66;
 	border-top-left-radius: 0.2rem;
 	border-top-right-radius: 0.2rem;
-	z-index: 9;
+}
+
+.module h2,
+.module h3,
+.module p,
+.module input,
+.module select {
+	position: relative;
+	z-index: 11;
 }
 
 .module h2 {
@@ -305,6 +312,7 @@ button {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	max-width: 9rem;
+	z-index: 11;
 }
 .module h2 input {
 	position: relative;
