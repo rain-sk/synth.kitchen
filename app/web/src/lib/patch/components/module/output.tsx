@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+// import AudioMotionAnalyzer from 'audiomotion-analyzer';
 
 import { audioContext } from '../../audio';
 import { OutputNode } from '../../audio/nodes/output';
