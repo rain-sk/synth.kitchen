@@ -1,10 +1,10 @@
-import { Input } from 'synth.kitchen-shared';
+import { connectionKey, connectorKey, Input } from 'synth.kitchen-shared';
 import { IoType } from 'synth.kitchen-shared';
 import { Output } from 'synth.kitchen-shared';
 import { IClickConnector } from '../actions/click-connector';
 import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
-import { connectionKey, connectorInfo, connectorKey } from '../connection';
+import { connectorInfo } from '../connection';
 import { connect, disconnect } from './connection';
 
 export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (

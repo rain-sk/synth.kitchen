@@ -1,11 +1,7 @@
 import React, { useMemo } from 'react';
-import { Connection, IoType } from 'synth.kitchen-shared';
+import { Connection, connectorKey, IoType } from 'synth.kitchen-shared';
 
-import {
-	connectorKey,
-	connectorInfo,
-	connectionInfo,
-} from '../state/connection';
+import { connectorInfo, connectionInfo } from '../state/connection';
 import { ConnectorInfo } from '../state/types/patch';
 
 type DerivedConnectionState = {

@@ -1,7 +1,7 @@
-import { PatchState } from 'synth.kitchen-shared';
+import { connectionKey, connectorKey, PatchState } from 'synth.kitchen-shared';
 import { cloneAndApply, IPatchState } from '../types/patch';
 import { IPushToHistory } from '../actions/history';
-import { connectionKey, connectorKey, disconnectSet } from '../connection';
+import { disconnectSet } from '../connection';
 import { updateModuleState } from './update-module-state';
 import { connect } from './connection';
 

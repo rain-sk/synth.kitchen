@@ -1,5 +1,5 @@
+import { connectorKey } from 'synth.kitchen-shared';
 import { IRegisterConnector } from '../actions/connector-registration';
-import { connectorKey } from '../connection';
 import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
 

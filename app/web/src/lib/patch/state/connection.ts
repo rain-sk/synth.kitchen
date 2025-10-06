@@ -1,10 +1,9 @@
 import {
 	Connection,
-	Connector,
+	connectionKey,
+	connectorKey,
 	Input,
-	ioKey,
 	Output,
-	paramKey,
 } from 'synth.kitchen-shared';
 
 import { ConnectorInfo } from './types/patch';

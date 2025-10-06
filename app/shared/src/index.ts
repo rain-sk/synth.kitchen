@@ -3,6 +3,8 @@ export {
   Connection,
   ConnectionInfo,
   Connector,
+  connectorKey,
+  connectionKey,
   Input,
   Io,
   ioKey,

@@ -1,9 +1,8 @@
-import { Input } from 'synth.kitchen-shared';
+import { connectorKey, Input } from 'synth.kitchen-shared';
 import { Output } from 'synth.kitchen-shared';
 import { ILoadConnections } from '../actions/load-connections';
 import { connect } from '../connection';
 import { connectorInfo } from '../connection';
-import { connectorKey } from '../connection';
 import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
 import { unblockHistory } from './history';

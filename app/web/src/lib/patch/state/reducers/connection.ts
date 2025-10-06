@@ -7,11 +7,14 @@ import {
 import { IConnect, IDisconnect } from '../actions/connection';
 import {
 	connect as connectConnection,
-	connectionKey,
 	disconnect as disconnectConnection,
-	connectorKey,
 } from '../connection';
-import { Input, Output } from 'synth.kitchen-shared';
+import {
+	connectionKey,
+	connectorKey,
+	Input,
+	Output,
+} from 'synth.kitchen-shared';
 
 export const connect: React.Reducer<IPatchState, IConnect> = (
 	state,

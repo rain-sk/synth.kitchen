@@ -1,4 +1,4 @@
-import { Connection, Module } from 'synth.kitchen-shared';
+import { Connection, connectorKey, Module } from 'synth.kitchen-shared';
 import { ModulePosition } from 'synth.kitchen-shared';
 import { convertRemToPixels } from '../../../shared/utils/rem-to-px';
 import { Modifier } from '../../constants/key';
@@ -7,7 +7,6 @@ import { SelectionDragType } from '../actions/selection-drag';
 import { INVALID_POSITION } from '../constants/positions';
 import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
-import { connectorKey } from '../connection';
 
 type IRectangle = {
 	x: number;

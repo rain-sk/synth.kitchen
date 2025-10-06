@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Connection, ModulePosition } from 'synth.kitchen-shared';
-
 import {
+	Connection,
+	ModulePosition,
 	connectionKey,
-	connectorButton,
 	connectorKey,
-} from '../../state/connection';
+} from 'synth.kitchen-shared';
+
+import { connectorButton } from '../../state/connection';
 import { IPatchState } from '../../state/types/patch';
 import { useMouse, useScroll } from 'react-use';
 import { queueAnimation } from '../../../../utils/animation';

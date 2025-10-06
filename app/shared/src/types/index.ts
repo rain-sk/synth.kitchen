@@ -2,10 +2,13 @@ export type { LoginResponse, RegisterResponse } from "./auth";
 export type { UserInfo, UserInfoAuthenticated, AdminUser } from "./user";
 
 export type { Sample, SampleInfo, SampleQuery } from "./sample";
+
 export {
   Connection,
   ConnectionInfo,
   Connector,
+  connectorKey,
+  connectionKey,
   Input,
   Io,
   ioKey,
