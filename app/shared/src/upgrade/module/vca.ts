@@ -24,6 +24,21 @@ export function upgrade(
 
   switch (state.version) {
     case "0.5.0":
+      state = {
+        ...state,
+        version: "0.5.5",
+      };
+      return state;
+    case "0.5.4":
+      state = {
+        ...state,
+        version: "0.5.5",
+        gate: state.hold,
+      };
+      delete (state as any).hold;
+      return state;
+
+    case "0.5.5":
     case VCA_STATE_VERSIONS[0]:
       return state;
   }

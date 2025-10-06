@@ -25,8 +25,25 @@ export function upgrade(
     };
   }
 
-  if (state.version === ENVELOPE_STATE_VERSIONS[0]) {
-    return state;
+  switch (state.version) {
+    case "0.5.0":
+      state = {
+        ...state,
+        version: "0.5.5",
+      };
+      return state;
+    case "0.5.4":
+      state = {
+        ...state,
+        version: "0.5.5",
+        gate: state.hold,
+      };
+      delete (state as any).hold;
+      return state;
+
+    case "0.5.5":
+    case ENVELOPE_STATE_VERSIONS[0]:
+      return state;
   }
 
   throw new Error(
