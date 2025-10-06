@@ -170,6 +170,7 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 					moduleId={module.id}
 					paramAccessor={holdAccessor}
 					name="hold"
+					legacyName="gate"
 					value={state.hold}
 					commitValueCallback={commitHoldChange}
 				/>

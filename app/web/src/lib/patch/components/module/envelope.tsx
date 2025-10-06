@@ -173,6 +173,7 @@ export const EnvelopeModule: React.FC<{
 					moduleId={module.id}
 					paramAccessor={holdAccessor}
 					name="hold"
+					legacyName="gate"
 					value={state.hold}
 					commitValueCallback={commitHoldChange}
 				/>

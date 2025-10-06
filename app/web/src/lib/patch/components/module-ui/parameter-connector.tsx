@@ -5,12 +5,12 @@ import { patchActions } from '../../state/actions';
 import { DerivedConnectionStateContext } from '../../contexts/derived-connection-state';
 import { Parameter, paramKey } from 'synth.kitchen-shared';
 
-export const ParameterConnector: React.FunctionComponent<Parameter> = ({
-	moduleId,
-	name,
-	accessor,
-}) => {
-	const [connectorKey] = useState(() => paramKey({ moduleId, name }));
+export const ParameterConnector: React.FunctionComponent<
+	Parameter & { legacyName?: string }
+> = ({ moduleId, legacyName, name, accessor }) => {
+	const [connectorKey] = useState(() =>
+		paramKey({ moduleId, name: legacyName ? legacyName : name }),
+	);
 
 	const { activeConnectorKey, dispatch } = useContext(PatchContext);
 	const { activeConnectorIsOutput, connectedToActiveConnector } = useContext(
