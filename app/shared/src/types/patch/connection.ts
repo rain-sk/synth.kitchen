@@ -4,6 +4,13 @@ import {
   IAudioParam,
 } from "standardized-audio-context";
 
+export const connectionKey = (output: Output, input: Input) => {
+  return `${connectorKey(output)}|${connectorKey(input)}`;
+};
+
+export const connectorKey = (connector: Connector) =>
+  "type" in connector ? ioKey(connector) : paramKey(connector);
+
 export type Parameter = {
   moduleId: string;
   name: string;

@@ -20,9 +20,6 @@ export const connectorInfo = (
 	return info;
 };
 
-export const connectorKey = (connector: Connector) =>
-	'type' in connector ? ioKey(connector) : paramKey(connector);
-
 export const connectorButton = (key: string) => {
 	const button = document.getElementById(key) as HTMLButtonElement;
 	if (!button) {
@@ -39,10 +36,6 @@ export const moduleConnectors = (
 	return Object.entries(connectors)
 		.filter(([, [connector]]) => connector.moduleId === moduleId)
 		.map(([key]) => key);
-};
-
-export const connectionKey = (output: Output, input: Input) => {
-	return `${connectorKey(output)}|${connectorKey(input)}`;
 };
 
 export const connectionInfo = (
