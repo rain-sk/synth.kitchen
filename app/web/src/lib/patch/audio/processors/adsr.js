@@ -1,10 +1,19 @@
-function interpolate(a, d, s, r, framesSinceHoldStart, framesSinceHoldEnd) {
-	const noteOn = framesSinceHoldStart !== -1;
-
+function interpolate(
+	hold,
+	a,
+	d,
+	s,
+	r,
+	framesSinceHoldStart,
+	framesSinceHoldEnd,
+	lastFrame,
+) {
+	const noteOn = framesSinceHoldStart !== -1 && framesSinceHoldEnd === -1;
 	if (noteOn) {
 		const timeSinceHoldStart = framesSinceHoldStart / sampleRate;
-
-		if (a > 0 && timeSinceHoldStart <= a) {
+		if (hold <= 0 && framesSinceHoldStart === 0) {
+			return 1;
+		} else if (a > 0 && timeSinceHoldStart <= a) {
 			return timeSinceHoldStart / a;
 		} else if (d > 0 && timeSinceHoldStart <= a + d) {
 			const decayTimeElapsed = timeSinceHoldStart - a;
@@ -16,9 +25,10 @@ function interpolate(a, d, s, r, framesSinceHoldStart, framesSinceHoldEnd) {
 	} else if (framesSinceHoldEnd !== -1) {
 		const timeSinceHoldEnd = framesSinceHoldEnd / sampleRate;
 		const releaseRatio = r === 0 ? 1 : timeSinceHoldEnd / r;
-		return Math.max(s - releaseRatio * s, 0);
+		const targetValue = Math.max(s - releaseRatio * s, 0);
+		return (targetValue + targetValue + lastFrame) / 3;
 	}
-	return 0;
+	return lastFrame / 3;
 }
 
 class Adsr extends AudioWorkletProcessor {
@@ -87,10 +97,11 @@ class Adsr extends AudioWorkletProcessor {
 			if (trigger) {
 				framesSinceHoldStart = 0;
 				framesSinceHoldEnd = -1;
-			} else if (framesSinceHoldEnd >= 0) {
+			} else if (framesSinceHoldStart >= 0 && framesSinceHoldEnd === -1) {
 				if (framesSinceHoldStart / sampleRate < frameHold) {
 					framesSinceHoldStart++;
 				} else {
+					// debugger;
 					framesSinceHoldEnd = 0;
 				}
 			} else if (framesSinceHoldEnd >= 0) {
@@ -102,18 +113,22 @@ class Adsr extends AudioWorkletProcessor {
 			}
 
 			const frameRelease = isReleaseConstant ? release[0] : release[i];
+			const frameSustain = Math.max(
+				0,
+				Math.min(1, isSustainConstant ? sustain[0] : sustain[i]),
+			);
 
 			{
 				const adsrValue = interpolate(
+					frameHold,
 					isAttackConstant ? attack[0] : attack[i],
 					isDecayConstant ? decay[0] : decay[i],
-					isSustainConstant ? sustain[0] : sustain[i],
+					frameSustain,
 					frameRelease,
 					framesSinceHoldStart,
 					framesSinceHoldEnd,
 				);
-
-				const frameValue = (adsrValue + lastFrame) / 2;
+				const frameValue = (adsrValue + adsrValue + lastFrame) / 3;
 
 				for (let channel = 0; channel < output.length; channel++) {
 					output[channel][i] = frameValue;

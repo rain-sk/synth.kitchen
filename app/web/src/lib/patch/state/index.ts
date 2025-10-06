@@ -26,7 +26,7 @@ export const outputModule: () => Module = () => ({
 const outputModulePosition = (): ModulePosition => {
 	const main = document.getElementById('main');
 	if (!main) {
-		return [200, 200];
+		return [-20000, -20000];
 	}
 
 	const { width, height } = main.getBoundingClientRect();
