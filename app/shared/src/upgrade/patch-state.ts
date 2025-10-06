@@ -2,10 +2,13 @@ import { Module, Patch, PatchState } from "../types/patch";
 import { moduleNeedsUpgrade, upgradeModule } from "./module";
 
 export const patchStateNeedsUpgrade = (state: PatchState): boolean => {
-  return Object.keys(state.modules).some((key) => {
-    const module = state.modules[key];
-    return moduleNeedsUpgrade(module.type, module.state);
-  });
+  return (
+    true ||
+    Object.keys(state.modules).some((key) => {
+      const module = state.modules[key];
+      return moduleNeedsUpgrade(module.type, module.state);
+    })
+  );
 };
 
 export const upgradePatchState = (state: PatchState): PatchState => {
