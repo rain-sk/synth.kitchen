@@ -18,6 +18,10 @@ export class AdsrNode {
 
 	node = (): IAudioWorkletNode<IAudioContext> => this._node;
 
+	get hold(): IAudioParam {
+		return this._node.parameters.get('hold') as IAudioParam;
+	}
+
 	get attack(): IAudioParam {
 		return this._node.parameters.get('attack') as IAudioParam;
 	}

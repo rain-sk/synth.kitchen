@@ -1,36 +1,33 @@
 import {
 	IAudioContext,
 	IAudioParam,
+	IAudioWorkletNode,
 	IGainNode,
 } from 'standardized-audio-context';
 
 import { audioContext } from '..';
 import { AdsrNode } from './adsr';
-import { GateNode } from './gate';
 
 export class EnvelopeNode {
 	private _adsr = new AdsrNode();
 	private _gain = audioContext.createGain();
-	private _gate = new GateNode();
 
 	constructor() {
-		this._gate.node().connect(this._adsr.node());
 		this._adsr.node().connect(this._gain);
 	}
 
 	disconnect = () => {
 		setTimeout(() => {
-			this._gate.node().disconnect(this._adsr.node());
 			this._adsr.node().disconnect(this._gain);
 			this._adsr.disconnect();
 		}, 10);
 	};
 
-	sync = (): GateNode => this._gate;
+	sync = (): IAudioWorkletNode<IAudioContext> => this._adsr.node();
 	gain = (): IGainNode<IAudioContext> => this._gain;
 
-	get gate(): IAudioParam {
-		return this._gate.gate;
+	get hold(): IAudioParam {
+		return this._adsr.hold;
 	}
 
 	get attack(): IAudioParam {

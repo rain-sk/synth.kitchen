@@ -25,8 +25,23 @@ export function upgrade(
     };
   }
 
-  if (state.version === ENVELOPE_STATE_VERSIONS[0]) {
-    return state;
+  switch (state.version) {
+    case "0.5.0": {
+      const newState: ENVELOPE_STATE["0.5.4"] = {
+        version: "0.5.4",
+        hold: state.gate,
+        attack: state.attack,
+        decay: state.decay,
+        sustain: state.sustain,
+        release: state.release,
+        peak: state.peak,
+      };
+      state = newState;
+    }
+
+    case "0.5.4":
+    case ENVELOPE_STATE_VERSIONS[0]:
+      return state;
   }
 
   throw new Error(

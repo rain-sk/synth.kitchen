@@ -11,8 +11,8 @@ import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
 const envelopeStateFromNode = (
 	node: EnvelopeNode,
 ): ModuleState['ENVELOPE'] => ({
-	version: '0.5.0',
-	gate: Math.round(node.gate.value * 10000) / 10000,
+	version: '0.5.4',
+	hold: Math.round(node.hold.value * 10000) / 10000,
 	attack: Math.round(node.attack.value * 100) / 100,
 	decay: Math.round(node.decay.value * 100) / 100,
 	sustain: Math.round(node.sustain.value * 100) / 100,
@@ -25,7 +25,7 @@ const initEnvelope = (
 	state?: ModuleState['ENVELOPE'],
 ) => {
 	if (state) {
-		envelope.gate.setValueAtTime(state.gate, audioContext.currentTime);
+		envelope.hold.setValueAtTime(state.hold, audioContext.currentTime);
 		envelope.attack.setValueAtTime(state.attack, audioContext.currentTime);
 		envelope.decay.setValueAtTime(state.decay, audioContext.currentTime);
 		envelope.sustain.setValueAtTime(state.sustain, audioContext.currentTime);
@@ -48,22 +48,22 @@ export const EnvelopeModule: React.FC<{
 
 	const enabled = state != undefined;
 
-	const sync = useCallback(() => node.sync().node(), [enabled]);
+	const sync = useCallback(() => node.sync(), [enabled]);
 
 	const output = useCallback(() => node.gain(), [enabled]);
 
-	const commitGateChange = useCallback(
-		(gate: number) => {
-			node.gate.linearRampToValueAtTime(gate, audioContext.currentTime);
+	const commitHoldChange = useCallback(
+		(hold: number) => {
+			node.hold.linearRampToValueAtTime(hold, audioContext.currentTime);
 			setState({
 				...state,
-				gate,
+				hold,
 			});
 		},
 		[state],
 	);
 
-	const gateAccessor = useCallback(() => node.gate, [enabled]);
+	const holdAccessor = useCallback(() => node.hold, [enabled]);
 
 	const commitAttackChange = useCallback(
 		(attack: number) => {
@@ -136,8 +136,8 @@ export const EnvelopeModule: React.FC<{
 			return;
 		}
 		moduleStateRef.current = module.state;
-		if (module.state.gate !== node.gate.value) {
-			commitGateChange(module.state.gate);
+		if (module.state.hold !== node.hold.value) {
+			commitHoldChange(module.state.hold);
 		}
 		if (module.state.attack !== node.attack.value) {
 			commitAttackChange(module.state.attack);
@@ -153,7 +153,7 @@ export const EnvelopeModule: React.FC<{
 		}
 	}, [
 		module.state,
-		commitGateChange,
+		commitHoldChange,
 		commitAttackChange,
 		commitSustainChange,
 		commitReleaseChange,
@@ -171,10 +171,10 @@ export const EnvelopeModule: React.FC<{
 			<section>
 				<NumberParameter
 					moduleId={module.id}
-					paramAccessor={gateAccessor}
-					name="gate"
-					value={state.gate}
-					commitValueCallback={commitGateChange}
+					paramAccessor={holdAccessor}
+					name="hold"
+					value={state.hold}
+					commitValueCallback={commitHoldChange}
 				/>
 				<NumberParameter
 					moduleId={module.id}
