@@ -37,14 +37,27 @@ const executePendingUpgrades = async () => {
     async (entry) => await patchStateNeedsUpgrade(entry.state)
   );
 
-  if (statesToUpgrade.length > 0) {
-    console.log(`Upgrading ${statesToUpgrade.length} saved patch states`);
+  const numberOfStatesToUpgrade = statesToUpgrade.length;
+  if (numberOfStatesToUpgrade > 0) {
+    console.log(`Upgrading ${numberOfStatesToUpgrade} saved patch states`);
     const repo = AppDataSource.getRepository(SavedPatchState);
+    let remainingUpgrades = 0;
     for (const entry of statesToUpgrade) {
       entry.state = upgradePatchState(entry.state) as any;
       await repo.save(entry);
+      if (await patchStateNeedsUpgrade(entry.state)) {
+        remainingUpgrades++;
+      }
     }
-    console.log("Executed pending patch state upgrades");
+
+    console.log(
+      `Executed ${
+        numberOfStatesToUpgrade - remainingUpgrades
+      } patch state upgrades`
+    );
+    if (remainingUpgrades > 0) {
+      console.log(`${remainingUpgrades} upgrades pending.`);
+    }
   }
 };
 
