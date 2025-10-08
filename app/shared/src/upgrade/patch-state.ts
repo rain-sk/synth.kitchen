@@ -35,21 +35,6 @@ export const upgradePatchState = (state: PatchState): PatchState => {
       state: upgradeModule(module.type, module.state),
     };
   });
-
-  Object.entries(state.connections).forEach(([key, [output, input]]) => {
-    if ("name" in input && input.name === "hold") {
-      input = {
-        ...input,
-        name: "gate",
-      };
-      state = {
-        ...state,
-      };
-      delete state.connections[key];
-      const newKey = connectionKey(output, input);
-      state.connections[newKey] = [output, input];
-    }
-  });
   return {
     ...state,
     modules,
