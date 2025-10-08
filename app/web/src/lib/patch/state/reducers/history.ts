@@ -50,7 +50,7 @@ const syncConnections = (
 		state = blockHistory(state);
 	}
 
-	const currentConnectionKeys = Object.keys(state.connections);
+	const currentConnectionKeys = Object.keys(state.connections.state);
 	const incomingConnectionKeys = Object.keys(stateToLoad.connections);
 
 	// Delete outgoing connections
@@ -86,7 +86,7 @@ const syncConnections = (
 	for (const [output, input] of connectionsToLoadNow) {
 		const key = connectionKey(output, input);
 		state = connect(state, { payload: [output, input], type: 'Connect' });
-		if (key in state.connections) {
+		if (key in state.connections.state) {
 			loaded.add(key);
 		}
 	}

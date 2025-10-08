@@ -18,7 +18,7 @@ export const connect: React.Reducer<IPatchState, IConnect> = (
 	action,
 ) => {
 	let [output, input] = action.payload;
-	if (connectionKey(output, input) in state.connections) {
+	if (connectionKey(output, input) in state.connections.state) {
 		return state;
 	}
 
@@ -44,7 +44,7 @@ export const disconnect: React.Reducer<IPatchState, IDisconnect> = (
 	state,
 	action,
 ) => {
-	if (!(action.payload.connectionKey in state.connections)) {
+	if (!(action.payload.connectionKey in state.connections.state)) {
 		return state;
 	}
 	const [output, input] = state.connections.state[action.payload.connectionKey];

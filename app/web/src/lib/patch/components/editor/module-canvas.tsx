@@ -13,7 +13,7 @@ export const ModuleCanvas: React.FC<{
 	state: IPatchState;
 	dispatch: React.Dispatch<IPatchAction>;
 }> = ({ state, dispatch }) => {
-	const connectionsCount = Object.keys(state.connections).length;
+	const connectionsCount = Object.keys(state.connections.state).length;
 	const modulesCount = Object.keys(state.modules).length;
 
 	const sortedModules = useMemo(
