@@ -101,6 +101,7 @@ export const useLoadPatch = (
 			connectionsToLoad &&
 			Object.keys(connectionsToLoad.state).length > 0
 		) {
+			loadingConnectionsRef.current = true;
 			dispatch(patchActions.loadConnectionsAction());
 		} else if (
 			!connectionsToLoad ||

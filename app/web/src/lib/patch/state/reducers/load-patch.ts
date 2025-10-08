@@ -14,7 +14,7 @@ export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
 		creator: action.payload.creator,
 		modules: action.payload.modules,
 		modulePositions: action.payload.modulePositions,
-		connections: { version: action.payload.connections.version, state: {} },
+		connections: action.payload.connections,
 		connectionsToLoad: action.payload.connections,
 		heldModifiers: state.heldModifiers,
 	};

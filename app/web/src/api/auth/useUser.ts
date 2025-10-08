@@ -26,8 +26,7 @@ export const useUser = (jwt: string) => {
 						.then((res) => res.json())
 						.then((response) => response.user as UserInfoAuthenticated);
 					setUser(user);
-				} catch (e) {
-					console.error(e);
+				} catch (_) {
 					setUser(undefined);
 				} finally {
 					blockingRef.current = false;

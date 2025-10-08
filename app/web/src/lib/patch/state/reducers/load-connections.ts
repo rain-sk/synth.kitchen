@@ -11,19 +11,24 @@ import { unblockHistory } from './history';
 export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	state,
 ) => {
-	const newState: Partial<IPatchState> = {
+	const newState = {
+		connections: state.connections,
 		connectors: state.connectors,
 		connectionsToLoad: { version: state.connections.version, state: {} },
-	};
-	for (let [key, [output, input]] of Object.entries(state.connections.state)) {
+	} as Pick<IPatchState, 'connectors'> &
+		Pick<IPatchState, 'connectionsToLoad'> &
+		Pick<IPatchState, 'connections'>;
+	for (let [key, [output, input]] of Object.entries(
+		state.connectionsToLoad?.state ?? {},
+	)) {
 		const outputKey = connectorKey(output);
 		const inputKey = connectorKey(input);
 
 		const connectorsRegistered =
 			outputKey in state.connectors && inputKey in state.connectors;
 
-		if (!connectorsRegistered || !newState.connectors) {
-			const connectionsToLoad = (newState as IPatchState).connectionsToLoad;
+		if (!connectorsRegistered) {
+			const connectionsToLoad = newState.connectionsToLoad;
 			if (connectionsToLoad) {
 				connectionsToLoad.state[key] = [output, input];
 			}
@@ -38,12 +43,9 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 			)[0] as Input;
 
 			try {
-				const { connectors: newConnectors } = connect(
-					state.connections,
-					newState.connectors,
-					output,
-					input,
-				);
+				const { connections: newConnections, connectors: newConnectors } =
+					connect(newState.connections, newState.connectors, output, input);
+				newState.connections = newConnections;
 				newState.connectors = newConnectors;
 			} catch (e) {
 				console.warn(e);
