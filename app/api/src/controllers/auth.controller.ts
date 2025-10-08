@@ -19,13 +19,13 @@ export class AuthController {
         throw new Error("JWT represents non-existent user");
       }
 
-      const user = UserService.getUser({ id: req.auth.id });
+      const user = await UserService.getUser({ id: req.auth.id });
 
       const authorizedUser: UserInfoAuthenticated = {
-        id: req.auth.id,
-        email: req.auth.email,
-        username: req.auth.username,
-        verified: req.auth.verified,
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        verified: user.verified,
       };
 
       res.json({
