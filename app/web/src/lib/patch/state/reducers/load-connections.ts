@@ -1,4 +1,4 @@
-import { Input } from 'synth.kitchen-shared';
+import { CONNECTIONS_STATE_VERSIONS, Input } from 'synth.kitchen-shared';
 import { Output } from 'synth.kitchen-shared';
 import { ILoadConnections } from '../actions/load-connections';
 import { connect } from '../connection';
@@ -31,6 +31,11 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 			const connectionsToLoad = newState.connectionsToLoad;
 			if (connectionsToLoad) {
 				connectionsToLoad.state[key] = [output, input];
+			} else {
+				newState.connectionsToLoad = {
+					version: CONNECTIONS_STATE_VERSIONS[0],
+					state: { [key]: [output, input] },
+				};
 			}
 		} else {
 			output = connectorInfo(

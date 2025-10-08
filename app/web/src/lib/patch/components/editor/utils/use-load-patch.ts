@@ -97,6 +97,7 @@ export const useLoadPatch = (
 	const loadingConnectionsRef = useRef(false);
 	useEffect(() => {
 		if (
+			initialized &&
 			!loadingConnectionsRef.current &&
 			connectionsToLoad &&
 			Object.keys(connectionsToLoad.state).length > 0
@@ -109,7 +110,7 @@ export const useLoadPatch = (
 		) {
 			loadingConnectionsRef.current = false;
 		}
-	}, [connectionsToLoad]);
+	}, [initialized, connectionsToLoad]);
 
 	return loading;
 };

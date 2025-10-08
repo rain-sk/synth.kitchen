@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useCallback, useReducer } from 'react';
 import { useTitle } from 'react-use';
 import { useRoute } from 'wouter';
 
@@ -12,6 +12,7 @@ import { Init } from './init';
 import { AsyncQueue } from './async-queue';
 import { useAudioMidiInit } from './utils/use-audio-midi-init';
 import { useLoadPatch } from './utils/use-load-patch';
+import { patchActions } from '../../state/actions';
 
 const initialState = { ...blankPatch() };
 
@@ -23,6 +24,11 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 	useTitle(random ? '...' : `patch/${state.name ? state.name : 'untitled'}`);
 
 	const loading = useLoadPatch(state, dispatch, initialized, slug);
+
+	const init = useCallback(async () => {
+		await initAudioMidi();
+		dispatch(patchActions.loadConnectionsAction());
+	}, []);
 
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>
@@ -39,7 +45,7 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 							loading={loading}
 							name={state.name ? state.name : 'untitled'}
 							status={status}
-							init={initAudioMidi}
+							init={init}
 						/>
 					)}
 				</MidiContextProvider>
