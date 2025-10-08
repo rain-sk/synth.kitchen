@@ -47,7 +47,7 @@ export const disconnect: React.Reducer<IPatchState, IDisconnect> = (
 	if (!(action.payload.connectionKey in state.connections)) {
 		return state;
 	}
-	const [output, input] = state.connections[action.payload.connectionKey];
+	const [output, input] = state.connections.state[action.payload.connectionKey];
 
 	return cloneAndApplyWithHistory(
 		state,

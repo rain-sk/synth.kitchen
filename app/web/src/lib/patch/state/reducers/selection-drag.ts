@@ -255,7 +255,10 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 				});
 			}
 
-			const connectionsInDrag = connectionsInRange(rect, state.connections);
+			const connectionsInDrag = connectionsInRange(
+				rect,
+				state.connections.state,
+			);
 
 			return cloneAndApply(state, {
 				mouseDragPosition: action.payload.position,
@@ -301,7 +304,7 @@ export const selectionDrag: React.Reducer<IPatchState, ISelectionDrag> = (
 
 			const connectionsInPendingSelection = connectionsInRange(
 				rect,
-				state.connections,
+				state.connections.state,
 			);
 
 			const newSelection = shift

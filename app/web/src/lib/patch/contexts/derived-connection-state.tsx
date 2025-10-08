@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Connection, IoType } from 'synth.kitchen-shared';
+import { ConnectionsState, IoType } from 'synth.kitchen-shared';
 
 import {
 	connectorKey,
@@ -24,7 +24,7 @@ export const DerivedConnectionStateContext =
 export const DerivedConnectionStateContextProvider: React.FC<
 	React.PropsWithChildren<{
 		activeConnectorKey?: string;
-		connections: Record<string, Connection>;
+		connections: ConnectionsState;
 		connectors: Record<string, ConnectorInfo>;
 	}>
 > = ({ children, activeConnectorKey, connections, connectors }) => {

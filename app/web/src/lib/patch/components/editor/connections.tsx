@@ -52,7 +52,7 @@ type Segment = [ModulePosition, ModulePosition];
 type Path = Segment[];
 const connectionToPath =
 	(mode: ConnectionDrawMode) =>
-	([output, input]: Connection): [string, Path] => {
+	([_, [output, input]]: [string, Connection]): [string, Path] => {
 		const outputPosition = position(connectorButton(connectorKey(output)));
 		const inputPosition = position(connectorButton(connectorKey(input)));
 
@@ -168,9 +168,10 @@ const Connections: React.FC<{
 	const mouse = useMouse(mainRef);
 
 	const drawConnections = useCallback(() => {
-		const connectionsToDraw = Object.values(connections)
+		const connectionsToDraw = Object.entries(connections.state)
 			.filter(
-				([output, input]) =>
+				([key, [output, input]]) =>
+					key !== 'version' &&
 					connectorKey(output) in connectors &&
 					connectorKey(input) in connectors,
 			)
@@ -206,7 +207,7 @@ const Connections: React.FC<{
 
 				resizeCanvas(canvasRef.current);
 
-				const connectionsToDraw = Object.values(connections).map(
+				const connectionsToDraw = Object.entries(connections.state).map(
 					connectionToPath(ConnectionDrawMode.DIRECT),
 				);
 

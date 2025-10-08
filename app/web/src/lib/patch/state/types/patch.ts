@@ -1,5 +1,5 @@
 import {
-	Connection,
+	ConnectionsState,
 	Connector,
 	Io,
 	ModulePosition,
@@ -23,8 +23,8 @@ export type IPatchState = PatchInfo &
 
 		// i/o
 		activeConnectorKey: string | undefined;
-		connectionsToLoad: Record<string, Connection>;
-		connections: Record<string, Connection>;
+		connectionsToLoad?: ConnectionsState;
+		connections: ConnectionsState;
 		connectors: Record<string, ConnectorInfo>;
 		io: Record<string, Io>;
 		parameters: Record<string, Parameter>;

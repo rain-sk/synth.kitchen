@@ -1,4 +1,9 @@
-import { Module, ModulePosition, ModuleType } from 'synth.kitchen-shared';
+import {
+	CONNECTIONS_STATE_VERSIONS,
+	Module,
+	ModulePosition,
+	ModuleType,
+} from 'synth.kitchen-shared';
 
 import { IPatchState } from './types/patch';
 import { Modifier } from '../constants/key';
@@ -13,7 +18,7 @@ export const blankPatchToClearCanvas = (): ISerializedPatch => ({
 	slug: '',
 	modules: {},
 	modulePositions: {},
-	connections: {},
+	connections: { version: CONNECTIONS_STATE_VERSIONS[0], state: {} },
 });
 
 export const outputModule: () => Module = () => ({
@@ -45,7 +50,7 @@ export const blankPatchToLoad = (): ISerializedPatch => ({
 	modulePositions: {
 		['0']: outputModulePosition(),
 	},
-	connections: {},
+	connections: { version: CONNECTIONS_STATE_VERSIONS[0], state: {} },
 });
 
 export const blankPatch = (): IPatchState => ({
@@ -64,8 +69,7 @@ export const blankPatch = (): IPatchState => ({
 	// i/o
 	activeConnectorKey: undefined,
 	connectors: {},
-	connections: {},
-	connectionsToLoad: {},
+	connections: { version: CONNECTIONS_STATE_VERSIONS[0], state: {} },
 	io: {},
 	parameters: {},
 

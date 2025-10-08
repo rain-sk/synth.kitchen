@@ -1,5 +1,7 @@
 import {
 	Connection,
+	CONNECTIONS_STATE_VERSIONS,
+	ConnectionsState,
 	Connector,
 	Input,
 	ioKey,
@@ -46,10 +48,10 @@ export const connectionKey = (output: Output, input: Input) => {
 };
 
 export const connectionInfo = (
-	connections: Record<string, Connection>,
+	connections: ConnectionsState,
 	connectionKey: string,
 ): Connection => {
-	const connection = connections[connectionKey];
+	const connection = connections.state[connectionKey];
 
 	if (!connection) {
 		debugger;
@@ -60,12 +62,12 @@ export const connectionInfo = (
 };
 
 export const connect = (
-	connections: Record<string, Connection>,
+	connections: ConnectionsState,
 	connectors: Record<string, ConnectorInfo>,
 	output: Output,
 	input: Input,
 ): {
-	connections: Record<string, Connection>;
+	connections: ConnectionsState;
 	connectors: Record<string, ConnectorInfo>;
 } => {
 	output.accessor().connect(input.accessor() as any);
@@ -77,8 +79,11 @@ export const connect = (
 
 	return {
 		connections: {
-			...connections,
-			[key]: [output, input],
+			version: CONNECTIONS_STATE_VERSIONS[0],
+			state: {
+				...connections.state,
+				[key]: [output, input],
+			},
 		},
 		connectors: {
 			...connectors,
@@ -89,12 +94,12 @@ export const connect = (
 };
 
 export const disconnectSet = (
-	connections: Record<string, Connection>,
+	connections: ConnectionsState,
 	connectors: Record<string, ConnectorInfo>,
 	connectionsToDisconnect: Set<string>,
 ) => {
 	connectionsToDisconnect.forEach((key: string) => {
-		const [output, input] = connections[key];
+		const [output, input] = connections.state[key];
 		const { connections: newConnections, connectors: newConnectors } =
 			disconnect(connections, connectors, output, input);
 		connections = newConnections;
@@ -104,16 +109,16 @@ export const disconnectSet = (
 };
 
 export const disconnect = (
-	connections: Record<string, Connection>,
+	connections: ConnectionsState,
 	connectors: Record<string, ConnectorInfo>,
 	output: Output,
 	input: Input,
 ): {
-	connections: Record<string, Connection>;
+	connections: ConnectionsState;
 	connectors: Record<string, ConnectorInfo>;
 } => {
 	const key = connectionKey(output, input);
-	if (!(key in connections)) {
+	if (!(key in connections.state)) {
 		console.error('unregistered connection', key);
 		throw Error('disconnecting unregistered connection');
 	}
@@ -164,12 +169,17 @@ export const disconnect = (
 		(existingKey) => existingKey !== key,
 	);
 
-	const newConnections = Object.fromEntries(
-		Object.entries(connections).filter(([existingKey]) => existingKey !== key),
+	const newConnectionsState = Object.fromEntries(
+		Object.entries(connections.state).filter(
+			([existingKey]) => existingKey !== key,
+		),
 	);
 
 	return {
-		connections: newConnections,
+		connections: {
+			version: CONNECTIONS_STATE_VERSIONS[0],
+			state: newConnectionsState,
+		},
 		connectors: {
 			...connectors,
 			[outputKey]: [output, outputConnections],
@@ -179,12 +189,12 @@ export const disconnect = (
 };
 
 export const connectOrDisconnect = (
-	connections: Record<string, Connection>,
+	connections: ConnectionsState,
 	connectors: Record<string, ConnectorInfo>,
 	output: Output,
 	input: Input,
 ): {
-	connections: Record<string, Connection>;
+	connections: ConnectionsState;
 	connectors: Record<string, ConnectorInfo>;
 } =>
 	connectionKey(output, input) in connections

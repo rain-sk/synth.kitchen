@@ -98,10 +98,14 @@ export const useLoadPatch = (
 	useEffect(() => {
 		if (
 			!loadingConnectionsRef.current &&
-			Object.keys(connectionsToLoad).length > 0
+			connectionsToLoad &&
+			Object.keys(connectionsToLoad.state).length > 0
 		) {
 			dispatch(patchActions.loadConnectionsAction());
-		} else if (Object.keys(connectionsToLoad).length === 0) {
+		} else if (
+			!connectionsToLoad ||
+			Object.keys(connectionsToLoad.state).length === 0
+		) {
 			loadingConnectionsRef.current = false;
 		}
 	}, [connectionsToLoad]);

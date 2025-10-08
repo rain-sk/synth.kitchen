@@ -13,9 +13,9 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 ) => {
 	const newState: Partial<IPatchState> = {
 		connectors: state.connectors,
-		connectionsToLoad: {},
+		connectionsToLoad: { version: state.connections.version, state: {} },
 	};
-	for (let [key, [output, input]] of Object.entries(state.connections)) {
+	for (let [key, [output, input]] of Object.entries(state.connections.state)) {
 		const outputKey = connectorKey(output);
 		const inputKey = connectorKey(input);
 
@@ -23,7 +23,10 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 			outputKey in state.connectors && inputKey in state.connectors;
 
 		if (!connectorsRegistered || !newState.connectors) {
-			(newState as IPatchState).connectionsToLoad[key] = [output, input];
+			const connectionsToLoad = (newState as IPatchState).connectionsToLoad;
+			if (connectionsToLoad) {
+				connectionsToLoad.state[key] = [output, input];
+			}
 		} else {
 			output = connectorInfo(
 				newState.connectors,

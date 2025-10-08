@@ -1,30 +1,18 @@
+import { Module, PatchState } from "../types/patch";
 import {
-  Connector,
-  Input,
-  ioKey,
-  Module,
-  Output,
-  paramKey,
-  Patch,
-  PatchState,
-} from "../types/patch";
+  connectionsStateNeedsUpgrade,
+  upgradeConnectionsState,
+} from "./connections-state";
 import { moduleNeedsUpgrade, upgradeModule } from "./module";
 
 export const patchStateNeedsUpgrade = (state: PatchState): boolean => {
   return (
-    true ||
+    connectionsStateNeedsUpgrade(state.connections) ||
     Object.keys(state.modules).some((key) => {
       const module = state.modules[key];
       return moduleNeedsUpgrade(module.type, module.state);
     })
   );
-};
-
-const connectorKey = (connector: Connector) =>
-  "type" in connector ? ioKey(connector) : paramKey(connector);
-
-const connectionKey = (output: Output, input: Input) => {
-  return `${connectorKey(output)}|${connectorKey(input)}`;
 };
 
 export const upgradePatchState = (state: PatchState): PatchState => {
@@ -35,8 +23,10 @@ export const upgradePatchState = (state: PatchState): PatchState => {
       state: upgradeModule(module.type, module.state),
     };
   });
+
   return {
     ...state,
     modules,
+    connections: upgradeConnectionsState(state.connections),
   };
 };

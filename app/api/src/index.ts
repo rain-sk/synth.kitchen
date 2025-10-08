@@ -30,7 +30,7 @@ const initDatabaseConnection = async () => {
   });
 };
 
-const executePendingUpgrades = async () => {
+const upgradePatchStates = async () => {
   const stateRepository = AppDataSource.getRepository(SavedPatchState);
 
   const statesToUpgrade = (await stateRepository.find()).filter(
@@ -59,6 +59,10 @@ const executePendingUpgrades = async () => {
       console.log(`${remainingUpgrades} upgrades pending.`);
     }
   }
+};
+
+const executePendingUpgrades = async () => {
+  await upgradePatchStates();
 };
 
 server.listen(apiPort, async (e) => {

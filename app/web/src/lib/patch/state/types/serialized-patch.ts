@@ -1,5 +1,5 @@
 import type {
-	Connection,
+	ConnectionsState,
 	Module,
 	ModulePosition,
 	UserInfo,
@@ -12,5 +12,5 @@ export type ISerializedPatch = {
 	creator?: UserInfo;
 	modules: Record<string, Module>;
 	modulePositions: Record<string, ModulePosition>;
-	connections: Record<string, Connection>;
+	connections: ConnectionsState;
 };

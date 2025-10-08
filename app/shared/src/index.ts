@@ -2,7 +2,9 @@ export {
   AdminUser,
   Connection,
   ConnectionInfo,
+  ConnectionsState,
   Connector,
+  CONNECTIONS_STATE_VERSIONS,
   Input,
   Io,
   ioKey,
@@ -71,8 +73,10 @@ export {
 export { randomId, randomName } from "./utils";
 
 export {
+  connectionsStateNeedsUpgrade,
   moduleNeedsUpgrade,
   patchStateNeedsUpgrade,
+  upgradeConnectionsState,
   upgradeModule,
   upgradePatchState,
 } from "./upgrade";

@@ -9,7 +9,7 @@ import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
 const vcaStateFromNode = (node: VcaNode): ModuleState['VCA'] => ({
-	version: '0.5.0',
+	version: '0.5.5',
 	gate: Math.round(node.gate.value * 10000) / 10000,
 	attack: Math.round(node.attack.value * 100) / 100,
 	decay: Math.round(node.decay.value * 100) / 100,

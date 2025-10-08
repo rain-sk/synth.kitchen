@@ -135,14 +135,16 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		}
 
 		// DEBUG
-		Object.values(newState.connections ?? []).forEach(([output, input]) => {
-			if (state.selectedModules.has(output.moduleId)) {
-				debugger;
-			}
-			if (state.selectedModules.has(input.moduleId)) {
-				debugger;
-			}
-		});
+		Object.values(newState.connections?.state ?? []).forEach(
+			([output, input]) => {
+				if (state.selectedModules.has(output.moduleId)) {
+					debugger;
+				}
+				if (state.selectedModules.has(input.moduleId)) {
+					debugger;
+				}
+			},
+		);
 
 		return cloneAndApplyWithHistory(state, newState);
 	} else if (
@@ -177,7 +179,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		newState.selectedConnections = new Set();
 
 		for (const connectionKey of state.selectedConnections) {
-			const [output, input] = state.connections[connectionKey];
+			const [output, input] = state.connections.state[connectionKey];
 
 			const sourceModulePosition = state.modulePositions[output.moduleId];
 			const targetModulePosition = state.modulePositions[input.moduleId];

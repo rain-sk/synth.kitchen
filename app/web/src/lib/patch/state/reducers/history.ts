@@ -1,4 +1,4 @@
-import { PatchState } from 'synth.kitchen-shared';
+import { CONNECTIONS_STATE_VERSIONS, PatchState } from 'synth.kitchen-shared';
 import { cloneAndApply, IPatchState } from '../types/patch';
 import { IPushToHistory } from '../actions/history';
 import { connectionKey, connectorKey, disconnectSet } from '../connection';
@@ -59,7 +59,7 @@ const syncConnections = (
 	const connectionsToDelete = currentConnectionKeys
 		.filter((key) => !new Set(incomingConnectionKeys).has(key))
 		.filter((key) => {
-			const [output, input] = state.connections[key];
+			const [output, input] = state.connections.state[key];
 			return (
 				output.moduleId in stateToLoad.modules &&
 				input.moduleId in stateToLoad.modules
@@ -76,7 +76,7 @@ const syncConnections = (
 
 	// Connect what we can
 	const connectionsToLoadNow = incomingConnectionKeys
-		.map((key) => stateToLoad.connections[key])
+		.map((key) => stateToLoad.connections.state[key])
 		.filter(
 			([output, input]) =>
 				output.moduleId in state.modules &&
@@ -94,11 +94,15 @@ const syncConnections = (
 	}
 
 	// Defer the rest
-	stateToLoad.connectionsToLoad = Object.fromEntries(
+	const newConnectionsState = Object.fromEntries(
 		incomingConnectionKeys
 			.filter((key) => !loaded.has(key))
-			.map((key) => [key, stateToLoad.connections[key]]),
+			.map((key) => [key, stateToLoad.connections.state[key]]),
 	);
+	stateToLoad.connectionsToLoad = {
+		version: CONNECTIONS_STATE_VERSIONS[0],
+		state: newConnectionsState,
+	};
 
 	for (const id in stateToLoad.modules) {
 		if (id in state.modules) {

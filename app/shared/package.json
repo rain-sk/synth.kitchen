@@ -1,6 +1,6 @@
 {
   "name": "synth.kitchen-shared",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "shared types and utils for synth.kitchen-api and synth.kitchen-web",
   "license": "MIT",
   "keywords": [],
@@ -13,7 +13,8 @@
   },
   "scripts": {
     "prepare": "npm run build",
-    "build": "tsc && node -r ts-node/register build.ts"
+    "build": "tsc && node -r ts-node/register build.ts",
+    "lint": "tsc --preserveWatchOutput --watch"
   },
   "peerDependencies": {
     "server-name-gen": "^1.0.2",
