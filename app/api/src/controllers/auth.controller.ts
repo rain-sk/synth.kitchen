@@ -14,7 +14,7 @@ export class AuthController {
       if (
         !req.auth ||
         !req.auth.id ||
-        !UserService.userExists({ id: req.auth.id })
+        !(await UserService.userExists({ id: req.auth.id }))
       ) {
         throw new Error("JWT represents non-existent user");
       }
