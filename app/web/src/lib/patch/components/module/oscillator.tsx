@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	Module,
+	ModuleState,
+	ModuleType,
+	OSCILLATOR_STATE_VERSIONS,
+} from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
 
@@ -25,7 +30,7 @@ const effectiveDetune = (transpose: number, detune: number) =>
 const oscillatorStateFromNode = (
 	node: OscillatorNode,
 ): ModuleState['OSCILLATOR'] => ({
-	version: '0.5.2',
+	version: OSCILLATOR_STATE_VERSIONS[0],
 	frequency: node.frequency.value,
 	transpose: node.transpose.value,
 	detune: node.detune.value,

@@ -6,10 +6,15 @@ import { ClockNode } from '../../audio/nodes/clock';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	CLOCK_STATE_VERSIONS,
+	Module,
+	ModuleState,
+	ModuleType,
+} from 'synth.kitchen-shared';
 
 const clockStateFromNode = (clock: ClockNode): ModuleState['CLOCK'] => ({
-	version: '0.5.0',
+	version: CLOCK_STATE_VERSIONS[0],
 	tempo: clock.tempo.value,
 });
 

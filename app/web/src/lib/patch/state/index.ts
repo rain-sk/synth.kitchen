@@ -3,6 +3,7 @@ import {
 	Module,
 	ModulePosition,
 	ModuleType,
+	PATCH_STATE_VERSIONS,
 } from 'synth.kitchen-shared';
 
 import { IPatchState } from './types/patch';
@@ -87,6 +88,8 @@ export const blankPatch = (): IPatchState => ({
 	historyPointer: -1,
 	blockHistory: true,
 	asyncActionQueue: [],
+
+	version: PATCH_STATE_VERSIONS[0],
 });
 
 export { patchReducer } from './reducers';

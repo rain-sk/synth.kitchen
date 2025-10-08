@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	Module,
+	ModuleState,
+	ModuleType,
+	SHIFT_STATE_VERSIONS,
+} from 'synth.kitchen-shared';
 
 import { ShiftNode } from '../../audio/nodes/shift';
 
@@ -9,7 +14,7 @@ import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
 const shiftStateFromNode = (shift: ShiftNode): ModuleState['SHIFT'] => ({
-	version: '0.5.0',
+	version: SHIFT_STATE_VERSIONS[0],
 	inputMin: shift.inputMin.value,
 	inputMax: shift.inputMax.value,
 	outputMin: shift.outputMin.value,

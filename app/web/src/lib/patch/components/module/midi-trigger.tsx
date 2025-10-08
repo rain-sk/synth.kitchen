@@ -1,5 +1,10 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	MIDI_TRIGGER_STATE_VERSIONS,
+	Module,
+	ModuleState,
+	ModuleType,
+} from 'synth.kitchen-shared';
 
 import { MidiTriggerNode } from '../../audio/nodes/midi-trigger';
 
@@ -19,7 +24,7 @@ const noteOptions = (() => {
 const midiTriggerStateFromNode = (
 	clock: MidiTriggerNode,
 ): ModuleState['MIDI_TRIGGER'] => ({
-	version: '0.5.0',
+	version: MIDI_TRIGGER_STATE_VERSIONS[0],
 	input: clock.inputName,
 	note: clock.note,
 });

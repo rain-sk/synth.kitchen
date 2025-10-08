@@ -6,12 +6,17 @@ import { IoConnectors } from '../module-ui/io-connectors';
 import { MidiContext } from '../../contexts/midi';
 import { RadioParameter } from '../module-ui/radio-parameter';
 import { useNode } from './use-node';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	MIDI_CLOCK_STATE_VERSIONS,
+	Module,
+	ModuleState,
+	ModuleType,
+} from 'synth.kitchen-shared';
 
 const clockStateFromNode = (
 	clock: MidiClockNode,
 ): ModuleState['MIDI_CLOCK'] => ({
-	version: '0.5.0',
+	version: MIDI_CLOCK_STATE_VERSIONS[0],
 	input: clock.inputName,
 });
 

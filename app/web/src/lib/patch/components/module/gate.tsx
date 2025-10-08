@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	GATE_STATE_VERSIONS,
+	Module,
+	ModuleState,
+	ModuleType,
+} from 'synth.kitchen-shared';
 
 import { GateNode } from '../../audio/nodes/gate';
 
@@ -9,7 +14,7 @@ import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
 const gateStateFromNode = (gate: GateNode): ModuleState['GATE'] => ({
-	version: '0.5.0',
+	version: GATE_STATE_VERSIONS[0],
 	gate: gate.gate.value,
 });
 

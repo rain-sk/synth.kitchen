@@ -1,7 +1,13 @@
+import { ModuleType, PATCH_STATE, PatchState } from "../types";
 import {
   Connection,
   CONNECTIONS_STATE,
   CONNECTIONS_STATE_VERSIONS,
+  Connector,
+  Input,
+  ioKey,
+  Output,
+  paramKey,
 } from "../types/patch/connection";
 
 export function connectionsStateNeedsUpgrade(
@@ -10,28 +16,55 @@ export function connectionsStateNeedsUpgrade(
   return state.version !== CONNECTIONS_STATE_VERSIONS[0];
 }
 
+const connectorKey = (connector: Connector) =>
+  "type" in connector ? ioKey(connector) : paramKey(connector);
+
+const connectionKey = (output: Output, input: Input) => {
+  return `${connectorKey(output)}|${connectorKey(input)}`;
+};
+
 export function upgradeConnectionsState(
-  state: CONNECTIONS_STATE[keyof CONNECTIONS_STATE]
+  state: PATCH_STATE[keyof PATCH_STATE]
 ): CONNECTIONS_STATE[CONNECTIONS_STATE_VERSIONS[0]] {
-  switch (state.version) {
+  let connections = state.connections;
+  switch (connections.version) {
     case undefined:
-      state = {
-        ...(state as any),
-        version: "0.5.5",
-      };
     case "0.5.5": {
-      const stateEntries = Object.fromEntries(
-        Object.entries(state).filter(([key]) => key !== "version")
-      ) as Record<string, Connection>;
-      state = {
+      connections = {
         version: "0.5.6",
-        state: stateEntries,
+        state: Object.fromEntries(
+          Object.entries(state).filter(([key]) => key !== "version")
+        ),
       };
     }
 
-    case "0.5.6":
+    case "0.5.6": {
+      connections = {
+        version: "0.5.7",
+        state: Object.fromEntries(
+          Object.entries(connections.state).map(([key, [output, input]]) => {
+            const inputModule = state.modules[input.moduleId];
+            if (
+              "name" in input &&
+              input.name === "gate" &&
+              inputModule.type !== ModuleType.GATE
+            ) {
+              input = {
+                ...input,
+                name: "hold",
+              };
+              key = connectionKey(output, input);
+            }
+            const connection: Connection = [output, input];
+            return [key, connection];
+          })
+        ),
+      };
+    }
+
+    case "0.5.7":
     case CONNECTIONS_STATE_VERSIONS[0]:
-      return state;
+      return connections;
   }
 
   throw new Error(

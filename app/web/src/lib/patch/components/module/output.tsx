@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	Module,
+	ModuleState,
+	ModuleType,
+	OUTPUT_STATE_VERSIONS,
+} from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
 import { OutputNode } from '../../audio/nodes/output';
@@ -9,7 +14,7 @@ import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
 const outputStateFromNode = (node: OutputNode): ModuleState['OUTPUT'] => ({
-	version: '0.5.0',
+	version: OUTPUT_STATE_VERSIONS[0],
 	gain: node.gain.value,
 });
 

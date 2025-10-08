@@ -80,8 +80,8 @@ const DefaultModuleStates: ModuleState = {
     delayTime: 0,
   },
   [ModuleType.ENVELOPE]: {
-    version: "0.5.5",
-    gate: 0.1,
+    version: "0.5.7",
+    hold: 0.1,
     attack: 0.05,
     decay: 0.05,
     sustain: 1,
@@ -167,8 +167,8 @@ const DefaultModuleStates: ModuleState = {
     gain: 0.45,
   },
   [ModuleType.VCA]: {
-    version: "0.5.5",
-    gate: 0.1,
+    version: "0.5.7",
+    hold: 0.1,
     attack: 0.05,
     decay: 0.05,
     sustain: 1,

@@ -7,10 +7,15 @@ import { MidiContext } from '../../contexts/midi';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { RadioParameter } from '../module-ui/radio-parameter';
 import { useNode } from './use-node';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	MIDI_CC_STATE_VERSIONS,
+	Module,
+	ModuleState,
+	ModuleType,
+} from 'synth.kitchen-shared';
 
 const midiCcStateFromNode = (node: MidiCcNode): ModuleState['MIDI_CC'] => ({
-	version: '0.5.0',
+	version: MIDI_CC_STATE_VERSIONS[0],
 	input: node.inputName,
 	cc: node.cc,
 	max: node.max,

@@ -26,22 +26,37 @@ export function upgrade(
   }
 
   switch (state.version) {
-    case "0.5.0":
-      state = {
+    case "0.5.0": {
+      const newState: ENVELOPE_STATE["0.5.4"] = {
         ...state,
-        version: "0.5.5",
+        version: "0.5.4",
+        hold: state.gate,
       };
-      return state;
-    case "0.5.4":
-      state = {
+      delete (newState as any).gate;
+      state = newState;
+    }
+
+    case "0.5.4": {
+      const newState: ENVELOPE_STATE["0.5.5"] = {
         ...state,
         version: "0.5.5",
         gate: state.hold,
       };
-      delete (state as any).hold;
-      return state;
+      delete (newState as any).hold;
+      state = newState;
+    }
 
-    case "0.5.5":
+    case "0.5.5": {
+      const newState: ENVELOPE_STATE["0.5.7"] = {
+        ...state,
+        version: "0.5.7",
+        hold: state.gate,
+      };
+      delete (newState as any).gate;
+      state = newState;
+    }
+
+    case "0.5.7":
     case ENVELOPE_STATE_VERSIONS[0]:
       return state;
   }

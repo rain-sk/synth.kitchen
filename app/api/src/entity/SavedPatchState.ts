@@ -11,6 +11,7 @@ import {
 import {
   PatchState,
   SavedPatchState as SharedSavedPatchState,
+  PATCH_STATE_VERSIONS,
 } from "synth.kitchen-shared";
 
 import { Patch } from "./Patch";

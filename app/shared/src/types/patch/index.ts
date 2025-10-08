@@ -1,6 +1,6 @@
 import { Module, ModulePosition } from "./module";
 import { UserInfo } from "../user";
-import { Connection, ConnectionsState } from "./connection";
+import { Connection, CONNECTIONS_STATE, ConnectionsState } from "./connection";
 
 export type PatchQuery =
   | {
@@ -28,12 +28,27 @@ export type SavedPatchState = {
   state: PatchState;
 };
 
-export type PatchState = {
-  name: string;
-  modules: Record<string, Module>;
-  modulePositions: Record<string, ModulePosition>;
-  connections: ConnectionsState;
+export type PATCH_STATE_VERSIONS = ["0.5.7", "0.5.6"];
+export const PATCH_STATE_VERSIONS: PATCH_STATE_VERSIONS = ["0.5.7", "0.5.6"];
+
+export type PATCH_STATE = {
+  ["0.5.7"]: {
+    version: "0.5.7";
+    name: string;
+    modules: Record<string, Module>;
+    modulePositions: Record<string, ModulePosition>;
+    connections: CONNECTIONS_STATE["0.5.7"];
+  };
+  ["0.5.6"]: {
+    version?: "0.5.6";
+    name: string;
+    modules: Record<string, Module>;
+    modulePositions: Record<string, ModulePosition>;
+    connections: CONNECTIONS_STATE["0.5.5"] | CONNECTIONS_STATE["0.5.6"];
+  };
 };
+
+export type PatchState = PATCH_STATE[PATCH_STATE_VERSIONS[0]];
 
 export type Patch = PatchInfo & {
   state: SavedPatchState;

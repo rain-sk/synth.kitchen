@@ -25,4 +25,6 @@ export {
   PatchQuery,
   PatchState,
   SavedPatchState,
+  PATCH_STATE,
+  PATCH_STATE_VERSIONS,
 } from "./patch";

@@ -4,10 +4,15 @@ import { NoiseNode } from '../../audio/nodes/noise';
 
 import { IoConnectors } from '../module-ui/io-connectors';
 import { useNode } from './use-node';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	Module,
+	ModuleState,
+	ModuleType,
+	NOISE_STATE_VERSIONS,
+} from 'synth.kitchen-shared';
 
 const initNoise = (): ModuleState['NOISE'] => ({
-	version: '0.5.0',
+	version: NOISE_STATE_VERSIONS[0],
 });
 
 export const NoiseModule: React.FC<{ module: Module<ModuleType.NOISE> }> = ({

@@ -5,7 +5,12 @@ import {
 	IBiquadFilterNode,
 	TBiquadFilterType,
 } from 'standardized-audio-context';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	FILTER_STATE_VERSIONS,
+	Module,
+	ModuleState,
+	ModuleType,
+} from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
 
@@ -17,7 +22,7 @@ import { useNode } from './use-node';
 const filterStateFromNode = (
 	filter: IBiquadFilterNode<IAudioContext>,
 ): ModuleState['FILTER'] => ({
-	version: '0.5.0',
+	version: FILTER_STATE_VERSIONS[0],
 	frequency: filter.frequency.value,
 	detune: filter.detune.value,
 	Q: filter.Q.value,

@@ -7,12 +7,17 @@ import { SequencerNode } from '../../audio/nodes/sequencer';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	Module,
+	ModuleState,
+	ModuleType,
+	SEQUENCER_STATE_VERSIONS,
+} from 'synth.kitchen-shared';
 
 const sequencerStateFromNode = (
 	sequencer: SequencerNode,
 ): ModuleState['SEQUENCER'] => ({
-	version: '0.5.1',
+	version: SEQUENCER_STATE_VERSIONS[0],
 	steps: sequencer.steps.value,
 	step0: sequencer.step0.value,
 	step1: sequencer.step1.value,

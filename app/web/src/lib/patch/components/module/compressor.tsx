@@ -9,12 +9,17 @@ import { audioContext } from '../../audio';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	CLOCK_STATE_VERSIONS,
+	Module,
+	ModuleState,
+	ModuleType,
+} from 'synth.kitchen-shared';
 
 const compressorStateFromNode = (
 	node: IDynamicsCompressorNode<IAudioContext>,
 ): ModuleState['COMPRESSOR'] => ({
-	version: '0.5.0',
+	version: CLOCK_STATE_VERSIONS[0],
 	attack: parseFloat(Number(node.attack.value).toPrecision(8)),
 	knee: node.knee.value,
 	ratio: node.ratio.value,

@@ -1,4 +1,8 @@
-import { CONNECTIONS_STATE_VERSIONS, PatchState } from 'synth.kitchen-shared';
+import {
+	CONNECTIONS_STATE_VERSIONS,
+	PATCH_STATE_VERSIONS,
+	PatchState,
+} from 'synth.kitchen-shared';
 import { cloneAndApply, IPatchState } from '../types/patch';
 import { IPushToHistory } from '../actions/history';
 import { connectionKey, connectorKey, disconnectSet } from '../connection';
@@ -30,6 +34,7 @@ export const pushToHistory = (
 		modulePositions: state.modulePositions,
 		connections: state.connections,
 		name: state.name,
+		version: PATCH_STATE_VERSIONS[0],
 	};
 	const history = state.history
 		.slice(action?.historyPointer ?? state.historyPointer)

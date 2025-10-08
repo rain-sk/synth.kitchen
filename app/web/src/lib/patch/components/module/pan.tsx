@@ -6,12 +6,17 @@ import { audioContext } from '../../audio';
 import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	Module,
+	ModuleState,
+	ModuleType,
+	PAN_STATE_VERSIONS,
+} from 'synth.kitchen-shared';
 
 const panStateFromNode = (
 	node: IStereoPannerNode<IAudioContext>,
 ): ModuleState['PAN'] => ({
-	version: '0.5.0',
+	version: PAN_STATE_VERSIONS[0],
 	pan: node.pan.value,
 });
 

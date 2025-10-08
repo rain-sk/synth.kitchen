@@ -27,6 +27,8 @@ export {
   SampleInfo,
   SampleQuery,
   SavedPatchState,
+  PATCH_STATE,
+  PATCH_STATE_VERSIONS,
   UserInfo,
   UserInfoAuthenticated,
 } from "./types";

@@ -9,6 +9,7 @@ import { SavedPatchState } from "./entity/SavedPatchState";
 import { server } from "./server";
 
 const initDatabaseConnection = async () => {
+  console.log("Initiating database connection:");
   return new Promise(async (resolve) => {
     let tries = 0;
     const tryInit = async () => {
@@ -22,7 +23,8 @@ const initDatabaseConnection = async () => {
           console.error("AppDataSource.initialize() failed", e);
           process.exit(1);
         } else {
-          setTimeout(tryInit, 1000);
+          console.warn(e);
+          setTimeout(tryInit, 500);
         }
       }
     };
@@ -30,11 +32,17 @@ const initDatabaseConnection = async () => {
   });
 };
 
+const cleanupStaleData = async () => {
+  const stateRepository = AppDataSource.getRepository(SavedPatchState);
+  const res = await stateRepository.delete({ patch: null });
+  return res;
+};
+
 const upgradePatchStates = async () => {
   const stateRepository = AppDataSource.getRepository(SavedPatchState);
 
-  const statesToUpgrade = (await stateRepository.find()).filter(
-    async (entry) => await patchStateNeedsUpgrade(entry.state)
+  const statesToUpgrade = (await stateRepository.find()).filter((entry) =>
+    patchStateNeedsUpgrade(entry.state)
   );
 
   const numberOfStatesToUpgrade = statesToUpgrade.length;
@@ -43,17 +51,15 @@ const upgradePatchStates = async () => {
     const repo = AppDataSource.getRepository(SavedPatchState);
     let remainingUpgrades = 0;
     for (const entry of statesToUpgrade) {
-      entry.state = upgradePatchState(entry.state) as any;
+      entry.state = upgradePatchState(entry.state);
       await repo.save(entry);
-      if (await patchStateNeedsUpgrade(entry.state)) {
+      if (patchStateNeedsUpgrade(entry.state)) {
         remainingUpgrades++;
       }
     }
 
     console.log(
-      `Executed ${
-        numberOfStatesToUpgrade - remainingUpgrades
-      } patch state upgrades`
+      `Upgraded ${numberOfStatesToUpgrade - remainingUpgrades} patch states`
     );
     if (remainingUpgrades > 0) {
       console.log(`${remainingUpgrades} upgrades pending.`);
@@ -65,14 +71,16 @@ const executePendingUpgrades = async () => {
   await upgradePatchStates();
 };
 
-server.listen(apiPort, async (e) => {
-  if (e) {
-    console.error("app.listen() failed", e);
-    process.exit(1);
-  }
+initDatabaseConnection()
+  .then(cleanupStaleData)
+  .then(executePendingUpgrades)
+  .then(() => {
+    server.listen(apiPort, async (e) => {
+      if (e) {
+        console.error("app.listen() failed", e);
+        process.exit(1);
+      }
 
-  await initDatabaseConnection();
-  await executePendingUpgrades();
-
-  console.log(`API server is online: ${apiHost}`);
-});
+      console.log(`API server is online: ${apiHost}`);
+    });
+  });

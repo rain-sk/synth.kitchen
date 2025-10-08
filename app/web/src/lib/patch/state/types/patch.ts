@@ -88,6 +88,8 @@ export const cloneAndApply = (
 		blockHistory: state.blockHistory,
 
 		asyncActionQueue: state.asyncActionQueue,
+
+		version: state.version,
 	};
 	for (let key in update) {
 		(newState as any)[key] = (update as any)[key];

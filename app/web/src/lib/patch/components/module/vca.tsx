@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Module, ModuleState, ModuleType } from 'synth.kitchen-shared';
+import {
+	Module,
+	ModuleState,
+	ModuleType,
+	VCA_STATE_VERSIONS,
+} from 'synth.kitchen-shared';
 
 import { audioContext } from '../../audio';
 import { VcaNode } from '../../audio/nodes/vca';
@@ -9,18 +14,18 @@ import { NumberParameter } from '../module-ui/number-parameter';
 import { useNode } from './use-node';
 
 const vcaStateFromNode = (node: VcaNode): ModuleState['VCA'] => ({
-	version: '0.5.5',
-	gate: Math.round(node.gate.value * 10000) / 10000,
-	attack: Math.round(node.attack.value * 100) / 100,
-	decay: Math.round(node.decay.value * 100) / 100,
-	sustain: Math.round(node.sustain.value * 100) / 100,
-	release: Math.round(node.release.value * 100) / 100,
-	peak: Math.round(node.peak.value * 100) / 100,
+	version: VCA_STATE_VERSIONS[0],
+	hold: Math.round(node.hold.value * 1000) / 1000,
+	attack: Math.round(node.attack.value * 1000) / 1000,
+	decay: Math.round(node.decay.value * 1000) / 1000,
+	sustain: Math.round(node.sustain.value * 1000) / 1000,
+	release: Math.round(node.release.value * 1000) / 1000,
+	peak: Math.round(node.peak.value * 1000) / 1000,
 });
 
 const initVca = (vca: VcaNode, state?: ModuleState['VCA']) => {
 	if (state) {
-		vca.gate.setValueAtTime(state.gate, audioContext.currentTime);
+		vca.hold.setValueAtTime(state.hold, audioContext.currentTime);
 		vca.attack.setValueAtTime(state.attack, audioContext.currentTime);
 		vca.decay.setValueAtTime(state.decay, audioContext.currentTime);
 		vca.sustain.setValueAtTime(state.sustain, audioContext.currentTime);
@@ -45,22 +50,22 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 
 	const input = useCallback(() => node.gain(), [enabled]);
 
-	const sync = useCallback(() => node.sync().node(), [enabled]);
+	const sync = useCallback(() => node.sync(), [enabled]);
 
 	const output = useCallback(() => node.gain(), [enabled]);
 
-	const commitGateChange = useCallback(
-		(gate: number) => {
-			node.gate.linearRampToValueAtTime(gate, audioContext.currentTime);
+	const commitHoldChange = useCallback(
+		(hold: number) => {
+			node.hold.linearRampToValueAtTime(hold, audioContext.currentTime);
 			setState({
 				...state,
-				gate,
+				hold,
 			});
 		},
 		[state],
 	);
 
-	const gateAccessor = useCallback(() => node.gate, [enabled]);
+	const holdAccessor = useCallback(() => node.hold, [enabled]);
 
 	const commitAttackChange = useCallback(
 		(attack: number) => {
@@ -133,8 +138,8 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 			return;
 		}
 		moduleStateRef.current = module.state;
-		if (module.state.gate !== node.gate.value) {
-			commitGateChange(module.state.gate);
+		if (module.state.hold !== node.hold.value) {
+			commitHoldChange(module.state.hold);
 		}
 		if (module.state.attack !== node.attack.value) {
 			commitAttackChange(module.state.attack);
@@ -150,7 +155,7 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 		}
 	}, [
 		module.state,
-		commitGateChange,
+		commitHoldChange,
 		commitAttackChange,
 		commitSustainChange,
 		commitReleaseChange,
@@ -168,10 +173,10 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 			<section>
 				<NumberParameter
 					moduleId={module.id}
-					paramAccessor={gateAccessor}
-					name="gate"
-					value={state.gate}
-					commitValueCallback={commitGateChange}
+					paramAccessor={holdAccessor}
+					name="hold"
+					value={state.hold}
+					commitValueCallback={commitHoldChange}
 				/>
 				<NumberParameter
 					moduleId={module.id}
