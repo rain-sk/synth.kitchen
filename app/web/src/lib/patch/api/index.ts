@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Patch, PatchQuery as SharedPatchQuery } from 'synth.kitchen-shared';
 
 import { apiBase } from '../../../api/uri';
-import { fetchWithJwt } from '../../../utils/fetchWithJwt';
+import { fetchWithJwt } from '../../shared/utils/fetchWithJwt';
 import { navigate } from 'wouter/use-browser-location';
 
 type PatchQuery = Pick<SharedPatchQuery, 'id' | 'slug' | 'random'>;

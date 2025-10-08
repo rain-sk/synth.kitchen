@@ -1,13 +1,12 @@
 {
 	"name": "synth.kitchen-web",
-	"version": "0.5.3",
+	"version": "0.5.5",
 	"private": true,
 	"type": "module",
 	"dependencies": {
 		"@types/is-callable": "^1.1.2",
-		"diff": "^8.0.2",
-		"extendable-media-recorder": "^9.2.29",
-		"extendable-media-recorder-wav-encoder": "^7.0.131",
+		"extendable-media-recorder": "^9.2.31",
+		"extendable-media-recorder-wav-encoder": "^7.0.132",
 		"hhmmss": "^1.0.0",
 		"is-callable": "^1.2.7",
 		"lz-string": "^1.5.0",
@@ -18,7 +17,7 @@
 		"react-use": "^17.6.0",
 		"standardized-audio-context": "^25.3.77",
 		"synth.kitchen-shared": "file:../shared",
-		"webmidi": "^3.1.12",
+		"webmidi": "^3.1.13",
 		"wouter": "^3.7.1"
 	},
 	"scripts": {

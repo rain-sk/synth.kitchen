@@ -8,7 +8,7 @@ import {
 } from '../../state/connection';
 import { IPatchState } from '../../state/types/patch';
 import { useMouse, useScroll } from 'react-use';
-import { queueAnimation } from '../../../../utils/animation';
+import { queueAnimation } from '../../../shared/utils/animation';
 import { INVALID_POSITION } from '../../state/constants/positions';
 
 const root = () => document.getElementById('root');

@@ -32,7 +32,7 @@ import { IPatchState } from '../../state/types/patch';
 import { SequencerModule } from './sequencer';
 import { VcaModule } from './vca';
 import { CompressorModule } from './compressor';
-import { queueAnimation } from '../../../../utils/animation';
+import { queueAnimation } from '../../../shared/utils/animation';
 import { ShiftModule } from './shift';
 import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
 

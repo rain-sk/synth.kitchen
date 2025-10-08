@@ -9,7 +9,7 @@ import React, {
 import { AddModule } from './add-module';
 import { IPatchState } from '../../state/types/patch';
 import { IPatchAction, patchActions } from '../../state/actions';
-import { queueAnimation } from '../../../../utils/animation';
+import { queueAnimation } from '../../../shared/utils/animation';
 import { UseScrollContext } from '../../contexts/use-scroll';
 import { INVALID_POSITION } from '../../state/constants/positions';
 import { clearActiveConnectorAction } from '../../state/actions/clear-active-connector';
