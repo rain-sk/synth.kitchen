@@ -1,6 +1,5 @@
 import {
 	CONNECTIONS_STATE_VERSIONS,
-	ConnectionsState,
 	Input,
 	Output,
 } from 'synth.kitchen-shared';
