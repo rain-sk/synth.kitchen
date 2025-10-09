@@ -155,10 +155,8 @@ export const disconnect = (
 			e.name === 'InvalidAccessError'
 		) {
 			console.info('Suppressed expected InvalidAccessError');
-			// console.warn(e);
 		} else {
 			console.error(e);
-			// todo: handle actual failure (possibly from corrupted patches)
 		}
 	}
 

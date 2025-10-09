@@ -60,8 +60,6 @@ export const useLoadPatch = (
 							connections: patch.state.state.connections,
 						}),
 					);
-					dispatch(patchActions.pushToHistoryAction(true));
-
 					navigate(`/patch/${patch.slug}`, { replace: false });
 				} else {
 					navigate('/patch/new', { replace: true });
@@ -82,7 +80,6 @@ export const useLoadPatch = (
 							connections: patch.state.state.connections,
 						}),
 					);
-					dispatch(patchActions.pushToHistoryAction(true));
 					if (slug !== patch.slug) {
 						navigate(`/patch/${patch.slug}`, { replace: false });
 					}
@@ -100,13 +97,17 @@ export const useLoadPatch = (
 			initialized &&
 			!loadingConnectionsRef.current &&
 			connectionsToLoad &&
+			connectionsToLoad.state &&
 			Object.keys(connectionsToLoad.state).length > 0
 		) {
 			loadingConnectionsRef.current = true;
+			dispatch(patchActions.blockHistoryAction());
 			dispatch(patchActions.loadConnectionsAction());
 		} else if (
 			!connectionsToLoad ||
-			Object.keys(connectionsToLoad.state).length === 0
+			(connectionsToLoad &&
+				connectionsToLoad.state &&
+				Object.keys(connectionsToLoad.state).length === 0)
 		) {
 			loadingConnectionsRef.current = false;
 		}

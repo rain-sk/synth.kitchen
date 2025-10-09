@@ -21,7 +21,11 @@ export const pushToHistory = (
 	state: IPatchState,
 	action?: Partial<IPushToHistory>,
 ): IPatchState => {
-	if (state.blockHistory) {
+	if (
+		state.blockHistory ||
+		(state.connectionsToLoad &&
+			Object.keys(state.connectionsToLoad.state).length > 0)
+	) {
 		if (action?.force) {
 			state = unblockHistory(state);
 		} else {
@@ -56,18 +60,18 @@ const syncConnections = (
 	}
 
 	const currentConnectionKeys = Object.keys(state.connections.state);
-	const incomingConnectionKeys = Object.keys(stateToLoad.connections);
+	const incomingConnectionKeys = Object.keys(stateToLoad.connections.state);
 
 	// Delete outgoing connections
-	const connectionsToDelete = currentConnectionKeys
-		.filter((key) => !new Set(incomingConnectionKeys).has(key))
-		.filter((key) => {
-			const [output, input] = state.connections.state[key];
-			return (
-				output.moduleId in stateToLoad.modules &&
-				input.moduleId in stateToLoad.modules
-			);
-		});
+	const connectionsToDelete = currentConnectionKeys.filter((key) => {
+		const [output, input] = state.connections.state[key];
+		return (
+			output.moduleId in stateToLoad.modules &&
+			input.moduleId in stateToLoad.modules &&
+			!new Set(incomingConnectionKeys).has(key)
+		);
+	});
+
 	state = cloneAndApply(
 		state,
 		disconnectSet(

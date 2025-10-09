@@ -1,43 +1,40 @@
-import { CONNECTIONS_STATE_VERSIONS, Input } from 'synth.kitchen-shared';
-import { Output } from 'synth.kitchen-shared';
+import {
+	CONNECTIONS_STATE_VERSIONS,
+	ConnectionsState,
+	Input,
+	Output,
+} from 'synth.kitchen-shared';
+
 import { ILoadConnections } from '../actions/load-connections';
-import { connect } from '../connection';
-import { connectorInfo } from '../connection';
-import { connectorKey } from '../connection';
-import { cloneAndApply } from '../types/patch';
-import { IPatchState } from '../types/patch';
+import { connect, connectorInfo, connectorKey } from '../connection';
+import {
+	cloneAndApply,
+	cloneAndApplyWithHistory,
+	IPatchState,
+} from '../types/patch';
 import { unblockHistory } from './history';
 
 export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	state,
 ) => {
+	const connectionsToLoad = Object.entries(
+		state.connectionsToLoad?.state ?? {},
+	);
+
 	const newState = {
 		connections: state.connections,
 		connectors: state.connectors,
-		connectionsToLoad: { version: state.connections.version, state: {} },
 	} as Pick<IPatchState, 'connectors'> &
-		Pick<IPatchState, 'connectionsToLoad'> &
-		Pick<IPatchState, 'connections'>;
-	for (let [key, [output, input]] of Object.entries(
-		state.connectionsToLoad?.state ?? {},
-	)) {
+		Pick<IPatchState, 'connections'> &
+		Partial<IPatchState>;
+	for (let [key, [output, input]] of connectionsToLoad) {
 		const outputKey = connectorKey(output);
 		const inputKey = connectorKey(input);
 
 		const connectorsRegistered =
 			outputKey in state.connectors && inputKey in state.connectors;
 
-		if (!connectorsRegistered) {
-			const connectionsToLoad = newState.connectionsToLoad;
-			if (connectionsToLoad) {
-				connectionsToLoad.state[key] = [output, input];
-			} else {
-				newState.connectionsToLoad = {
-					version: CONNECTIONS_STATE_VERSIONS[0],
-					state: { [key]: [output, input] },
-				};
-			}
-		} else {
+		if (connectorsRegistered) {
 			output = connectorInfo(
 				newState.connectors,
 				connectorKey(output),
@@ -55,12 +52,27 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 			} catch (e) {
 				console.warn(e);
 			}
+		} else if (!newState.connectionsToLoad) {
+			newState.connectionsToLoad = {
+				version: CONNECTIONS_STATE_VERSIONS[0],
+				state: {
+					[key]: [output, input],
+				},
+			};
+		} else {
+			newState.connectionsToLoad.state[key] = [output, input];
 		}
 	}
 
-	if (Object.keys(newState.connectionsToLoad ?? {}).length === 0) {
-		state = unblockHistory(state);
+	if (
+		!newState.connectionsToLoad ||
+		Object.keys(newState.connectionsToLoad).length === 0
+	) {
+		return cloneAndApplyWithHistory(unblockHistory(state), {
+			...newState,
+			connectionsToLoad: undefined,
+		});
+	} else {
+		return cloneAndApply(state, newState);
 	}
-
-	return cloneAndApply(state, newState);
 };
