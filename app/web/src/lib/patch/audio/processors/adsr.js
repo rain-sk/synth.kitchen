@@ -101,7 +101,6 @@ class Adsr extends AudioWorkletProcessor {
 				if (framesSinceHoldStart / sampleRate < frameHold) {
 					framesSinceHoldStart++;
 				} else {
-					// debugger;
 					framesSinceHoldEnd = 0;
 				}
 			} else if (framesSinceHoldEnd >= 0) {

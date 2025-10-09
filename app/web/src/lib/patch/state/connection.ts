@@ -28,7 +28,7 @@ export const connectorKey = (connector: Connector) =>
 export const connectorButton = (key: string) => {
 	const button = document.getElementById(key) as HTMLButtonElement;
 	if (!button) {
-		// debugger;
+		debugger;
 		throw Error(`Button for connector with key '${key}' not found`);
 	}
 	return button;
