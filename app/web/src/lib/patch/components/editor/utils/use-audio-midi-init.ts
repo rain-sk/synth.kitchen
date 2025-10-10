@@ -25,6 +25,7 @@ export const useAudioMidiInit = () => {
 		setStatus('starting midi');
 		await initMidi();
 
+		initCalledRef.current = false;
 		if (audioInitialized()) {
 			setInitialized(true);
 		} else {
