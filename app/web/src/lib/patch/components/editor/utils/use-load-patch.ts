@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
 import { useLocation, useRoute } from 'wouter';
 
 import { blankPatchToClearCanvas, blankPatchToLoad } from '../../../state';
@@ -8,8 +14,9 @@ import { IPatchState } from '../../../state/types/patch';
 import { useApi } from '../../../api';
 import { useRefBackedState } from '../../../../shared/utils/use-ref-backed-state';
 import { resetAudioContext } from '../../../audio';
-import { PatchQuery } from 'synth.kitchen-shared';
+import { PatchInfo, PatchQuery } from 'synth.kitchen-shared';
 import { ISerializedPatch } from '../../../state/types/serialized-patch';
+import { PatchContext } from '../../../contexts/patch';
 
 const uuidRegex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -22,30 +29,33 @@ export const useLoadPatch = (
 	initialized: boolean,
 	slug: string,
 ) => {
+	const { slug: stateSlug } = useContext(PatchContext);
+
+	const [newPatch] = useRoute('/patch/new');
+	const [randomPatch] = useRoute('/patch/random');
+
 	const [, navigate] = useLocation();
 	const { getPatch } = useApi();
 
 	const [_, loading, setLoading] = useRefBackedState(false);
 
-	const [patchToLoad, setPatchToLoad] = useState<ISerializedPatch>();
-	useEffect(() => {
-		if (initialized && !loading && patchToLoad) {
-			dispatch(
-				patchActions.loadPatchAction({
-					id: patchToLoad.id,
-					name: patchToLoad.name,
-					slug: patchToLoad.slug,
-					state: patchToLoad.state,
-				}),
-			);
-			dispatch(patchActions.pushToHistoryAction(true));
-			navigate(`/patch/${patchToLoad.slug}`, { replace: false });
-		}
-	}, [loading, patchToLoad, initialized]);
+	const [patchInfo, setPatchInfo] = useState<PatchInfo>();
+	const [patchToLoadRef, patchToLoad, setPatchToLoad] = useRefBackedState<
+		ISerializedPatch | undefined
+	>(undefined);
 
-	const [newPatch] = useRoute('/patch/new');
-	const [randomPatch] = useRoute('/patch/random');
+	const loadPatch =
+		(newPatch || randomPatch || !!slug) &&
+		initialized &&
+		!loading &&
+		!!patchToLoad;
+
 	const onRouteChange = useCallback(async () => {
+		if (slug === stateSlug || loadPatch) {
+			console.log('guard');
+			return;
+		}
+
 		setLoading(true);
 		dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
 		await resetAudioContext();
@@ -61,6 +71,7 @@ export const useLoadPatch = (
 			try {
 				const patch = await getPatch(query);
 				if (patch) {
+					setPatchInfo(patch);
 					setPatchToLoad({
 						id: patch.id,
 						name: patch.name,
@@ -74,11 +85,29 @@ export const useLoadPatch = (
 			}
 		}
 		setLoading(false);
-	}, [newPatch, randomPatch, slug]);
+	}, [newPatch, randomPatch, slug, stateSlug]);
 
 	useEffect(() => {
 		onRouteChange();
 	}, [onRouteChange]);
+
+	useEffect(() => {
+		if (loadPatch && patchToLoadRef.current) {
+			setPatchToLoad(undefined);
+			dispatch(
+				patchActions.loadPatchAction({
+					id: patchToLoad.id,
+					name: patchToLoad.name,
+					slug: patchToLoad.slug,
+					state: patchToLoad.state,
+				}),
+			);
+
+			if (randomPatch) {
+				navigate(`/patch/${patchToLoad.slug}`, { replace: true });
+			}
+		}
+	}, [loadPatch]);
 
 	const { connectionsToLoad } = state;
 	const loadingConnectionsRef = useRef(false);
@@ -93,12 +122,14 @@ export const useLoadPatch = (
 			dispatch(patchActions.blockHistoryAction());
 			dispatch(patchActions.loadConnectionsAction());
 		} else if (
-			!connectionsToLoad ||
-			(connectionsToLoad && Object.keys(connectionsToLoad.state).length === 0)
+			initialized &&
+			loadingConnectionsRef.current &&
+			!connectionsToLoad
 		) {
+			dispatch(patchActions.pushToHistoryAction(true));
 			loadingConnectionsRef.current = false;
 		}
 	}, [initialized, connectionsToLoad]);
 
-	return loading;
+	return { loading, patchInfo };
 };

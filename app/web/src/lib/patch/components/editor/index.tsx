@@ -28,7 +28,12 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 			: `patch/${state.name ? state.name : 'untitled'}`,
 	);
 
-	const loading = useLoadPatch(state, dispatch, initialized, slug ?? '');
+	const { loading, patchInfo } = useLoadPatch(
+		state,
+		dispatch,
+		initialized,
+		slug ?? '',
+	);
 
 	const init = useCallback(async () => {
 		await initAudioMidi();
@@ -48,7 +53,15 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 					) : (
 						<Init
 							loading={loading}
-							name={state.name ? state.name : 'untitled'}
+							name={
+								state.name
+									? state.name
+									: randomPatch
+									? 'random'
+									: patchInfo && patchInfo.name
+									? patchInfo.name
+									: 'untitled'
+							}
 							status={status}
 							init={init}
 						/>

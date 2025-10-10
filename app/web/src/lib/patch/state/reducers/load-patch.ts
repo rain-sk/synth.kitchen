@@ -3,6 +3,7 @@ import { blankPatch } from '..';
 import { ILoadPatch } from '../actions/load-patch';
 import { cloneAndApply } from '../types/patch';
 import { IPatchState } from '../types/patch';
+import { blockHistory } from './history';
 
 export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
 	state,
@@ -19,6 +20,5 @@ export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
 		connectionsToLoad: action.payload.state.connections,
 		heldModifiers: state.heldModifiers,
 	};
-
-	return cloneAndApply(blankPatch(), newState);
+	return cloneAndApply(blockHistory(blankPatch()), newState);
 };

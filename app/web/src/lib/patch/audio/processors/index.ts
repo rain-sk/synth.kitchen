@@ -1,4 +1,6 @@
-import { AudioWorkletNode, IAudioContext } from 'standardized-audio-context';
+import { AudioWorkletNode } from 'standardized-audio-context';
+
+import { audioContext } from '..';
 
 import adsr from './adsr.js?url';
 import clock from './clock.js?url';
@@ -22,11 +24,13 @@ export const processors = [
 	shift,
 ];
 
-export const initAudioProcessors = (context: IAudioContext) => async () => {
+export const initAudioProcessors = async () => {
 	if (!AudioWorkletNode) {
 		throw 'No AudioWorkletNode, uh ohhhh';
 	}
-	return Promise.all(
-		processors.map((processor) => context.audioWorklet?.addModule(processor)),
+	await Promise.all(
+		processors.map((processor) =>
+			audioContext.current.audioWorklet?.addModule(processor),
+		),
 	);
 };

@@ -64,14 +64,11 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	}
 
 	if (
-		!newState.connectionsToLoad ||
+		newState.connectionsToLoad &&
 		Object.keys(newState.connectionsToLoad).length === 0
 	) {
-		return cloneAndApplyWithHistory(unblockHistory(state), {
-			...newState,
-			connectionsToLoad: undefined,
-		});
-	} else {
-		return cloneAndApply(state, newState);
+		newState.connectionsToLoad = undefined;
 	}
+
+	return cloneAndApply(state, newState);
 };

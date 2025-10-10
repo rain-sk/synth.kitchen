@@ -16,11 +16,11 @@ export const resampling = { current: audioContext.current.createDelay() };
 export const resetAudioContext = async () => {
 	const oldContext = audioContext.current;
 	audioContext.current = new AudioContext();
-	await oldContext.close();
 	audioContext.current.resume();
 	resampling.current = audioContext.current.createDelay();
 	resampling.current.delayTime.value = 256 / audioContext.current.sampleRate;
-	await initAudioProcessors(audioContext.current)();
+	await initAudioProcessors();
+	oldContext.close();
 };
 
 export const initAudio = async () => {
