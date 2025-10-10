@@ -12,7 +12,6 @@ import { Init } from './init';
 import { AsyncQueue } from './async-queue';
 import { useAudioMidiInit } from './utils/use-audio-midi-init';
 import { useLoadPatch } from './utils/use-load-patch';
-import { patchActions } from '../../state/actions';
 
 const initialState = { ...blankPatch() };
 
@@ -37,7 +36,6 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 
 	const init = useCallback(async () => {
 		await initAudioMidi();
-		dispatch(patchActions.loadConnectionsAction());
 	}, []);
 
 	return (
