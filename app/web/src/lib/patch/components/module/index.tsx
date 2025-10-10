@@ -80,6 +80,7 @@ const useDragAndDrop = (
 		setIsDragging(false);
 		dragOffset.current.x = 0;
 		dragOffset.current.y = 0;
+		dispatch(patchActions.unblockHistoryAction());
 		dispatch(patchActions.pushToHistoryAction(true));
 	};
 
