@@ -26,12 +26,13 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	} as Pick<IPatchState, 'connectors'> &
 		Pick<IPatchState, 'connections'> &
 		Partial<IPatchState>;
+
 	for (let [key, [output, input]] of connectionsToLoad) {
 		const outputKey = connectorKey(output);
 		const inputKey = connectorKey(input);
 
 		const connectorsRegistered =
-			outputKey in state.connectors && inputKey in state.connectors;
+			outputKey in newState.connectors && inputKey in newState.connectors;
 
 		if (connectorsRegistered) {
 			output = connectorInfo(
@@ -44,10 +45,14 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 			)[0] as Input;
 
 			try {
-				const { connections: newConnections, connectors: newConnectors } =
-					connect(newState.connections, newState.connectors, output, input);
-				newState.connections = newConnections;
-				newState.connectors = newConnectors;
+				const { connections, connectors } = connect(
+					newState.connections,
+					newState.connectors,
+					output,
+					input,
+				);
+				newState.connections = connections;
+				newState.connectors = connectors;
 			} catch (e) {
 				console.warn(e);
 			}
@@ -63,12 +68,16 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 		}
 	}
 
-	if (
+	const finishedLoadingConnections =
 		newState.connectionsToLoad &&
-		Object.keys(newState.connectionsToLoad).length === 0
-	) {
-		newState.connectionsToLoad = undefined;
-	}
+		Object.keys(newState.connectionsToLoad).length === 0;
 
-	return cloneAndApply(state, newState);
+	if (finishedLoadingConnections) {
+		return cloneAndApplyWithHistory(unblockHistory(state), {
+			...newState,
+			connectionsToLoad: undefined,
+		});
+	} else {
+		return cloneAndApply(state, newState);
+	}
 };

@@ -26,7 +26,11 @@ export const useNode = <NodeType, ModuleType extends Type>(
 			'disconnect' in node &&
 			typeof node.disconnect === 'function'
 		) {
-			node.disconnect();
+			try {
+				node.disconnect();
+			} catch (e) {
+				console.warn(e);
+			}
 		}
 	});
 

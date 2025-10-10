@@ -9,23 +9,16 @@ import { MidiContextProvider } from '../../contexts/midi';
 import { ModuleCanvas } from './module-canvas';
 import { PatchContextProvider } from '../../contexts/patch';
 import { Init } from './init';
-import { AsyncQueue } from './async-queue';
+import { AsyncQueueDispatcher } from './async-queue-dispatcher';
 import { useAudioMidiInit } from './utils/use-audio-midi-init';
 import { useLoadPatch } from './utils/use-load-patch';
 
 const initialState = { ...blankPatch() };
 
 export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
-	const [newPatch] = useRoute('/patch/new');
 	const [randomPatch] = useRoute('/patch/random');
 	const { initialized, status, initAudioMidi } = useAudioMidiInit();
 	const [state, dispatch] = useReducer(patchReducer, initialState);
-
-	useTitle(
-		!newPatch && randomPatch
-			? '...'
-			: `patch/${state.name ? state.name : 'untitled'}`,
-	);
 
 	const { loading, patchInfo } = useLoadPatch(
 		state,
@@ -38,9 +31,20 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 		await initAudioMidi();
 	}, []);
 
+	const name = loading
+		? '...'
+		: state.name
+		? state.name
+		: randomPatch
+		? 'random'
+		: patchInfo && patchInfo.name
+		? patchInfo.name
+		: 'untitled';
+
+	useTitle(`patch/${name}`);
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>
-			<AsyncQueue
+			<AsyncQueueDispatcher
 				asyncActionQueue={state.asyncActionQueue}
 				dispatch={dispatch}
 			/>
@@ -49,20 +53,7 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 					{initialized ? (
 						<ModuleCanvas state={state} dispatch={dispatch} />
 					) : (
-						<Init
-							loading={loading}
-							name={
-								state.name
-									? state.name
-									: randomPatch
-									? 'random'
-									: patchInfo && patchInfo.name
-									? patchInfo.name
-									: 'untitled'
-							}
-							status={status}
-							init={init}
-						/>
+						<Init loading={loading} name={name} status={status} init={init} />
 					)}
 				</MidiContextProvider>
 			</DerivedConnectionStateContextProvider>

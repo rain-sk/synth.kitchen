@@ -1,10 +1,4 @@
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useRef,
-	useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useLocation, useRoute } from 'wouter';
 
 import { blankPatchToClearCanvas, blankPatchToLoad } from '../../../state';
@@ -37,12 +31,10 @@ export const useLoadPatch = (
 	const [, navigate] = useLocation();
 	const { getPatch } = useApi();
 
-	const [_, loading, setLoading] = useRefBackedState(false);
+	const [loadingRef, loading, setLoading] = useRefBackedState(false);
 
 	const [patchInfo, setPatchInfo] = useState<PatchInfo>();
-	const [patchToLoadRef, patchToLoad, setPatchToLoad] = useRefBackedState<
-		ISerializedPatch | undefined
-	>(undefined);
+	const [patchToLoad, setPatchToLoad] = useState<ISerializedPatch>();
 
 	const loadPatch =
 		(newPatch || randomPatch || !!slug) &&
@@ -51,8 +43,7 @@ export const useLoadPatch = (
 		!!patchToLoad;
 
 	const onRouteChange = useCallback(async () => {
-		if (slug === stateSlug || loadPatch) {
-			console.log('guard');
+		if (slug === stateSlug || loadingRef.current) {
 			return;
 		}
 
@@ -92,42 +83,32 @@ export const useLoadPatch = (
 	}, [onRouteChange]);
 
 	useEffect(() => {
-		if (loadPatch && patchToLoadRef.current) {
+		if (loadPatch && patchToLoad) {
+			const patch = patchToLoad;
 			setPatchToLoad(undefined);
 			dispatch(
 				patchActions.loadPatchAction({
-					id: patchToLoad.id,
-					name: patchToLoad.name,
-					slug: patchToLoad.slug,
-					state: patchToLoad.state,
+					id: patch.id,
+					name: patch.name,
+					slug: patch.slug,
+					state: patch.state,
 				}),
 			);
 
 			if (randomPatch) {
-				navigate(`/patch/${patchToLoad.slug}`, { replace: true });
+				navigate(`/patch/${patch.slug}`, { replace: true });
 			}
 		}
 	}, [loadPatch]);
 
 	const { connectionsToLoad } = state;
-	const loadingConnectionsRef = useRef(false);
 	useEffect(() => {
 		if (
 			initialized &&
-			!loadingConnectionsRef.current &&
 			connectionsToLoad &&
 			Object.keys(connectionsToLoad.state).length > 0
 		) {
-			loadingConnectionsRef.current = true;
-			dispatch(patchActions.blockHistoryAction());
 			dispatch(patchActions.loadConnectionsAction());
-		} else if (
-			initialized &&
-			loadingConnectionsRef.current &&
-			!connectionsToLoad
-		) {
-			dispatch(patchActions.pushToHistoryAction(true));
-			loadingConnectionsRef.current = false;
 		}
 	}, [initialized, connectionsToLoad]);
 

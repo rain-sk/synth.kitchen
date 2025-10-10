@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { IPatchAction } from '../../state/actions';
 
-export const AsyncQueue: React.FC<{
+export const AsyncQueueDispatcher: React.FC<{
 	asyncActionQueue: IPatchAction[];
 	dispatch: React.Dispatch<IPatchAction>;
 }> = ({ asyncActionQueue, dispatch }) => {
