@@ -1,5 +1,9 @@
 import { useCallback } from 'react';
-import { Patch, PatchQuery as SharedPatchQuery } from 'synth.kitchen-shared';
+import {
+	Patch,
+	PatchInfo,
+	PatchQuery as SharedPatchQuery,
+} from 'synth.kitchen-shared';
 
 import { apiBase } from '../../../api/uri';
 import { fetchWithJwt } from '../../shared/utils/fetchWithJwt';
@@ -149,5 +153,32 @@ export const useApi = () => {
 		}
 	}, []);
 
-	return { getPatch, getPatches, savePatch, deletePatch, forkPatch };
+	const randomPatch = useCallback(async (): Promise<PatchInfo | null> => {
+		try {
+			const headers = {
+				Accept: 'application/json',
+			};
+
+			const result = await fetchWithJwt(`${apiBase}/patch/info/?random=true`, {
+				headers,
+				method: 'get',
+			}).then((res) => res.json());
+			if (!('patch' in result)) {
+				throw new Error('Failed to load patch with given query');
+			}
+			return result.patch as PatchInfo;
+		} catch (error) {
+			console.error('Failed to load random patch:', error);
+		}
+		return null;
+	}, []);
+
+	return {
+		getPatch,
+		getPatches,
+		randomPatch,
+		savePatch,
+		deletePatch,
+		forkPatch,
+	};
 };

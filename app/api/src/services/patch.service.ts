@@ -50,8 +50,8 @@ const getPatchParams = (query: PatchQuery): [string, PatchQuery] => {
 };
 
 export class PatchService {
-  static patchExists = async (info: PatchQuery): Promise<boolean> => {
-    const [where, params] = getPatchParams(info);
+  static patchExists = async (query: PatchQuery): Promise<boolean> => {
+    const [where, params] = getPatchParams(query);
 
     try {
       return await AppDataSource.getRepository(Patch)
@@ -92,19 +92,19 @@ export class PatchService {
   };
 
   static getPatch = async (
-    info: PatchQuery
+    query: PatchQuery
   ): Promise<Patch | Patch[] | undefined> => {
-    const [where, params] = getPatchParams(info);
+    const [where, params] = getPatchParams(query);
 
     try {
-      const query = AppDataSource.getRepository(Patch)
+      const queryBuilder = AppDataSource.getRepository(Patch)
         .createQueryBuilder("patch")
         .leftJoinAndSelect("patch.creator", "creator")
         .leftJoinAndSelect("patch.state", "state")
         .where(where, params);
-      const result = info.creatorId
-        ? await query.getMany()
-        : await query.getOneOrFail();
+      const result = query.creatorId
+        ? await queryBuilder.getMany()
+        : await queryBuilder.getOneOrFail();
       return result;
     } catch (error) {
       console.error(error);
@@ -112,35 +112,37 @@ export class PatchService {
   };
 
   static getPatchInfo = async (
-    info: PatchQuery
+    query: PatchQuery
   ): Promise<PatchInfo | PatchInfo[] | undefined> => {
-    const [where, params] = getPatchParams(info);
+    const [where, params] = getPatchParams(query);
+
+    if (query.random) {
+      return await this.getRandomPatch();
+    }
 
     try {
-      const query = AppDataSource.getRepository(Patch)
+      const queryBuilder = AppDataSource.getRepository(Patch)
         .createQueryBuilder("patch")
         .leftJoinAndSelect("patch.creator", "creator")
         .where(where, params);
-      const result = info.creatorId
-        ? await query.getMany()
-        : await query.getOneOrFail();
+      const result = query.creatorId
+        ? await queryBuilder.getMany()
+        : await queryBuilder.getOneOrFail();
       return result;
     } catch (error) {
       console.error(error);
     }
   };
 
-  static getRandomPatch = async (): Promise<Patch | null> => {
+  static getRandomPatch = async (): Promise<PatchInfo | null> => {
     try {
-      const patch = await AppDataSource.getRepository(Patch)
+      return await AppDataSource.getRepository(Patch)
         .createQueryBuilder("patch")
+        .leftJoinAndSelect("patch.creator", "creator")
         .where({ public: true })
         .andWhere("patch.stateId IS NOT NULL")
-        .leftJoinAndSelect("patch.state", "state")
         .orderBy("RANDOM()")
-        .limit(1)
         .getOne();
-      return patch || null;
     } catch (error) {
       console.error(error);
       return null;

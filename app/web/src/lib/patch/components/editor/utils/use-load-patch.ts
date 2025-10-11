@@ -29,7 +29,7 @@ export const useLoadPatch = (
 	const [randomPatch] = useRoute('/patch/random');
 
 	const [, navigate] = useLocation();
-	const { getPatch } = useApi();
+	const { getPatch, randomPatch: getRandomPatch } = useApi();
 
 	const [loadingRef, loading, setLoading] = useRefBackedState(false);
 
@@ -52,14 +52,16 @@ export const useLoadPatch = (
 		await resetAudioContext();
 		if (newPatch) {
 			setPatchToLoad(blankPatchToLoad());
+		} else if (randomPatch) {
+			const patch = await getRandomPatch();
+			if (patch && patch.slug) {
+				navigate(`/patch/${patch.slug}`, { replace: true });
+			} else {
+				navigate('/patch/new', { replace: false });
+			}
 		} else if (slug) {
-			const query: PatchQuery = randomPatch
-				? { random: true }
-				: isUuid(slug ?? '')
-				? { id: slug }
-				: { slug };
-
 			try {
+				const query: PatchQuery = isUuid(slug ?? '') ? { id: slug } : { slug };
 				const patch = await getPatch(query);
 				if (patch) {
 					setPatchInfo(patch);
@@ -69,6 +71,8 @@ export const useLoadPatch = (
 						slug: patch.slug,
 						state: patch.state.state,
 					});
+				} else {
+					// TODO what do we do here?
 				}
 			} catch (e) {
 				console.error(e);

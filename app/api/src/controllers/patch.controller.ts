@@ -18,28 +18,20 @@ export class PatchController {
 
   static getPatch = async (req, res) => {
     try {
-      const query: PatchQuery = req.query;
+      const query: Exclude<PatchQuery, "random"> = req.query;
 
       let queryParamCount = Object.keys(query).length;
       if (queryParamCount !== 1) {
         throw new Error("Invalid number of query parameters");
-      } else if (
-        !(
-          "id" in query ||
-          "slug" in query ||
-          "creatorId" in query ||
-          "random" in query
-        )
-      ) {
+      } else if ("random" in query) {
+        throw new Error("Unsupported 'random' query parameter");
+      } else if (!("id" in query || "slug" in query || "creatorId" in query)) {
         throw new Error(
-          "Missing expected query params ('id', 'slug', 'creatorId', or 'random')"
+          "Missing expected query params ('id', 'slug', or 'creatorId')"
         );
       }
 
-      const getRandom = "random" in query;
-      const result = getRandom
-        ? await PatchService.getRandomPatch()
-        : await PatchService.getPatch(query);
+      const result = await PatchService.getPatch(query);
       if (Array.isArray(result)) {
         res.json({ patches: result });
       } else if (result) {
@@ -58,17 +50,22 @@ export class PatchController {
 
   static getPatchInfo = async (req, res) => {
     try {
-      const query: Exclude<PatchQuery, "random"> = req.query;
+      const query: PatchQuery = req.query;
 
       let queryParamCount = Object.keys(query).length;
       if (queryParamCount !== 1) {
         throw new Error("Invalid number of query parameters");
-      } else if (!("id" in query || "slug" in query || "creatorId" in query)) {
+      } else if (
+        !(
+          "id" in query ||
+          "slug" in query ||
+          "creatorId" in query ||
+          "random" in query
+        )
+      ) {
         throw new Error(
-          "Missing expected query params ('id', 'slug' or 'creatorId')"
+          "Missing expected query param ('id', 'slug', 'creatorId', or 'random')"
         );
-      } else if ("random" in query) {
-        throw new Error("Unsupported 'random' for getting patch info");
       }
 
       const result = await PatchService.getPatchInfo(query);
