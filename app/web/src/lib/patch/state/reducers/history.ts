@@ -1,8 +1,4 @@
-import {
-	CONNECTIONS_STATE_VERSIONS,
-	PATCH_STATE_VERSIONS,
-	PatchState,
-} from 'synth.kitchen-shared';
+import { CONNECTIONS_STATE_VERSIONS, PatchState } from 'synth.kitchen-shared';
 import { cloneAndApply, IPatchState } from '../types/patch';
 import { IPushToHistory } from '../actions/history';
 import { connectionKey, connectorKey, disconnectSet } from '../connection';
@@ -21,20 +17,10 @@ export const pushToHistory = (
 	state: IPatchState,
 	action?: Partial<IPushToHistory>,
 ): IPatchState => {
-	const loadingConnections =
-		state.connectionsToLoad && state.connectionsToLoad.state
-			? Object.keys(state.connectionsToLoad.state).length > 0
-			: false;
-	// console.log({
-	// 	connectionsToLoad: state.connectionsToLoad,
-	// 	loadingConnections,
-	// });
-	if (state.blockHistory || loadingConnections) {
-		if (action?.force && !loadingConnections) {
-			state = unblockHistory(state);
-		} else {
-			return state;
-		}
+	if (state.connectionsToLoad || (state.blockHistory && !action?.force)) {
+		return state;
+	} else if (state.blockHistory && action?.force) {
+		state = unblockHistory(state);
 	}
 
 	const patchState: PatchState = {
@@ -42,7 +28,7 @@ export const pushToHistory = (
 		modulePositions: state.modulePositions,
 		connections: state.connections,
 		name: state.name,
-		version: PATCH_STATE_VERSIONS[0],
+		version: state.version,
 	};
 	const history = state.history
 		.slice(action?.historyPointer ?? state.historyPointer)
