@@ -23,7 +23,12 @@ export const useLoadPatch = (
 	initialized: boolean,
 	slug: string,
 ) => {
-	const { slug: stateSlug } = useContext(PatchContext);
+	const { connectionsToLoad, slug: stateSlug } = state;
+	useEffect(() => {
+		if (initialized && connectionsToLoad) {
+			dispatch(patchActions.loadConnectionsAction());
+		}
+	}, [initialized, connectionsToLoad]);
 
 	const [newPatch] = useRoute('/patch/new');
 	const [randomPatch] = useRoute('/patch/random');
@@ -72,7 +77,7 @@ export const useLoadPatch = (
 						state: patch.state.state,
 					});
 				} else {
-					// TODO what do we do here?
+					// setTimeout(() => location.reload(), 500);
 				}
 			} catch (e) {
 				console.error(e);
@@ -104,17 +109,6 @@ export const useLoadPatch = (
 			}
 		}
 	}, [loadPatch]);
-
-	const { connectionsToLoad } = state;
-	useEffect(() => {
-		if (
-			initialized &&
-			connectionsToLoad &&
-			Object.keys(connectionsToLoad.state).length > 0
-		) {
-			dispatch(patchActions.loadConnectionsAction());
-		}
-	}, [initialized, connectionsToLoad]);
 
 	return { loading, patchInfo };
 };
