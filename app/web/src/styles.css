@@ -400,6 +400,58 @@ button {
 	z-index: 1;
 }
 
+.module.OSCILLATOR {
+	background-color: #6ee198;
+}
+
+.module.FILTER {
+	background-color: #72ddc5;
+}
+
+.module.COMPRESSOR {
+	background-color: #74dae1;
+}
+
+.module.DELAY {
+	background-color: #9bd2f0;
+}
+
+.module.GAIN {
+	background-color: #c1c9f0;
+}
+
+.module.SHIFT {
+	background-color: #9fade8;
+}
+
+.module.LIMITER {
+	background-color: #dcc0f0;
+}
+
+.module.PAN {
+	background-color: #f1bae4;
+}
+
+.module.NOISE {
+	background-color: #f1bcce;
+}
+
+.module.CLOCK {
+	background-color: #e3acaf;
+}
+
+.module.ENVELOPE {
+	background-color: #aec27e;
+}
+
+.module.VCA {
+	background-color: #81c8ad;
+}
+
+.module.SEQUENCER {
+	background-color: #aabae0;
+}
+
 .module.OUTPUT {
 	width: 18rem;
 }
