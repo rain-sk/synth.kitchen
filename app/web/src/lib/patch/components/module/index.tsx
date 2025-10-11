@@ -76,15 +76,15 @@ const useDragAndDrop = (
 
 	const dragOffset = useRef({ x: 0, y: 0 });
 
-	const stopDragging = useCallback(() => {
+	const stopDragging = () => {
 		setIsDragging(false);
 		dragOffset.current.x = 0;
 		dragOffset.current.y = 0;
 		dispatch(patchActions.unblockHistoryAction());
 		dispatch(patchActions.pushToHistoryAction(true));
-	}, []);
+	};
 
-	const onDrag = useCallback((e: MouseEvent) => {
+	const onDrag = useRef((e: MouseEvent) => {
 		if (e.buttons === 0) {
 			stopDragging();
 		} else {
@@ -98,9 +98,9 @@ const useDragAndDrop = (
 
 			updateModulePosition(newPosition);
 		}
-	}, []);
+	});
 
-	const startDragging = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
+	const startDragging = (e: ReactMouseEvent<HTMLDivElement>) => {
 		// Prevent drawing a selection rectangle on the canvas
 		e.stopPropagation();
 
@@ -115,19 +115,19 @@ const useDragAndDrop = (
 				stopDragging();
 				document.body.removeEventListener('mouseup', onMouseUp);
 				document.body.removeEventListener('mouseleave', onMouseUp);
-				document.body.removeEventListener('mousemove', onDrag);
+				document.body.removeEventListener('mousemove', onDrag.current);
 			};
 
 			document.body.addEventListener('mouseup', onMouseUp);
 			document.body.addEventListener('mouseleave', onMouseUp);
-			document.body.addEventListener('mousemove', onDrag);
+			document.body.addEventListener('mousemove', onDrag.current);
 		}
-	}, []);
+	};
 
-	const setPosition = useCallback((newPosition: ModulePosition) => {
+	const { current: setPosition } = useRef((newPosition: ModulePosition) => {
 		position.current = newPosition;
 		moveContainerRef(containerRef, newPosition);
-	}, []);
+	});
 
 	return { isDragging, startDragging, setPosition };
 };
