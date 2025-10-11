@@ -1,6 +1,6 @@
 const DEFAULT_FILL = '#111111';
 const DEFAULT_STROKE = '#11ff11';
-const HLINE_COLOR = '#555555';
+const HLINE_COLOR = '#9b62b1';
 
 export function initCvs(ctx: CanvasRenderingContext2D, _: number, __: number) {
 	ctx.fillStyle = DEFAULT_FILL;
@@ -28,12 +28,20 @@ export function drawRawOsc(
 	height: number,
 ) {
 	ctx.beginPath();
+
+	const sliceWidth = width / data.length;
+	let x = 0;
 	for (let i = 0; i < data.length; i++) {
-		let x = i * ((width * 1.0) / data.length); // need to fix x
-		let v = data[i] / 128.0;
-		let y = (v * height) / 2;
-		if (i === 0) ctx.moveTo(x, y);
-		else ctx.lineTo(x, y);
+		const v = data[i] / 128.0;
+		const y = v * (height / 2);
+
+		if (i === 0) {
+			ctx.moveTo(x, y);
+		} else {
+			ctx.lineTo(x, y);
+		}
+
+		x += sliceWidth;
 	}
 	ctx.stroke();
 }
