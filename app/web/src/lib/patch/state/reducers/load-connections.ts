@@ -69,8 +69,7 @@ export const loadConnections: React.Reducer<IPatchState, ILoadConnections> = (
 	}
 
 	const finishedLoadingConnections =
-		newState.connectionsToLoad &&
-		Object.keys(newState.connectionsToLoad).length === 0;
+		state.connectionsToLoad && !newState.connectionsToLoad;
 
 	if (finishedLoadingConnections) {
 		return cloneAndApplyWithHistory(unblockHistory(state), {
