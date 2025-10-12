@@ -28,3 +28,4 @@ dist-ssr
 # etc.
 build/
 .env
+screenshots

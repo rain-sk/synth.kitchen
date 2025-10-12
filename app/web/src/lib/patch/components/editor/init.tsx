@@ -61,6 +61,7 @@ export const Init: React.FC<{
 					<h1>patch/{name ? name : 'untitled'}</h1>
 					<button
 						type="button"
+						id="start"
 						onClick={onClickStart}
 						autoFocus
 						disabled={mobile}
