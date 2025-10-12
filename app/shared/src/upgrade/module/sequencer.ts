@@ -1,3 +1,4 @@
+import { version } from "os";
 import {
   SEQUENCER_STATE,
   SEQUENCER_STATE_VERSIONS,
@@ -45,7 +46,24 @@ export function upgrade(
       state = newState;
     }
 
-    case "0.5.1":
+    case "0.5.1": {
+      const newState: SEQUENCER_STATE["0.5.8"] = {
+        ...state,
+        version: "0.5.8",
+        slide: 0,
+      };
+      state = newState;
+    }
+
+    case "0.5.7" as any: {
+      const newState: SEQUENCER_STATE["0.5.8"] = {
+        ...(state as any),
+        version: "0.5.8",
+      };
+      state = newState;
+    }
+
+    case "0.5.8":
     case SEQUENCER_STATE_VERSIONS[0]:
       return state;
   }

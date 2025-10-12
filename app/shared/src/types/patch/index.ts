@@ -28,10 +28,15 @@ export type SavedPatchState = {
   state: PatchState;
 };
 
-export type PATCH_STATE_VERSIONS = ["0.5.7", "0.5.6"];
-export const PATCH_STATE_VERSIONS: PATCH_STATE_VERSIONS = ["0.5.7", "0.5.6"];
+export type PATCH_STATE_VERSIONS = ["0.5.8", "0.5.7", "0.5.6"];
+export const PATCH_STATE_VERSIONS: PATCH_STATE_VERSIONS = [
+  "0.5.8",
+  "0.5.7",
+  "0.5.6",
+];
 
 export type PATCH_STATE = {
+  ["0.5.8"]: { version: "0.5.8" } & Omit<PATCH_STATE["0.5.7"], "version">;
   ["0.5.7"]: {
     version: "0.5.7";
     name: string;

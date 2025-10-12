@@ -1,6 +1,6 @@
 {
   "name": "synth.kitchen-shared",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "shared types and utils for synth.kitchen-api and synth.kitchen-web",
   "license": "MIT",
   "keywords": [],
@@ -12,6 +12,7 @@
     "require": "./build/index.js"
   },
   "scripts": {
+    "dev": "concurrently -k -n tsc,build 'npm run lint' 'npx tsx --watch src/index.ts'",
     "prepare": "npm run build",
     "build": "tsc && node -r ts-node/register build.ts",
     "lint": "tsc --preserveWatchOutput --watch"
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.7.0",
+    "concurrently": "^9.2.1",
     "esbuild": "^0.25.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"

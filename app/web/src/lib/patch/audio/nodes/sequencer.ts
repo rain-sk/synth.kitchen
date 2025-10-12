@@ -22,6 +22,10 @@ export class SequencerNode {
 		return this._node.parameters.get('steps') as IAudioParam;
 	}
 
+	get slide(): IAudioParam {
+		return this._node.parameters.get('slide') as IAudioParam;
+	}
+
 	get step0(): IAudioParam {
 		return this._node.parameters.get('step0') as IAudioParam;
 	}

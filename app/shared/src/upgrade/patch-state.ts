@@ -28,28 +28,45 @@ export const patchStateNeedsUpgrade = (
 export const upgradePatchState = (
   state: PATCH_STATE[keyof PATCH_STATE]
 ): PatchState => {
-  switch (state.version) {
-    case undefined:
-    case "0.5.6": {
-      const connections = upgradeConnectionsState(state);
-      const modules: Record<string, Module> = {};
-      Object.entries(state.modules).forEach(([id, module]) => {
-        modules[id] = {
-          ...module,
-          state: upgradeModule(module.type, module.state),
+  if (state.version !== PATCH_STATE_VERSIONS[0]) {
+    switch (state.version) {
+      case undefined:
+      case "0.5.6":
+      case "0.5.7": {
+        const connections = upgradeConnectionsState(state);
+        const modules: Record<string, Module> = {};
+        Object.entries(state.modules).forEach(([id, module]) => {
+          modules[id] = {
+            ...module,
+            state: upgradeModule(module.type, module.state),
+          };
+        });
+        const newState: PatchState = {
+          ...state,
+          version: "0.5.8",
+          connections,
         };
-      });
-      const newState: PATCH_STATE["0.5.7"] = {
-        ...state,
-        version: "0.5.7",
-        connections,
-        modules,
-      };
-      state = newState;
-    }
+        state = newState;
+      }
 
-    case "0.5.7":
-    case PATCH_STATE_VERSIONS[0]:
-      return state;
+      default:
+        break;
+    }
+    return state;
+  } else {
+    const connections = upgradeConnectionsState(state);
+    const modules: Record<string, Module> = {};
+    Object.entries(state.modules).forEach(([id, module]) => {
+      modules[id] = {
+        ...module,
+        state: upgradeModule(module.type, module.state),
+      };
+    });
+
+    return {
+      ...state,
+      connections,
+      modules,
+    };
   }
 };

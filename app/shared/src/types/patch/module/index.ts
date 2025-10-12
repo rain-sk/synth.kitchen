@@ -142,8 +142,9 @@ const DefaultModuleStates: ModuleState = {
     version: "0.5.7",
   },
   [ModuleType.SEQUENCER]: {
-    version: "0.5.1",
-    steps: 2,
+    version: "0.5.8",
+    steps: 4,
+    slide: 0,
     step0: 0,
     step1: 0,
     step2: 0,
