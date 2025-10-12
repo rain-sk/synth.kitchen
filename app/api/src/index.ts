@@ -23,7 +23,6 @@ const initDatabaseConnection = async () => {
           console.error("AppDataSource.initialize() failed", e);
           process.exit(1);
         } else {
-          console.warn(e);
           setTimeout(tryInit, 500);
         }
       }
