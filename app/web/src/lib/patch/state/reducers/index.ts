@@ -22,6 +22,7 @@ import { keyboardEvent } from './keyboard-event';
 import { loadConnections } from './load-connections';
 import { loadPatch } from './load-patch';
 import { selectModule } from './select-module';
+import { selectModules } from './select-modules';
 import { selectionDrag } from './selection-drag';
 import { setActiveConnectorKey } from './set-active-connector-key';
 import { updateModuleName } from './update-module-name';
@@ -106,6 +107,9 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		}
 		case 'SelectModule': {
 			return selectModule(state, action);
+		}
+		case 'SelectModules': {
+			return selectModules(state, action);
 		}
 		case 'SetActiveConnectorKey': {
 			return setActiveConnectorKey(state, action);

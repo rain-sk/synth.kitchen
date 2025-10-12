@@ -71,6 +71,7 @@ import {
 	IConnect,
 	IDisconnect,
 } from './connection';
+import { ISelectModules, selectModulesAction } from './select-modules';
 
 export type IPatchAction =
 	| IAddModule
@@ -93,6 +94,7 @@ export type IPatchAction =
 	| IRegisterConnector
 	| ISelectionDrag
 	| ISelectModule
+	| ISelectModules
 	| ISetActiveConnectorKey
 	| IUnblockHistory
 	| IUndo
@@ -127,6 +129,7 @@ export const patchActions = {
 	selectionDragEndAction,
 	selectionDragStartAction,
 	selectModuleAction,
+	selectModulesAction,
 	selectSingleModuleAction,
 	setActiveConnectorKeyAction,
 	unblockHistoryAction,
