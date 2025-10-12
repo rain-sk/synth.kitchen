@@ -1,5 +1,4 @@
 import {
-	Connection,
 	Input,
 	IoType,
 	Module,
@@ -12,20 +11,20 @@ import {
 import { patchActions } from '../actions';
 import { IAddModule } from '../actions/add-module';
 import { IConnect } from '../actions/connection';
-import { IKeyboardEvent } from '../actions/keyboard-event';
-import { KeyboardEventType } from '../actions/keyboard-event';
-import { connectorInfo } from '../connection';
-import { disconnectSet } from '../connection';
-import { moduleConnectors } from '../connection';
-import { cloneAndApply, cloneAndApplyWithHistory } from '../types/patch';
-import { IPatchState } from '../types/patch';
+import { IKeyboardEvent, KeyboardEventType } from '../actions/keyboard-event';
+import { connectorInfo, disconnectSet, moduleConnectors } from '../connection';
+import { redo, undo } from './history';
+import {
+	cloneAndApply,
+	cloneAndApplyWithHistory,
+	IPatchState,
+} from '../types/patch';
 import {
 	KeyCode,
 	keyCodeModifierMap,
 	keyCodeMovementMap,
 	Modifier,
 } from '../../constants/key';
-import { redo, undo } from './history';
 
 const isShift = (heldModifiers: number) => {
 	return (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
