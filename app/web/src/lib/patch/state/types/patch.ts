@@ -100,4 +100,7 @@ export const cloneAndApply = (
 export const cloneAndApplyWithHistory = (
 	state: IPatchState,
 	update: Partial<Omit<IPatchState, 'historyPointer'>>,
-): IPatchState => pushToHistory(cloneAndApply(pushToHistory(state), update));
+): IPatchState =>
+	state.blockHistory
+		? cloneAndApply(state, update)
+		: pushToHistory(cloneAndApply(pushToHistory(state), update));
