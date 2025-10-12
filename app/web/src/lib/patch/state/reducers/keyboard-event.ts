@@ -74,7 +74,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	) {
 		const { deltaX, deltaY } = keyCodeMovementMap[keyCode];
 
-		return cloneAndApply(state, {
+		return cloneAndApplyWithHistory(state, {
 			modulePositions: Object.fromEntries(
 				Object.entries(state.modulePositions).map(([id, position]) => [
 					id,
