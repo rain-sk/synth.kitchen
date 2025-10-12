@@ -1,4 +1,5 @@
 import {
+	Connection,
 	Input,
 	IoType,
 	Module,
@@ -9,6 +10,8 @@ import {
 } from 'synth.kitchen-shared';
 
 import { patchActions } from '../actions';
+import { IAddModule } from '../actions/add-module';
+import { IConnect } from '../actions/connection';
 import { IKeyboardEvent } from '../actions/keyboard-event';
 import { KeyboardEventType } from '../actions/keyboard-event';
 import { connectorInfo } from '../connection';
@@ -193,6 +196,10 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		newState.asyncActionQueue = state.asyncActionQueue.slice();
 		newState.selectedConnections = new Set();
 
+		const newModuleIds = new Set<string>();
+		const newModules: IAddModule[] = [];
+		const newConnections: IConnect[] = [];
+
 		for (const connectionKey of state.selectedConnections) {
 			const [output, input] = state.connections.state[connectionKey];
 
@@ -214,23 +221,31 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 				type: IoType.output,
 			} as Output;
 
-			newState.asyncActionQueue.push(patchActions.blockHistoryAction());
-			newState.asyncActionQueue.push(
+			newModuleIds.add(moduleId);
+			newModules.push(
 				patchActions.addModuleAction(quickKeyMap[keyCode], newModulePosition, {
 					id: moduleId,
 				}),
 			);
-			newState.asyncActionQueue.push(
+			newConnections.push(
 				patchActions.connectAction(output, moduleInput),
-			);
-			newState.asyncActionQueue.push(
 				patchActions.connectAction(moduleOutput, input),
 			);
-			newState.asyncActionQueue.push(patchActions.selectModuleAction(moduleId));
-			newState.asyncActionQueue.push(patchActions.pushToHistoryAction(true));
 		}
 
-		return cloneAndApplyWithHistory(state, newState);
+		if (newModuleIds.size === 0) {
+			return cloneAndApplyWithHistory(state, newState);
+		}
+
+		newState.asyncActionQueue.push(
+			patchActions.blockHistoryAction(),
+			...newModules,
+			...newConnections,
+			patchActions.selectModulesAction(newModuleIds),
+			patchActions.pushToHistoryAction(true),
+		);
+
+		return cloneAndApply(state, newState);
 	} else if (
 		keyCode === KeyCode.Z &&
 		type === KeyboardEventType.KEY_DOWN &&
