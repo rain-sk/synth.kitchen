@@ -11,8 +11,12 @@ import {
 import { moduleNeedsUpgrade, upgradeModule } from "./module";
 
 export const patchStateNeedsUpgrade = (
-  state: PATCH_STATE[keyof PATCH_STATE]
+  state?: PATCH_STATE[keyof PATCH_STATE]
 ): boolean => {
+  if (!state) {
+    return false;
+  }
+
   const stateVersionMismatch = state.version !== PATCH_STATE_VERSIONS[0];
 
   return (
