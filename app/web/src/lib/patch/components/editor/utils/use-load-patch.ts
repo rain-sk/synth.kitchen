@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useRoute } from 'wouter';
 
 import { blankPatchToClearCanvas, blankPatchToLoad } from '../../../state';
@@ -10,7 +10,6 @@ import { useRefBackedState } from '../../../../shared/utils/use-ref-backed-state
 import { resetAudioContext } from '../../../audio';
 import { PatchInfo, PatchQuery } from 'synth.kitchen-shared';
 import { ISerializedPatch } from '../../../state/types/serialized-patch';
-import { PatchContext } from '../../../contexts/patch';
 
 const uuidRegex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
