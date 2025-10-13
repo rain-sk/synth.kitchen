@@ -37,12 +37,13 @@ export const outputModule: () => Module = () => ({
 const outputModulePosition = (): ModulePosition => {
 	const main = document.getElementById('main');
 	if (!main) {
-		return [200, 200];
+		return [400, 200];
 	}
 
 	const { width, height } = main.getBoundingClientRect();
-	const rightOffset = convertRemToPixels(9);
-	const bottomOffset = convertRemToPixels(14);
+	const rightOffset = convertRemToPixels(15);
+	const bottomOffset = convertRemToPixels(23);
+
 	return [width - rightOffset, height - bottomOffset];
 };
 

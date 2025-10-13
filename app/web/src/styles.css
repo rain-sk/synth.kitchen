@@ -33,10 +33,10 @@ h1 {
 
 #overview {
 	position: relative;
-	bottom: 7.5rem;
+	bottom: 12.5rem;
 	right: 0;
-	width: 16rem;
-	height: 9rem;
+	width: 24rem;
+	height: 14rem;
 	border: 0.1rem solid #ffffff;
 	border-radius: 0.25rem;
 	animation: all 1s linear;
