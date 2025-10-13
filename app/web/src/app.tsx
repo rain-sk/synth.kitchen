@@ -30,6 +30,7 @@ export const SynthKitchen: React.FC = () => {
 				<Route path="/p" component={RedirectToPatch} />
 				<Route path="/p/:slug" component={RedirectToPatch} />
 				<Route path="/patch" component={RedirectToPatch} />
+				<Route path="/beta" component={RedirectToPatch} />
 
 				<Route path="/patch/:slug" component={PatchRoute} />
 
