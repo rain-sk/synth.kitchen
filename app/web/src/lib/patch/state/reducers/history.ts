@@ -61,7 +61,7 @@ const syncConnections = (
 			!new Set(incomingConnectionKeys).has(key)
 		);
 	});
-
+	if (connectionsToDelete.length > 0) {
 	state = cloneAndApply(
 		state,
 		disconnectSet(
@@ -70,6 +70,7 @@ const syncConnections = (
 			new Set(connectionsToDelete),
 		),
 	);
+	}
 
 	// Connect what we can
 	const connectionsToLoadNow = incomingConnectionKeys
