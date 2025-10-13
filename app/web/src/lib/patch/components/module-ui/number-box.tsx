@@ -103,19 +103,24 @@ export const NumberBox: React.FunctionComponent<{
 
 	const onKeyDown = useCallback(
 		(e: React.KeyboardEvent<HTMLInputElement>) => {
+			const el = e.target as HTMLInputElement;
 			if (e.key === 'Enter') {
 				commitValueCallback(valueToCommit());
-				(e.target as any).select();
+				el.select();
 			} else if (e.key === 'Escape') {
 				setTempValue(`${value}`);
-				setTimeout(() => (e.target as any).select(), 1);
+				el.setAttribute('disabled', 'true');
+				setTimeout(() => {
+					el.setAttribute('disabled', 'false');
+					el.select();
+				}, 1);
 			} else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
 				if (e.shiftKey) {
 					const newValue =
 						e.key === 'ArrowUp' ? valueToCommit() * 2 : valueToCommit() / 2;
 					setTempValue(`${newValue}`);
 					commitValueCallback(newValue);
-					setTimeout(() => (e.target as any).select(), 1);
+					setTimeout(() => el.select(), 1);
 				} else {
 					const numberOfDecimals = countDecimals(valueToCommit());
 					const smallestIncrement = 0.1 ** numberOfDecimals;
@@ -133,7 +138,7 @@ export const NumberBox: React.FunctionComponent<{
 
 					setTempValue(`${newValue}`);
 					commitValueCallback(newValue);
-					setTimeout(() => (e.target as any).select(), 1);
+					setTimeout(() => el.select(), 1);
 				}
 			} else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
 				const input = e.target as HTMLInputElement;
