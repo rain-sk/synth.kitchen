@@ -54,63 +54,72 @@ const sync = (
 	const incomingConnectionKeys = Object.keys(stateToLoad.connections.state);
 
 	// Delete outgoing connections
-	const connectionsToDelete = currentConnectionKeys.filter((key) => {
-		const [output, input] = state.connections.state[key];
-		return (
-			output.moduleId in stateToLoad.modules &&
-			input.moduleId in stateToLoad.modules &&
-			!new Set(incomingConnectionKeys).has(key)
-		);
-	});
-	if (connectionsToDelete.length > 0) {
-		state = cloneAndApply(
-			state,
-			disconnectSet(
-				state.connections,
-				state.connectors,
-				new Set(connectionsToDelete),
-			),
-		);
+	{
+		const connectionsToDelete = currentConnectionKeys.filter((key) => {
+			const [output, input] = state.connections.state[key];
+			return (
+				output.moduleId in stateToLoad.modules &&
+				input.moduleId in stateToLoad.modules &&
+				!new Set(incomingConnectionKeys).has(key)
+			);
+		});
+		if (connectionsToDelete.length > 0) {
+			state = cloneAndApply(
+				state,
+				disconnectSet(
+					state.connections,
+					state.connectors,
+					new Set(connectionsToDelete),
+				),
+			);
+		}
 	}
 
 	// Connect what we can
-	const connectionsToLoadNow = incomingConnectionKeys
-		.map((key) => stateToLoad.connections.state[key])
-		.filter(
-			([output, input]) =>
-				output.moduleId in state.modules &&
-				input.moduleId in state.modules &&
-				connectorKey(output) in state.connectors &&
-				connectorKey(input) in state.connectors,
-		);
-	const loaded = new Set<string>();
-	for (const [output, input] of connectionsToLoadNow) {
-		const key = connectionKey(output, input);
-		state = connect(state, { payload: [output, input], type: 'Connect' });
-		if (key in state.connections.state) {
-			loaded.add(key);
+	const loadedConnections = new Set<string>();
+	{
+		const connectionsToLoadNow = incomingConnectionKeys
+			.map((key) => stateToLoad.connections.state[key])
+			.filter(
+				([output, input]) =>
+					output.moduleId in state.modules &&
+					input.moduleId in state.modules &&
+					connectorKey(output) in state.connectors &&
+					connectorKey(input) in state.connectors,
+			);
+		for (const [output, input] of connectionsToLoadNow) {
+			const key = connectionKey(output, input);
+			state = connect(state, { payload: [output, input], type: 'Connect' });
+			if (key in state.connections.state) {
+				loadedConnections.add(key);
+			}
 		}
 	}
 
 	// Defer the rest via the async actions queue
-	stateToLoad.asyncActionQueue = state.asyncActionQueue.slice();
-	stateToLoad.asyncActionQueue.push(patchActions.blockHistoryAction());
-	incomingConnectionKeys
-		.filter((key) => !loaded.has(key))
-		.map((key) => stateToLoad.connections.state[key])
-		.forEach(([output, input]) => {
-			stateToLoad.asyncActionQueue?.push(
-				patchActions.connectAction(output, input),
-			);
-		});
-	stateToLoad.asyncActionQueue.push(patchActions.unblockHistoryAction());
-
-	for (const id in stateToLoad.modules) {
-		if (id in state.modules) {
-			state = updateModuleState(state, {
-				type: 'UpdateModuleState',
-				payload: { id, state: stateToLoad.modules[id].state },
+	{
+		stateToLoad.asyncActionQueue = state.asyncActionQueue.slice();
+		stateToLoad.asyncActionQueue.push(patchActions.blockHistoryAction());
+		incomingConnectionKeys
+			.filter((key) => !loadedConnections.has(key))
+			.map((key) => stateToLoad.connections.state[key])
+			.forEach(([output, input]) => {
+				stateToLoad.asyncActionQueue?.push(
+					patchActions.connectAction(output, input),
+				);
 			});
+		stateToLoad.asyncActionQueue.push(patchActions.unblockHistoryAction());
+	}
+
+	// Sync module states
+	{
+		for (const id in stateToLoad.modules) {
+			if (id in state.modules) {
+				state = updateModuleState(state, {
+					type: 'UpdateModuleState',
+					payload: { id, state: stateToLoad.modules[id].state },
+				});
+			}
 		}
 	}
 
