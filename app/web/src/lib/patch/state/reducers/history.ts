@@ -1,9 +1,10 @@
-import { CONNECTIONS_STATE_VERSIONS, PatchState } from 'synth.kitchen-shared';
+import { PatchState } from 'synth.kitchen-shared';
 import { cloneAndApply, IPatchState } from '../types/patch';
 import { IPushToHistory } from '../actions/history';
 import { connectionKey, connectorKey, disconnectSet } from '../connection';
 import { updateModuleState } from './update-module-state';
 import { connect } from './connection';
+import { patchActions } from '../actions';
 
 export const blockHistory = (state: IPatchState) => {
 	return cloneAndApply(state, { blockHistory: true });
@@ -40,7 +41,7 @@ export const pushToHistory = (
 	});
 };
 
-const syncConnections = (
+const sync = (
 	state: IPatchState,
 	stateToLoad: PatchState & Partial<IPatchState>,
 ): IPatchState => {
@@ -62,14 +63,14 @@ const syncConnections = (
 		);
 	});
 	if (connectionsToDelete.length > 0) {
-	state = cloneAndApply(
-		state,
-		disconnectSet(
-			state.connections,
-			state.connectors,
-			new Set(connectionsToDelete),
-		),
-	);
+		state = cloneAndApply(
+			state,
+			disconnectSet(
+				state.connections,
+				state.connectors,
+				new Set(connectionsToDelete),
+			),
+		);
 	}
 
 	// Connect what we can
@@ -91,16 +92,18 @@ const syncConnections = (
 		}
 	}
 
-	// Defer the rest
-	const newConnectionsState = Object.fromEntries(
-		incomingConnectionKeys
-			.filter((key) => !loaded.has(key))
-			.map((key) => [key, stateToLoad.connections.state[key]]),
-	);
-	stateToLoad.connectionsToLoad = {
-		version: CONNECTIONS_STATE_VERSIONS[0],
-		state: newConnectionsState,
-	};
+	// Defer the rest via the async actions queue
+	stateToLoad.asyncActionQueue = state.asyncActionQueue.slice();
+	stateToLoad.asyncActionQueue.push(patchActions.blockHistoryAction());
+	incomingConnectionKeys
+		.filter((key) => !loaded.has(key))
+		.map((key) => stateToLoad.connections.state[key])
+		.forEach(([output, input]) => {
+			stateToLoad.asyncActionQueue?.push(
+				patchActions.connectAction(output, input),
+			);
+		});
+	stateToLoad.asyncActionQueue.push(patchActions.unblockHistoryAction());
 
 	for (const id in stateToLoad.modules) {
 		if (id in state.modules) {
@@ -120,7 +123,7 @@ const incrementHistoryPointer = (state: IPatchState, direction: 1 | -1) => {
 	const historyPointer = state.historyPointer + direction;
 	const stateToLoad = state.history.load(historyPointer);
 
-	return cloneAndApply(syncConnections(state, stateToLoad), {
+	return cloneAndApply(sync(state, stateToLoad), {
 		historyPointer,
 	});
 };
