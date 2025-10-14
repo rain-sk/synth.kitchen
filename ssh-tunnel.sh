@@ -44,6 +44,6 @@ if [ -z \"$LOCAL_IP\" ]; then
   exit 1
 fi
 
-echo Opening tunnel to local IP \($LOCAL_IP\) of postgres container on remote server.
+echo Opening tunnel to postgres container \($LOCAL_IP\) on remote server.
 
 ssh -N -L 5432:$LOCAL_IP:5432 $REMOTE_USER@$REMOTE_HOST
