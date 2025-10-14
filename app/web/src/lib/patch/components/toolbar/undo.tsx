@@ -14,7 +14,7 @@ export const Undo = () => {
 	}, [dispatch]);
 
 	return (
-		<button type="button" disabled={disabled} onClick={onUndo}>
+		<button type="button" id="undo" disabled={disabled} onClick={onUndo}>
 			<span className="visually-hidden">undo</span>
 			<UndoSvg />
 		</button>

@@ -14,7 +14,7 @@ export const Redo = () => {
 	}, [dispatch]);
 
 	return (
-		<button type="button" disabled={disabled} onClick={onRedo}>
+		<button type="button" id="redo" disabled={disabled} onClick={onRedo}>
 			<span className="visually-hidden">redo</span>
 			<RedoSvg />
 		</button>
