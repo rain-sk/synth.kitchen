@@ -122,4 +122,21 @@ export class AuthController {
       res.status(500).send("");
     }
   };
+
+  static deleteUser = async (req: JwtRequest, res) => {
+    const password = req.headers["x-password"];
+
+    if (!password) {
+      res.sendStatus(400);
+      return;
+    }
+
+    try {
+      const success = await UserService.deleteUser(req.auth.id);
+      res.status(200).json({ success });
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  };
 }

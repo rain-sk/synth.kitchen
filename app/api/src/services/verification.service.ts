@@ -37,12 +37,13 @@ export class VerificationService {
   static initiateVerification = async (user: User) => {
     try {
       await AppDataSource.transaction(async (manager) => {
-        const repository = await manager.getRepository(
-          EmailVerificationRequest
-        );
-        const verification = repository.create();
+        const verifications = manager.getRepository(EmailVerificationRequest);
+        const users = manager.getRepository(User);
+        const verification = verifications.create();
         verification.user = user;
-        repository.save(verification);
+        user.emailVerificationRequest = verification;
+        await verifications.save(verification);
+        await users.save(user);
       });
     } catch (e) {
       console.error(e);

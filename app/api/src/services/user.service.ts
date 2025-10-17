@@ -4,6 +4,13 @@ import { User } from "../entity/User";
 import { validateRegistration, ValidationError } from "./validate/registration";
 import { bcryptCost } from "../env";
 import { VerificationService } from "./verification.service";
+import { Sample } from "../entity/Sample";
+import { EmailVerificationRequest } from "../entity/EmailVerificationRequest";
+import { PasswordResetRequest } from "../entity/PasswordResetRequest";
+import { SavedPatchState } from "../entity/SavedPatchState";
+import { Patch } from "../entity/Patch";
+import { PatchService } from "./patch.service";
+import { PatchInfo } from "synth.kitchen-shared";
 
 type GetUserInfo = { id: string } | { email: string } | { username: string };
 
@@ -104,5 +111,34 @@ export class UserService {
     }
   };
 
-  static deleteUser = async (userId: string) => {};
+  static deleteUser = async (userId: string) => {
+    try {
+      await AppDataSource.transaction(async (manager) => {
+        const users = manager.getRepository(User);
+        const patches = manager.getRepository(Patch);
+        const patchStates = manager.getRepository(SavedPatchState);
+        const passwordResets = manager.getRepository(PasswordResetRequest);
+        const verifications = manager.getRepository(EmailVerificationRequest);
+        // const samples = manager.getRepository(Sample);
+
+        const userPatches = (await PatchService.getPatchInfo({
+          creatorId: userId,
+        })) as PatchInfo[];
+
+        await Promise.all(
+          userPatches.map((patch) => patchStates.delete({ patch }))
+        );
+        await Promise.all(userPatches.map((patch) => patches.delete(patch.id)));
+
+        const user = await this.getUser({ id: userId });
+        passwordResets.delete({ user });
+        verifications.delete({ user });
+        users.delete(userId);
+      });
+      return true;
+    } catch (error) {
+      console.error(error);
+    }
+    return false;
+  };
 }
