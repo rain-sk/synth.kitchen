@@ -75,8 +75,4 @@ describe("patch: undo / redo", () => {
     cy.get("button#undo").should("not.be.disabled");
     cy.get("button#redo").should("be.disabled");
   });
-
-  it("fails", () => {
-    expect(true).to.equal(false);
-  });
 });
