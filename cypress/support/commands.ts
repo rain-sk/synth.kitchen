@@ -10,30 +10,37 @@
 // ***********************************************
 //
 //
-// -- This is a parent command --
 Cypress.Commands.add("register" as any, (email: string, password: string) => {
+  cy.visit("/logout").wait(1000);
   cy.visit("/register");
   cy.get("#email").focus().type(email);
   cy.get("#password").focus().type(password);
-  cy.get("#confirm-password").focus().type(password);
-  cy.get("main > section > form > button").trigger("click");
+  cy.get("#confirm-password").focus().type(`${password}{enter}`);
+  cy.wait(2000);
+  cy.location().then((loc) => {
+    if (loc.pathname.toString().includes("login")) {
+      (cy as any).login(email, password);
+    }
+  });
+  cy.visit("/logout").wait(1000);
 });
+
 Cypress.Commands.add("login" as any, (email: string, password: string) => {
+  cy.visit("/logout");
   cy.visit("/login");
   cy.get("#email").focus().type(email);
-  cy.get("#password").focus().type(password);
-  cy.get("main > section > form > button").trigger("click");
+  cy.get("#password").focus().type(`${password}{enter}`);
+  cy.wait(2000);
 });
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
+
+Cypress.Commands.add("delete" as any, (email: string, password: string) => {
+  cy.visit("/account");
+  cy.location().then((loc) => {
+    if (loc.pathname.toString().includes("login")) {
+      (cy as any).login(email, password).wait(2000);
+      cy.visit("/account");
+    }
+  });
+  cy.get("#delete").trigger("click");
+  cy.get("#password").focus().type(`${password}{enter}`);
+});

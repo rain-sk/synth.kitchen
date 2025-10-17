@@ -8,6 +8,7 @@ import { PatchPreviews } from './patch-previews';
 
 import './styles.css';
 import { DashboardContext } from './context';
+import { navigate } from 'wouter/use-browser-location';
 
 export const DashboardRoute = () => {
 	useTitle('synth.kitchen | dashboard');
@@ -16,6 +17,12 @@ export const DashboardRoute = () => {
 	const { getPatches } = useApi();
 	const [patches, setPatches] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		if (!user) {
+			navigate('/login');
+		}
+	}, [user, loading]);
 	const [error, setError] = useState<string | null>(null);
 
 	const refresh = useCallback(() => {

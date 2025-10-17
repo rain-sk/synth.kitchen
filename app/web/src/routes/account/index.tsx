@@ -53,14 +53,20 @@ export const AccountRoute: React.FC = () => {
 									Enter your password to confirm the deletion of your account:
 								</h4>
 								<label>
-									Password <input type="password" onChange={onPasswordChange} />
+									Password{' '}
+									<input
+										id="password"
+										type="password"
+										onChange={onPasswordChange}
+									/>
 								</label>
-								<button>Delete my account</button>
+								<button id="confirm-delete">Delete my account</button>
 							</form>
 						) : (
 							<label>
 								Delete your account{' '}
 								<input
+									id="delete"
 									type="button"
 									value="delete"
 									onClick={onClickDelete}

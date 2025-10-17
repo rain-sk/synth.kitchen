@@ -77,7 +77,7 @@ export class AuthController {
     }
 
     if (result && result instanceof ValidationError) {
-      res.status(400).json({ errors: result });
+      res.status(400).json({ errors: Object.fromEntries(result.errors) });
     } else if (result && result instanceof User && result.id) {
       res.status(200).json({
         jwt: await jwtSign(result),
@@ -126,8 +126,13 @@ export class AuthController {
   static deleteUser = async (req: JwtRequest, res) => {
     const password = req.headers["x-password"];
 
-    if (!password) {
-      res.sendStatus(400);
+    if (!password || Array.isArray(password)) {
+      res.sendStatus(403);
+      return;
+    }
+
+    if (!(await UserService.login(req.auth.email, password))) {
+      res.sendStatus(403);
       return;
     }
 

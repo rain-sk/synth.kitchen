@@ -84,7 +84,11 @@ export class UserService {
     username?: string;
     password: string;
   }): Promise<User | ValidationError | void> => {
-    let user: User;
+    let user: User | void = await this.login(email, password);
+
+    if (user) {
+      return user;
+    }
 
     try {
       await AppDataSource.transaction(async (manager) => {

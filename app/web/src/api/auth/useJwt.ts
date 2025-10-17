@@ -7,33 +7,36 @@ import { apiBase } from '../uri';
 
 export const useJwt = () => {
 	const syncing = useRef(false);
-	const [storedJwt, setStoredJwt] = useLocalStorage('jwt', '');
-	const [jwt, setJwt] = useState<string>('');
+	const [storedJwt, setStoredJwt] = useLocalStorage<string | undefined>(
+		'jwt',
+		undefined,
+	);
+	const [jwt, setJwt] = useState<string | undefined>(undefined);
 
 	const loggingOut = useRef(false);
 	const logout = useCallback(() => {
 		loggingOut.current = true;
-		setStoredJwt('');
-		setJwt('');
+		setStoredJwt(undefined);
+		setJwt(undefined);
 		navigate('/login');
 	}, [setJwt, setStoredJwt]);
 
 	useEffect(() => {
 		if (loggingOut.current) {
-			if (!jwt && !storedJwt) {
+			if (jwt === undefined && storedJwt === undefined) {
 				loggingOut.current = false;
 			}
-		} else if (jwt) {
+		} else if (jwt !== undefined) {
 			if (jwt !== storedJwt) {
 				setStoredJwt(jwt);
 			}
-		} else if (storedJwt) {
+		} else if (storedJwt !== undefined) {
 			setJwt(storedJwt);
 		}
 	}, [jwt, storedJwt]);
 
 	const sync = useCallback(async () => {
-		if (jwt) {
+		if (jwt !== undefined) {
 			syncing.current = true;
 			try {
 				const response = await fetchWithJwt(`${apiBase}/token/refresh`).then(

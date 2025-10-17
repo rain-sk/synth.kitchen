@@ -72,7 +72,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 						throw new Error(await res.text());
 					}
 				});
-				setJwt(response.jwt || '');
+				setJwt(response.jwt);
 				if (response.register) {
 					loginRef.current = false;
 					return response.register;
@@ -97,7 +97,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
 				};
-				const response = await fetch(`${apiBase}/auth/delete`, {
+				const response = await fetch(`${apiBase}/auth/register`, {
 					headers,
 					method: 'post',
 					body: JSON.stringify({
@@ -108,11 +108,23 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 					if (res.status === 200) {
 						registerRef.current = false;
 						return (await res.json()) as RegisterResponse;
+					} else if (res.status === 400) {
+						const { errors } = await res.json();
+						if (
+							'email' in errors &&
+							Array.isArray(errors.email) &&
+							errors.email.some(
+								(error: string) => error === 'Email is already in use.',
+							)
+						) {
+							registerRef.current = false;
+							return { login: true };
+						}
 					} else {
 						throw new Error(await res.text());
 					}
 				});
-				setJwt(response.jwt || '');
+				setJwt(response && 'jwt' in response ? response.jwt : undefined);
 			} catch (e) {
 				console.error(e);
 			}
@@ -139,7 +151,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 			}).then(async (res) => res.json());
 
 			if (response.success) {
-				setJwt('');
+				setJwt(undefined);
 				navigate('/');
 			} else {
 				location.reload();
