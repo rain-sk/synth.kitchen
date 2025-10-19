@@ -59,7 +59,6 @@ export const upgradePatchState = (
     return state;
   } else {
     const connections = upgradeConnectionsState(state);
-    console.log(true);
     const modules: Record<string, Module> = {};
     Object.entries(state.modules).forEach(([id, module]) => {
       modules[id] = {

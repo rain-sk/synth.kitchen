@@ -3,7 +3,7 @@ import { AdminUser, UserInfoAuthenticated } from 'synth.kitchen-shared';
 
 import { apiBase } from '../uri';
 
-export const useUser = (jwt: string) => {
+export const useUser = (jwt?: string) => {
 	const [loading, setLoading] = useState(true);
 	const [user, setUser] = useState<
 		UserInfoAuthenticated | AdminUser | undefined

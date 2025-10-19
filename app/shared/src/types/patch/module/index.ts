@@ -107,10 +107,11 @@ const DefaultModuleStates: ModuleState = {
     version: "0.5.0",
   },
   [ModuleType.MIDI_CC]: {
-    version: "0.5.0",
+    version: "0.5.9",
     input: "",
     cc: 32,
-    min: -1,
+    channel: 1,
+    min: 0,
     max: 1,
   },
   [ModuleType.MIDI_CLOCK]: {

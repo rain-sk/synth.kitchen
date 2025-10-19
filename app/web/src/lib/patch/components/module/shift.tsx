@@ -122,15 +122,14 @@ export const ShiftModule: React.FC<{ module: Module<ModuleType.SHIFT> }> = ({
 	const outputMinAccessor = useCallback(() => node.outputMin, [enabled]);
 	const outputMaxAccessor = useCallback(() => node.outputMax, [enabled]);
 
-	const input = useCallback(() => node.input(), [enabled]);
-	const output = useCallback(() => node.output(), [enabled]);
+	const io = useCallback(() => node.io(), [enabled]);
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleId={module.id}
-				inputAccessors={{ input }}
-				outputAccessors={{ output }}
+				inputAccessors={{ input: io }}
+				outputAccessors={{ output: io }}
 			/>
 			<section>
 				<NumberParameter

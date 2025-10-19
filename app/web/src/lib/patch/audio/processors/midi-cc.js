@@ -15,17 +15,14 @@ class MidiCc extends AudioWorkletProcessor {
 				minValue: 0,
 				maxValue: 127,
 			},
-			{
-				name: 'max',
-				defaultValue: 1.0,
-			},
-			{ name: 'min', defaultValue: 0.0 },
 		];
 	}
 
 	constructor() {
 		super();
 	}
+
+	lastFrame = 0;
 
 	process(_, outputs, parameters) {
 		const active = parameters.active;
@@ -45,21 +42,12 @@ class MidiCc extends AudioWorkletProcessor {
 			const value = parameters.value;
 			const valueIsConstant = value.length === 1;
 
-			const max = parameters.max;
-			const maxIsConstant = max.length === 1;
-
-			const min = parameters.min;
-			const minIsConstant = min.length === 1;
-
-			const frameValue = valueIsConstant ? value[0] : value[i];
-
-			const frameMax = maxIsConstant ? max[0] : max[i];
-
-			const frameMin = minIsConstant ? min[0] : min[i];
+			const frameValue =
+				(2 * (valueIsConstant ? value[0] : value[i]) + this.lastFrame) / 3;
+			this.lastFrame = frameValue;
 
 			for (let channel = 0; channel < output.length; channel++) {
-				output[channel][i] =
-					(frameValue / 127) * (frameMax - frameMin) + frameMin;
+				output[channel][i] = frameValue;
 			}
 		}
 

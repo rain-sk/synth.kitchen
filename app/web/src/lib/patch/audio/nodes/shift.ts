@@ -16,8 +16,7 @@ export class ShiftNode {
 			?.setValueAtTime(0, audioContext.currentTime);
 	};
 
-	input = (): IAudioWorkletNode<IAudioContext> => this._node;
-	output = (): IAudioWorkletNode<IAudioContext> => this._node;
+	io = (): IAudioWorkletNode<IAudioContext> => this._node;
 
 	get inputMin(): IAudioParam {
 		return this._node.parameters.get('inputMin') as IAudioParam;

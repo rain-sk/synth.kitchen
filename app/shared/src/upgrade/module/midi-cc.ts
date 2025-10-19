@@ -23,8 +23,18 @@ export function upgrade(
     };
   }
 
-  if (state.version === MIDI_CC_STATE_VERSIONS[0]) {
-    return state;
+  switch (state.version) {
+    case "0.5.0": {
+      state = {
+        ...state,
+        version: "0.5.9",
+        channel: 1,
+      };
+    }
+
+    case "0.5.9":
+    case MIDI_CC_STATE_VERSIONS[0]:
+      return state;
   }
 
   throw new Error(

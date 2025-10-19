@@ -1,4 +1,6 @@
 {
+  "name": "synth.kitchen-api",
+  "version": "0.5.9",
   "devDependencies": {
     "concurrently": "^9.2.1",
     "cypress": "^15.5.0",
@@ -6,6 +8,7 @@
   },
   "scripts": {
     "dev": "concurrently -k -n shared,api,web 'cd app/shared && npm i && npm run dev' 'cd app/api && npm i && npm run dev' 'cd app/web && npm i && npm run dev'",
+    "lint": "concurrently -k -n shared,api,web 'cd app/shared && npm i && npm run lint' 'cd app/api && npm i && npm run lint' 'cd app/web && npm i && npm run lint'",
     "test": "npx cypress run"
   }
 }
