@@ -1,16 +1,31 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2022",
     "lib": [
-      "es5",
+      "es2022",
       "dom"
     ],
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
     "types": [
-      "cypress",
-      "node"
+      "node",
+      "cypress"
     ]
   },
   "include": [
     "cypress/**/*.ts"
+  ],
+  "references": [
+    {
+      "path": "./app/shared/tsconfig.json"
+    },
+    {
+      "path": "./app/api/tsconfig.json"
+    },
+    {
+      "path": "./app/web/tsconfig.json"
+    }
   ]
 }

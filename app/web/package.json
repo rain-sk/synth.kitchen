@@ -22,10 +22,8 @@
 	"scripts": {
 		"build": "tsc && vite build",
 		"build:prod": "vite build",
-		"start": "clear; concurrently \"npm:dev\" \"npm:lint\"",
-		"dev": "vite",
-		"lint": "tsc --preserveWatchOutput --watch",
-		"preview": "vite preview"
+		"dev": "concurrently \"vite --host\" \"npm:lint\"",
+		"lint": "tsc --preserveWatchOutput --watch"
 	},
 	"devDependencies": {
 		"@types/is-callable": "1.1.2",
