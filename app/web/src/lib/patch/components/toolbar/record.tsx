@@ -10,13 +10,14 @@ import hhmmss from 'hhmmss';
 
 import { audioContext, resampling } from '../../audio';
 import { PatchContext } from '../../contexts/patch';
+import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
 
 export const Record: React.FC = () => {
 	const state = useContext(PatchContext);
 	const mediaRecorder = useRef<IMediaRecorder>(undefined);
 	const chunks = useRef<Blob[]>(undefined);
 
-	const [recording, setRecording] = useState(false);
+	const [recordingRef, recording, setRecording] = useRefBackedState(false);
 
 	const recordingStartTimeRef = useRef(0);
 	const [recordingTime, setRecordingTime] = useState(0);
@@ -35,9 +36,18 @@ export const Record: React.FC = () => {
 		}
 	}, [recording]);
 
+	const handleUnload = useCallback((e: BeforeUnloadEvent) => {
+		if (recordingRef.current) {
+			const msg = 'You have an unsaved recording, do you really want to leave?';
+			e.preventDefault();
+			return msg;
+		}
+	}, []);
+
 	const handleStop = useCallback(() => {
 		if (mediaRecorder.current) {
 			recordingStartTimeRef.current = 0;
+			window.removeEventListener('beforeunload', handleUnload);
 			setRecording(false);
 			setRecordingTime(0);
 			mediaRecorder.current.onstop = () => {
@@ -59,6 +69,7 @@ export const Record: React.FC = () => {
 
 	const handleRecord = useCallback(() => {
 		setRecording(true);
+		window.addEventListener('beforeunload', handleUnload);
 		recordingStartTimeRef.current = audioContext.currentTime;
 		const streamDestination =
 			audioContext.current.createMediaStreamDestination();
