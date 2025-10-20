@@ -27,11 +27,16 @@ export const clickConnector: React.Reducer<IPatchState, IClickConnector> = (
 
 	const active = connectorInfo(state.connectors, state.activeConnectorKey);
 	const activeConnector = active[0];
+	const connectorsFromDifferentModules =
+		clicked.moduleId !== activeConnector.moduleId;
 	const activeConnectorIsOutput =
 		'type' in activeConnector && activeConnector.type === IoType.output;
 	const clickedConnectorIsOutput =
 		'type' in clicked && clicked.type === IoType.output;
-	if (activeConnectorIsOutput !== clickedConnectorIsOutput) {
+	if (
+		connectorsFromDifferentModules &&
+		activeConnectorIsOutput !== clickedConnectorIsOutput
+	) {
 		const output = (
 			activeConnectorIsOutput ? activeConnector : clicked
 		) as Output;
