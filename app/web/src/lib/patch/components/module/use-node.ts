@@ -1,12 +1,15 @@
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 import { Module, ModuleState, ModuleType as Type } from 'synth.kitchen-shared';
 
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
-import { useEffectOnce } from './use-effect-once';
 import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
+import isCallable from 'is-callable';
+import { useEffectOnce } from './use-effect-once';
 
-export const useNode = <NodeType, ModuleType extends Type>(
+const nodeMap = new Map<string, any>();
+
+export const useNode = <NodeType extends Object, ModuleType extends Type>(
 	module: Module,
 	moduleInit: (
 		node: NodeType,
@@ -14,19 +17,22 @@ export const useNode = <NodeType, ModuleType extends Type>(
 	) => ModuleState[ModuleType],
 	nodeFactory: () => NodeType,
 ) => {
-	const node = useMemo(nodeFactory, []);
+	const { current: id } = useRef(module.id);
+	const node = useMemo(
+		nodeMap.has(id) ? () => nodeMap.get(id) as NodeType : nodeFactory,
+		[],
+	);
+	if (!nodeMap.has(id)) {
+		nodeMap.set(id, node);
+	}
 
 	// React runs all effects twice on mount because of a "dummy cycle"
-	// in dev mode, use some special tricks to prevent actually
+	// in dev mode, so use some special tricks to prevent actually
 	// disconnecting the audio node during the dummy cycle.
 	useEffectOnce(() => () => {
-		if (
-			node &&
-			typeof node === 'object' &&
-			'disconnect' in node &&
-			typeof node.disconnect === 'function'
-		) {
+		if (node && 'disconnect' in node && isCallable(node.disconnect)) {
 			try {
+				nodeMap.delete(id);
 				node.disconnect();
 			} catch (e) {
 				console.warn(e);
@@ -42,7 +48,7 @@ export const useNode = <NodeType, ModuleType extends Type>(
 
 	useEffect(() => {
 		if (state) {
-			dispatch(patchActions.updateModuleStateAction(module.id, state));
+			dispatch(patchActions.updateModuleStateAction(id, state));
 		}
 	}, [dispatch, module.id, state]);
 

@@ -34,14 +34,6 @@ export class OscillatorNode {
 		(this as any)._tranposeGain = null;
 	};
 
-	private _started = false;
-	start = () => {
-		if (this._started) {
-			return;
-		}
-		this._started = true;
-	};
-
 	get waveform(): 'sine' | 'triangle' | 'square' | 'sawtooth' {
 		return this._oscillator.type as any;
 	}

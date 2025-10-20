@@ -12,11 +12,10 @@ import {
 
 import { audioContext } from '..';
 import { midi } from '../../midi';
-import { ShiftNode } from './shift';
+import { audioWorkletNodeFactory } from './audio-worklet-node-factory';
 
 export class MidiCcNode {
-	private _control = audioContext.current.createConstantSource();
-	private _shift = new ShiftNode();
+	private _node = audioWorkletNodeFactory('midi-cc');
 	private _inputName = '';
 	private _cc: number = 32;
 	private _channel: number = 1;
@@ -25,35 +24,25 @@ export class MidiCcNode {
 
 	constructor() {
 		if (midi.initialized) {
-			this._control.connect(this._shift.io());
-			this._control.start();
-
-			this._shift.inputMin.setValueAtTime(0, audioContext.currentTime);
-			this._shift.inputMax.setValueAtTime(1, audioContext.currentTime);
-			this._shift.outputMin.setValueAtTime(0, audioContext.currentTime);
-			this._shift.outputMax.setValueAtTime(1, audioContext.currentTime);
-
 			WebMidi.addListener('connected', this.onConnected);
 			WebMidi.addListener('disconnected', this.onDisconnected);
 
 			this.handleCCValue(0);
-
 			if (WebMidi.inputs.length > 0) {
-				this.setInputName(WebMidi.inputs[0].name);
+				this.inputName = WebMidi.inputs[0].name;
 			}
 		}
 	}
 
 	disconnect = () => {
 		this.disconnectFromInput();
-		this._control.disconnect(this._shift.io());
-		this._control.stop();
-		this._shift.disconnect();
-		(this as any)._control = null;
-		(this as any)._shift = null;
+		this._node.parameters
+			.get('active')
+			?.setValueAtTime(0, audioContext.currentTime);
+		(this as any)._node = null;
 	};
 
-	output = (): IAudioNode<IAudioContext> => this._control;
+	output = (): IAudioNode<IAudioContext> => this._node;
 
 	get inputName() {
 		return this._inputName;
@@ -63,16 +52,28 @@ export class MidiCcNode {
 		return this._cc;
 	}
 
+	set cc(cc: number) {
+		this._cc = cc;
+	}
+
 	get channel() {
 		return this._channel;
 	}
 
-	get max(): IAudioParam | undefined {
-		return this._shift.outputMax;
+	setConfig = (config: { cc: number; channel: number; inputName: string }) => {
+		this.disconnectFromInput();
+		this._cc = config.cc;
+		this._channel = config.channel;
+		this._inputName = config.inputName;
+		this.connectToInput();
+	};
+
+	get max(): IAudioParam {
+		return this._node.parameters.get('max') as IAudioParam;
 	}
 
-	get min(): IAudioParam | undefined {
-		return this._shift.outputMin;
+	get min(): IAudioParam {
+		return this._node.parameters.get('min') as IAudioParam;
 	}
 
 	get input() {
@@ -92,23 +93,17 @@ export class MidiCcNode {
 			?.channels[this._channel];
 	}
 
-	setInputName = (name: string) => {
+	set inputName(name: string) {
 		this.disconnectFromInput();
 		this._inputName = name;
 		this.connectToInput();
-	};
+	}
 
-	setCC = (cc: number) => {
-		this.disconnectFromInput();
-		this._cc = cc;
-		this.connectToInput();
-	};
-
-	setChannel = (channel: number) => {
+	set channel(channel: number) {
 		this.disconnectFromInput();
 		this._channel = channel;
 		this.connectToInput();
-	};
+	}
 
 	disconnectFromInput = () => {
 		if (this._listener) {
@@ -119,6 +114,7 @@ export class MidiCcNode {
 			}
 			this._listener = undefined;
 		}
+		this._active = false;
 	};
 
 	connectToInput = () => {
@@ -127,36 +123,33 @@ export class MidiCcNode {
 				'controlchange',
 				this.onCC,
 			);
+			this._active = true;
 		}
 	};
 
 	onConnected = (e: PortEvent) => {
 		if (!this._active && e.port.name === this._inputName) {
-			this._active = true;
 			this.connectToInput();
 		} else if (e.port.type === 'input' && !this.input) {
-			this._active = true;
-			this.setInputName(e.port.name);
+			this.inputName = e.port.name;
+			this.connectToInput();
 		}
 	};
 
 	onDisconnected = (e: PortEvent) => {
 		if (e.port === this.input) {
-			this._active = false;
 			this.disconnectFromInput();
 		}
 	};
 
 	handleCCValue = (value: number) => {
-		this._control.offset.setTargetAtTime(
-			value / 127,
-			audioContext.currentTime,
-			0.003,
-		);
+		this._node.parameters
+			.get('value')
+			?.setValueAtTime(value, audioContext.currentTime);
 	};
 
 	onCC = (e: ControlChangeMessageEvent) => {
-		if (this._cc === e.controller.number) {
+		if (this._active && this._cc === e.controller.number) {
 			if (typeof e.value === 'number' && e.rawValue !== undefined) {
 				this.handleCCValue(e.rawValue);
 			} else if (typeof e.rawValue === 'boolean') {

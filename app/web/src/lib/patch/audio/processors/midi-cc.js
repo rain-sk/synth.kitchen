@@ -1,10 +1,3 @@
-function calcPhase(phase, ticksPerMinute) {
-	const ticksPerSecond = ticksPerMinute / 60;
-	const framesPerTick = sampleRate / ticksPerSecond;
-	const phaseOffsetPerFrame = 1 / framesPerTick;
-	return phase + Math.abs(phaseOffsetPerFrame);
-}
-
 class MidiCc extends AudioWorkletProcessor {
 	static get parameterDescriptors() {
 		return [
@@ -15,6 +8,18 @@ class MidiCc extends AudioWorkletProcessor {
 				minValue: 0,
 				maxValue: 127,
 			},
+			{
+				name: 'min',
+				defaultValue: 0,
+				minValue: Math.minValue,
+				maxValue: Math.maxValue,
+			},
+			{
+				name: 'max',
+				defaultValue: 1,
+				minValue: Math.minValue,
+				maxValue: Math.maxValue,
+			},
 		];
 	}
 
@@ -22,6 +27,7 @@ class MidiCc extends AudioWorkletProcessor {
 		super();
 	}
 
+	lastLastFrame = 0;
 	lastFrame = 0;
 
 	process(_, outputs, parameters) {
@@ -38,17 +44,29 @@ class MidiCc extends AudioWorkletProcessor {
 			if (!isActiveConstant && active[i] === 0) {
 				return false;
 			}
-
 			const value = parameters.value;
 			const valueIsConstant = value.length === 1;
 
-			const frameValue =
-				(2 * (valueIsConstant ? value[0] : value[i]) + this.lastFrame) / 3;
-			this.lastFrame = frameValue;
+			const min = parameters.min;
+			const minIsConstant = min.length === 1;
+
+			const max = parameters.max;
+			const maxIsConstant = max.length === 1;
+
+			const frameValue = valueIsConstant ? value[0] : value[i];
+			const frameMin = minIsConstant ? min[0] : min[i];
+			const frameMax = maxIsConstant ? max[0] : max[i];
+
+			const scaledValue = frameMin + (frameValue / 127) * (frameMax - frameMin);
+			const smoothedValue =
+				(this.lastLastFrame + this.lastFrame + scaledValue) / 3;
 
 			for (let channel = 0; channel < output.length; channel++) {
-				output[channel][i] = frameValue;
+				output[channel][i] = smoothedValue;
 			}
+
+			this.lastLastFrame = this.lastFrame;
+			this.lastFrame = smoothedValue;
 		}
 
 		return true;

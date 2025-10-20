@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
-import { IAudioParam } from 'standardized-audio-context';
 import {
 	MIDI_CC_STATE_VERSIONS,
 	Module,
@@ -29,9 +28,11 @@ const midiCcStateFromNode = (node: MidiCcNode): ModuleState['MIDI_CC'] => ({
 const initMidiCc = (cc: MidiCcNode, state?: ModuleState['MIDI_CC']) => {
 	if (state) {
 		try {
-			cc.setCC(state.cc);
-			cc.setChannel(state.channel);
-			cc.setInputName(state.input ? state.input : WebMidi.inputs[0].name);
+			cc.setConfig({
+				cc: state.cc,
+				channel: state.channel,
+				inputName: state.input ? state.input : WebMidi.inputs[0].name,
+			});
 			cc.max?.setValueAtTime(state.max, audioContext.currentTime);
 			cc.min?.setValueAtTime(state.min, audioContext.currentTime);
 		} catch (e) {
@@ -60,8 +61,9 @@ export const MidiCcModule: React.FC<{
 
 	const commitInputChange = useCallback(
 		(input: string) => {
-			if (node) {
-				node.setInputName(input);
+			if (node && input) {
+				node.inputName = input;
+
 				setState({
 					...state,
 					input,
@@ -75,8 +77,8 @@ export const MidiCcModule: React.FC<{
 		(cc: number) => {
 			cc = Math.max(0, Math.min(127, Math.round(cc)));
 
-			if (node) {
-				node.setCC(cc);
+			if (node && cc !== state.cc) {
+				node.cc = cc;
 
 				setState({
 					...state,
@@ -91,8 +93,8 @@ export const MidiCcModule: React.FC<{
 		(channel: number) => {
 			channel = Math.max(1, Math.min(16, Math.round(channel)));
 
-			if (node) {
-				node.setChannel(channel);
+			if (node && channel !== state.channel) {
+				node.channel = channel;
 
 				setState({
 					...state,
@@ -105,7 +107,7 @@ export const MidiCcModule: React.FC<{
 
 	const commitMaxChange = useCallback(
 		(max: number) => {
-			if (node) {
+			if (node && max !== state.max) {
 				node.max?.setTargetAtTime(max, audioContext.currentTime, 0.0003);
 				setState({
 					...state,
@@ -118,7 +120,7 @@ export const MidiCcModule: React.FC<{
 
 	const commitMinChange = useCallback(
 		(min: number) => {
-			if (node) {
+			if (node && min !== state.min) {
 				node.min?.setTargetAtTime(min, audioContext.currentTime, 0.0003);
 				setState({
 					...state,
@@ -136,7 +138,9 @@ export const MidiCcModule: React.FC<{
 		}
 		moduleStateRef.current = module.state;
 		if (module.state.input !== node.inputName) {
-			commitInputChange(module.state.input);
+			commitInputChange(
+				module.state.input ? module.state.input : node.inputName,
+			);
 		}
 		if (module.state.cc !== node.cc) {
 			commitCcChange(module.state.cc);
@@ -159,8 +163,8 @@ export const MidiCcModule: React.FC<{
 		commitMinChange,
 	]);
 
-	const minAccessor = useCallback(() => node.min as IAudioParam, [node]);
-	const maxAccessor = useCallback(() => node.max as IAudioParam, [node]);
+	const minAccessor = useCallback(() => node.min, [node]);
+	const maxAccessor = useCallback(() => node.max, [node]);
 
 	return enabled ? (
 		<>
@@ -193,17 +197,17 @@ export const MidiCcModule: React.FC<{
 						/>
 						<NumberParameter
 							moduleId={module.id}
-							name="max"
-							value={state.max}
-							commitValueCallback={commitMaxChange}
-							paramAccessor={maxAccessor}
-						/>
-						<NumberParameter
-							moduleId={module.id}
 							name="min"
 							value={state.min}
 							commitValueCallback={commitMinChange}
 							paramAccessor={minAccessor}
+						/>
+						<NumberParameter
+							moduleId={module.id}
+							name="max"
+							value={state.max}
+							commitValueCallback={commitMaxChange}
+							paramAccessor={maxAccessor}
 						/>
 					</>
 				) : (

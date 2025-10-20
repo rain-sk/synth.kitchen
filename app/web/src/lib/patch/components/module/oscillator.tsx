@@ -60,7 +60,6 @@ const initOscillator = (
 		state = oscillatorStateFromNode(oscillator);
 	}
 
-	oscillator.start();
 	return state;
 };
 
