@@ -111,9 +111,9 @@ export const NumberBox: React.FunctionComponent<{
 				setTempValue(`${value}`);
 				el.setAttribute('disabled', 'true');
 				setTimeout(() => {
-					el.setAttribute('disabled', 'false');
+					el.removeAttribute('disabled');
 					el.select();
-				}, 1);
+				}, 0);
 			} else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
 				if (e.shiftKey) {
 					const newValue =
