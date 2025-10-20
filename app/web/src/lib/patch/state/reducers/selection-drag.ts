@@ -97,6 +97,8 @@ const connectionsInRange = (
 	const keysInRange = new Set<string>();
 
 	const main = document.getElementById('main');
+	const mainRect = main?.getBoundingClientRect();
+	rect.x += mainRect?.x ?? 0;
 	const scrollX = main?.scrollLeft ?? 0;
 	const scrollY = main?.scrollTop ?? 0;
 	const connectorCache: Record<string, DOMRect> = {};

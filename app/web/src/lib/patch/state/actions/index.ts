@@ -64,7 +64,12 @@ import {
 	unblockHistoryAction,
 	undoAction,
 } from './history';
-import { flushAsyncQueueAction, IFlushAsyncQueue } from './flush-async-queue';
+import {
+	flushAsyncQueueAction,
+	IFlushAsyncQueue,
+	IPushToAsyncQueue,
+	pushToAsyncQueue,
+} from './async-queue';
 import {
 	connectAction,
 	disconnectAction,
@@ -90,6 +95,7 @@ export type IPatchAction =
 	| ILoadConnections
 	| ILoadPatch
 	| IRedo
+	| IPushToAsyncQueue
 	| IPushToHistory
 	| IRegisterConnector
 	| ISelectionDrag
@@ -121,6 +127,7 @@ export const patchActions = {
 	keyUpAction,
 	loadConnectionsAction,
 	loadPatchAction,
+	pushToAsyncQueue,
 	pushToHistoryAction,
 	redoAction,
 	registerConnectorAction,

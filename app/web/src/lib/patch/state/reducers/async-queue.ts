@@ -1,5 +1,6 @@
 import { IPatchState, cloneAndApply } from '../types/patch';
 import { IPatchAction } from '../actions';
+import { IPushToAsyncQueue } from '../actions/async-queue';
 
 export const flushAsyncQueue = (
 	state: IPatchState,
@@ -12,3 +13,13 @@ export const flushAsyncQueue = (
 	});
 	return state;
 };
+
+export const pushToAsyncQueue = (
+	state: IPatchState,
+	action: IPushToAsyncQueue,
+): IPatchState =>
+	cloneAndApply(state, {
+		asyncActionQueue: Array.isArray(action.payload)
+			? [...state.asyncActionQueue, ...action.payload]
+			: [...state.asyncActionQueue, action.payload],
+	});

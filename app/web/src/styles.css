@@ -136,7 +136,7 @@ nav {
 	left: 0;
 	right: 0;
 	background: #182f34;
-	border-bottom: 0.05rem white solid;
+	border-bottom: 1px white solid;
 	height: 2.5rem;
 	padding: 0.125rem 0.5rem;
 	display: flex;
@@ -168,8 +168,8 @@ nav ul.nav-links a:visited {
 	color: #7cd2e2;
 }
 
-#toolbar {
-	position: fixed;
+.toolbar {
+	position: absolute;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -183,7 +183,7 @@ nav ul.nav-links a:visited {
 	z-index: 999;
 }
 
-#toolbar button {
+.toolbar button {
 	background-color: #3c6a73;
 	display: flex;
 	justify-content: center;
@@ -191,16 +191,16 @@ nav ul.nav-links a:visited {
 	height: 1.5rem;
 }
 
-#toolbar button[disabled] {
+.toolbar button[disabled] {
 	background-color: #a6d0d9;
 	cursor: not-allowed;
 }
 
-#toolbar img {
+.toolbar img {
 	height: 100%;
 }
 
-#toolbar > section {
+.toolbar > section {
 	display: flex;
 	flex-direction: row;
 	gap: 0.5rem;
@@ -219,7 +219,7 @@ main {
 	top: 2.5rem;
 	left: 0;
 	right: 0;
-	bottom: 0;
+	bottom: 2.5rem;
 	overflow: scroll;
 }
 
@@ -247,11 +247,8 @@ button {
 #connections {
 	z-index: 10;
 	pointer-events: none;
-	position: absolute;
+	position: fixed;
 	top: 2.5rem;
-	left: 0;
-	right: 0;
-	bottom: 0;
 }
 
 #module-canvas {

@@ -11,23 +11,32 @@ export const Toolbar: React.FC<{
 	sortedModules: [Module, ModulePosition][];
 	modulesCount: number;
 	connectionsCount: number;
-}> = ({ sortedModules, modulesCount, connectionsCount }) => {
+	minimal: boolean;
+}> = ({ sortedModules, modulesCount, connectionsCount, minimal }) => {
 	return (
 		<>
-			<div id="toolbar">
+			<div className="toolbar">
 				<section>
-					<PatchNameField />
-					<SaveToCloud />
+					{minimal || (
+						<>
+							<PatchNameField />
+							<SaveToCloud />
+						</>
+					)}
 					<Undo />
 					<Redo />
 				</section>
 				<section>
-					<Record />
-					<Overview
-						sortedModules={sortedModules}
-						modulesCount={modulesCount}
-						connectionsCount={connectionsCount}
-					/>
+					{minimal || (
+						<>
+							<Record />
+							<Overview
+								sortedModules={sortedModules}
+								modulesCount={modulesCount}
+								connectionsCount={connectionsCount}
+							/>
+						</>
+					)}
 				</section>
 			</div>
 		</>

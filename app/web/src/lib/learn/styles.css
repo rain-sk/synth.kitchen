@@ -1,0 +1,26 @@
+#learn {
+	display: flex;
+	flex-direction: row;
+	width: 100vw;
+	height: 100vh;
+	justify-content: space-between;
+	overflow: hidden;
+}
+
+#learn > #lesson,
+#learn > #patch {
+	position: relative;
+}
+
+#learn > #lesson {
+	min-width: 20rem;
+	width: 30%;
+	margin-top: 2.5rem;
+	border-right: 1px solid #fff;
+	padding: 0.5rem;
+}
+#learn > #patch {
+	flex-basis: 1;
+	height: 100%;
+	width: 100%;
+}

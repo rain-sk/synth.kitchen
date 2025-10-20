@@ -21,8 +21,9 @@ const position = (button: HTMLButtonElement): ModulePosition => {
 	}
 
 	const rect = button.getBoundingClientRect();
+	const mainRect = main()?.getBoundingClientRect();
 	return [
-		rect.left + rect.width / 2 + window.pageXOffset,
+		rect.left + rect.width / 2 + window.pageXOffset - (mainRect?.x ?? 0),
 		rect.top + rect.height / 2 + window.pageYOffset - (main()?.offsetTop ?? 0),
 	];
 };

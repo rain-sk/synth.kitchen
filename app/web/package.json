@@ -8,6 +8,7 @@
 		"extendable-media-recorder-wav-encoder": "7.0.130",
 		"hhmmss": "1.0.0",
 		"is-callable": "1.2.7",
+		"js-confetti": "^0.13.1",
 		"lz-string": "1.5.0",
 		"modern-screenshot": "4.6.6",
 		"react": "18.3.1",

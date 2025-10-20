@@ -8,7 +8,7 @@ import { clearPatchEditor } from './clear-patch-editor';
 import { clickConnector } from './click-connector';
 import { connect, disconnect } from './connection';
 import { registerConnector } from './connector-registration';
-import { flushAsyncQueue } from './flush-async-queue';
+import { flushAsyncQueue, pushToAsyncQueue } from './async-queue';
 import {
 	blockHistory,
 	pushToHistory,
@@ -92,6 +92,9 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		}
 		case 'LoadPatch': {
 			return loadPatch(state, action);
+		}
+		case 'PushToAsyncQueue': {
+			return pushToAsyncQueue(state, action);
 		}
 		case 'PushToHistory': {
 			return pushToHistory(state, action);

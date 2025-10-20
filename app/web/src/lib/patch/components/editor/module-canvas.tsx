@@ -12,7 +12,8 @@ import { Toolbar } from '../toolbar';
 export const ModuleCanvas: React.FC<{
 	state: IPatchState;
 	dispatch: React.Dispatch<IPatchAction>;
-}> = ({ state, dispatch }) => {
+	minimal: boolean;
+}> = ({ state, dispatch, minimal }) => {
 	const connectionsCount = Object.keys(state.connections.state).length;
 	const modulesCount = Object.keys(state.modules).length;
 
@@ -52,6 +53,7 @@ export const ModuleCanvas: React.FC<{
 				sortedModules={sortedModules}
 				modulesCount={modulesCount}
 				connectionsCount={connectionsCount}
+				minimal={minimal}
 			/>
 		</>
 	);

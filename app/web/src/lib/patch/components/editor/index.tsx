@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer } from 'react';
+import React, { useCallback, useEffect, useReducer } from 'react';
 import { useTitle } from 'react-use';
 import { useRoute } from 'wouter';
 
@@ -12,10 +12,16 @@ import { Init } from './init';
 import { AsyncQueueDispatcher } from './async-queue-dispatcher';
 import { useAudioMidiInit } from './utils/use-audio-midi-init';
 import { useLoadPatch } from './utils/use-load-patch';
+import { Preset } from '../../../learn';
+import { IPatchState } from '../../state/types/patch';
 
 const initialState = { ...blankPatch() };
 
-export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
+export const PatchEditor: React.FC<{
+	slug?: string;
+	preset?: Preset;
+	stateCallback?: (state: IPatchState) => void;
+}> = ({ slug, preset, stateCallback }) => {
 	const [randomPatch] = useRoute('/patch/random');
 	const { initialized, status, initAudioMidi } = useAudioMidiInit();
 	const [state, dispatch] = useReducer(patchReducer, initialState);
@@ -24,12 +30,19 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 		state,
 		dispatch,
 		initialized,
-		slug ?? '',
+		slug,
+		preset,
 	);
 
 	const init = useCallback(async () => {
 		await initAudioMidi();
 	}, []);
+
+	useEffect(() => {
+		if (stateCallback) {
+			stateCallback(state);
+		}
+	}, [stateCallback, state]);
 
 	const name = loading
 		? '...'
@@ -42,6 +55,9 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 		: 'untitled';
 
 	useTitle(`patch/${name}`);
+
+	const minimal = !!preset;
+
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>
 			<AsyncQueueDispatcher
@@ -50,10 +66,10 @@ export const PatchEditor: React.FC<{ slug?: string }> = ({ slug }) => {
 			/>
 			<DerivedConnectionStateContextProvider {...state}>
 				<MidiContextProvider>
-					{initialized ? (
-						<ModuleCanvas state={state} dispatch={dispatch} />
-					) : (
+					{!initialized ? (
 						<Init loading={loading} name={name} status={status} init={init} />
+					) : (
+						<ModuleCanvas state={state} dispatch={dispatch} minimal={minimal} />
 					)}
 				</MidiContextProvider>
 			</DerivedConnectionStateContextProvider>

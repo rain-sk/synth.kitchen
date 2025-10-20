@@ -9,6 +9,7 @@ import { LogoutRoute } from './routes/logout';
 import { PatchRoute } from './routes/patch';
 import { ResetPasswordRoute } from './routes/reset-password';
 import { Nav } from './lib/shared/components/nav';
+import { LearnRoute } from './routes/learn';
 
 const RedirectToPatch = () => {
 	const [match, params] = useRoute('/p/:slug');
@@ -31,8 +32,9 @@ export const SynthKitchen: React.FC = () => {
 				<Route path="/p" component={RedirectToPatch} />
 				<Route path="/p/:slug" component={RedirectToPatch} />
 				<Route path="/patch" component={RedirectToPatch} />
-
 				<Route path="/patch/:slug" component={PatchRoute} />
+
+				<Route path="/learn" component={LearnRoute} />
 
 				<Route path="/account" component={AccountRoute} />
 				<Route path="/login" component={LoginRoute} />

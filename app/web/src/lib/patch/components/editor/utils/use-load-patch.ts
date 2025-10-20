@@ -10,6 +10,7 @@ import { useRefBackedState } from '../../../../shared/utils/use-ref-backed-state
 import { resetAudioContext } from '../../../audio';
 import { PatchInfo, PatchQuery } from 'synth.kitchen-shared';
 import { ISerializedPatch } from '../../../state/types/serialized-patch';
+import { Preset } from '../../../../learn';
 
 const uuidRegex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -20,8 +21,11 @@ export const useLoadPatch = (
 	state: IPatchState,
 	dispatch: React.Dispatch<IPatchAction>,
 	initialized: boolean,
-	slug: string,
+	slug?: string,
+	preset?: Preset,
 ) => {
+	const suppressLoad = !!preset;
+
 	const { connectionsToLoad, slug: stateSlug } = state;
 	useEffect(() => {
 		if (initialized && connectionsToLoad) {
@@ -47,7 +51,7 @@ export const useLoadPatch = (
 		!!patchToLoad;
 
 	const onRouteChange = useCallback(async () => {
-		if (slug === stateSlug || loadingRef.current) {
+		if (suppressLoad || slug === stateSlug || loadingRef.current) {
 			return;
 		}
 
@@ -89,6 +93,16 @@ export const useLoadPatch = (
 	useEffect(() => {
 		onRouteChange();
 	}, [onRouteChange]);
+
+	useEffect(() => {
+		(async () => {
+			if (preset && preset.setup && preset.setup.length > 0) {
+				dispatch(patchActions.loadPatchAction(blankPatchToLoad()));
+				await resetAudioContext();
+				dispatch(patchActions.pushToAsyncQueue(preset.setup));
+			}
+		})();
+	}, [preset]);
 
 	useEffect(() => {
 		if (loadPatch && patchToLoad) {
