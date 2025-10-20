@@ -1,5 +1,5 @@
 import { IAudioContext, IAudioWorkletNode } from 'standardized-audio-context';
-import { PortEvent, WebMidi } from 'webmidi';
+import { Listener, PortEvent, WebMidi } from 'webmidi';
 
 import { audioContext } from '..';
 import { audioWorkletNodeFactory } from './audio-worklet-node-factory';
@@ -9,6 +9,8 @@ export class MidiClockNode {
 	private _node = audioWorkletNodeFactory('midi-clock');
 	private _inputName = '';
 	private _tick = -1;
+	private _active = false;
+	private _listener: Listener | Listener[] | undefined;
 
 	constructor() {
 		if (midi.initialized) {
@@ -22,9 +24,11 @@ export class MidiClockNode {
 	}
 
 	disconnect = () => {
+		this.disconnectFromInput();
 		this._node.parameters
 			.get('active')
 			?.setValueAtTime(0, audioContext.currentTime);
+		(this as any)._node = null;
 	};
 
 	node = (): IAudioWorkletNode<IAudioContext> => this._node;
@@ -34,67 +38,59 @@ export class MidiClockNode {
 	}
 
 	get input() {
-		for (let input of WebMidi.inputs) {
-			if (input.name === this._inputName) {
-				return input;
-			}
-		}
-		return null;
+		return WebMidi.inputs.find((input) => input.name === this._inputName);
 	}
 
 	setInput = (name: string) => {
-		const oldInput = this.input;
+		this.disconnectFromInput();
+		this._inputName = WebMidi.inputs.some((input) => input.name === name)
+			? name
+			: '';
+		this.connectToInput();
+	};
 
-		this._inputName = '';
-		if (name) {
-			for (let input of WebMidi.inputs) {
-				if (input.name === name) {
-					this._inputName = name;
-					break;
-				}
+	disconnectFromInput = () => {
+		if (this._listener) {
+			if (Array.isArray(this._listener)) {
+				this._listener.forEach((listener) => listener.remove());
+			} else {
+				this._listener.remove();
 			}
+			this._listener = undefined;
 		}
+		this._active = false;
+		this._tick = -1;
+	};
 
-		if (oldInput) {
-			oldInput.removeListener('clock', this.onClock);
-			oldInput.removeListener('start', this.onStart);
-			oldInput.removeListener('stop', this.onStop);
-		}
-
+	connectToInput = () => {
 		if (this.input) {
-			this.input.addListener('clock', this.onClock);
-			this.input.addListener('start', this.onStart);
-			this.input.addListener('stop', this.onStop);
+			this._listener = this.input.addListener('clock', this.onClock);
 		}
 	};
 
 	onConnected = (e: PortEvent) => {
-		if (e.port.type === 'input' && !this.input) {
-			this.setInput(e.port.name);
+		if (!this._active && e.port.name === this._inputName) {
+			this.connectToInput();
+		} else if (e.port.type === 'input' && !this.input) {
+			this._inputName = e.port.name;
+			this.connectToInput();
 		}
 	};
 
 	onDisconnected = (e: PortEvent) => {
 		if (e.port === this.input) {
-			this.setInput('');
+			this.disconnectFromInput();
 		}
 	};
 
 	onClock = () => {
-		if (this._tick >= 0) {
-			if (this._tick === 0) {
-				this.node().port.postMessage('tick');
-			}
-
-			this._tick = (this._tick + 1) % 24;
+		this._tick = (this._tick + 1) % 24;
+		if (this._tick === 0) {
+			const tick = this._node.parameters.get('tick');
+			tick?.setValueAtTime(
+				tick.value ? -tick.value : 1,
+				audioContext.currentTime,
+			);
 		}
-	};
-
-	onStart = () => {
-		this.node().port.postMessage('start');
-	};
-
-	onStop = () => {
-		this.node().port.postMessage('stop');
 	};
 }

@@ -12,6 +12,7 @@ import {
 	ModuleState,
 	ModuleType,
 } from 'synth.kitchen-shared';
+import { WebMidi } from 'webmidi';
 
 const clockStateFromNode = (
 	clock: MidiClockNode,
@@ -26,7 +27,7 @@ const initMidiClock = (
 ) => {
 	if (state) {
 		try {
-			clock.setInput(state.input);
+			clock.setInput(state.input ? state.input : WebMidi.inputs[0]?.name ?? '');
 		} catch (e) {
 			console.error(e);
 		}
