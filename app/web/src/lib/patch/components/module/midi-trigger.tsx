@@ -12,6 +12,7 @@ import { IoConnectors } from '../module-ui/io-connectors';
 import { MidiContext } from '../../contexts/midi';
 import { RadioParameter } from '../module-ui/radio-parameter';
 import { useNode } from './use-node';
+import { WebMidi } from 'webmidi';
 
 const noteOptions = (() => {
 	const options = ['all'];
@@ -35,7 +36,9 @@ const initMidiTrigger = (
 ) => {
 	if (state) {
 		try {
-			trigger.setInput(state.input);
+			trigger.setInput(
+				state.input ? state.input : WebMidi.inputs[0]?.name ?? '',
+			);
 			trigger.setNote(state.note);
 		} catch (e) {
 			console.error(e);
@@ -58,7 +61,7 @@ export const MidiTriggerModule: React.FC<{
 
 	const enabled = state != undefined;
 
-	const output = useCallback(() => node.node(), [enabled]);
+	const output = useCallback(() => node.output(), [enabled]);
 
 	const commitInputChange = useCallback(
 		(input: string) => {
