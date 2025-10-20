@@ -18,17 +18,17 @@
     "lint": "tsc --preserveWatchOutput --watch"
   },
   "peerDependencies": {
-    "server-name-gen": "^1.0.2",
-    "uuid": "^13.0.0"
+    "server-name-gen": "1.0.2",
+    "uuid": "13.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.7.0",
-    "concurrently": "^9.2.1",
-    "esbuild": "^0.25.10",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "@types/node": "24.8.1",
+    "concurrently": "9.2.1",
+    "esbuild": "0.25.11",
+    "ts-node": "10.9.2",
+    "typescript": "5.9.3"
   },
   "dependencies": {
-    "standardized-audio-context": "^25.3.77"
+    "standardized-audio-context": "25.3.77"
   }
 }
