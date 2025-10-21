@@ -6,6 +6,7 @@ import {
 	IAudioNode,
 } from 'standardized-audio-context';
 import { initCvs, primer as defaultPrimer, drawRawOsc } from './canvas-tools';
+import { queueAnimation } from '../../../../shared/utils/animation';
 
 type CanvasHookFunction = (
 	context: CanvasRenderingContext2D,
@@ -57,7 +58,7 @@ export class Oscilloscope {
 	}
 
 	draw = () => {
-		if (!this.paused) requestAnimationFrame(this.draw);
+		if (!this.paused) queueAnimation(this.draw);
 		this.cctx.clearRect(0, 0, this.width, this.height);
 		this.primer(this.cctx, this.width, this.height);
 		this.analyser.getByteTimeDomainData(this.u8ar);
@@ -75,7 +76,7 @@ export class Oscilloscope {
 
 	reset = () => {
 		this.paused = true;
-		requestAnimationFrame(() => {
+		queueAnimation(() => {
 			this.u8ar = new Uint8Array(this.FFT).fill(0);
 			this.cctx.clearRect(0, 0, this.width, this.height);
 			this.primer(this.cctx, this.width, this.height);
