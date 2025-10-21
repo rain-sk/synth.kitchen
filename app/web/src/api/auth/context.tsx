@@ -9,7 +9,7 @@ import { apiBase } from '../uri';
 import { useJwt } from './useJwt';
 import { useUser } from './useUser';
 import { navigate } from 'wouter/use-browser-location';
-import { fetchWithJwt } from '../../utils/fetchWithJwt';
+import { fetchWithJwt } from '../../lib/shared/utils/fetchWithJwt';
 
 type AuthContextValue = {
 	loading: boolean;
