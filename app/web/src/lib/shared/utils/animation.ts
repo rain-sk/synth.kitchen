@@ -4,7 +4,7 @@ const callbackQueue: AnimationCallback[] = [];
 const callbackRecords: Record<string, number> = {};
 
 const flushCallbackQueue = () => {
-	for (const callback of callbackQueue.splice(0, callbackQueue.length)) {
+	for (const callback of callbackQueue.splice(0)) {
 		callback();
 	}
 	for (let key in callbackRecords) {
