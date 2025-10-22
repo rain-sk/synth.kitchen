@@ -13,8 +13,6 @@ type PatchQuery = Pick<SharedPatchQuery, 'id' | 'slug' | 'random'>;
 type PatchesQuery = Pick<SharedPatchQuery, 'creatorId'>;
 
 export const useApi = () => {
-	// const { dispatch } = useContext(PatchContext);
-
 	const getPatch = useCallback(
 		async (query: PatchQuery): Promise<Patch | undefined> => {
 			const param = Object.entries(query)[0];
