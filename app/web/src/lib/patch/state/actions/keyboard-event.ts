@@ -1,28 +1,28 @@
 export enum KeyboardEventType {
 	KEY_DOWN,
-	KEY_UP
+	KEY_UP,
 }
 
 export type IKeyboardEvent = {
 	type: 'KeyboardEvent';
 	payload: {
 		type: KeyboardEventType;
-		keyCode: number;
+		key: string;
 	};
 };
 
-export const keyDownAction = (keyCode: number): IKeyboardEvent => ({
+export const keyDownAction = (key: string): IKeyboardEvent => ({
 	type: 'KeyboardEvent',
 	payload: {
 		type: KeyboardEventType.KEY_DOWN,
-		keyCode
-	}
+		key,
+	},
 });
 
-export const keyUpAction = (keyCode: number): IKeyboardEvent => ({
+export const keyUpAction = (key: string): IKeyboardEvent => ({
 	type: 'KeyboardEvent',
 	payload: {
 		type: KeyboardEventType.KEY_UP,
-		keyCode
-	}
+		key,
+	},
 });

@@ -5,15 +5,16 @@ import { midi } from '../../midi';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
 import { INVALID_POSITION } from '../../state/constants/positions';
+import { Key } from '../../constants/key';
 
 const soundModules: ModuleType[] = [ModuleType.OSCILLATOR, ModuleType.NOISE];
 
 const effectModules: ModuleType[] = [
-	ModuleType.COMPRESSOR,
+	ModuleType.GAIN,
 	ModuleType.DELAY,
 	ModuleType.FILTER,
-	ModuleType.GAIN,
 	ModuleType.LIMITER,
+	ModuleType.COMPRESSOR,
 	ModuleType.PAN,
 ];
 
@@ -21,9 +22,9 @@ const utilModules = (): ModuleType[] =>
 	midi.initialized
 		? [
 				ModuleType.CLOCK,
-				ModuleType.SEQUENCER,
 				ModuleType.ENVELOPE,
 				ModuleType.VCA,
+				ModuleType.SEQUENCER,
 				ModuleType.SHIFT,
 				ModuleType.SCOPE,
 				ModuleType.MIDI_CC,
@@ -32,9 +33,9 @@ const utilModules = (): ModuleType[] =>
 		  ]
 		: [
 				ModuleType.CLOCK,
-				ModuleType.SEQUENCER,
 				ModuleType.ENVELOPE,
 				ModuleType.VCA,
+				ModuleType.SEQUENCER,
 				ModuleType.SHIFT,
 				ModuleType.SCOPE,
 		  ];
@@ -56,13 +57,23 @@ export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 		[dispatch, position],
 	);
 
+	const handleBlur = useCallback(() => {
+		dispatch(patchActions.deselectAllModulesAction());
+	}, [dispatch]);
+
 	return (
 		<select
 			id="add-module"
 			value=""
-			onKeyDown={(e: any) => e.stopPropagation()}
+			autoFocus
+			onKeyDown={(e: any) => {
+				if (e.key.toLowerCase() === Key.ESCAPE) {
+					dispatch(patchActions.deselectAllModulesAction());
+				}
+			}}
 			onMouseDown={(e: any) => e.stopPropagation()}
 			onChange={handleAddModule}
+			onBlur={handleBlur}
 			style={
 				position && position !== INVALID_POSITION
 					? {

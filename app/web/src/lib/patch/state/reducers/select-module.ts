@@ -14,6 +14,12 @@ export const selectModule: React.Reducer<IPatchState, ISelectModule> = (
 
 	switch (type) {
 		case SelectModuleType.DESELECT_ALL: {
+			try {
+				(document.activeElement as HTMLElement)?.blur();
+				document.getElementById('module-canvas')?.focus();
+			} catch (err) {
+				console.error(err);
+			}
 			return cloneAndApply(state, {
 				selectedModules: new Set(),
 				selectedConnections: new Set(),

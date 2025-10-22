@@ -1,55 +1,56 @@
 export enum Modifier {
 	NONE = 0,
 	SHIFT = 1 << 0,
-	SPECIAL = 1 << 1,
-	CONTROL = 1 << 2,
+	CONTROL = 1 << 1,
 }
 
-export enum KeyCode {
-	BACKSPACE = 8,
-	ENTER = 13,
-	SHIFT = 16,
-	CONTROL = 17,
-	SPACE = 32,
-	ARROW_LEFT = 37,
-	ARROW_UP = 38,
-	ARROW_RIGHT = 39,
-	ARROW_DOWN = 40,
-	DELETE = 46,
-	A = 65,
-	C = 67,
-	D = 68,
-	F = 70,
-	G = 71,
-	L = 76,
-	P = 80,
-	S = 83,
-	Z = 90,
-	SPECIAL = 224,
+export enum Key {
+	BACKSPACE = 'backspace',
+	ENTER = 'enter',
+	SHIFT = 'shift',
+	CONTROL = 'control',
+	SPACE = ' ',
+	ARROW_LEFT = 'arrowleft',
+	ARROW_UP = 'arrowup',
+	ARROW_RIGHT = 'arrowright',
+	ARROW_DOWN = 'arrowdown',
+	DELETE = 'delete',
+	A = 'a',
+	C = 'c',
+	D = 'd',
+	F = 'f',
+	G = 'g',
+	L = 'l',
+	P = 'p',
+	S = 's',
+	Z = 'z',
+	META = 'meta',
+	ESCAPE = 'escape',
 }
 
-export const keyCodeModifierMap: Record<number, Modifier> = {
-	[KeyCode.SHIFT]: Modifier.SHIFT,
-	[KeyCode.SPECIAL]: Modifier.SPECIAL,
+export const keyModifierMap: Record<string, Modifier> = {
+	[Key.SHIFT]: Modifier.SHIFT,
+	[Key.META]: Modifier.CONTROL,
+	[Key.CONTROL]: Modifier.CONTROL,
 };
 
-export const keyCodeMovementMap: Record<
-	number,
+export const keyMovementMap: Record<
+	string,
 	{ deltaX: number; deltaY: number }
 > = {
-	[KeyCode.ARROW_LEFT]: {
+	[Key.ARROW_LEFT]: {
 		deltaX: -15,
 		deltaY: 0,
 	},
-	[KeyCode.ARROW_UP]: {
+	[Key.ARROW_UP]: {
 		deltaX: 0,
 		deltaY: -15,
 	},
-	[KeyCode.ARROW_RIGHT]: {
+	[Key.ARROW_RIGHT]: {
 		deltaX: 15,
 		deltaY: 0,
 	},
-	[KeyCode.ARROW_DOWN]: {
+	[Key.ARROW_DOWN]: {
 		deltaX: 0,
 		deltaY: 15,
 	},

@@ -1,7 +1,7 @@
 import { useCallback, useContext } from 'react';
 
 import { ISerializedPatch } from '../../state/types/serialized-patch';
-import { KeyCode } from '../../constants/key';
+import { Key } from '../../constants/key';
 import { OpenFromDiskSvg } from './svg';
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
@@ -29,7 +29,7 @@ export const LoadFromDisk = () => {
 	);
 
 	const handleLoadKeyDown = (e: React.KeyboardEvent<HTMLLabelElement>) => {
-		if (e.keyCode === KeyCode.ENTER || e.keyCode === KeyCode.SPACE) {
+		if (e.key === Key.ENTER || e.key === Key.SPACE) {
 			e.preventDefault();
 			(e.nativeEvent.target as any).querySelector('input').click();
 		}

@@ -20,42 +20,41 @@ import {
 	IPatchState,
 } from '../types/patch';
 import {
-	KeyCode,
-	keyCodeModifierMap,
-	keyCodeMovementMap,
+	Key,
+	keyModifierMap,
+	keyMovementMap,
 	Modifier,
 } from '../../constants/key';
+import { selectModule } from './select-module';
+import { SelectModuleType } from '../actions/select-module';
 
 const isShift = (heldModifiers: number) => {
 	return (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 };
 
 const isCmdOrCtrl = (heldModifiers: number) => {
-	return (
-		(heldModifiers & Modifier.SPECIAL) === Modifier.SPECIAL ||
-		(heldModifiers & Modifier.CONTROL) === Modifier.CONTROL
-	);
+	return (heldModifiers & Modifier.CONTROL) === Modifier.CONTROL;
 };
 
-const quickKeyMap: Record<number, ModuleType> = {
-	[KeyCode.C]: ModuleType.COMPRESSOR,
-	[KeyCode.D]: ModuleType.DELAY,
-	[KeyCode.F]: ModuleType.FILTER,
-	[KeyCode.G]: ModuleType.GAIN,
-	[KeyCode.L]: ModuleType.LIMITER,
-	[KeyCode.P]: ModuleType.PAN,
-	[KeyCode.S]: ModuleType.SHIFT,
+const quickKeyMap: Record<string, ModuleType> = {
+	[Key.C]: ModuleType.COMPRESSOR,
+	[Key.D]: ModuleType.DELAY,
+	[Key.F]: ModuleType.FILTER,
+	[Key.G]: ModuleType.GAIN,
+	[Key.L]: ModuleType.LIMITER,
+	[Key.P]: ModuleType.PAN,
+	[Key.S]: ModuleType.SHIFT,
 };
 
 export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 	state,
-	{ payload: { type, keyCode } },
+	{ payload: { type, key } },
 ) => {
 	const cmdOrCtrl = isCmdOrCtrl(state.heldModifiers);
 	const shift = isShift(state.heldModifiers);
 
-	if (keyCode in keyCodeModifierMap) {
-		const modifier = keyCodeModifierMap[keyCode];
+	if (key in keyModifierMap) {
+		const modifier = keyModifierMap[key];
 
 		switch (type) {
 			case KeyboardEventType.KEY_DOWN: {
@@ -71,10 +70,10 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		}
 	} else if (
 		!state.focusedInput &&
-		keyCode in keyCodeMovementMap &&
+		key in keyMovementMap &&
 		type === KeyboardEventType.KEY_DOWN
 	) {
-		const { deltaX, deltaY } = keyCodeMovementMap[keyCode];
+		const { deltaX, deltaY } = keyMovementMap[key];
 
 		return cloneAndApplyWithHistory(state, {
 			modulePositions: Object.fromEntries(
@@ -88,7 +87,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		});
 	} else if (
 		!state.focusedInput &&
-		(keyCode === KeyCode.BACKSPACE || keyCode === KeyCode.DELETE) &&
+		(key === Key.BACKSPACE || key === Key.DELETE) &&
 		type === KeyboardEventType.KEY_DOWN
 	) {
 		if (
@@ -166,7 +165,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		return cloneAndApplyWithHistory(state, newState);
 	} else if (
 		!state.focusedInput &&
-		keyCode === KeyCode.A &&
+		key === Key.A &&
 		type === KeyboardEventType.KEY_DOWN &&
 		cmdOrCtrl
 	) {
@@ -177,7 +176,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		});
 	} else if (
 		!state.focusedInput &&
-		keyCode in quickKeyMap &&
+		key in quickKeyMap &&
 		type === KeyboardEventType.KEY_DOWN &&
 		state.heldModifiers === 0 &&
 		state.selectedConnections &&
@@ -222,7 +221,7 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 
 			newModuleIds.add(moduleId);
 			newModules.push(
-				patchActions.addModuleAction(quickKeyMap[keyCode], newModulePosition, {
+				patchActions.addModuleAction(quickKeyMap[key], newModulePosition, {
 					id: moduleId,
 				}),
 			);
@@ -246,11 +245,21 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 
 		return cloneAndApply(state, newState);
 	} else if (
-		keyCode === KeyCode.Z &&
+		key === Key.Z &&
 		type === KeyboardEventType.KEY_DOWN &&
 		cmdOrCtrl
 	) {
 		return shift ? redo(state) : undo(state);
+	} else if (
+		key === Key.ESCAPE &&
+		type === KeyboardEventType.KEY_DOWN &&
+		!shift &&
+		!cmdOrCtrl
+	) {
+		return selectModule(state, {
+			type: 'SelectModule',
+			payload: { type: SelectModuleType.DESELECT_ALL },
+		});
 	} else {
 		return state;
 	}
