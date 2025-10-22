@@ -2,7 +2,7 @@ import { useLocalStorage } from 'react-use';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { navigate } from 'wouter/use-browser-location';
 
-import { fetchWithJwt } from '../../lib/shared/utils/fetchWithJwt';
+import { fetchWithJwt } from '../../lib/shared/utils';
 import { apiBase } from '../uri';
 
 export const useJwt = () => {

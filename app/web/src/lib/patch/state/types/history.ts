@@ -1,6 +1,6 @@
 import { compressToBase64, decompressFromBase64 } from 'lz-string';
 import { PatchState } from 'synth.kitchen-shared';
-import { MD5 } from '../../../shared/utils/md5';
+import { MD5 } from '../../../shared/utils';
 
 type HistorySnapshot = {
 	md5: string;

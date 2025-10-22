@@ -1,19 +1,18 @@
 const main = () => document.getElementById('main');
 
+let knownMain: HTMLElement | null = main();
 export const getMain = (): Promise<HTMLElement> => {
-	let timeout: any;
-	let knownMain: HTMLElement | null = null;
 	return new Promise<HTMLElement>((resolve) => {
-		const checkForMain = () => {
-			knownMain = knownMain ?? main();
-			if (knownMain) {
-				if (timeout) {
-					clearTimeout(timeout);
-				}
-				return resolve(knownMain);
+		(function checkForMain() {
+			const newMain = main();
+			if (newMain && newMain !== knownMain) {
+				knownMain = newMain;
 			}
-			timeout = setTimeout(checkForMain, 2);
-		};
-		checkForMain();
+			if (knownMain) {
+				resolve(knownMain);
+			} else {
+				setTimeout(checkForMain, 2);
+			}
+		})();
 	});
 };

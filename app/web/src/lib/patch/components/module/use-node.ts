@@ -1,10 +1,10 @@
+import isCallable from 'is-callable';
 import { useContext, useEffect, useMemo, useRef } from 'react';
 import { Module, ModuleState, ModuleType as Type } from 'synth.kitchen-shared';
 
-import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
-import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
-import isCallable from 'is-callable';
+import { patchActions } from '../../state/actions';
+import { useRefBackedState } from '../../../shared/utils';
 import { useEffectOnce } from './use-effect-once';
 
 const nodeMap = new Map<string, any>();

@@ -10,8 +10,7 @@ import { useEffectOnce, useScroll } from 'react-use';
 import { Module, ModulePosition } from 'synth.kitchen-shared';
 
 import { recomputeOverview } from './utils/recompute-overview';
-import { convertRemToPixels } from '../../../shared/utils/rem-to-px';
-import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
+import { convertRemToPixels, useRefBackedState } from '../../../shared/utils';
 
 const main = () => document.getElementById('main');
 const point5Rem = convertRemToPixels(0.5);

@@ -1,21 +1,26 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Connection, ModulePosition } from 'synth.kitchen-shared';
-
-import {
-	connectionKey,
-	connectorButton,
-	connectorKey,
-} from '../../state/connection';
-import { IPatchState } from '../../state/types/patch';
+import React, {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import { useMouse, useScroll } from 'react-use';
-import { queueAnimation } from '../../../shared/utils/animation';
+import { Connection, ModulePosition as Position } from 'synth.kitchen-shared';
+
+import { connectorButton, connectorKey } from '../../state/connection';
 import { INVALID_POSITION } from '../../state/constants/positions';
-import { getMain } from '../../../shared/utils/get-main';
+import { IPatchState } from '../../state/types/patch';
+import {
+	queueAnimation,
+	getMain,
+	useSyncedUpdateRef,
+} from '../../../shared/utils';
 
 const root = () => document.getElementById('root');
 const main = () => document.getElementById('main');
 
-const position = (button: HTMLButtonElement): ModulePosition => {
+const position = (button: HTMLButtonElement): Position => {
 	if (!button) {
 		return INVALID_POSITION;
 	}
@@ -28,75 +33,24 @@ const position = (button: HTMLButtonElement): ModulePosition => {
 	];
 };
 
-const equals = (position1: ModulePosition, position2: ModulePosition) => {
-	return position1[0] === position2[0] && position1[1] === position2[1];
+type Segment = [Position, Position];
+const connectionToSegment = (
+	connectorButtonPositions: Record<string, Position>,
+	outputKey: string,
+	inputKey: string,
+): Segment => {
+	return [
+		connectorButtonPositions[outputKey],
+		connectorButtonPositions[inputKey],
+	];
 };
-
-type Segment = [ModulePosition, ModulePosition];
-type Path = Segment[];
-const connectionToPath =
-	(mode: ConnectionDrawMode) =>
-	([_, [output, input]]: [string, Connection]): [string, Path] => {
-		const outputPosition = position(connectorButton(connectorKey(output)));
-		const inputPosition = position(connectorButton(connectorKey(input)));
-
-		switch (mode) {
-			case ConnectionDrawMode.DIRECT:
-				return [
-					connectionKey(output, input),
-					[[outputPosition, inputPosition]],
-				];
-
-			case ConnectionDrawMode.STEPPED:
-			default: {
-				const path: Path = [];
-				if (
-					Math.sqrt(
-						Math.pow(inputPosition[0] - outputPosition[0], 2) +
-							Math.pow(inputPosition[1] - outputPosition[1], 2),
-					) < 200
-				) {
-					return [
-						connectionKey(output, input),
-						[[outputPosition, inputPosition]],
-					];
-				}
-
-				const addSegment = (
-					start: ModulePosition,
-					end: ModulePosition,
-				): ModulePosition => {
-					if (equals(start, outputPosition)) {
-						const endx = start[0] + 25;
-						const endy = start[1];
-						path.push([start, [endx, endy]]);
-						return [endx, endy];
-					}
-					let startPosition = start;
-					let endPosition = end;
-
-					path.push([startPosition, endPosition]);
-					return endPosition;
-				};
-
-				let previousEndPosition = addSegment(outputPosition, inputPosition);
-				while (previousEndPosition != inputPosition) {
-					previousEndPosition = addSegment(previousEndPosition, inputPosition);
-				}
-
-				return [connectionKey(output, input), path];
-			}
-		}
-	};
-
-enum ConnectionDrawMode {
-	DIRECT,
-	STEPPED,
-}
 
 const devicePixelRatio = window.devicePixelRatio || 1;
 
-const resizeCanvas = (canvas: HTMLCanvasElement) => {
+const resizeCanvas = (canvas?: HTMLCanvasElement) => {
+	if (!canvas) {
+		return;
+	}
 	try {
 		const rect = main()?.getBoundingClientRect() ?? new DOMRect(0, 0, 0, 0);
 
@@ -108,6 +62,144 @@ const resizeCanvas = (canvas: HTMLCanvasElement) => {
 		console.warn(e);
 	}
 };
+
+const isPositionInCanvas = (
+	position: Position,
+	canvasRect: DOMRect,
+): boolean => {
+	return (
+		position[0] >= canvasRect.left &&
+		position[0] <= canvasRect.right &&
+		position[1] >= canvasRect.top &&
+		position[1] <= canvasRect.bottom
+	);
+};
+
+const isSegmentInCanvas = (segment: Segment, canvasRect: DOMRect): boolean => {
+	const [start, end] = segment;
+	return (
+		isPositionInCanvas(start, canvasRect) ||
+		isPositionInCanvas(end, canvasRect) ||
+		intersectsCanvas(start, end, canvasRect)
+	);
+};
+
+const intersectsCanvas = (
+	start: Position,
+	end: Position,
+	canvasRect: DOMRect,
+): boolean => {
+	const minX = Math.min(start[0], end[0]);
+	const maxX = Math.max(start[0], end[0]);
+	const minY = Math.min(start[1], end[1]);
+	const maxY = Math.max(start[1], end[1]);
+
+	return !(
+		maxX < canvasRect.left ||
+		minX > canvasRect.right ||
+		maxY < canvasRect.top ||
+		minY > canvasRect.bottom
+	);
+};
+
+const activeConnectorPendingConnection = (
+	mouseX: number,
+	mouseY: number,
+	activeConnectorKey: string,
+): [string, Segment] => {
+	return [
+		'active',
+		[[mouseX, mouseY], position(connectorButton(activeConnectorKey))],
+	];
+};
+
+const connectionsToDraw = (
+	connectorButtonPositions: Record<string, Position>,
+	connections: Record<string, Connection>,
+	canvasRect: DOMRect,
+) => {
+	const connectionsToDraw: [string, Segment][] = [];
+	for (const entry of Object.entries(connections)) {
+		const [id, [output, input]] = entry;
+
+		const outputKey = connectorKey(output);
+		const inputKey = connectorKey(input);
+		if (
+			!(
+				outputKey in connectorButtonPositions &&
+				inputKey in connectorButtonPositions
+			)
+		) {
+			continue;
+		}
+
+		try {
+			const segment = connectionToSegment(
+				connectorButtonPositions,
+				outputKey,
+				inputKey,
+			);
+			if (!isSegmentInCanvas(segment, canvasRect)) {
+				continue;
+			}
+			connectionsToDraw.push([id, segment]);
+		} catch (err) {
+			console.warn(err);
+		}
+	}
+	return connectionsToDraw;
+};
+
+const makeDraw =
+	(state: IPatchState, context2D?: CanvasRenderingContext2D) =>
+	(connection: [string, Segment]) => {
+		if (!context2D) {
+			return;
+		}
+		const [id, segment] = connection;
+		const selected = state.selectedConnections.has(id);
+		const selectionPending = state.pendingConnectionSelection?.has(id) ?? false;
+		const accentColor = selectionPending
+			? '#ffbf6f'
+			: selected
+			? '#c98900'
+			: '#ffecdc';
+
+		const [outputX, outputY] = segment[0];
+		const [inputX, inputY] = segment[1];
+
+		context2D.fillStyle = '#000';
+		context2D.beginPath();
+		context2D.arc(outputX, outputY, 5, 0, 2 * Math.PI);
+		context2D.fill();
+
+		context2D.beginPath();
+		context2D.arc(inputX, inputY, 5, 0, 2 * Math.PI);
+		context2D.fill();
+
+		context2D.beginPath();
+		context2D.strokeStyle = '#000';
+		context2D.lineWidth = 5;
+		context2D.moveTo(outputX, outputY);
+		context2D.lineTo(inputX, inputY);
+		context2D.stroke();
+
+		context2D.beginPath();
+		context2D.strokeStyle = accentColor;
+		context2D.lineWidth = 3;
+		context2D.moveTo(outputX, outputY);
+		context2D.lineTo(inputX, inputY);
+		context2D.stroke();
+
+		context2D.fillStyle = accentColor;
+		context2D.beginPath();
+		context2D.arc(outputX, outputY, 3, 0, 2 * Math.PI);
+		context2D.fill();
+
+		context2D.beginPath();
+		context2D.arc(inputX, inputY, 3, 0, 2 * Math.PI);
+		context2D.fill();
+	};
 
 export const ConnectionsWrapper: React.FC<{ state: IPatchState }> = ({
 	state,
@@ -130,170 +222,108 @@ export const ConnectionsWrapper: React.FC<{ state: IPatchState }> = ({
 	) : null;
 };
 
+const useManagedCanvasContext2D = (
+	canvasRef: React.RefObject<HTMLCanvasElement | undefined>,
+) => {
+	const [_, update] = useSyncedUpdateRef(canvasRef.current);
+	const contextRef = useRef<CanvasRenderingContext2D>(undefined);
+
+	if (canvasRef.current && (!contextRef.current || update)) {
+		resizeCanvas(canvasRef.current);
+		contextRef.current = canvasRef.current.getContext('2d') ?? undefined;
+		if (contextRef.current) {
+			contextRef.current.scale(devicePixelRatio, devicePixelRatio);
+		}
+	}
+
+	return contextRef.current;
+};
+
 const Connections: React.FC<{
 	state: IPatchState;
 	mainRef: React.RefObject<HTMLElement>;
-}> = ({
-	state: {
-		activeConnectorKey,
-		blockHistory,
-		connections,
-		connectors,
-		modulePositions,
-		selectedConnections,
-		pendingConnectionSelection,
-	},
-	mainRef,
-}) => {
+}> = ({ state, mainRef }) => {
+	const { activeConnectorKey, connections } = state;
 	const canvasRef = useRef<HTMLCanvasElement>(undefined);
-	const contextRef = useRef<CanvasRenderingContext2D>(undefined);
+	const context2D = useManagedCanvasContext2D(canvasRef);
 
-	const scroll = useScroll(mainRef);
+	const connectorButtonPositions = useMemo(() => {
+		const cache: Record<string, Position> = {};
+		for (const key of Object.keys(state.connectors)) {
+			cache[key] = position(connectorButton(key));
+		}
+		return cache;
+	}, [state.modulePositions, state.modules, state.connectors]);
+
+	const draw = makeDraw(state, context2D);
+
 	const mouse = useMouse(mainRef);
+	const scroll = useScroll(mainRef);
 
-	const drawConnections = useCallback(() => {
-		const connectionsToDraw = Object.entries(connections.state)
-			.filter(
-				([key, [output, input]]) =>
-					key !== 'version' &&
-					connectorKey(output) in connectors &&
-					connectorKey(input) in connectors,
-			)
-			.map(connectionToPath(ConnectionDrawMode.DIRECT));
-		if (activeConnectorKey) {
-			connectionsToDraw.push([
-				'active',
-				[
-					[
-						[mouse.posX, mouse.posY],
-						position(connectorButton(activeConnectorKey)),
-					],
-				],
-			]);
-		}
-
-		queueAnimation(() => {
-			if (canvasRef.current && !contextRef.current) {
-				contextRef.current = canvasRef.current.getContext('2d') ?? undefined;
-				if (contextRef.current) {
-					contextRef.current.scale(devicePixelRatio, devicePixelRatio);
+	const drawConnections = useCallback(
+		() =>
+			queueAnimation(() => {
+				if (!(canvasRef.current && context2D)) {
+					return;
 				}
-			}
 
-			if (contextRef.current && canvasRef.current) {
-				const context2d = contextRef.current;
-				contextRef.current.clearRect(
+				context2D.clearRect(
 					0,
 					0,
-					canvasRef.current.width,
-					canvasRef.current.height,
+					canvasRef.current.clientWidth ?? 0,
+					canvasRef.current.clientHeight,
 				);
 
+				if (activeConnectorKey !== undefined) {
+					draw(
+						activeConnectorPendingConnection(
+							mouse.elX,
+							mouse.elY,
+							activeConnectorKey,
+						),
+					);
+				}
+
+				for (const connection of connectionsToDraw(
+					connectorButtonPositions,
+					connections.state,
+					canvasRef.current.getBoundingClientRect(),
+				)) {
+					draw(connection);
+				}
+			}),
+		[
+			context2D,
+			connectorButtonPositions,
+			mouse.elX,
+			mouse.elY,
+			connections,
+			activeConnectorKey,
+		],
+	);
+
+	useEffect(() => {
+		drawConnections();
+	}, [
+		connectorButtonPositions,
+		mouse.elX,
+		mouse.elY,
+		scroll.x,
+		scroll.y,
+		connections,
+		activeConnectorKey,
+	]);
+
+	useEffect(() => {
+		if (canvasRef.current) {
+			function resize() {
 				resizeCanvas(canvasRef.current);
-
-				const connectionsToDraw = Object.entries(connections.state).map(
-					connectionToPath(ConnectionDrawMode.DIRECT),
-				);
-
-				if (activeConnectorKey && !blockHistory) {
-					connectionsToDraw.push([
-						'active',
-						[
-							[
-								[mouse.elX, mouse.elY],
-								position(connectorButton(activeConnectorKey)),
-							],
-						],
-					]);
-				}
-
-				connectionsToDraw.forEach((connection) => {
-					const [id, path] = connection;
-					const selected = selectedConnections.has(id);
-					const selectionPending = pendingConnectionSelection?.has(id) ?? false;
-					const accentColor = selectionPending
-						? '#ffbf6f'
-						: selected
-						? '#c98900'
-						: '#ffecdc';
-
-					const startPosition = path[0][0];
-					const endPosition = path[path.length - 1][1];
-
-					context2d.fillStyle = '#000';
-					context2d.beginPath();
-					context2d.arc(startPosition[0], startPosition[1], 5, 0, 2 * Math.PI);
-					context2d.fill();
-
-					context2d.beginPath();
-					context2d.arc(endPosition[0], endPosition[1], 5, 0, 2 * Math.PI);
-					context2d.fill();
-
-					path.forEach((segment) => {
-						const [outputX, outputY] = segment[0];
-						const [inputX, inputY] = segment[1];
-
-						context2d.beginPath();
-						context2d.strokeStyle = '#000';
-						context2d.lineWidth = 5;
-						context2d.moveTo(outputX, outputY);
-						context2d.lineTo(inputX, inputY);
-						context2d.stroke();
-
-						context2d.beginPath();
-						context2d.strokeStyle = accentColor;
-						context2d.lineWidth = 3;
-						context2d.moveTo(outputX, outputY);
-						context2d.lineTo(inputX, inputY);
-						context2d.stroke();
-					});
-
-					context2d.fillStyle = accentColor;
-					context2d.beginPath();
-					context2d.arc(startPosition[0], startPosition[1], 3, 0, 2 * Math.PI);
-					context2d.fill();
-
-					context2d.beginPath();
-					context2d.arc(endPosition[0], endPosition[1], 3, 0, 2 * Math.PI);
-					context2d.fill();
-				});
 			}
-		}, 'cxn');
-	}, [
-		activeConnectorKey,
-		blockHistory,
-		connections,
-		connectors,
-		scroll,
-		mouse,
-		selectedConnections,
-		pendingConnectionSelection,
-	]);
-
-	useEffect(() => {
-		drawConnections();
-	}, [drawConnections]);
-	useEffect(() => {
-		drawConnections();
-	}, [
-		activeConnectorKey,
-		blockHistory,
-		connections,
-		connectors,
-		modulePositions,
-		scroll,
-	]);
-	useEffect(() => {
-		if (activeConnectorKey) {
-			drawConnections();
+			root()?.addEventListener('resize', resize, false);
+			return () => {
+				root()?.removeEventListener('resize', resize, false);
+			};
 		}
-	}, [mouse]);
-
-	useEffect(() => {
-		root()?.addEventListener('resize', drawConnections, false);
-		return () => {
-			root()?.removeEventListener('resize', drawConnections, false);
-		};
 	}, [drawConnections]);
 
 	return (

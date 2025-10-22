@@ -9,12 +9,11 @@ import React, {
 import { AddModule } from './add-module';
 import { IPatchState } from '../../state/types/patch';
 import { IPatchAction, patchActions } from '../../state/actions';
-import { queueAnimation } from '../../../shared/utils/animation';
+import { queueAnimation, useRefBackedState } from '../../../shared/utils';
 import { UseScrollContext } from '../../contexts/use-scroll';
 import { INVALID_POSITION } from '../../state/constants/positions';
 import { clearActiveConnectorAction } from '../../state/actions/clear-active-connector';
 import { positionFromMouseEvent } from './utils/position-from-mouse-event';
-import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
 
 export type ModuleCanvasBackdropProps = {
 	state: IPatchState;

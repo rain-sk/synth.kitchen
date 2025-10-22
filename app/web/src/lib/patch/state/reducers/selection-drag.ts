@@ -1,6 +1,6 @@
 import { Connection, Module } from 'synth.kitchen-shared';
 import { ModulePosition } from 'synth.kitchen-shared';
-import { convertRemToPixels } from '../../../shared/utils/rem-to-px';
+import { convertRemToPixels } from '../../../shared/utils';
 import { Modifier } from '../../constants/key';
 import { ISelectionDrag } from '../actions/selection-drag';
 import { SelectionDragType } from '../actions/selection-drag';

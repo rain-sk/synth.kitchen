@@ -10,7 +10,7 @@ import hhmmss from 'hhmmss';
 
 import { audioContext, resampling } from '../../audio';
 import { PatchContext } from '../../contexts/patch';
-import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
+import { useRefBackedState } from '../../../shared/utils';
 
 export const Record: React.FC = () => {
 	const state = useContext(PatchContext);

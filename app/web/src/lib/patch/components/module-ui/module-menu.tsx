@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
+
 import { MenuDots } from '../toolbar/svg/menu-dots';
-import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
+import { useRefBackedState } from '../../../shared/utils';
 
 export const ModuleMenu = () => {
 	const [showMenuRef, showMenu, setShowMenu] = useRefBackedState(false);
