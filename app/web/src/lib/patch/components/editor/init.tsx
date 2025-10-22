@@ -1,9 +1,11 @@
 import React, { useCallback } from 'react';
 
 import { useEffectOnce } from '../module/use-effect-once';
+import { Key } from '../../constants/key';
 
 const onKeyDown = (init: () => void) => (e: KeyboardEvent) => {
-	if (e.key === 'Enter' || e.key === ' ') {
+	const key = e.key.toLowerCase();
+	if (key === Key.ENTER || key === Key.SPACE) {
 		e.stopPropagation();
 		e.preventDefault();
 		init();

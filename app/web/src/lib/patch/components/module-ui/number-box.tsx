@@ -3,6 +3,7 @@ import { randomId } from 'synth.kitchen-shared';
 
 import { patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
+import { Key } from '../../constants/key';
 
 // https://stackoverflow.com/a/27082406
 const countDecimals = (value: number) => {
@@ -104,20 +105,21 @@ export const NumberBox: React.FunctionComponent<{
 	const onKeyDown = useCallback(
 		(e: React.KeyboardEvent<HTMLInputElement>) => {
 			const el = e.target as HTMLInputElement;
-			if (e.key === 'Enter') {
+			const key = e.key.toLowerCase();
+			if (key === Key.ENTER) {
 				commitValueCallback(valueToCommit());
 				el.select();
-			} else if (e.key === 'Escape') {
+			} else if (key === Key.ESCAPE) {
 				setTempValue(`${value}`);
 				el.setAttribute('disabled', 'true');
 				setTimeout(() => {
 					el.removeAttribute('disabled');
 					el.select();
 				}, 0);
-			} else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+			} else if (key === Key.ARROW_DOWN || key === Key.ARROW_UP) {
 				if (e.shiftKey) {
 					const newValue =
-						e.key === 'ArrowUp' ? valueToCommit() * 2 : valueToCommit() / 2;
+						key === Key.ARROW_UP ? valueToCommit() * 2 : valueToCommit() / 2;
 					setTempValue(`${newValue}`);
 					commitValueCallback(newValue);
 					setTimeout(() => el.select(), 1);
@@ -125,7 +127,7 @@ export const NumberBox: React.FunctionComponent<{
 					const numberOfDecimals = countDecimals(valueToCommit());
 					const smallestIncrement = 0.1 ** numberOfDecimals;
 					let newValue =
-						e.key === 'ArrowUp'
+						key === Key.ARROW_UP
 							? valueToCommit() + smallestIncrement
 							: valueToCommit() - smallestIncrement;
 
@@ -140,7 +142,7 @@ export const NumberBox: React.FunctionComponent<{
 					commitValueCallback(newValue);
 					setTimeout(() => el.select(), 1);
 				}
-			} else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+			} else if (key === Key.ARROW_LEFT || key === Key.ARROW_RIGHT) {
 				const input = e.target as HTMLInputElement;
 				const forward =
 					input.selectionDirection === 'forward' ||
@@ -155,7 +157,7 @@ export const NumberBox: React.FunctionComponent<{
 							0,
 							Math.min(
 								tempValue?.length ?? 0,
-								e.key === 'ArrowLeft' ? end - 1 : end + 1,
+								key === Key.ARROW_LEFT ? end - 1 : end + 1,
 							),
 						);
 
@@ -173,7 +175,7 @@ export const NumberBox: React.FunctionComponent<{
 							0,
 							Math.min(
 								tempValue?.length ?? 0,
-								e.key === 'ArrowLeft' ? start - 1 : start + 1,
+								key === Key.ARROW_LEFT ? start - 1 : start + 1,
 							),
 						);
 						input.setSelectionRange(
@@ -189,7 +191,7 @@ export const NumberBox: React.FunctionComponent<{
 				} else {
 					if (start !== end) {
 						const newCursorPosition =
-							e.key === 'ArrowLeft'
+							key === Key.ARROW_LEFT
 								? forward
 									? start
 									: end
@@ -202,7 +204,7 @@ export const NumberBox: React.FunctionComponent<{
 							0,
 							Math.min(
 								tempValue?.length ?? 0,
-								e.key === 'ArrowLeft' ? start - 1 : start + 1,
+								key === Key.ARROW_LEFT ? start - 1 : start + 1,
 							),
 						);
 						input.setSelectionRange(newCursorPosition, newCursorPosition);

@@ -29,7 +29,8 @@ export const LoadFromDisk = () => {
 	);
 
 	const handleLoadKeyDown = (e: React.KeyboardEvent<HTMLLabelElement>) => {
-		if (e.key === Key.ENTER || e.key === Key.SPACE) {
+		const key = e.key.toLowerCase();
+		if (key === Key.ENTER || key === Key.SPACE) {
 			e.preventDefault();
 			(e.nativeEvent.target as any).querySelector('input').click();
 		}
