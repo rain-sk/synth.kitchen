@@ -1,16 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Connection, ModulePosition } from 'synth.kitchen-shared';
 
-import {
-	connectionKey,
-	connectorButton,
-	connectorKey,
-} from '../../state/connection';
+import { connectorButton, connectorKey } from '../../state/connection';
 import { IPatchState } from '../../state/types/patch';
 import { useMouse, useScroll } from 'react-use';
 import { queueAnimation } from '../../../shared/utils/animation';
 import { INVALID_POSITION } from '../../state/constants/positions';
 import { getMain } from '../../../shared/utils/get-main';
+import { useSyncedUpdateRef } from '../../../shared/utils';
 
 const root = () => document.getElementById('root');
 const main = () => document.getElementById('main');
@@ -29,14 +26,14 @@ const position = (button: HTMLButtonElement): ModulePosition => {
 };
 
 type Segment = [ModulePosition, ModulePosition];
-const connectionToPath = ([_, [output, input]]: [string, Connection]): [
+const connectionToSegment = ([_, [output, input]]: [
 	string,
-	Segment,
-] => {
+	Connection,
+]): Segment => {
 	const outputPosition = position(connectorButton(connectorKey(output)));
 	const inputPosition = position(connectorButton(connectorKey(input)));
 
-	return [connectionKey(output, input), [outputPosition, inputPosition]];
+	return [outputPosition, inputPosition];
 };
 
 const devicePixelRatio = window.devicePixelRatio || 1;
@@ -75,6 +72,23 @@ export const ConnectionsWrapper: React.FC<{ state: IPatchState }> = ({
 	) : null;
 };
 
+const useManagedCanvasContext2D = (
+	canvasRef: React.RefObject<HTMLCanvasElement | undefined>,
+) => {
+	const [_, update] = useSyncedUpdateRef(canvasRef.current);
+	const contextRef = useRef<CanvasRenderingContext2D>(undefined);
+
+	if (canvasRef.current && (!contextRef.current || update)) {
+		resizeCanvas(canvasRef.current);
+		contextRef.current = canvasRef.current.getContext('2d') ?? undefined;
+		if (contextRef.current) {
+			contextRef.current.scale(devicePixelRatio, devicePixelRatio);
+		}
+	}
+
+	return contextRef.current;
+};
+
 const Connections: React.FC<{
 	state: IPatchState;
 	mainRef: React.RefObject<HTMLElement>;
@@ -91,7 +105,7 @@ const Connections: React.FC<{
 	mainRef,
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>(undefined);
-	const contextRef = useRef<CanvasRenderingContext2D>(undefined);
+	const context2D = useManagedCanvasContext2D(canvasRef);
 
 	const scroll = useScroll(mainRef);
 	const mouse = useMouse(mainRef);
@@ -100,16 +114,8 @@ const Connections: React.FC<{
 		const connectionsToDraw: [string, Segment][] = [];
 
 		queueAnimation(() => {
-			if (canvasRef.current && !contextRef.current) {
-				contextRef.current = canvasRef.current.getContext('2d') ?? undefined;
-				if (contextRef.current) {
-					contextRef.current.scale(devicePixelRatio, devicePixelRatio);
-				}
-			}
-
-			if (contextRef.current && canvasRef.current) {
-				const context2d = contextRef.current;
-				contextRef.current.clearRect(
+			if (context2D && canvasRef.current) {
+				context2D.clearRect(
 					0,
 					0,
 					canvasRef.current.width,
@@ -131,48 +137,45 @@ const Connections: React.FC<{
 					const [outputX, outputY] = segment[0];
 					const [inputX, inputY] = segment[1];
 
-					context2d.fillStyle = '#000';
-					context2d.beginPath();
-					context2d.arc(outputX, outputY, 5, 0, 2 * Math.PI);
-					context2d.fill();
+					context2D.fillStyle = '#000';
+					context2D.beginPath();
+					context2D.arc(outputX, outputY, 5, 0, 2 * Math.PI);
+					context2D.fill();
 
-					context2d.beginPath();
-					context2d.arc(inputX, inputY, 5, 0, 2 * Math.PI);
-					context2d.fill();
+					context2D.beginPath();
+					context2D.arc(inputX, inputY, 5, 0, 2 * Math.PI);
+					context2D.fill();
 
-					context2d.beginPath();
-					context2d.strokeStyle = '#000';
-					context2d.lineWidth = 5;
-					context2d.moveTo(outputX, outputY);
-					context2d.lineTo(inputX, inputY);
-					context2d.stroke();
+					context2D.beginPath();
+					context2D.strokeStyle = '#000';
+					context2D.lineWidth = 5;
+					context2D.moveTo(outputX, outputY);
+					context2D.lineTo(inputX, inputY);
+					context2D.stroke();
 
-					context2d.beginPath();
-					context2d.strokeStyle = accentColor;
-					context2d.lineWidth = 3;
-					context2d.moveTo(outputX, outputY);
-					context2d.lineTo(inputX, inputY);
-					context2d.stroke();
+					context2D.beginPath();
+					context2D.strokeStyle = accentColor;
+					context2D.lineWidth = 3;
+					context2D.moveTo(outputX, outputY);
+					context2D.lineTo(inputX, inputY);
+					context2D.stroke();
 
-					context2d.fillStyle = accentColor;
-					context2d.beginPath();
-					context2d.arc(outputX, outputY, 3, 0, 2 * Math.PI);
-					context2d.fill();
+					context2D.fillStyle = accentColor;
+					context2D.beginPath();
+					context2D.arc(outputX, outputY, 3, 0, 2 * Math.PI);
+					context2D.fill();
 
-					context2d.beginPath();
-					context2d.arc(inputX, inputY, 3, 0, 2 * Math.PI);
-					context2d.fill();
+					context2D.beginPath();
+					context2D.arc(inputX, inputY, 3, 0, 2 * Math.PI);
+					context2D.fill();
 				});
 			}
 		}, 'cxn');
 
-		if (activeConnectorKey !== undefined) {
+		if (activeConnectorKey !== undefined && !blockHistory) {
 			connectionsToDraw.push([
 				'active',
-				[
-					[mouse.posX, mouse.posY],
-					position(connectorButton(activeConnectorKey)),
-				],
+				[[mouse.elX, mouse.elY], position(connectorButton(activeConnectorKey))],
 			]);
 		}
 
@@ -185,7 +188,7 @@ const Connections: React.FC<{
 			) {
 				continue;
 			}
-			const [_, segment] = connectionToPath([key, [output, input]]);
+			const segment = connectionToSegment([key, [output, input]]);
 			connectionsToDraw.push([key, segment]);
 		}
 	}, [
