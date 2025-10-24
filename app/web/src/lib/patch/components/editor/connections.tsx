@@ -118,21 +118,6 @@ const Connections: React.FC<{
 
 				resizeCanvas(canvasRef.current);
 
-				const connectionsToDraw = Object.entries(connections.state).map(
-					connectionToPath,
-				);
-
-				if (activeConnectorKey && !blockHistory) {
-					connectionsToDraw.push([
-						'active',
-
-						[
-							[mouse.elX, mouse.elY],
-							position(connectorButton(activeConnectorKey)),
-						],
-					]);
-				}
-
 				connectionsToDraw.forEach((connection) => {
 					const [id, segment] = connection;
 					const selected = selectedConnections.has(id);
