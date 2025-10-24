@@ -26,12 +26,10 @@ const position = (button: HTMLButtonElement): ModulePosition => {
 };
 
 type Segment = [ModulePosition, ModulePosition];
-const connectionToSegment = (outputKey: string, inputKey: string): Segment => {
-	const outputPosition = position(connectorButton(outputKey));
-	const inputPosition = position(connectorButton(inputKey));
-
-	return [outputPosition, inputPosition];
-};
+const connectionToSegment = (outputKey: string, inputKey: string): Segment => [
+	position(connectorButton(outputKey)),
+	position(connectorButton(inputKey)),
+];
 
 const devicePixelRatio = window.devicePixelRatio || 1;
 
