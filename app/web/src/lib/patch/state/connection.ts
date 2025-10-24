@@ -25,12 +25,25 @@ export const connectorInfo = (
 export const connectorKey = (connector: Connector) =>
 	'type' in connector ? ioKey(connector) : paramKey(connector);
 
+const buttonCache: Record<string, HTMLButtonElement> = {};
+let timeout: any;
+(function buttonCacheCleanup() {
+	Object.keys(buttonCache).forEach((key) => {
+		if (!document.getElementById(key)) {
+			delete buttonCache[key];
+		}
+	});
+	clearTimeout(timeout);
+	timeout = setTimeout(buttonCacheCleanup, 60000);
+})();
 export const connectorButton = (key: string) => {
-	const button = document.getElementById(key) as HTMLButtonElement;
-	if (!button) {
+	if (!(key in buttonCache)) {
+		buttonCache[key] = document.getElementById(key) as HTMLButtonElement;
+	}
+	if (!buttonCache[key]) {
 		throw Error(`Button for connector with key '${key}' not found`);
 	}
-	return button;
+	return buttonCache[key];
 };
 
 export const moduleConnectors = (
