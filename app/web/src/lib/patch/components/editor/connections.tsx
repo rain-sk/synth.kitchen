@@ -259,21 +259,6 @@ const Connections: React.FC<{
 	useEffect(() => {
 		drawConnections();
 	}, [drawConnections]);
-	useEffect(() => {
-		drawConnections();
-	}, [
-		activeConnectorKey,
-		blockHistory,
-		connections,
-		connectors,
-		modulePositions,
-		scroll,
-	]);
-	useEffect(() => {
-		if (activeConnectorKey) {
-			drawConnections();
-		}
-	}, [mouse]);
 
 	useEffect(() => {
 		root()?.addEventListener('resize', drawConnections, false);
