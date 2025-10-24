@@ -28,71 +28,16 @@ const position = (button: HTMLButtonElement): ModulePosition => {
 	];
 };
 
-const equals = (position1: ModulePosition, position2: ModulePosition) => {
-	return position1[0] === position2[0] && position1[1] === position2[1];
-};
-
 type Segment = [ModulePosition, ModulePosition];
-type Path = Segment[];
-const connectionToPath =
-	(mode: ConnectionDrawMode) =>
-	([_, [output, input]]: [string, Connection]): [string, Path] => {
-		const outputPosition = position(connectorButton(connectorKey(output)));
-		const inputPosition = position(connectorButton(connectorKey(input)));
+const connectionToPath = ([_, [output, input]]: [string, Connection]): [
+	string,
+	Segment,
+] => {
+	const outputPosition = position(connectorButton(connectorKey(output)));
+	const inputPosition = position(connectorButton(connectorKey(input)));
 
-		switch (mode) {
-			case ConnectionDrawMode.DIRECT:
-				return [
-					connectionKey(output, input),
-					[[outputPosition, inputPosition]],
-				];
-
-			case ConnectionDrawMode.STEPPED:
-			default: {
-				const path: Path = [];
-				if (
-					Math.sqrt(
-						Math.pow(inputPosition[0] - outputPosition[0], 2) +
-							Math.pow(inputPosition[1] - outputPosition[1], 2),
-					) < 200
-				) {
-					return [
-						connectionKey(output, input),
-						[[outputPosition, inputPosition]],
-					];
-				}
-
-				const addSegment = (
-					start: ModulePosition,
-					end: ModulePosition,
-				): ModulePosition => {
-					if (equals(start, outputPosition)) {
-						const endx = start[0] + 25;
-						const endy = start[1];
-						path.push([start, [endx, endy]]);
-						return [endx, endy];
-					}
-					let startPosition = start;
-					let endPosition = end;
-
-					path.push([startPosition, endPosition]);
-					return endPosition;
-				};
-
-				let previousEndPosition = addSegment(outputPosition, inputPosition);
-				while (previousEndPosition != inputPosition) {
-					previousEndPosition = addSegment(previousEndPosition, inputPosition);
-				}
-
-				return [connectionKey(output, input), path];
-			}
-		}
-	};
-
-enum ConnectionDrawMode {
-	DIRECT,
-	STEPPED,
-}
+	return [connectionKey(output, input), [outputPosition, inputPosition]];
+};
 
 const devicePixelRatio = window.devicePixelRatio || 1;
 
@@ -159,15 +104,13 @@ const Connections: React.FC<{
 					connectorKey(output) in connectors &&
 					connectorKey(input) in connectors,
 			)
-			.map(connectionToPath(ConnectionDrawMode.DIRECT));
+			.map(connectionToPath);
 		if (activeConnectorKey) {
 			connectionsToDraw.push([
 				'active',
 				[
-					[
-						[mouse.posX, mouse.posY],
-						position(connectorButton(activeConnectorKey)),
-					],
+					[mouse.posX, mouse.posY],
+					position(connectorButton(activeConnectorKey)),
 				],
 			]);
 		}
@@ -192,23 +135,22 @@ const Connections: React.FC<{
 				resizeCanvas(canvasRef.current);
 
 				const connectionsToDraw = Object.entries(connections.state).map(
-					connectionToPath(ConnectionDrawMode.DIRECT),
+					connectionToPath,
 				);
 
 				if (activeConnectorKey && !blockHistory) {
 					connectionsToDraw.push([
 						'active',
+
 						[
-							[
-								[mouse.elX, mouse.elY],
-								position(connectorButton(activeConnectorKey)),
-							],
+							[mouse.elX, mouse.elY],
+							position(connectorButton(activeConnectorKey)),
 						],
 					]);
 				}
 
 				connectionsToDraw.forEach((connection) => {
-					const [id, path] = connection;
+					const [id, segment] = connection;
 					const selected = selectedConnections.has(id);
 					const selectionPending = pendingConnectionSelection?.has(id) ?? false;
 					const accentColor = selectionPending
@@ -217,44 +159,39 @@ const Connections: React.FC<{
 						? '#c98900'
 						: '#ffecdc';
 
-					const startPosition = path[0][0];
-					const endPosition = path[path.length - 1][1];
+					const [outputX, outputY] = segment[0];
+					const [inputX, inputY] = segment[1];
 
 					context2d.fillStyle = '#000';
 					context2d.beginPath();
-					context2d.arc(startPosition[0], startPosition[1], 5, 0, 2 * Math.PI);
+					context2d.arc(outputX, outputY, 5, 0, 2 * Math.PI);
 					context2d.fill();
 
 					context2d.beginPath();
-					context2d.arc(endPosition[0], endPosition[1], 5, 0, 2 * Math.PI);
+					context2d.arc(inputX, inputY, 5, 0, 2 * Math.PI);
 					context2d.fill();
 
-					path.forEach((segment) => {
-						const [outputX, outputY] = segment[0];
-						const [inputX, inputY] = segment[1];
+					context2d.beginPath();
+					context2d.strokeStyle = '#000';
+					context2d.lineWidth = 5;
+					context2d.moveTo(outputX, outputY);
+					context2d.lineTo(inputX, inputY);
+					context2d.stroke();
 
-						context2d.beginPath();
-						context2d.strokeStyle = '#000';
-						context2d.lineWidth = 5;
-						context2d.moveTo(outputX, outputY);
-						context2d.lineTo(inputX, inputY);
-						context2d.stroke();
-
-						context2d.beginPath();
-						context2d.strokeStyle = accentColor;
-						context2d.lineWidth = 3;
-						context2d.moveTo(outputX, outputY);
-						context2d.lineTo(inputX, inputY);
-						context2d.stroke();
-					});
+					context2d.beginPath();
+					context2d.strokeStyle = accentColor;
+					context2d.lineWidth = 3;
+					context2d.moveTo(outputX, outputY);
+					context2d.lineTo(inputX, inputY);
+					context2d.stroke();
 
 					context2d.fillStyle = accentColor;
 					context2d.beginPath();
-					context2d.arc(startPosition[0], startPosition[1], 3, 0, 2 * Math.PI);
+					context2d.arc(outputX, outputY, 3, 0, 2 * Math.PI);
 					context2d.fill();
 
 					context2d.beginPath();
-					context2d.arc(endPosition[0], endPosition[1], 3, 0, 2 * Math.PI);
+					context2d.arc(inputX, inputY, 3, 0, 2 * Math.PI);
 					context2d.fill();
 				});
 			}
