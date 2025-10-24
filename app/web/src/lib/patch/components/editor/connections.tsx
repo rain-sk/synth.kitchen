@@ -97,23 +97,7 @@ const Connections: React.FC<{
 	const mouse = useMouse(mainRef);
 
 	const drawConnections = useCallback(() => {
-		const connectionsToDraw = Object.entries(connections.state)
-			.filter(
-				([key, [output, input]]) =>
-					key !== 'version' &&
-					connectorKey(output) in connectors &&
-					connectorKey(input) in connectors,
-			)
-			.map(connectionToPath);
-		if (activeConnectorKey) {
-			connectionsToDraw.push([
-				'active',
-				[
-					[mouse.posX, mouse.posY],
-					position(connectorButton(activeConnectorKey)),
-				],
-			]);
-		}
+		const connectionsToDraw: [string, Segment][] = [];
 
 		queueAnimation(() => {
 			if (canvasRef.current && !contextRef.current) {
@@ -196,6 +180,29 @@ const Connections: React.FC<{
 				});
 			}
 		}, 'cxn');
+
+		if (activeConnectorKey !== undefined) {
+			connectionsToDraw.push([
+				'active',
+				[
+					[mouse.posX, mouse.posY],
+					position(connectorButton(activeConnectorKey)),
+				],
+			]);
+		}
+
+		for (const [key, [output, input]] of Object.entries(connections.state)) {
+			if (
+				!(
+					connectorKey(output) in connectors &&
+					connectorKey(input) in connectors
+				)
+			) {
+				continue;
+			}
+			const [_, segment] = connectionToPath([key, [output, input]]);
+			connectionsToDraw.push([key, segment]);
+		}
 	}, [
 		activeConnectorKey,
 		blockHistory,
