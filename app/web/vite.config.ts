@@ -13,8 +13,10 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				manualChunks: {
+					'cash-dom': ['cash-dom'],
 					'react-use': ['react-use'],
 					shared: ['synth.kitchen-shared'],
+					'modern-screenshot': ['modern-screenshot'],
 					'extendable-media-recorder': ['extendable-media-recorder'],
 					'extendable-media-recorder-wav-encoder': [
 						'extendable-media-recorder-wav-encoder',
