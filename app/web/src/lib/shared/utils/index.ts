@@ -1,6 +1,6 @@
 export { queueAnimation } from './animation';
 export { fetchWithJwt } from './fetch-with-jwt';
-export { getMain } from './get-main';
+export { getMain, makeGetter } from './get-by-id';
 export { isInViewport } from './is-in-viewport';
 export { MD5 } from './md5';
 export { convertRemToPixels } from './rem-to-px';

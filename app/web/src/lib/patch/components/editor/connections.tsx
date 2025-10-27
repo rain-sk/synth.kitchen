@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Connection, ModulePosition } from 'synth.kitchen-shared';
+import { useMouse, useScroll } from 'react-use';
+import { ModulePosition } from 'synth.kitchen-shared';
 
 import { connectorButton, connectorKey } from '../../state/connection';
 import { IPatchState } from '../../state/types/patch';
-import { useMouse, useScroll } from 'react-use';
 import { queueAnimation } from '../../../shared/utils/animation';
 import { INVALID_POSITION } from '../../state/constants/positions';
 import { getMain } from '../../../shared/utils/get-main';
-import { useSyncedUpdateRef } from '../../../shared/utils';
+import { useSyncedRef, useSyncedUpdateRef } from '../../../shared/utils';
 
-const root = () => document.getElementById('root');
 const main = () => document.getElementById('main');
 
 const position = (button: HTMLButtonElement): ModulePosition => {
@@ -167,7 +166,6 @@ const Connections: React.FC<{
 		blockHistory,
 		connections,
 		connectors,
-		modulePositions,
 		selectedConnections,
 		pendingConnectionSelection,
 	} = state;
@@ -177,98 +175,120 @@ const Connections: React.FC<{
 	const scroll = useScroll(mainRef);
 	const mouse = useMouse(mainRef);
 
+	const resizeRef = useRef(true);
 	const drawConnections = useCallback(() => {
 		if (!(context2D && canvasRef.current)) {
 			return;
 		}
-		queueAnimation(() => {
-			if (context2D && canvasRef.current) {
-				context2D.clearRect(
-					0,
-					0,
-					canvasRef.current.width,
-					canvasRef.current.height,
-				);
+		context2D.clearRect(
+			0,
+			0,
+			canvasRef.current.width,
+			canvasRef.current.height,
+		);
 
-				resizeCanvas(canvasRef.current);
+		if (resizeRef.current) {
+			resizeRef.current = false;
+			resizeCanvas(canvasRef.current);
+		}
 
-				const canvasRect = canvasRef.current.getBoundingClientRect();
-				connectionsToDraw(state, canvasRect, mouse.elX, mouse.elY).forEach(
-					(connection) => {
-						const [id, segment] = connection;
-						const selected = selectedConnections.has(id);
-						const selectionPending =
-							pendingConnectionSelection?.has(id) ?? false;
-						const accentColor = selectionPending
-							? '#ffbf6f'
-							: selected
-							? '#c98900'
-							: '#ffecdc';
+		const canvasRect = canvasRef.current.getBoundingClientRect();
+		for (const [id, segment] of connectionsToDraw(
+			state,
+			canvasRect,
+			mouse.elX,
+			mouse.elY,
+		)) {
+			const selected = selectedConnections.has(id);
+			const selectionPending = pendingConnectionSelection?.has(id) ?? false;
+			const outlineColor = selectionPending ? '#ffffff' : '#000000';
+			const accentColor = selectionPending
+				? '#ffbf6f'
+				: selected
+				? '#c98900'
+				: '#ffecdc';
 
-						const [outputX, outputY] = segment[0];
-						const [inputX, inputY] = segment[1];
+			const [outputX, outputY] = segment[0];
+			const [inputX, inputY] = segment[1];
 
-						context2D.fillStyle = '#000';
-						context2D.beginPath();
-						context2D.arc(outputX, outputY, 5, 0, 2 * Math.PI);
-						context2D.fill();
+			context2D.beginPath();
+			context2D.strokeStyle = outlineColor;
+			context2D.lineWidth = 5;
+			context2D.moveTo(outputX, outputY);
+			context2D.lineTo(inputX, inputY);
+			context2D.stroke();
 
-						context2D.beginPath();
-						context2D.arc(inputX, inputY, 5, 0, 2 * Math.PI);
-						context2D.fill();
+			context2D.beginPath();
+			context2D.strokeStyle = accentColor;
+			context2D.lineWidth = 3;
+			context2D.moveTo(outputX, outputY);
+			context2D.lineTo(inputX, inputY);
+			context2D.stroke();
 
-						context2D.beginPath();
-						context2D.strokeStyle = '#000';
-						context2D.lineWidth = 5;
-						context2D.moveTo(outputX, outputY);
-						context2D.lineTo(inputX, inputY);
-						context2D.stroke();
+			context2D.fillStyle = outlineColor;
+			context2D.beginPath();
+			context2D.arc(outputX, outputY, 5, 0, 2 * Math.PI);
+			context2D.fill();
 
-						context2D.beginPath();
-						context2D.strokeStyle = accentColor;
-						context2D.lineWidth = 3;
-						context2D.moveTo(outputX, outputY);
-						context2D.lineTo(inputX, inputY);
-						context2D.stroke();
+			context2D.beginPath();
+			context2D.arc(inputX, inputY, 5, 0, 2 * Math.PI);
+			context2D.fill();
 
-						context2D.fillStyle = accentColor;
-						context2D.beginPath();
-						context2D.arc(outputX, outputY, 3, 0, 2 * Math.PI);
-						context2D.fill();
+			context2D.fillStyle = accentColor;
+			context2D.beginPath();
+			context2D.arc(outputX, outputY, 3, 0, 2 * Math.PI);
+			context2D.fill();
 
-						context2D.beginPath();
-						context2D.arc(inputX, inputY, 3, 0, 2 * Math.PI);
-						context2D.fill();
-					},
-				);
-			}
-		}, 'cxn');
+			context2D.beginPath();
+			context2D.arc(inputX, inputY, 3, 0, 2 * Math.PI);
+			context2D.fill();
+		}
 	}, [
 		activeConnectorKey,
 		blockHistory,
 		connections,
 		connectors,
-		scroll,
 		mouse,
 		selectedConnections,
 		pendingConnectionSelection,
 	]);
 
+	const drawConnectionsRef = useSyncedRef(drawConnections) as {
+		readonly current: () => void;
+	};
 	useEffect(() => {
-		drawConnections();
-	}, [drawConnections]);
+		queueAnimation(drawConnectionsRef.current, 'cxn');
+	}, [drawConnections, scroll]);
 
+	const [_, updateMain] = useSyncedUpdateRef(mainRef.current);
+	if (updateMain) {
+		console.log('wow');
+	}
 	useEffect(() => {
-		root()?.addEventListener('resize', drawConnections, false);
-		return () => {
-			root()?.removeEventListener('resize', drawConnections, false);
+		const main = mainRef.current;
+		if (!main || !updateMain) {
+			return;
+		}
+		const observer = new ResizeObserver(function () {
+			if (canvasRef.current) {
+				resizeRef.current = true;
+				queueAnimation(drawConnectionsRef.current, 'cxn');
+			}
+		});
+		observer.observe(main);
+		return function () {
+			observer.unobserve(main);
 		};
-	}, [drawConnections]);
+	}, [updateMain]);
 
 	return (
 		<canvas
 			id="connections"
-			ref={canvasRef as React.RefObject<HTMLCanvasElement>}
+			ref={(canvas) => {
+				canvasRef.current = canvas ?? undefined;
+				resizeRef.current = true;
+				queueAnimation(drawConnections, 'cxn');
+			}}
 			style={{ position: 'fixed', top: '2.5rem' }}
 		/>
 	);
