@@ -40,4 +40,4 @@ EXPOSE 80
 
 WORKDIR /usr/src/api
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf", "-n"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
