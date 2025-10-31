@@ -276,13 +276,10 @@ const Connections: React.FC<{
 		queueAnimation(drawConnectionsRef.current, 'cxn');
 	}, [drawConnections, scroll]);
 
-	const [_, updateMain] = useSyncedUpdateRef(mainRef.current);
-	if (updateMain) {
-		console.log('wow');
-	}
+	const [_, syncWithMain] = useSyncedUpdateRef(mainRef.current);
 	useEffect(() => {
 		const main = mainRef.current;
-		if (!main || !updateMain) {
+		if (!main || !syncWithMain) {
 			return;
 		}
 		const observer = new ResizeObserver(function () {
@@ -295,7 +292,7 @@ const Connections: React.FC<{
 		return function () {
 			observer.unobserve(main);
 		};
-	}, [updateMain]);
+	}, [syncWithMain]);
 
 	return (
 		<canvas
