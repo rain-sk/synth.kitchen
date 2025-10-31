@@ -10,11 +10,14 @@ import React, {
 import { Module, ModulePosition, ModuleType } from 'synth.kitchen-shared';
 
 import { Modifier } from '../../constants/key';
-import { ModuleHeader } from '../module-ui/module-header';
-import { IPatchAction, patchActions } from '../../state/actions';
 import { PatchContext } from '../../contexts/patch';
+import { ModuleHeader } from '../module-ui/module-header';
+import { queueAnimation, useRefBackedState } from '../../../shared/utils';
+import { IPatchAction, patchActions } from '../../state/actions';
+import { IPatchState } from '../../state/types/patch';
 
 import { ClockModule } from './clock';
+import { CompressorModule } from './compressor';
 import { DelayModule } from './delay';
 import { EnvelopeModule } from './envelope';
 import { FilterModule } from './filter';
@@ -28,14 +31,10 @@ import { NoiseModule } from './noise';
 import { OscillatorModule } from './oscillator';
 import { OutputModule } from './output';
 import { PanModule } from './pan';
-import { IPatchState } from '../../state/types/patch';
-import { SequencerModule } from './sequencer';
-import { VcaModule } from './vca';
-import { CompressorModule } from './compressor';
-import { queueAnimation } from '../../../shared/utils/animation';
-import { ShiftModule } from './shift';
-import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
 import { ScopeModule } from './scope';
+import { SequencerModule } from './sequencer';
+import { ShiftModule } from './shift';
+import { VcaModule } from './vca';
 
 const useDragAndDrop = (
 	id: string,

@@ -5,8 +5,9 @@ import {
 	IAudioDestinationNode,
 	IAudioNode,
 } from 'standardized-audio-context';
+
 import { initCvs, primer as defaultPrimer, drawRawOsc } from './canvas-tools';
-import { queueAnimation } from '../../../../shared/utils/animation';
+import { queueAnimation } from '../../../../shared/utils';
 
 type CanvasHookFunction = (
 	context: CanvasRenderingContext2D,

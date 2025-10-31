@@ -13,7 +13,7 @@ import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { Oscilloscope } from '../module-ui/webaudio-oscilloscope';
 import { useNode } from './use-node';
-import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
+import { useRefBackedState } from '../../../shared/utils';
 
 const outputStateFromNode = (node: OutputNode): ModuleState['OUTPUT'] => ({
 	version: OUTPUT_STATE_VERSIONS[0],

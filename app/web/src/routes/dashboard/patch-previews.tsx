@@ -3,7 +3,7 @@ import { PatchInfo } from 'synth.kitchen-shared';
 import { Link } from 'wouter';
 
 import { MenuDots } from '../../lib/patch/components/toolbar/svg/menu-dots';
-import { useRefBackedState } from '../../lib/shared/utils/use-ref-backed-state';
+import { useRefBackedState } from '../../lib/shared/utils';
 import { AuthContext } from '../../api/auth/context';
 import { useApi } from '../../lib/patch/api';
 import { DashboardContext } from './context';

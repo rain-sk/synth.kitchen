@@ -11,7 +11,7 @@ import { IPatchState } from './types/patch';
 import { Modifier } from '../constants/key';
 import { ISerializedPatch } from './types/serialized-patch';
 import { INVALID_POSITION } from './constants/positions';
-import { convertRemToPixels } from '../../shared/utils/rem-to-px';
+import { convertRemToPixels } from '../../shared/utils';
 import { History } from './types/history';
 
 export const blankPatchToClearCanvas = (): ISerializedPatch => ({

@@ -6,7 +6,7 @@ import { IPatchAction, patchActions } from '../../../state/actions';
 import { IPatchState } from '../../../state/types/patch';
 
 import { useApi } from '../../../api';
-import { useRefBackedState } from '../../../../shared/utils/use-ref-backed-state';
+import { useRefBackedState } from '../../../../shared/utils';
 import { resetAudioContext } from '../../../audio';
 import { PatchInfo, PatchQuery } from 'synth.kitchen-shared';
 import { ISerializedPatch } from '../../../state/types/serialized-patch';

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import { useAsync, useScroll } from 'react-use';
 import {
 	Module,
 	ModuleState,
@@ -7,13 +8,13 @@ import {
 } from 'synth.kitchen-shared';
 
 import { ScopeNode } from '../../audio/nodes/scope';
-
 import { IoConnectors } from '../module-ui/io-connectors';
 import { useNode } from './use-node';
-import { useRefBackedState } from '../../../shared/utils/use-ref-backed-state';
-import { useAsync, useScroll } from 'react-use';
-import { getMain } from '../../../shared/utils/get-main';
-import { isInViewport } from '../../../shared/utils/is-in-viewport';
+import {
+	useRefBackedState,
+	getMain,
+	isInViewport,
+} from '../../../shared/utils';
 
 const initScope = (): ModuleState['SCOPE'] => ({
 	version: SCOPE_STATE_VERSIONS[0],

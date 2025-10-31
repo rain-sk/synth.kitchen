@@ -1,6 +1,6 @@
 import { domToDataUrl } from 'modern-screenshot';
 import { Module, ModulePosition } from 'synth.kitchen-shared';
-import { convertRemToPixels } from '../../../../shared/utils/rem-to-px';
+import { convertRemToPixels } from '../../../../shared/utils';
 
 const rems20 = convertRemToPixels(20);
 

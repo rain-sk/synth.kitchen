@@ -6,7 +6,7 @@ import {
 } from 'synth.kitchen-shared';
 
 import { apiBase } from '../../../api/uri';
-import { fetchWithJwt } from '../../shared/utils/fetchWithJwt';
+import { fetchWithJwt } from '../../shared/utils';
 import { navigate } from 'wouter/use-browser-location';
 
 type PatchQuery = Pick<SharedPatchQuery, 'id' | 'slug' | 'random'>;
