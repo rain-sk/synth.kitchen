@@ -1,4 +1,5 @@
 import {
+  APP_STATE_VERSION,
   patchStateNeedsUpgrade,
   upgradePatchState,
 } from "synth.kitchen-shared";
@@ -7,6 +8,7 @@ import { apiHost, apiPort } from "./env";
 import { AppDataSource } from "./data-source";
 import { SavedPatchState } from "./entity/SavedPatchState";
 import { server } from "./server";
+import { AppInfo } from "./entity/AppInfo";
 
 const initDatabaseConnection = async () => {
   console.log("Initiating database connection:");
@@ -19,16 +21,35 @@ const initDatabaseConnection = async () => {
         resolve(undefined);
       } catch (e) {
         tries += 1;
-        if (tries >= 100) {
+        if (tries >= 30) {
           console.error("AppDataSource.initialize() failed", e);
           process.exit(1);
         } else {
-          setTimeout(tryInit, 500);
+          setTimeout(tryInit, 50);
         }
       }
     };
     tryInit();
   });
+};
+
+const verifyAppStateVersion = async () => {
+  try {
+    const appInfoRepo = AppDataSource.getRepository(AppInfo);
+    const version = await appInfoRepo.findOneOrFail({
+      where: { key: "version" },
+    });
+    if (version.data === APP_STATE_VERSION) {
+      return;
+    } else {
+      console.error(
+        `Current app state version (${APP_STATE_VERSION}) does not match the database version (${version.data}).`
+      );
+    }
+  } catch (e) {
+    console.error("Unable to confirm app state version.", e);
+  }
+  process.exit(1);
 };
 
 const cleanupStaleData = async () => {
@@ -71,6 +92,7 @@ const executePendingUpgrades = async () => {
 };
 
 initDatabaseConnection()
+  .then(verifyAppStateVersion)
   .then(cleanupStaleData)
   .then(executePendingUpgrades)
   .then(() => {

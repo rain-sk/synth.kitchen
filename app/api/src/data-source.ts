@@ -10,6 +10,7 @@ import {
   pgUser as username,
 } from "./env";
 
+import { AppInfo } from "./entity/AppInfo";
 import { EmailVerificationRequest } from "./entity/EmailVerificationRequest";
 import { PasswordResetRequest } from "./entity/PasswordResetRequest";
 import { Patch } from "./entity/Patch";
@@ -21,6 +22,7 @@ import { InitialSchema1758462191839 } from "./migration/1758462191839-InitialSch
 import { SeedAdmin1758462225132 } from "./migration/1758462225132-SeedAdmin";
 import { SeedPatches1758462320300 } from "./migration/1758462320300-SeedPatches";
 import { RemoveNeedsUpgradeColumn1759697039708 } from "./migration/1759697039708-RemoveNeedsUpgradeColumn";
+import { AppInfo1761908857941 } from "./migration/1761908857941-AppInfo";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -30,6 +32,7 @@ export const AppDataSource = new DataSource({
   password,
   database,
   entities: [
+    AppInfo,
     User,
     Patch,
     SavedPatchState,
@@ -42,6 +45,7 @@ export const AppDataSource = new DataSource({
     SeedAdmin1758462225132,
     SeedPatches1758462320300,
     RemoveNeedsUpgradeColumn1759697039708,
+    AppInfo1761908857941,
   ],
   logging,
 });
