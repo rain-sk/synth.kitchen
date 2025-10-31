@@ -40,14 +40,12 @@ const verifyAppStateVersion = async () => {
       where: { key: "version" },
     });
     if (version.data === APP_STATE_VERSION) {
-      console.log(
-        `Current app state version matches database version: ${APP_STATE_VERSION}`
-      );
+      console.log(`Current app version: ${APP_STATE_VERSION}`);
       return;
     }
 
     console.error(
-      `Current app state version (${APP_STATE_VERSION}) does not match the database version (${version.data}).`
+      `Current app state version (${APP_STATE_VERSION}) does not match the version in the database (${version.data}).`
     );
   } catch (e) {
     console.error("Unable to confirm app state version.", e);
