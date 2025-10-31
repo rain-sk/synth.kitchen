@@ -11,6 +11,6 @@
     "lint": "npm i --no-audit && concurrently -k -n shared,api,web 'cd app/shared && npm run lint' 'cd app/api && npm run lint' 'cd app/web && npm run lint'",
     "test": "npx cypress run",
     "prepare": "concurrently -n shared,api,web 'cd app/shared && npm i --no-audit' 'cd app/api && npm i --no-audit' 'cd app/web && npm i --no-audit'",
-    "build:prod": "npm i --no-audit && cd app/shared && npm run build && cd ../api && npm run build && cd ../web && npm run build"
+    "pre-push": "npm ci && cd app/shared && npm run build && cd ../api && npm run build && cd ../web && npm run build"
   }
 }
