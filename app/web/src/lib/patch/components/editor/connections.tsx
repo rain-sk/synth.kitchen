@@ -6,29 +6,38 @@ import { connectorButton, connectorKey } from '../../state/connection';
 import { IPatchState } from '../../state/types/patch';
 import { queueAnimation } from '../../../shared/utils/animation';
 import { INVALID_POSITION } from '../../state/constants/positions';
-import { getMain } from '../../../shared/utils/get-main';
-import { useSyncedRef, useSyncedUpdateRef } from '../../../shared/utils';
+import {
+	getMain,
+	useSyncedRef,
+	useSyncedUpdateRef,
+} from '../../../shared/utils';
 
 const main = () => document.getElementById('main');
 
-const position = (button: HTMLButtonElement): ModulePosition => {
+const position = (
+	button: HTMLButtonElement,
+	main: HTMLElement,
+	mainRect: DOMRect,
+): ModulePosition => {
 	if (!button) {
 		return INVALID_POSITION;
 	}
 
 	const rect = button.getBoundingClientRect();
-	const mainRect = main()?.getBoundingClientRect();
 	return [
 		rect.left + rect.width / 2 + window.pageXOffset - (mainRect?.x ?? 0),
-		rect.top + rect.height / 2 + window.pageYOffset - (main()?.offsetTop ?? 0),
+		rect.top + rect.height / 2 + window.pageYOffset - (main.offsetTop ?? 0),
 	];
 };
 
 type Segment = [ModulePosition, ModulePosition];
-const connectionToSegment = (outputKey: string, inputKey: string): Segment => [
-	position(connectorButton(outputKey)),
-	position(connectorButton(inputKey)),
-];
+const connectionToSegment =
+	(main: HTMLElement, mainRect: DOMRect) =>
+	(outputKey: string, inputKey: string): Segment =>
+		[
+			position(connectorButton(outputKey), main, mainRect),
+			position(connectorButton(inputKey), main, mainRect),
+		];
 
 const devicePixelRatio = window.devicePixelRatio || 1;
 
@@ -124,6 +133,7 @@ const useManagedCanvasContext2D = (
 
 const connectionsToDraw = (
 	state: IPatchState,
+	main: HTMLElement,
 	canvasRect: DOMRect,
 	mouseX: number,
 	mouseY: number,
@@ -132,10 +142,15 @@ const connectionsToDraw = (
 
 	const connectionsToDraw: [string, Segment][] = [];
 
+	const mainRect = main.getBoundingClientRect();
+
 	if (activeConnectorKey !== undefined && !blockHistory) {
 		connectionsToDraw.push([
 			'active',
-			[[mouseX, mouseY], position(connectorButton(activeConnectorKey))],
+			[
+				[mouseX, mouseY],
+				position(connectorButton(activeConnectorKey), main, mainRect),
+			],
 		]);
 	}
 
@@ -147,7 +162,7 @@ const connectionsToDraw = (
 		if (!(outputKey in state.connectors && inputKey in state.connectors)) {
 			continue;
 		}
-		const segment = connectionToSegment(outputKey, inputKey);
+		const segment = connectionToSegment(main, mainRect)(outputKey, inputKey);
 		if (!isSegmentInCanvas(segment, canvasRect)) {
 			continue;
 		}
@@ -177,7 +192,7 @@ const Connections: React.FC<{
 
 	const resizeRef = useRef(true);
 	const drawConnections = useCallback(() => {
-		if (!(context2D && canvasRef.current)) {
+		if (!(context2D && canvasRef.current && mainRef.current)) {
 			return;
 		}
 		context2D.clearRect(
@@ -195,6 +210,7 @@ const Connections: React.FC<{
 		const canvasRect = canvasRef.current.getBoundingClientRect();
 		for (const [id, segment] of connectionsToDraw(
 			state,
+			mainRef.current,
 			canvasRect,
 			mouse.elX,
 			mouse.elY,
