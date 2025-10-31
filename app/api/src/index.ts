@@ -19,7 +19,7 @@ const initDatabaseConnection = async () => {
         resolve(undefined);
       } catch (e) {
         tries += 1;
-        if (tries === 100) {
+        if (tries >= 100) {
           console.error("AppDataSource.initialize() failed", e);
           process.exit(1);
         } else {
