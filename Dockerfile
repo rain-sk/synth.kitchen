@@ -22,7 +22,13 @@ RUN npm uninstall @types/bcrypt @types/cors @types/express @types/node concurren
 
 
 FROM nginx:alpine AS serve
-RUN apk add --no-cache nodejs tini supervisor
+
+RUN apk add --no-cache nodejs tini python3 py3-pip
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install --no-cache-dir supervisor \
+    && ln -s /opt/venv/bin/supervisord /usr/local/bin/supervisord \
+    && ln -s /opt/venv/bin/supervisorctl /usr/local/bin/supervisorctl \
+    && apk del py3-pip
 
 COPY --from=build /src/api/node_modules /usr/src/api/node_modules
 COPY --from=build /src/api/build /usr/src/api
