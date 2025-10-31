@@ -13,7 +13,6 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				manualChunks: {
-					'cash-dom': ['cash-dom'],
 					'react-use': ['react-use'],
 					shared: ['synth.kitchen-shared'],
 					'modern-screenshot': ['modern-screenshot'],
