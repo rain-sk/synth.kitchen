@@ -77,6 +77,8 @@ export {
 export { randomId, randomName } from "./utils";
 
 export {
+  APP_STATE_VERSIONS,
+  APP_STATE_VERSION,
   connectionsStateNeedsUpgrade,
   moduleNeedsUpgrade,
   patchStateNeedsUpgrade,
