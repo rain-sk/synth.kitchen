@@ -23,6 +23,7 @@ import { SeedAdmin1758462225132 } from "./migration/1758462225132-SeedAdmin";
 import { SeedPatches1758462320300 } from "./migration/1758462320300-SeedPatches";
 import { RemoveNeedsUpgradeColumn1759697039708 } from "./migration/1759697039708-RemoveNeedsUpgradeColumn";
 import { AppInfo1761908857941 } from "./migration/1761908857941-AppInfo";
+import { v0_5_11_1762583925581 } from "./migration/1762583925581-v0.5.11";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -46,6 +47,7 @@ export const AppDataSource = new DataSource({
     SeedPatches1758462320300,
     RemoveNeedsUpgradeColumn1759697039708,
     AppInfo1761908857941,
+    v0_5_11_1762583925581,
   ],
   logging,
 });

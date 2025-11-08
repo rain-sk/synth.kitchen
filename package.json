@@ -1,15 +1,16 @@
 {
   "name": "synth.kitchen-api",
-  "version": "0.5.10",
+  "version": "0.5.11",
   "devDependencies": {
     "concurrently": "9.2.1",
     "cypress": "15.5.0",
     "typescript": "5.9.3"
   },
   "scripts": {
-    "dev": "npm i --no-audit && concurrently -k -n shared,api,web 'cd app/shared && npm run dev' 'cd app/api && npm run dev' 'cd app/web && npm run dev'",
+    "dev": "./ssh-tunnel.sh & tunnel=$!; trap \"kill $tunnel\" EXIT INT TERM; npm i --no-audit && concurrently -k -n shared,api,web 'cd app/shared && npm run dev' 'cd app/api && npm run dev' 'cd app/web && npm run dev'",
     "lint": "npm i --no-audit && concurrently -k -n shared,api,web 'cd app/shared && npm run lint' 'cd app/api && npm run lint' 'cd app/web && npm run lint'",
-    "test": "npx cypress run",
+    "test": "./ssh-tunnel.sh & tunnel=$!; trap \"kill $tunnel\" EXIT INT TERM; npx cypress run",
+    "migrate": "./ssh-tunnel.sh & tunnel=$!; trap \"kill $tunnel\" EXIT INT TERM; cd app/api && npm i && npm run migrate",
     "prepare": "concurrently -n shared,api,web 'cd app/shared && npm i --no-audit' 'cd app/api && npm i --no-audit' 'cd app/web && npm i --no-audit'",
     "pre-push": "npm ci && cd app/shared && npm run build && cd ../api && npm run build && cd ../web && npm run build"
   }

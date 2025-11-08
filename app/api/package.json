@@ -1,11 +1,11 @@
 {
   "name": "synth.kitchen-api",
-  "version": "0.5.10",
+  "version": "0.5.11",
   "description": "",
   "license": "ISC",
   "author": "",
   "scripts": {
-    "dev": "concurrently -k -n ssh,server,lint '../../ssh-tunnel.sh' 'npx tsx --env-file=.env --watch src/index.ts' 'npm:lint'",
+    "dev": "concurrently -k -n server,lint 'npx tsx --env-file=.env --watch src/index.ts' 'npm:lint'",
     "build": "node --env-file=.env -r ts-node/register build.ts",
     "build:prod": "npm run build",
     "postbuild:prod": "npm run migrate",

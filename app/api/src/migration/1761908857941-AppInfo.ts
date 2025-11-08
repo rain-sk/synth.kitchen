@@ -1,4 +1,3 @@
-import { APP_STATE_VERSIONS } from "synth.kitchen-shared";
 import { MigrationInterface, QueryRunner } from "typeorm";
 import { AppInfo } from "../entity/AppInfo";
 

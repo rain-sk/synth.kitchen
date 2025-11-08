@@ -92,8 +92,9 @@ const DefaultModuleStates: ModuleState = {
     peak: 100,
   },
   [ModuleType.FILTER]: {
-    version: "0.5.0",
+    version: "0.5.11",
     frequency: 500,
+    transpose: 0,
     detune: 0,
     Q: 0.3,
     gain: 1,

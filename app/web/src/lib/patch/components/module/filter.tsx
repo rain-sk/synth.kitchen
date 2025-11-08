@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import {
-	IAudioContext,
-	IAudioParam,
-	IBiquadFilterNode,
-	TBiquadFilterType,
-} from 'standardized-audio-context';
+import { IAudioParam, TBiquadFilterType } from 'standardized-audio-context';
 import {
 	FILTER_STATE_VERSIONS,
 	Module,
@@ -18,11 +13,11 @@ import { IoConnectors } from '../module-ui/io-connectors';
 import { NumberParameter } from '../module-ui/number-parameter';
 import { RadioParameter } from '../module-ui/radio-parameter';
 import { useNode } from './use-node';
+import { FilterNode } from '../../audio/nodes/filter';
 
-const filterStateFromNode = (
-	filter: IBiquadFilterNode<IAudioContext>,
-): ModuleState['FILTER'] => ({
+const filterStateFromNode = (filter: FilterNode): ModuleState['FILTER'] => ({
 	version: FILTER_STATE_VERSIONS[0],
+	transpose: filter.transpose.value,
 	frequency: filter.frequency.value,
 	detune: filter.detune.value,
 	Q: filter.Q.value,
@@ -30,10 +25,7 @@ const filterStateFromNode = (
 	type: filter.type,
 });
 
-const initFilter = (
-	filter: IBiquadFilterNode<IAudioContext>,
-	state?: ModuleState['FILTER'],
-) => {
+const initFilter = (filter: FilterNode, state?: ModuleState['FILTER']) => {
 	if (state) {
 		filter.frequency.setValueAtTime(state.frequency, audioContext.currentTime);
 		filter.detune.setValueAtTime(state.detune, audioContext.currentTime);
@@ -49,10 +41,11 @@ const initFilter = (
 export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 	module,
 }) => {
-	const { node, state, setState } = useNode<
-		IBiquadFilterNode<IAudioContext>,
-		ModuleType.FILTER
-	>(module, initFilter, () => audioContext.current.createBiquadFilter());
+	const { node, state, setState } = useNode<FilterNode, ModuleType.FILTER>(
+		module,
+		initFilter,
+		() => new FilterNode(),
+	);
 
 	const enabled = state !== undefined;
 
@@ -65,6 +58,20 @@ export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 			setState({
 				...state,
 				frequency,
+			});
+		},
+		[state],
+	);
+
+	const commitTransposeChange = useCallback(
+		(transpose: number) => {
+			node.transpose.linearRampToValueAtTime(
+				transpose,
+				audioContext.currentTime,
+			);
+			setState({
+				...state,
+				transpose,
 			});
 		},
 		[state],
@@ -125,6 +132,9 @@ export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 		if (module.state.frequency !== node.frequency.value) {
 			commitFrequencyChange(module.state.frequency);
 		}
+		if (module.state.transpose !== node.transpose.value) {
+			commitTransposeChange(module.state.transpose);
+		}
 		if (module.state.detune !== node.detune.value) {
 			commitDetuneChange(module.state.detune);
 		}
@@ -150,6 +160,10 @@ export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 		return node.frequency as IAudioParam;
 	}, [enabled]);
 
+	const transposeAccessor = useCallback(() => {
+		return node.transpose as IAudioParam;
+	}, [enabled]);
+
 	const detuneAccessor = useCallback(() => {
 		return node.detune as IAudioParam;
 	}, [enabled]);
@@ -162,9 +176,9 @@ export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 		return node.gain as IAudioParam;
 	}, [enabled]);
 
-	const input = useCallback(() => node, [enabled]);
+	const input = useCallback(() => node.input(), [enabled]);
 
-	const output = useCallback(() => node, [enabled]);
+	const output = useCallback(() => node.output(), [enabled]);
 
 	return enabled ? (
 		<>
@@ -200,7 +214,14 @@ export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 					commitValueCallback={commitFrequencyChange}
 				/>
 				<NumberParameter
-					// todo: add 'transpose'
+					moduleId={module.id}
+					paramAccessor={transposeAccessor}
+					name="transpose"
+					value={state.transpose}
+					unit="st"
+					commitValueCallback={commitTransposeChange}
+				/>
+				<NumberParameter
 					moduleId={module.id}
 					paramAccessor={detuneAccessor}
 					name="detune"
