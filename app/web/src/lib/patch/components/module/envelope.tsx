@@ -53,9 +53,9 @@ export const EnvelopeModule: React.FC<{
 
 	const enabled = state != undefined;
 
-	const sync = useCallback(() => node.sync(), [enabled]);
+	const trigger = useCallback(() => node.sync(), [enabled]);
 
-	const output = useCallback(() => node.gain(), [enabled]);
+	const control = useCallback(() => node.gain(), [enabled]);
 
 	const commitHoldChange = useCallback(
 		(hold: number) => {
@@ -169,8 +169,8 @@ export const EnvelopeModule: React.FC<{
 		<>
 			<IoConnectors
 				moduleId={module.id}
-				inputAccessors={{ sync }}
-				outputAccessors={{ output }}
+				inputAccessors={{ trigger }}
+				outputAccessors={{ control }}
 			/>
 
 			<section>

@@ -67,14 +67,14 @@ export const ClockModule: React.FC<{ module: Module<ModuleType.CLOCK> }> = ({
 
 	const sync = useCallback(() => node.node(), [enabled]);
 
-	const output = useCallback(() => node.node(), [enabled]);
+	const trigger = useCallback(() => node.node(), [enabled]);
 
 	return enabled ? (
 		<>
 			<IoConnectors
 				moduleId={module.id}
 				inputAccessors={{ sync }}
-				outputAccessors={{ output }}
+				outputAccessors={{ trigger }}
 			/>
 			<section>
 				<NumberParameter

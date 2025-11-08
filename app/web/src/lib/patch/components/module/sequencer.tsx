@@ -358,9 +358,9 @@ export const SequencerModule: React.FC<{
 
 	const enabled = state != undefined;
 
-	const clock = useCallback(() => node.node(), [enabled]);
+	const trigger = useCallback(() => node.node(), [enabled]);
 
-	const output = useCallback(() => node.node(), [enabled]);
+	const control = useCallback(() => node.node(), [enabled]);
 
 	const stepsAccessor = useCallback(() => node.steps, [enabled]);
 
@@ -402,8 +402,8 @@ export const SequencerModule: React.FC<{
 		<>
 			<IoConnectors
 				moduleId={module.id}
-				inputAccessors={{ clock }}
-				outputAccessors={{ output }}
+				inputAccessors={{ trigger }}
+				outputAccessors={{ control }}
 			/>
 			<section>
 				<NumberParameter

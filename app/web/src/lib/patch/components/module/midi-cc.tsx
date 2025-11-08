@@ -57,7 +57,7 @@ export const MidiCcModule: React.FC<{
 
 	const enabled = state != undefined;
 
-	const output = useCallback(() => node.output(), [enabled]);
+	const control = useCallback(() => node.output(), [enabled]);
 
 	const commitInputChange = useCallback(
 		(input: string) => {
@@ -171,7 +171,7 @@ export const MidiCcModule: React.FC<{
 			<IoConnectors
 				moduleId={module.id}
 				inputAccessors={{}}
-				outputAccessors={{ output }}
+				outputAccessors={{ control }}
 			/>
 			<section>
 				{inputs.length > 0 ? (

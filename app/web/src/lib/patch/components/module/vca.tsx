@@ -50,7 +50,7 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 
 	const input = useCallback(() => node.gain(), [enabled]);
 
-	const sync = useCallback(() => node.sync(), [enabled]);
+	const trigger = useCallback(() => node.sync(), [enabled]);
 
 	const output = useCallback(() => node.gain(), [enabled]);
 
@@ -166,7 +166,7 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 		<>
 			<IoConnectors
 				moduleId={module.id}
-				inputAccessors={{ input, sync }}
+				inputAccessors={{ input, trigger }}
 				outputAccessors={{ output }}
 			/>
 

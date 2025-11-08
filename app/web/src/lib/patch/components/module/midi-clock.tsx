@@ -48,7 +48,7 @@ export const MidiClockModule: React.FC<{
 
 	const enabled = state != undefined;
 
-	const output = useCallback(() => node.node(), [enabled]);
+	const trigger = useCallback(() => node.node(), [enabled]);
 
 	const commitInputChange = useCallback(
 		(input: string) => {
@@ -79,7 +79,7 @@ export const MidiClockModule: React.FC<{
 			<IoConnectors
 				moduleId={module.id}
 				inputAccessors={{}}
-				outputAccessors={{ output }}
+				outputAccessors={{ trigger }}
 			/>
 			<section>
 				{inputs.length > 0 ? (
