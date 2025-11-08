@@ -179,6 +179,7 @@ export const EnvelopeModule: React.FC<{
 					paramAccessor={holdAccessor}
 					name="hold"
 					value={state.hold}
+					unit="s"
 					commitValueCallback={commitHoldChange}
 				/>
 				<NumberParameter
@@ -186,6 +187,7 @@ export const EnvelopeModule: React.FC<{
 					paramAccessor={attackAccessor}
 					name="attack"
 					value={state.attack}
+					unit="s"
 					commitValueCallback={commitAttackChange}
 				/>
 				<NumberParameter
@@ -193,6 +195,7 @@ export const EnvelopeModule: React.FC<{
 					paramAccessor={decayAccessor}
 					name="decay"
 					value={state.decay}
+					unit="s"
 					commitValueCallback={commitDecayChange}
 				/>
 				<NumberParameter
@@ -207,9 +210,11 @@ export const EnvelopeModule: React.FC<{
 					paramAccessor={releaseAccessor}
 					name="release"
 					value={state.release}
+					unit="s"
 					commitValueCallback={commitReleaseChange}
 				/>
 				<NumberParameter
+					// todo: rename as 'mult'
 					moduleId={module.id}
 					paramAccessor={peakAccessor}
 					name="peak"

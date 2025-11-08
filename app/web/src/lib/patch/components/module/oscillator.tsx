@@ -201,6 +201,7 @@ export const OscillatorModule: React.FC<{
 					name="frequency"
 					value={state.frequency}
 					commitValueCallback={commitFrequencyChange}
+					unit="hz"
 				/>
 				<NumberParameter
 					moduleId={module.id}
@@ -208,6 +209,7 @@ export const OscillatorModule: React.FC<{
 					name="transpose"
 					value={state.transpose}
 					commitValueCallback={commitTransposeChange}
+					unit="st"
 				/>
 				<NumberParameter
 					moduleId={module.id}
@@ -215,6 +217,7 @@ export const OscillatorModule: React.FC<{
 					name="detune"
 					value={state.detune}
 					commitValueCallback={commitDetuneChange}
+					unit="ct"
 				/>
 			</section>
 		</>

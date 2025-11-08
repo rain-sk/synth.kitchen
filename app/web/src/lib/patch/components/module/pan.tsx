@@ -80,6 +80,7 @@ export const PanModule: React.FC<{ module: Module<ModuleType.PAN> }> = ({
 
 			<section>
 				<NumberParameter
+					// todo: add 'transpose'
 					moduleId={module.id}
 					paramAccessor={panAccessor}
 					name="pan"

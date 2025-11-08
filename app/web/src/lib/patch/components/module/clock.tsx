@@ -81,6 +81,7 @@ export const ClockModule: React.FC<{ module: Module<ModuleType.CLOCK> }> = ({
 					moduleId={module.id}
 					paramAccessor={tempoAccessor}
 					name="tempo"
+					unit="bpm"
 					value={state.tempo}
 					commitValueCallback={commitTempoChange}
 				/>

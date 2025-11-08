@@ -90,6 +90,8 @@ export const OutputModule: React.FC<{ module: Module<ModuleType.OUTPUT> }> = ({
 		return clear;
 	}, [oscContainer]);
 
+	// todo: rework Gain so it's more like working with a DAW mixer
+	// todo: rename what's called Gain to mult // they should both be Gain under the hood, but with different input units and different ways to think about their effect.
 	return enabled ? (
 		<>
 			<canvas ref={setOscContainer}></canvas>

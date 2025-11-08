@@ -174,6 +174,7 @@ export const CompressorModule: React.FC<{
 					paramAccessor={thresholdAccessor}
 					name="threshold"
 					value={state.threshold}
+					unit="dB"
 					commitValueCallback={commitThresholdChange}
 				/>
 				<NumberParameter
@@ -181,6 +182,7 @@ export const CompressorModule: React.FC<{
 					paramAccessor={kneeAccessor}
 					name="knee"
 					value={state.knee}
+					unit="dB"
 					commitValueCallback={commitKneeChange}
 				/>
 				<NumberParameter
@@ -195,6 +197,7 @@ export const CompressorModule: React.FC<{
 					paramAccessor={attackAccessor}
 					name="attack"
 					value={state.attack}
+					unit="s"
 					commitValueCallback={commitAttackChange}
 				/>
 				<NumberParameter
@@ -202,6 +205,7 @@ export const CompressorModule: React.FC<{
 					paramAccessor={releaseAccessor}
 					name="release"
 					value={state.release}
+					unit="s"
 					commitValueCallback={commitReleaseChange}
 				/>
 			</section>

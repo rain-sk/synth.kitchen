@@ -196,13 +196,16 @@ export const FilterModule: React.FC<{ module: Module<ModuleType.FILTER> }> = ({
 					paramAccessor={frequencyAccessor}
 					name="frequency"
 					value={state.frequency}
+					unit="hz"
 					commitValueCallback={commitFrequencyChange}
 				/>
 				<NumberParameter
+					// todo: add 'transpose'
 					moduleId={module.id}
 					paramAccessor={detuneAccessor}
 					name="detune"
 					value={state.detune}
+					unit="ct"
 					commitValueCallback={commitDetuneChange}
 				/>
 				<NumberParameter

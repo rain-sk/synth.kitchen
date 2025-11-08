@@ -175,6 +175,7 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 					moduleId={module.id}
 					paramAccessor={holdAccessor}
 					name="hold"
+					unit="s"
 					value={state.hold}
 					commitValueCallback={commitHoldChange}
 				/>
@@ -182,6 +183,7 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 					moduleId={module.id}
 					paramAccessor={attackAccessor}
 					name="attack"
+					unit="s"
 					value={state.attack}
 					commitValueCallback={commitAttackChange}
 				/>
@@ -189,6 +191,7 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 					moduleId={module.id}
 					paramAccessor={decayAccessor}
 					name="decay"
+					unit="s"
 					value={state.decay}
 					commitValueCallback={commitDecayChange}
 				/>
@@ -203,10 +206,12 @@ export const VcaModule: React.FC<{ module: Module<ModuleType.VCA> }> = ({
 					moduleId={module.id}
 					paramAccessor={releaseAccessor}
 					name="release"
+					unit="s"
 					value={state.release}
 					commitValueCallback={commitReleaseChange}
 				/>
 				<NumberParameter
+					// todo: rework this into Gain with dB as the unit
 					moduleId={module.id}
 					paramAccessor={peakAccessor}
 					name="peak"

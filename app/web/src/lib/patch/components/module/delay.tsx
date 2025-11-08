@@ -87,6 +87,7 @@ export const DelayModule: React.FC<{ module: Module<ModuleType.DELAY> }> = ({
 					paramAccessor={delayTimeAccessor}
 					name="time"
 					value={state.delayTime}
+					unit="s"
 					commitValueCallback={commitTimeChange}
 				/>
 			</section>
