@@ -45,7 +45,9 @@ export const NumberBox: React.FunctionComponent<{
 		(e: React.FocusEvent<HTMLInputElement>) => {
 			dispatch(patchActions.focusInputAction(id));
 			setTempValue(`${value}`);
+			setTimeout(() => {
 			e.target.select();
+			}, 10);
 		},
 		[id, setTempValue, value],
 	);
