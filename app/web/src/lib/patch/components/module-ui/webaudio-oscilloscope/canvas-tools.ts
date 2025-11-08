@@ -32,7 +32,7 @@ export function drawRawOsc(
 	const sliceWidth = width / data.length;
 	let x = 0;
 	for (let i = 0; i < data.length; i++) {
-		const v = data[i] / 128.0;
+		const v = (256.0 - data[i]) / 128.0;
 		const y = v * (height / 2);
 
 		if (i === 0) {
