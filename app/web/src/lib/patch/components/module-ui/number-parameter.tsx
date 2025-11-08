@@ -7,10 +7,11 @@ import { ParameterConnector } from './parameter-connector';
 export const NumberParameter: React.FunctionComponent<{
 	moduleId: string;
 	name: string;
+	unit?: string;
 	paramAccessor?: () => IAudioParam;
 	value: number;
 	commitValueCallback: (newValue: number) => void;
-}> = ({ moduleId, paramAccessor, name, value, commitValueCallback }) => {
+}> = ({ moduleId, paramAccessor, name, value, commitValueCallback, unit }) => {
 	return (
 		<section className="numparam" data-omit>
 			{paramAccessor && (
@@ -25,6 +26,7 @@ export const NumberParameter: React.FunctionComponent<{
 				name={name}
 				value={value}
 				commitValueCallback={commitValueCallback}
+				unit={unit ?? ''}
 			/>
 		</section>
 	);

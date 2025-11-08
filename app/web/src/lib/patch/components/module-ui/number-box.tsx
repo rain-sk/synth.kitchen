@@ -25,9 +25,10 @@ const makeId = () => randomId();
 
 export const NumberBox: React.FunctionComponent<{
 	name: string;
+	unit: string;
 	value: number;
 	commitValueCallback: (newValue: number) => void;
-}> = ({ name, value, commitValueCallback }) => {
+}> = ({ name, unit, value, commitValueCallback }) => {
 	const { dispatch } = useContext(PatchContext);
 
 	const [id] = useState(makeId);
@@ -46,7 +47,7 @@ export const NumberBox: React.FunctionComponent<{
 			dispatch(patchActions.focusInputAction(id));
 			setTempValue(`${value}`);
 			setTimeout(() => {
-			e.target.select();
+				e.target.select();
 			}, 10);
 		},
 		[id, setTempValue, value],
@@ -225,7 +226,7 @@ export const NumberBox: React.FunctionComponent<{
 			<input
 				id={id}
 				type="text"
-				value={tempValue ?? value}
+				value={tempValue ?? `${value}${unit}`}
 				onChange={onChange}
 				onFocus={onFocus}
 				onBlur={onBlur}
