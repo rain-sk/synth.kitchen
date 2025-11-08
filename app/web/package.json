@@ -8,7 +8,7 @@
 		"extendable-media-recorder-wav-encoder": "7.0.130",
 		"hhmmss": "1.0.0",
 		"is-callable": "1.2.7",
-		"js-confetti": "^0.13.1",
+		"js-confetti": "0.13.1",
 		"lz-string": "1.5.0",
 		"modern-screenshot": "4.6.6",
 		"react": "18.3.1",
@@ -32,11 +32,11 @@
 		"@types/react": "^18.3.24",
 		"@types/react-dom": "^18.3.7",
 		"@types/react-modal": "3.16.3",
-		"@vitejs/plugin-react": "5.0.4",
+		"@vitejs/plugin-react": "5.1.0",
 		"concurrently": "9.2.1",
 		"hsluv": "1.0.1",
 		"typescript": "5.9.3",
-		"vite": "7.1.11",
+		"vite": "7.2.2",
 		"vite-bundle-analyzer": "1.2.3"
 	}
 }
