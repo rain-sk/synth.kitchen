@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "concurrently -k -n server,lint 'npx tsx --env-file=.env --watch src/index.ts' 'npm:lint'",
     "build": "node --env-file=.env -r ts-node/register build.ts",
-    "build:prod": "npm run build",
+    "build:prod": "node -r ts-node/register build.ts",
     "postbuild:prod": "npm run migrate",
     "start": "node ./build/index.js",
     "orm": "node --trace-warnings --env-file=.env -r ts-node/register node_modules/typeorm/cli.js",
