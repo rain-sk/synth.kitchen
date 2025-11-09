@@ -5,16 +5,18 @@
   "license": "ISC",
   "author": "",
   "scripts": {
-    "dev": "concurrently -k -n server,lint 'npx tsx --env-file=.env --watch src/index.ts' 'npm:lint'",
     "build": "node --env-file=.env -r ts-node/register build.ts",
-    "build:prod": "node -r ts-node/register build.ts",
-    "postbuild:prod": "npm run migrate",
+    "dev": "concurrently -k -n server,lint 'npx tsx --env-file=.env --watch src/index.ts' 'npm:lint'",
+    "lint": "tsc --preserveWatchOutput --watch --noEmit",
     "start": "node ./build/index.js",
+    "migrate": "npm run orm -- migration:run -d ./src/data-source.ts",
     "orm": "node --trace-warnings --env-file=.env -r ts-node/register node_modules/typeorm/cli.js",
     "migration:generate": "npm run orm -- migration:generate -d ./src/data-source.ts ./src/migration/NewMigration",
     "migration:create": "npm run orm -- migration:create ./src/migration/NewMigration",
-    "migrate": "npm run orm -- migration:run -d ./src/data-source.ts",
-    "lint": "tsc --preserveWatchOutput --watch --noEmit"
+    "build:prod": "node -r ts-node/register build.ts",
+    "postbuild:prod": "npm run migrate:prod",
+    "migrate:prod": "npm run orm:prod -- migration:run -d ./src/data-source.ts",
+    "orm:prod": "node --trace-warnings -r ts-node/register node_modules/typeorm/cli.js"
   },
   "dependencies": {
     "bcrypt": "6.0.0",
