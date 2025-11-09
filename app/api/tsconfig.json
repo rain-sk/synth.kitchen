@@ -4,11 +4,12 @@
       "lib": [
          "es2022"
       ],
+      "outDir": "./build/",
+      "composite": true,
       "module": "commonjs",
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
       "experimentalDecorators": true,
-      // "strict": false,
       "skipLibCheck": true,
       "moduleResolution": "node"
    }

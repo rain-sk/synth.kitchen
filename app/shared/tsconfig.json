@@ -4,8 +4,8 @@
       "lib": [
          "es2022"
       ],
-      "outDir": "build",
-      "rootDir": "src",
+      "composite": true,
+      "outDir": "./build",
       "declaration": true,
       "emitDeclarationOnly": true,
       "module": "commonjs",
