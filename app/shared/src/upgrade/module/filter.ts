@@ -21,23 +21,25 @@ export function upgrade(
     };
   }
 
+  let skipUpgrade = false;
   switch (state.version) {
     case "0.5.0": {
       const detune = state.detune;
-      const newState: FILTER_STATE["0.5.11"] = {
+      const newState: FILTER_STATE["0.5.12"] = {
         ...state,
-        version: "0.5.11",
+        version: "0.5.12",
         transpose: (detune - (detune % 100)) / 100,
         detune: detune % 100,
       };
       state = newState;
+      skipUpgrade;
     }
     case "0.5.11": {
       const newState: FILTER_STATE["0.5.12"] = {
         ...state,
         version: "0.5.12",
       };
-      if (Math.abs(state.transpose) > 100) {
+      if (!skipUpgrade && Math.abs(state.transpose) > 100) {
         newState.transpose = state.transpose / 100;
       }
       state = newState;
