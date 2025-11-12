@@ -32,7 +32,7 @@ export function upgrade(
         detune: detune % 100,
       };
       state = newState;
-      skipUpgrade;
+      skipUpgrade = true;
     }
     case "0.5.11": {
       const newState: FILTER_STATE["0.5.12"] = {
