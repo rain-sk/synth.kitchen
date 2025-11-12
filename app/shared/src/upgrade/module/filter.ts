@@ -27,12 +27,23 @@ export function upgrade(
       const newState: FILTER_STATE["0.5.11"] = {
         ...state,
         version: "0.5.11",
-        transpose: detune - (detune % 100),
+        transpose: (detune - (detune % 100)) / 100,
         detune: detune % 100,
       };
       state = newState;
     }
-    case "0.5.11":
+    case "0.5.11": {
+      const newState: FILTER_STATE["0.5.12"] = {
+        ...state,
+        version: "0.5.12",
+      };
+      if (Math.abs(state.transpose) > 100) {
+        newState.transpose = state.transpose / 100;
+      }
+      state = newState;
+    }
+
+    case "0.5.12":
     case FILTER_STATE_VERSIONS[0]:
       return state;
   }
