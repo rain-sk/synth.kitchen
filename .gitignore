@@ -30,3 +30,4 @@ build/
 .env
 screenshots
 videos
+tsconfig.tsbuildinfo
