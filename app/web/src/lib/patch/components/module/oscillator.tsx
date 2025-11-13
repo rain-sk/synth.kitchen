@@ -34,6 +34,7 @@ const oscillatorStateFromNode = (
 	frequency: node.frequency.value,
 	transpose: node.transpose.value,
 	detune: node.detune.value,
+	peak: node.peak.value,
 	waveform: node.waveform,
 });
 
@@ -70,6 +71,19 @@ export const OscillatorModule: React.FC<{
 		OscillatorNode,
 		ModuleType.OSCILLATOR
 	>(module, initOscillator, () => new OscillatorNode());
+
+	const commitWaveformChange = useCallback(
+		(waveform: any) => {
+			if (node) {
+				node.waveform = waveform;
+				setState({
+					...state,
+					waveform,
+				});
+			}
+		},
+		[state],
+	);
 
 	const commitFrequencyChange = useCallback(
 		(frequency: number) => {
@@ -127,15 +141,13 @@ export const OscillatorModule: React.FC<{
 		[state],
 	);
 
-	const commitWaveformChange = useCallback(
-		(waveform: any) => {
-			if (node) {
-				node.waveform = waveform;
-				setState({
-					...state,
-					waveform,
-				});
-			}
+	const commitPeakChange = useCallback(
+		(peak: number) => {
+			node.peak.linearRampToValueAtTime(peak, audioContext.currentTime);
+			setState({
+				...state,
+				peak,
+			});
 		},
 		[state],
 	);
@@ -170,11 +182,14 @@ export const OscillatorModule: React.FC<{
 	const frequencyAccessor = useCallback(() => {
 		return node.frequency;
 	}, [enabled]);
+	const transposeAccessor = useCallback(() => {
+		return node.transpose;
+	}, [enabled]);
 	const detuneAccessor = useCallback(() => {
 		return node.detune;
 	}, [enabled]);
-	const transposeAccessor = useCallback(() => {
-		return node.transpose;
+	const peakAccessor = useCallback(() => {
+		return node.peak;
 	}, [enabled]);
 
 	const output = useCallback(() => node.output(), [enabled]);
@@ -218,6 +233,13 @@ export const OscillatorModule: React.FC<{
 					value={state.detune}
 					commitValueCallback={commitDetuneChange}
 					unit="ct"
+				/>
+				<NumberParameter
+					moduleId={module.id}
+					paramAccessor={peakAccessor}
+					name="peak"
+					value={state.peak}
+					commitValueCallback={commitPeakChange}
 				/>
 			</section>
 		</>

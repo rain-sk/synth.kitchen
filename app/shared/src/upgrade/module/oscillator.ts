@@ -41,7 +41,16 @@ export function upgrade(
       state = newState;
     }
 
-    case "0.5.2":
+    case "0.5.2": {
+      const newState: OSCILLATOR_STATE["0.5.11"] = {
+        ...state,
+        version: "0.5.11",
+        peak: 1,
+      };
+      state = newState;
+    }
+
+    case "0.5.11":
     case OSCILLATOR_STATE_VERSIONS[0]:
       return state;
   }
