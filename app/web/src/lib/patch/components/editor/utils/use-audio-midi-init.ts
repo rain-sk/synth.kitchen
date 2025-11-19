@@ -26,11 +26,8 @@ export const useAudioMidiInit = () => {
 		await initMidi();
 
 		initCalledRef.current = false;
-		if (audioInitialized()) {
-			setInitialized(true);
-		} else {
-			setStatus('initialization failed');
-		}
+		setInitialized(true);
+		setStatus('');
 	}, []);
 
 	return { initialized, status, initAudioMidi };

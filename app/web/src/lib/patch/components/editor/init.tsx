@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
-import { useEffectOnce } from '../module/use-effect-once';
 import { Key } from '../../constants/key';
 
 const onKeyDown = (init: () => void) => (e: KeyboardEvent) => {
@@ -28,8 +27,6 @@ const isMobile = () => {
 	return check;
 };
 
-let handleKeyDown: any;
-
 export const Init: React.FC<{
 	loading: boolean;
 	name: string;
@@ -37,18 +34,19 @@ export const Init: React.FC<{
 	init: () => void;
 }> = ({ loading, name, status, init }) => {
 	const mobile = isMobile();
+	const handleKeyDown = useRef(onKeyDown(init));
 
-	useEffectOnce(() => {
-		if (mobile) {
+	useEffect(() => {
+		if (mobile || !loading) {
 			return;
 		}
-		handleKeyDown = onKeyDown(init);
-		document.addEventListener('keydown', handleKeyDown);
+
+		document.addEventListener('keydown', handleKeyDown.current);
 
 		return () => {
-			document.removeEventListener('keydown', handleKeyDown);
+			document.removeEventListener('keydown', handleKeyDown.current);
 		};
-	});
+	}, [mobile, loading]);
 
 	const onClickStart = useCallback(() => {
 		init();
