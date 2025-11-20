@@ -1,17 +1,16 @@
-import { useCallback, useState } from 'react';
 import { Input, ModuleType, Output } from 'synth.kitchen-shared';
-import JSConfetti from 'js-confetti';
-
 import { PatchEditor } from '../patch/components/editor';
 import { IPatchAction, patchActions } from '../patch/state/actions';
-import { IPatchState } from '../patch/state/types/patch';
-import { connectionKey } from '../patch/state/connection';
+import JSConfetti from 'js-confetti';
 
 import './styles.css';
+import { IPatchState } from '../patch/state/types/patch';
+import { connectionKey } from '../patch/state/connection';
+import { useCallback, useState } from 'react';
 
 export type Preset = {
 	title: string;
-	content: () => React.JSX.Element;
+	content: () => JSX.Element;
 	setup?: IPatchAction[];
 	proceed: (state: IPatchState) => boolean;
 };

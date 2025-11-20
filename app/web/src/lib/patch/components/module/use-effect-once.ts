@@ -13,25 +13,26 @@ export const useEffectOnce = (effect: () => void | (() => void)) => {
 	}
 
 	useEffect(() => {
-		// only execute the effect the second time around
-		if (effectCalled.current) {
+		// only execute the effect first time around
+		if (!effectCalled.current) {
 			destroyFn.current = effectFn.current();
-		} else {
-			// this forces one render after the effect is run
-			setVal((val) => val + 1);
-
-			return () => {
-				// if the comp didn't render since the useEffect was called,
-				// we know it's the dummy React cycle
-				if (!rendered.current) {
-					return;
-				}
-
-				// otherwise this is not a dummy destroy, so call the destroy func
-				if (destroyFn.current) {
-					destroyFn.current();
-				}
-			};
+			effectCalled.current = true;
 		}
+
+		// this forces one render after the effect is run
+		setVal((val) => val + 1);
+
+		return () => {
+			// if the comp didn't render since the useEffect was called,
+			// we know it's the dummy React cycle
+			if (!rendered.current) {
+				return;
+			}
+
+			// otherwise this is not a dummy destroy, so call the destroy func
+			if (destroyFn.current) {
+				destroyFn.current();
+			}
+		};
 	}, []);
 };

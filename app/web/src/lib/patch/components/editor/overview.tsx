@@ -92,7 +92,7 @@ export const Overview: React.FC<{
 	const containerRef = useRef<HTMLDivElement>(undefined);
 	const scrubRef = useRef<HTMLDivElement>(undefined);
 	const [mainRef, setMainRef] = useState<RefObject<HTMLElement>>({
-		current: null as any,
+		current: null,
 	});
 	const [overviewSize, setOverviewSize] = useState({ width: 1, height: 1 });
 	const scroll = useScroll(mainRef);
@@ -118,7 +118,7 @@ export const Overview: React.FC<{
 		}, 16);
 	});
 
-	const delayedUpdateRef = useRef<any>(undefined);
+	const delayedUpdateRef = useRef<any>();
 	useEffect(() => {
 		const node = main();
 		if (node) {
