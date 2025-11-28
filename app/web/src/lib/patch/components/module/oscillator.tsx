@@ -34,7 +34,7 @@ const oscillatorStateFromNode = (
 	frequency: node.frequency.value,
 	transpose: node.transpose.value,
 	detune: node.detune.value,
-	peak: node.peak.value,
+	level: node.level.value,
 	waveform: node.waveform,
 });
 
@@ -56,7 +56,7 @@ const initOscillator = (
 			state.frequency,
 			audioContext.currentTime,
 		);
-		oscillator.peak.setValueAtTime(state.peak, audioContext.currentTime);
+		oscillator.level.setValueAtTime(state.level, audioContext.currentTime);
 		oscillator.waveform = state.waveform;
 	} else {
 		state = oscillatorStateFromNode(oscillator);
@@ -142,12 +142,12 @@ export const OscillatorModule: React.FC<{
 		[state],
 	);
 
-	const commitPeakChange = useCallback(
-		(peak: number) => {
-			node.peak.linearRampToValueAtTime(peak, audioContext.currentTime);
+	const commitLevelChange = useCallback(
+		(level: number) => {
+			node.level.linearRampToValueAtTime(level, audioContext.currentTime);
 			setState({
 				...state,
-				peak,
+				level,
 			});
 		},
 		[state],
@@ -171,8 +171,8 @@ export const OscillatorModule: React.FC<{
 		if (module.state.waveform !== node.waveform) {
 			commitWaveformChange(module.state.waveform);
 		}
-		if (module.state.peak !== node.peak.value) {
-			commitPeakChange(module.state.peak);
+		if (module.state.level !== node.level.value) {
+			commitLevelChange(module.state.level);
 		}
 	}, [
 		module.state,
@@ -192,8 +192,8 @@ export const OscillatorModule: React.FC<{
 	const detuneAccessor = useCallback(() => {
 		return node.detune;
 	}, [enabled]);
-	const peakAccessor = useCallback(() => {
-		return node.peak;
+	const levelAccessor = useCallback(() => {
+		return node.level;
 	}, [enabled]);
 
 	const output = useCallback(() => node.output(), [enabled]);
@@ -240,10 +240,10 @@ export const OscillatorModule: React.FC<{
 				/>
 				<NumberParameter
 					moduleId={module.id}
-					paramAccessor={peakAccessor}
-					name="peak"
-					value={state.peak}
-					commitValueCallback={commitPeakChange}
+					paramAccessor={levelAccessor}
+					name="level"
+					value={state.level}
+					commitValueCallback={commitLevelChange}
 				/>
 			</section>
 		</>

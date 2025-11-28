@@ -10,7 +10,7 @@ export class OscillatorNode {
 	private _oscillator = audioContext.current.createOscillator();
 	private _transposeInput = audioContext.current.createConstantSource();
 	private _tranposeGain = audioContext.current.createGain();
-	private _peakGain = audioContext.current.createGain();
+	private _gain = audioContext.current.createGain();
 
 	constructor() {
 		this._transposeInput.offset.setValueAtTime(0, audioContext.currentTime);
@@ -18,7 +18,7 @@ export class OscillatorNode {
 
 		this._transposeInput.connect(this._tranposeGain);
 		this._tranposeGain.connect(this._oscillator.detune);
-		this._oscillator.connect(this._peakGain);
+		this._oscillator.connect(this._gain);
 
 		this._transposeInput.start();
 		this._oscillator.start();
@@ -55,9 +55,9 @@ export class OscillatorNode {
 		return this._oscillator.detune;
 	}
 
-	get peak(): IAudioParam {
-		return this._peakGain.gain;
+	get level(): IAudioParam {
+		return this._gain.gain;
 	}
 
-	output = (): IAudioNode<IAudioContext> => this._peakGain;
+	output = (): IAudioNode<IAudioContext> => this._gain;
 }
