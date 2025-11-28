@@ -1,4 +1,4 @@
-export const APP_STATE_VERSIONS = ["0.5.11", "0.5.10"];
+export const APP_STATE_VERSIONS = ["0.5.12", "0.5.11", "0.5.10"];
 export const APP_STATE_VERSION = APP_STATE_VERSIONS[0];
 
 export { moduleNeedsUpgrade, upgradeModule } from "./module";

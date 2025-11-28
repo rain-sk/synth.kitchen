@@ -1,6 +1,6 @@
 {
   "name": "synth.kitchen-api",
-  "version": "0.5.11",
+  "version": "0.5.12",
   "devDependencies": {
     "concurrently": "9.2.1",
     "cypress": "15.6.0",
