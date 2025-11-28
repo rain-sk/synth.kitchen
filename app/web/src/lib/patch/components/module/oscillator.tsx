@@ -56,6 +56,7 @@ const initOscillator = (
 			state.frequency,
 			audioContext.currentTime,
 		);
+		oscillator.peak.setValueAtTime(state.peak, audioContext.currentTime);
 		oscillator.waveform = state.waveform;
 	} else {
 		state = oscillatorStateFromNode(oscillator);
@@ -169,6 +170,9 @@ export const OscillatorModule: React.FC<{
 		}
 		if (module.state.waveform !== node.waveform) {
 			commitWaveformChange(module.state.waveform);
+		}
+		if (module.state.peak !== node.peak.value) {
+			commitPeakChange(module.state.peak);
 		}
 	}, [
 		module.state,
