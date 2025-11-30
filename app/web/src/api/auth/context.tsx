@@ -191,30 +191,20 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 		[],
 	);
 
-	const contextValue = useMemo<AuthContextValue>(
-		() => ({
-			loading,
-			user,
-			login,
-			register,
-			logout,
-			deleteUser,
-			requestResetPassword,
-			resetPassword,
-		}),
-		[
-			loading,
-			user,
-			login,
-			register,
-			logout,
-			deleteUser,
-			requestResetPassword,
-			resetPassword,
-		],
-	);
-
 	return (
-		<AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+		<AuthContext.Provider
+			value={{
+				loading,
+				user,
+				login,
+				register,
+				logout,
+				deleteUser,
+				requestResetPassword,
+				resetPassword,
+			}}
+		>
+			{children}
+		</AuthContext.Provider>
 	);
 };
