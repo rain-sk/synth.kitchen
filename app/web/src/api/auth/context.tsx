@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
+import React, { PropsWithChildren, useCallback, useRef } from 'react';
 import type {
 	LoginResponse,
 	RegisterResponse,

@@ -1,5 +1,5 @@
 import { useLocalStorage } from 'react-use';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { navigate } from 'wouter/use-browser-location';
 
 import { fetchWithJwt } from '../../lib/shared/utils';
