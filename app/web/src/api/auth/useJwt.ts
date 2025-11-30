@@ -7,33 +7,12 @@ import { apiBase } from '../uri';
 
 export const useJwt = () => {
 	const syncing = useRef(false);
-	const [storedJwt, setStoredJwt] = useLocalStorage<string | undefined>(
-		'jwt',
-		undefined,
-	);
-	const [jwt, setJwt] = useState<string | undefined>(storedJwt);
+	const [jwt, setJwt] = useLocalStorage<string | undefined>('jwt', undefined);
 
-	const loggingOut = useRef(false);
 	const logout = useCallback(() => {
-		loggingOut.current = true;
-		setStoredJwt(undefined);
 		setJwt(undefined);
 		navigate('/login');
-	}, [setJwt, setStoredJwt]);
-
-	useEffect(() => {
-		if (loggingOut.current) {
-			if (jwt === undefined && storedJwt === undefined) {
-				loggingOut.current = false;
-			}
-		} else if (jwt !== undefined) {
-			if (jwt !== storedJwt) {
-				setStoredJwt(jwt);
-			}
-		} else if (storedJwt !== undefined) {
-			setJwt(storedJwt);
-		}
-	}, [jwt, storedJwt]);
+	}, [setJwt]);
 
 	const sync = useCallback(async () => {
 		if (jwt !== undefined) {
