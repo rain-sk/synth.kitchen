@@ -99,7 +99,7 @@ export const LoginRoute: React.FC = () => {
 		redirect ? (
 			<Redirect to={redirect} />
 		) : (
-			<Redirect to="/account" />
+			<Redirect to="/dashboard" />
 		)
 	) : (
 		<main>
