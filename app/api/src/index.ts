@@ -10,9 +10,11 @@ import { SavedPatchState } from "./entity/SavedPatchState";
 import { server } from "./server";
 import { AppInfo } from "./entity/AppInfo";
 
-const initDatabaseConnection = async () => {
-  console.log("Initiating database connection:");
-  return new Promise(async (resolve) => {
+const NUM_RETRIES = 100;
+
+const initDatabaseConnection = async () =>
+  new Promise(async (resolve) => {
+    console.log("Initiating database connection:");
     let tries = 0;
     const tryInit = async () => {
       try {
@@ -21,88 +23,93 @@ const initDatabaseConnection = async () => {
         resolve(undefined);
       } catch (e) {
         tries += 1;
-        if (tries >= 100) {
-          console.error("AppDataSource.initialize() failed", e);
-          process.exit(1);
-        } else {
+        if (tries < NUM_RETRIES) {
           setTimeout(tryInit, 100);
+        } else {
+          console.error(
+            `AppDataSource.initialize() failed after ${NUM_RETRIES} attempts.`
+          );
+          throw e;
         }
       }
     };
     tryInit();
   });
-};
 
 const verifyAppStateVersion = async () => {
-  try {
-    const appInfoRepo = AppDataSource.getRepository(AppInfo);
-    const version = await appInfoRepo.findOneOrFail({
-      where: { key: "version" },
-    });
-    if (version.data === APP_STATE_VERSION) {
-      console.log(`App version: ${APP_STATE_VERSION}`);
+  console.log(`App version: ${APP_STATE_VERSION}`);
+
+  const version = await AppDataSource.getRepository(AppInfo).findOneOrFail({
+    where: { key: "version" },
+  });
+
+  if (version.data !== APP_STATE_VERSION) {
+    throw new Error(
+      `App version (${APP_STATE_VERSION}) does not match database (${version.data}).`
+    );
+  }
+};
+
+const cleanupStaleData = async () =>
+  await AppDataSource.getRepository(SavedPatchState).delete({ patch: null });
+
+const upgradePatchStates = async () =>
+  await AppDataSource.transaction(async (manager) => {
+    const stateRepository = manager.getRepository(SavedPatchState);
+
+    const statesToUpgrade = (await stateRepository.find()).filter((entry) =>
+      patchStateNeedsUpgrade(entry.state)
+    );
+
+    const numberOfStatesToUpgrade = statesToUpgrade.length;
+    if (numberOfStatesToUpgrade === 0) {
       return;
     }
 
-    console.error(
-      `App version (${APP_STATE_VERSION}) does not match the version in the database (${version.data}). Do you need to migrate?`
-    );
-  } catch (e) {
-    console.error("Unable to confirm app state version.", e);
-  }
-  process.exit(1);
-};
-
-const cleanupStaleData = async () => {
-  const stateRepository = AppDataSource.getRepository(SavedPatchState);
-  const res = await stateRepository.delete({ patch: null });
-  return res;
-};
-
-const upgradePatchStates = async () => {
-  const stateRepository = AppDataSource.getRepository(SavedPatchState);
-
-  const statesToUpgrade = (await stateRepository.find()).filter((entry) =>
-    patchStateNeedsUpgrade(entry.state)
-  );
-
-  const numberOfStatesToUpgrade = statesToUpgrade.length;
-  if (numberOfStatesToUpgrade > 0) {
     console.log(`Upgrading ${numberOfStatesToUpgrade} saved patch states`);
+
     const repo = AppDataSource.getRepository(SavedPatchState);
-    let remainingUpgrades = 0;
     for (const entry of statesToUpgrade) {
       entry.state = upgradePatchState(entry.state);
-      await repo.save(entry);
-      if (patchStateNeedsUpgrade(entry.state)) {
-        remainingUpgrades++;
-      }
     }
 
-    console.log(
-      `Upgraded ${numberOfStatesToUpgrade - remainingUpgrades} patch states`
+    const remainingUpgrades = statesToUpgrade.filter((entry) =>
+      patchStateNeedsUpgrade(entry.state)
     );
-    if (remainingUpgrades > 0) {
-      console.log(`${remainingUpgrades} upgrades pending.`);
+    if (remainingUpgrades.length > 0) {
+      throw new Error(
+        `Failed to upgrade all patch states: ${remainingUpgrades.length} upgrades failed`,
+        {
+          cause: { remainingUpgrades },
+        }
+      );
     }
-  }
-};
 
-const executePendingUpgrades = async () => {
-  await upgradePatchStates();
+    for (const entry of statesToUpgrade) {
+      await repo.save(entry);
+    }
+
+    console.log(`Upgraded ${numberOfStatesToUpgrade} patch states`);
+  });
+
+const initServer = () => {
+  server.listen(apiPort, (e) => {
+    if (e) {
+      throw e;
+    }
+    console.log(`API server is online: ${apiHost}`);
+  });
 };
 
 initDatabaseConnection()
   .then(verifyAppStateVersion)
   .then(cleanupStaleData)
-  .then(executePendingUpgrades)
-  .then(() => {
-    server.listen(apiPort, async (e) => {
-      if (e) {
-        console.error("app.listen() failed", e);
-        process.exit(1);
-      }
-
-      console.log(`API server is online: ${apiHost}`);
-    });
+  .then(upgradePatchStates)
+  .then(initServer)
+  .catch((e) => {
+    console.error(e);
+    if (e.cause) {
+      console.error(JSON.stringify(e.cause));
+    }
+    process.exit(1);
   });
