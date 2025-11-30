@@ -11,7 +11,7 @@ export const useJwt = () => {
 		'jwt',
 		undefined,
 	);
-	const [jwt, setJwt] = useState<string | undefined>(undefined);
+	const [jwt, setJwt] = useState<string | undefined>(storedJwt);
 
 	const loggingOut = useRef(false);
 	const logout = useCallback(() => {
