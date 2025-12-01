@@ -96,7 +96,7 @@ const connectionsInRange = (
 ): Set<string> => {
 	const keysInRange = new Set<string>();
 
-	const main = document.getElementById('main');
+	const main = document.getElementById('patch');
 	const mainRect = main?.getBoundingClientRect();
 	rect.x += mainRect?.x ?? 0;
 	const scrollX = main?.scrollLeft ?? 0;

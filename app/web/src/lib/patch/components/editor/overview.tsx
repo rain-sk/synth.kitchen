@@ -12,7 +12,7 @@ import { Module, ModulePosition } from 'synth.kitchen-shared';
 import { recomputeOverview } from './utils/recompute-overview';
 import { convertRemToPixels, useRefBackedState } from '../../../shared/utils';
 
-const main = () => document.getElementById('main');
+const main = () => document.getElementById('patch');
 const point5Rem = convertRemToPixels(0.5);
 
 const computeVisibleBounds = (

@@ -218,7 +218,7 @@ export const ModuleCanvasBackdrop: React.FC<
 			value={containerRef as React.RefObject<HTMLElement>}
 		>
 			<main
-				id="main"
+				id="patch"
 				className={classNames.join(' ')}
 				ref={(main) => {
 					if (main !== containerRef.current) {

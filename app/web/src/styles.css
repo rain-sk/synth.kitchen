@@ -219,8 +219,12 @@ main {
 	top: 2.5rem;
 	left: 0;
 	right: 0;
-	bottom: 2.5rem;
+	bottom: 0;
 	overflow: scroll;
+}
+
+main#patch {
+	bottom: 2.5rem;
 }
 
 button {

@@ -18,4 +18,4 @@ export const makeGetter = (id: string) => () => {
 		return document.getElementById(id);
 	}
 };
-export const getMain = makeGetter('main');
+export const getMain = makeGetter('patch');

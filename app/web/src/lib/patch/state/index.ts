@@ -35,7 +35,7 @@ export const outputModule: () => Module = () => ({
 });
 
 const outputModulePosition = (): ModulePosition => {
-	const main = document.getElementById('main');
+	const main = document.getElementById('patch');
 	if (!main) {
 		return [400, 200];
 	}

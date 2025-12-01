@@ -12,7 +12,7 @@ import {
 	useSyncedUpdateRef,
 } from '../../../shared/utils';
 
-const main = () => document.getElementById('main');
+const main = () => document.getElementById('patch');
 
 const position = (
 	button: HTMLButtonElement,

@@ -268,7 +268,7 @@ export const ModuleWrapper: React.FC<
 	);
 
 	useEffect(() => {
-		const main = document.getElementById('main');
+		const main = document.getElementById('patch');
 		if (main && container) {
 			if (singleSelected) {
 				const scrollTop = main?.scrollTop ?? 0;

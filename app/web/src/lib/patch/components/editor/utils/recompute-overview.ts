@@ -7,7 +7,7 @@ const rems20 = convertRemToPixels(20);
 export const recomputeOverview = async (
 	sortedModules: [Module, ModulePosition][],
 ) => {
-	const main = document.getElementById('main');
+	const main = document.getElementById('patch');
 	if (!main) {
 		return {
 			width: 1,
