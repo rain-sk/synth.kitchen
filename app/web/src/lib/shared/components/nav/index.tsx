@@ -50,7 +50,7 @@ export const Nav: React.FC = () => {
 				</ul>
 			</section>
 			<ul className="nav-links">
-				{authenticated ? (
+				{loading ? null : authenticated ? (
 					<>
 						<li>
 							<Link to="/account">Account</Link>
