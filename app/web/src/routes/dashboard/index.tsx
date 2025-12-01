@@ -8,26 +8,27 @@ import { PatchPreviews } from './patch-previews';
 
 import './styles.css';
 import { DashboardContext } from './context';
-import { navigate } from 'wouter/use-browser-location';
+import { Loader } from '../../lib/shared/components/loader';
+import { useRefBackedState } from '../../lib/shared/utils';
 
 export const DashboardRoute = () => {
 	useTitle('synth.kitchen | dashboard');
-	const { user } = useContext(AuthContext);
+	const { user, loading } = useContext(AuthContext);
 
 	const { getPatches } = useApi();
 	const [patches, setPatches] = useState<any[]>([]);
-	const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		if (!user) {
-			navigate('/login');
-		}
-	}, [user, loading]);
 	const [error, setError] = useState<string | null>(null);
 
+	const [loadingPatchesRef, loadingPatches, setLoadingPatches] =
+		useRefBackedState(false);
 	const refresh = useCallback(() => {
+		if (loadingPatchesRef.current) {
+			return;
+		}
 		const fetchPatches = async () => {
 			if (user && user.id) {
+				setLoadingPatches(true);
 				try {
 					const userPatches = await getPatches({ creatorId: user?.id ?? '' });
 					setPatches(userPatches || []);
@@ -35,7 +36,7 @@ export const DashboardRoute = () => {
 					setError('Failed to load patches');
 					console.error(err);
 				} finally {
-					setLoading(false);
+					setLoadingPatches(false);
 				}
 			}
 		};
@@ -45,7 +46,7 @@ export const DashboardRoute = () => {
 	useEffect(refresh, [refresh]);
 
 	if (loading) return <div>Loading...</div>;
-	else if (!user) return <Redirect to="/login" replace />;
+	else if (!user && !loading) return <Redirect to="/login" replace />;
 	if (error) return <div>Error: {error}</div>;
 
 	return (
@@ -53,8 +54,10 @@ export const DashboardRoute = () => {
 			<main>
 				<h1>Dashboard</h1>
 				<h2>Your Patches</h2>
-				{patches.length === 0 ? (
-					<p>No patches found.</p>
+				{loading || loadingPatches ? (
+					<Loader />
+				) : patches.length === 0 ? (
+					<p>No saved patches.</p>
 				) : (
 					<PatchPreviews patches={patches} />
 				)}
