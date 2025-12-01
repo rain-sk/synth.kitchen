@@ -1,8 +1,10 @@
 import {
   PatchInfo,
   PatchQuery,
+  patchStateNeedsUpgrade,
   randomId,
   randomName,
+  upgradePatchState,
 } from "synth.kitchen-shared";
 
 import { AppDataSource } from "../data-source";
@@ -171,6 +173,10 @@ export class PatchService {
       patch.slug = slug;
     }
 
+    if (patchStateNeedsUpgrade(patch.state.state)) {
+      patch.state.state = upgradePatchState(patch.state.state);
+    }
+
     const state = AppDataSource.getRepository(SavedPatchState).create({
       state: { ...patch.state.state, name: patch.name },
     });
@@ -218,6 +224,11 @@ export class PatchService {
         where: { id: existingPatch.state.id },
       });
       const newState = stateRepository.create(patchData.state);
+
+      if (patchStateNeedsUpgrade(newState.state)) {
+        newState.state = upgradePatchState(newState.state);
+      }
+
       newState.id = randomId();
       newState.ancestor = existingState;
       newState.patch = existingPatch;
