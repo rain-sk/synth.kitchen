@@ -13,8 +13,8 @@ const getVerificationParams = (
   if ("id" in info) {
     where = "email_verification_request.id = :id";
     params = { id: info.id };
-  } else if ("email" in info) {
-    where = "email_verification_request.user = :userId";
+  } else if ("userId" in info) {
+    where = "email_verification_request.userId = :userId";
     params = { userId: info.userId };
   }
   return [where, params];
@@ -52,7 +52,7 @@ export class VerificationService {
       console.error(e);
     }
 
-    verification = await this.getVerification({ userId: user.id });
+    verification = await this.getVerification({ user: user.id });
 
     if (verification && verification.id) {
       await sendVerificationEmail(user.email, {
