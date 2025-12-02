@@ -9,8 +9,8 @@ import { AppDataSource } from "./data-source";
 import { SavedPatchState } from "./entity/SavedPatchState";
 import { server } from "./server";
 import { AppInfo } from "./entity/AppInfo";
-import { User } from "./entity/User";
-import { VerificationService } from "./services/verification.service";
+// import { User } from "./entity/User";
+// import { VerificationService } from "./services/verification.service";
 
 const NUM_RETRIES = 100;
 
