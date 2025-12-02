@@ -4,7 +4,6 @@
       "lib": [
          "es2022"
       ],
-      "composite": true,
       "outDir": "build",
       "rootDir": "src",
       "declaration": true,

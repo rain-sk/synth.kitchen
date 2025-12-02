@@ -16,16 +16,5 @@
   },
   "include": [
     "cypress/**/*.ts"
-  ],
-  "references": [
-    {
-      "path": "./app/shared/tsconfig.json",
-    },
-    {
-      "path": "./app/api/tsconfig.json",
-    },
-    {
-      "path": "./app/web/tsconfig.json",
-    }
   ]
 }

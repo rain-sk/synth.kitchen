@@ -13,7 +13,6 @@ esbuild
     target: "esnext",
     format: "esm",
     color: true,
-    tsconfig: "./tsconfig.json",
   })
   .then(() => console.log("⚡ Bundle build complete ⚡"))
   .catch(() => {
