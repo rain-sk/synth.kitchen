@@ -12,7 +12,7 @@ export class EmailVerificationRequest {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @OneToOne(() => User, (user) => user.emailVerificationRequest)
+  @OneToOne(() => User)
   @JoinColumn()
   user: User;
 

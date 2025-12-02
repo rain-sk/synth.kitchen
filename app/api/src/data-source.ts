@@ -25,6 +25,7 @@ import { RemoveNeedsUpgradeColumn1759697039708 } from "./migration/1759697039708
 import { AppInfo1761908857941 } from "./migration/1761908857941-AppInfo";
 import { v0_5_11_1762583925581 } from "./migration/1762583925581-v0.5.11";
 import { v0_5_12_1762583925582 } from "./migration/1762583925582-v0.5.12";
+import { FixEmailVerification1764659512400 } from "./migration/1764659512400-FixEmailVerification";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -50,6 +51,7 @@ export const AppDataSource = new DataSource({
     AppInfo1761908857941,
     v0_5_11_1762583925581,
     v0_5_12_1762583925582,
+    FixEmailVerification1764659512400,
   ],
   logging,
 });

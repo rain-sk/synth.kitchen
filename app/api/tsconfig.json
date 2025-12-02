@@ -10,6 +10,7 @@
       "forceConsistentCasingInFileNames": true,
       "experimentalDecorators": true,
       "skipLibCheck": true,
-      "moduleResolution": "node"
+      "moduleResolution": "node",
+      "emitDecoratorMetadata": true,
    }
 }

@@ -37,6 +37,9 @@ export class VerificationService {
   static initiateVerification = async (user: User) => {
     let verification: EmailVerificationRequest | undefined;
 
+    const verifications = AppDataSource.getRepository(EmailVerificationRequest);
+    await verifications.delete({ user });
+
     try {
       await AppDataSource.transaction(async (manager) => {
         const verifications = manager.getRepository(EmailVerificationRequest);
@@ -44,15 +47,13 @@ export class VerificationService {
         user = await users.findOneOrFail({ where: { email: user.email } });
         const verification = verifications.create();
         verification.user = user;
-        user.emailVerificationRequest = verification;
         await verifications.save(verification);
-        await users.save(user);
       });
     } catch (e) {
       console.error(e);
     }
 
-    verification = await this.getVerification({ user: user.id });
+    verification = await this.getVerification({ userId: user.id });
 
     if (verification && verification.id) {
       await sendVerificationEmail(user.email, {

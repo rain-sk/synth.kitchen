@@ -37,8 +37,4 @@ export class User implements UserInfoAuthenticated {
 
   @OneToMany(() => Patch, (patch) => patch.creator)
   patches: Promise<Patch[]>;
-
-  @OneToOne(() => EmailVerificationRequest, (request) => request.user)
-  @Column({ type: "uuid", default: null })
-  emailVerificationRequest: EmailVerificationRequest;
 }
