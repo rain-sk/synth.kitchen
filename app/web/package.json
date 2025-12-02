@@ -18,7 +18,7 @@
 		"standardized-audio-context": "25.3.77",
 		"synth.kitchen-shared": "file:../shared",
 		"webmidi": "3.1.14",
-		"wouter": "3.7.1"
+		"wouter": "3.8.0"
 	},
 	"scripts": {
 		"build": "tsc && vite build",
@@ -36,7 +36,7 @@
 		"concurrently": "9.2.1",
 		"hsluv": "1.0.1",
 		"typescript": "5.9.3",
-		"vite": "7.2.2",
+		"vite": "7.2.6",
 		"vite-bundle-analyzer": "1.2.3"
 	}
 }
