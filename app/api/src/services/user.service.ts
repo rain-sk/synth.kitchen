@@ -63,11 +63,16 @@ export class UserService {
     emailOrUsername: string,
     password: string
   ): Promise<User | void> => {
-    let user = await this.getUser({
-      email: emailOrUsername,
-    });
-    if (!user) {
-      user = await this.getUser({ username: emailOrUsername });
+    let user: User;
+    try {
+      user = await this.getUser({
+        email: emailOrUsername,
+      });
+      if (!user) {
+        user = await this.getUser({ username: emailOrUsername });
+      }
+    } catch (e) {
+      console.error(e);
     }
 
     if (user && (await compare(password, user.password))) {

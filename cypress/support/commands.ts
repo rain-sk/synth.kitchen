@@ -15,8 +15,9 @@ Cypress.Commands.add("register" as any, (email: string, password: string) => {
   cy.visit("/register");
   cy.get("#email").focus().type(email);
   cy.get("#password").focus().type(password);
-  cy.get("#confirm-password").focus().type(`${password}{enter}`);
-  cy.wait(2000);
+  cy.get("#confirm-password").focus().type(`${password}`);
+  cy.get("#submit").trigger("click");
+  cy.wait(10000);
   cy.location().then((loc) => {
     if (loc.pathname.toString().includes("login")) {
       (cy as any).login(email, password);
@@ -42,5 +43,6 @@ Cypress.Commands.add("delete" as any, (email: string, password: string) => {
     }
   });
   cy.get("#delete").trigger("click");
-  cy.get("#password").focus().type(`${password}{enter}`);
+  cy.get("#password").focus().type(`${password}`);
+  cy.get("#confirm-delete").trigger("click");
 });

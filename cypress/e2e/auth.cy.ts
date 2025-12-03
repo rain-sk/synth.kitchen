@@ -18,8 +18,9 @@
       cy.visit("/register");
       cy.get("#email").focus().type(testEmail);
       cy.get("#password").focus().type(testPassword);
-      cy.get("#confirm-password").focus().type(`${testPassword}{enter}`);
-      cy.wait(2000);
+      cy.get("#confirm-password").focus().type(testPassword);
+      cy.get("#submit").trigger("click");
+      cy.wait(10000);
 
       cy.url().should("include", "account");
       cy.getAllLocalStorage().then((result) => {
@@ -32,8 +33,10 @@
       cy.visit("/logout").wait(100);
 
       cy.get("#email").focus().type(testEmail);
-      cy.get("#password").focus().type(`${testPassword}{enter}`);
-      cy.wait(1000);
+      cy.get("#password").focus().type(testPassword);
+      cy.get("#submit").trigger("click");
+
+      cy.wait(10000);
 
       cy.url().should("include", "account");
       cy.getAllLocalStorage().then((result) => {

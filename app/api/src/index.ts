@@ -94,12 +94,12 @@ const upgradePatchStates = async () =>
     console.log(`Upgraded ${numberOfStatesToUpgrade} patch states`);
   });
 
-const sendPendingVerificationEmails = async () => {
-  const users = AppDataSource.getRepository(User);
-  for (const user of await users.find({ where: { verified: false } })) {
-    VerificationService.initiateVerification(user);
-  }
-};
+// const sendPendingVerificationEmails = async () => {
+//   const users = AppDataSource.getRepository(User);
+//   for (const user of await users.find({ where: { verified: false } })) {
+//     VerificationService.initiateVerification(user);
+//   }
+// };
 
 const initServer = () => {
   server.listen(apiPort, (e) => {
@@ -114,7 +114,7 @@ initDatabaseConnection()
   .then(verifyAppStateVersion)
   .then(cleanupStaleData)
   .then(upgradePatchStates)
-  .then(sendPendingVerificationEmails)
+  // .then(sendPendingVerificationEmails)
   .then(initServer)
   .catch((e) => {
     console.error(e);

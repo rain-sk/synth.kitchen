@@ -133,7 +133,7 @@ export const LoginRoute: React.FC = () => {
 						</>
 					)}
 					{error ? <p id="email-error">{error}</p> : null}
-					<button disabled={formSubmitted ? true : false}>
+					<button id="submit" disabled={formSubmitted ? true : false}>
 						{registration ? 'register' : 'login'}
 					</button>
 				</form>
