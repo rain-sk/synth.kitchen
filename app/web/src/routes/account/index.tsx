@@ -1,8 +1,9 @@
 import { useCallback, useContext, useState } from 'react';
+import { useTitle } from 'react-use';
 import { Redirect } from 'wouter';
 
 import { AuthContext } from '../../api/auth/context';
-import { useTitle } from 'react-use';
+import { Loader } from '../../lib/shared/components/loader';
 
 export const AccountRoute: React.FC = () => {
 	useTitle('synth.kitchen | account');
@@ -34,7 +35,9 @@ export const AccountRoute: React.FC = () => {
 
 	return (
 		<>
-			{user || loading ? (
+			{loading ? (
+				<Loader />
+			) : user ? (
 				<main>
 					<h2>account</h2>
 
