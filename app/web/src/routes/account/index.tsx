@@ -44,8 +44,8 @@ export const AccountRoute: React.FC = () => {
 					<article>
 						<h3>your info</h3>
 
-						<p>Email: {user?.email}</p>
-						<p>Verified: {user?.verified ? 'verified' : 'not verified'}</p>
+						<p>Email: {user.email}</p>
+						<p>{user.verified ? 'Verified' : 'Not verified'}</p>
 					</article>
 					<article>
 						<h3>settings</h3>
