@@ -33,6 +33,26 @@ export class VerificationService {
       console.error(error);
     }
   };
+  static verify = async (key: string) => {
+    try {
+      const verification = await this.getVerification({ id: key });
+
+      const verifications = AppDataSource.getRepository(
+        EmailVerificationRequest
+      );
+      const users = AppDataSource.getRepository(User);
+      const user = await users.findOneOrFail({
+        where: { id: verification.user.id },
+      });
+      user.verified = true;
+      await users.save(user);
+      const result = await verifications.delete({ id: key });
+      return result.affected === 1;
+    } catch (error) {
+      console.error(error);
+    }
+    return false;
+  };
 
   static initiateVerification = async (user: User) => {
     let verification: EmailVerificationRequest | undefined;
@@ -56,10 +76,14 @@ export class VerificationService {
     verification = await this.getVerification({ userId: user.id });
 
     if (verification && verification.id) {
-      await sendVerificationEmail(user.email, {
-        appOrigin,
-        verificationKey: verification.id,
-      });
+      try {
+        await sendVerificationEmail(user.email, {
+          appOrigin,
+          verificationKey: verification.id,
+        });
+      } catch (e) {
+        console.error(e);
+      }
     } else {
       console.error("Failed to initiate account verification.");
     }

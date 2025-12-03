@@ -12,3 +12,4 @@ AuthRouter.post("/login", AuthController.login);
 AuthRouter.post("/register", AuthController.register);
 AuthRouter.post("/reset-password", AuthController.resetPassword);
 AuthRouter.post("/reset-password-request", AuthController.requestResetPassword);
+AuthRouter.get("/verify/:key", AuthController.verify);

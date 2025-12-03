@@ -20,6 +20,7 @@ type AuthContextValue = {
 	deleteUser: (password: string) => Promise<true | void>;
 	requestResetPassword: (email: string) => Promise<Response>;
 	resetPassword: (key: string, password: string) => Promise<Response>;
+	verifyAccount: (key: string) => Promise<Response>;
 };
 
 const defaultContextValue: AuthContextValue = {
@@ -30,6 +31,7 @@ const defaultContextValue: AuthContextValue = {
 	deleteUser: async () => {},
 	requestResetPassword: async () => ({} as Response),
 	resetPassword: async () => ({} as Response),
+	verifyAccount: async () => ({} as Response),
 };
 
 export const AuthContext =
@@ -191,6 +193,14 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 		[],
 	);
 
+	const verifyAccount = useCallback(
+		async (key: string) =>
+			await fetch(`${apiBase}/auth/verify/${key}`, {
+				method: 'get',
+			}),
+		[],
+	);
+
 	return (
 		<AuthContext.Provider
 			value={{
@@ -202,6 +212,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 				deleteUser,
 				requestResetPassword,
 				resetPassword,
+				verifyAccount,
 			}}
 		>
 			{children}

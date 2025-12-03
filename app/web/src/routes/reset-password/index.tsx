@@ -125,7 +125,7 @@ const RequestPasswordResetLink: React.FC = () => {
 export const ResetPasswordRoute = () => {
 	const [match, params] = useRoute('/reset-password/:key');
 
-	if (match && params?.key) {
+	if (match && params.key) {
 		return <NewPasswordForm resetKey={params.key} />;
 	} else {
 		return <RequestPasswordResetLink />;

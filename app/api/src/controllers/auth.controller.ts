@@ -7,6 +7,8 @@ import { ValidationError } from "../services/validate/registration";
 
 import { UserService } from "../services/user.service";
 import { PasswordService } from "../services/password.service";
+import { isUUID } from "class-validator";
+import { VerificationService } from "../services/verification.service";
 
 export class AuthController {
   static getUser = async (req: JwtRequest, res) => {
@@ -120,6 +122,22 @@ export class AuthController {
     } catch (error) {
       console.error(error);
       res.status(500).send("");
+    }
+  };
+
+  static verify = async (req, res) => {
+    const key = req.params.key;
+
+    if (!key || !isUUID(key, 4)) {
+      res.status(400).send();
+      return;
+    }
+
+    try {
+      res.status(200).json({ success: await VerificationService.verify(key) });
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
     }
   };
 

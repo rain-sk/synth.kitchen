@@ -75,13 +75,17 @@ const makeEmailer = <
         text: mutableText,
         html: mutableHtml,
       };
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(info);
-        }
-      });
+      try {
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(info);
+          }
+        });
+      } catch (e) {
+        reject(e);
+      }
     });
 };
 
@@ -99,7 +103,7 @@ Visit the URL below to verify your synth.kitchen account:
 <html>
 <body>
   <h1>Verify your account</h1>
-  <p><a href=":appOrigin/account/verify/:verificationKey">Click to verify your account</a>.</p>
+  <p><a href=":appOrigin/account/verify/:verificationKey">Click to&nbsp;verify your account</a>.</p>
   <p>Or copy the link below and paste it into your browser:</p>
   <p><b><i>:appOrigin/account/verify/:verificationKey</i></b></p>
 </body>
