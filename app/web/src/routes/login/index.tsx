@@ -16,6 +16,7 @@ import {
 import { useTitle } from 'react-use';
 
 import './styles.css';
+import { Loader } from '../../lib/shared/components/loader';
 
 const validate = (email: string, password: string): string | undefined => {
 	email + password;
@@ -23,7 +24,7 @@ const validate = (email: string, password: string): string | undefined => {
 };
 
 export const LoginRoute: React.FC = () => {
-	const { user, login, register } = useContext(AuthContext);
+	const { user, login, register, loading } = useContext(AuthContext);
 	const [searchParams] = useSearchParams();
 	const path = usePathname();
 	const registration = useMemo(() => {
@@ -95,7 +96,9 @@ export const LoginRoute: React.FC = () => {
 		[registration, email, password, confirmPassword],
 	);
 
-	return user ? (
+	return loading ? (
+		<Loader />
+	) : user ? (
 		redirect ? (
 			<Redirect to={redirect} />
 		) : (
