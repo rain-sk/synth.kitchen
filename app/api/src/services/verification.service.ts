@@ -28,6 +28,7 @@ export class VerificationService {
       return await AppDataSource.getRepository(EmailVerificationRequest)
         .createQueryBuilder("email_verification_request")
         .where(where, params)
+        .leftJoinAndSelect("email_verification_request.user", "user")
         .getOneOrFail();
     } catch (error) {
       console.error(error);
@@ -46,7 +47,7 @@ export class VerificationService {
       });
       user.verified = true;
       await users.save(user);
-      const result = await verifications.delete({ id: key });
+      const result = await verifications.delete(verification);
       return result.affected === 1;
     } catch (error) {
       console.error(error);
