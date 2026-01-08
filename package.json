@@ -3,7 +3,7 @@
   "version": "0.5.12",
   "devDependencies": {
     "concurrently": "9.2.1",
-    "cypress": "15.6.0",
+    "cypress": "15.8.2",
     "typescript": "5.9.3"
   },
   "scripts": {
