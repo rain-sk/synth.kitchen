@@ -1,6 +1,6 @@
 {
   "name": "synth.kitchen-api",
-  "version": "0.5.12",
+  "version": "0.5.13",
   "description": "",
   "license": "ISC",
   "author": "",
@@ -25,23 +25,23 @@
     "crypto-js": "4.2.0",
     "express": "5.2.1",
     "express-jwt": "8.5.1",
-    "jsonwebtoken": "9.0.2",
-    "nodemailer": "7.0.11",
-    "pg": "8.16.3",
+    "jsonwebtoken": "9.0.3",
+    "nodemailer": "7.0.12",
+    "pg": "8.17.1",
     "pg-hstore": "2.3.4",
     "reflect-metadata": "0.2.2",
     "server-name-gen": "1.0.2",
     "synth.kitchen-shared": "file:../shared",
-    "typeorm": "0.3.27",
+    "typeorm": "0.3.28",
     "uuid": "13.0.0"
   },
   "devDependencies": {
     "@types/bcrypt": "6.0.0",
     "@types/cors": "2.8.19",
     "@types/express": "5.0.6",
-    "@types/node": "24.10.1",
+    "@types/node": "^24.10.1",
     "concurrently": "9.2.1",
-    "esbuild": "0.27.0",
+    "esbuild": "0.27.2",
     "ts-node": "10.9.2",
     "typescript": "5.9.3"
   }

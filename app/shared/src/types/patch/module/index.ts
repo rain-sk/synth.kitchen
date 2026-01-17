@@ -124,7 +124,7 @@ const DefaultModuleStates: ModuleState = {
     input: "",
     note: "all",
   },
-  [ModuleType.NOISE]: { version: "0.5.0" },
+  [ModuleType.NOISE]: { version: "0.5.13", level: 1 },
   [ModuleType.GATE]: {
     version: "0.5.0",
     gate: 0.5,
@@ -188,7 +188,7 @@ const DefaultModuleStates: ModuleState = {
 };
 
 export const defaultModuleState = <T extends ModuleType>(
-  type: T
+  type: T,
 ): ModuleState[T] => {
   return DefaultModuleStates[type];
 };

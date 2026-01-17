@@ -1,10 +1,19 @@
-import { IAudioContext, IAudioWorkletNode } from 'standardized-audio-context';
+import {
+	IAudioContext,
+	IAudioNode,
+	IAudioParam,
+} from 'standardized-audio-context';
 
 import { audioContext } from '..';
 import { audioWorkletNodeFactory } from './audio-worklet-node-factory';
 
 export class NoiseNode {
 	private _node = audioWorkletNodeFactory('noise');
+	private _gain = audioContext.current.createGain();
+
+	constructor() {
+		this._node.connect(this._gain);
+	}
 
 	disconnect = () => {
 		this._node.parameters
@@ -12,5 +21,9 @@ export class NoiseNode {
 			?.setValueAtTime(0, audioContext.currentTime);
 	};
 
-	node = (): IAudioWorkletNode<IAudioContext> => this._node;
+	output = (): IAudioNode<IAudioContext> => this._gain;
+
+	get level(): IAudioParam {
+		return this._gain.gain;
+	}
 }
