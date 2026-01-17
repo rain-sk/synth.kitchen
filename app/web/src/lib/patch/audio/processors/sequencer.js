@@ -77,7 +77,7 @@ class Sequencer extends AudioWorkletProcessor {
 				framesSinceLastTick = 0;
 				const frameSteps = Math.min(
 					Math.max(2, Math.round(stepsIsConstant ? steps[0] : steps[i])),
-					8,
+					16,
 				);
 				step = (step + 1) % frameSteps;
 			} else if (framesSinceLastTick >= 0) {
