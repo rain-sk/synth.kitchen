@@ -25,6 +25,6 @@ ServerStatusRouter.get("/health", async (req, res) => {
 
 ServerStatusRouter.get("/status", async (req, res) => {
   res.status(200).json({
-    pendingStateUpgrades: pendingStateUpgrades(),
+    pendingStateUpgrades: await pendingStateUpgrades(),
   });
 });
