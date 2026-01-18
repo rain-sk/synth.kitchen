@@ -2,14 +2,14 @@ import express from "express";
 import cors from "cors";
 
 import { AuthRouter } from "./routes/auth.router";
-import { HealthCheckRouter } from "./routes/health.router";
 import { PatchRouter } from "./routes/patch.router";
+import { ServerStatusRouter } from "./routes/status.router";
 import { TokenRouter } from "./routes/token.router";
 
 import { apiBase, appOrigin, healthRoute } from "./env";
 
 const ServerRouter = express.Router();
-ServerRouter.use(`/${healthRoute}`, HealthCheckRouter);
+ServerRouter.use(`/${healthRoute}`, ServerStatusRouter);
 ServerRouter.use("/auth", AuthRouter);
 ServerRouter.use("/patch", PatchRouter);
 ServerRouter.use("/token", TokenRouter);
