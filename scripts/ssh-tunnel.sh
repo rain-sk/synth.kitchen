@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ENV_FILE="$(dirname "$0")/.env"
+ENV_FILE="$(dirname "$0")/../.env"
 
 if [ ! -f "$ENV_FILE" ]; then
   echo "Error: .env file not found at $ENV_FILE"

@@ -7,11 +7,22 @@
     "typescript": "5.9.3"
   },
   "scripts": {
-    "dev": "./ssh-tunnel.sh & tunnel=$!; trap \"kill $tunnel\" EXIT INT TERM; npm i --no-audit && concurrently -k -n shared,api,web 'cd app/shared && npm run dev' 'cd app/api && npm run dev' 'cd app/web && npm run dev'",
-    "lint": "npm i --no-audit && concurrently -k -n shared,api,web 'cd app/shared && npm run lint' 'cd app/api && npm run lint' 'cd app/web && npm run lint'",
-    "test": "npx cypress run",
-    "migrate": "./ssh-tunnel.sh & tunnel=$!; trap \"kill $tunnel\" EXIT INT TERM; cd app/api && npm i && npm run migrate",
+    "build:shared": "cd app/shared && npm run build",
+    "build:api": "cd app/api && npm run build",
+    "build:web": "cd app/web && npm run build",
+    "build": "npm ci && concurrently 'npm run build:shared' 'npm run build:api' 'npm run build:web'",
+    "dev:shared": "cd app/shared && npm run dev",
+    "dev:api": "cd app/api && npm run dev",
+    "dev:web": "cd app/web && npm run dev",
+    "dev": "npm i --no-audit && concurrently -k -n shared,api,web 'npm run dev:shared' 'npm run dev:api' 'npm run dev:web'",
+    "lint:shared": "cd app/shared && npm run lint",
+    "lint:api": "cd app/api && npm run lint",
+    "lint:web": "cd app/web && npm run lint",
+    "lint": "npm i --no-audit && concurrently -k -n shared,api,web 'npm run lint:shared' 'npm run lint:api' 'npm run lint:web'",
+    "migrate": "npm run tunnel & tunnel=$!; trap \"kill $tunnel\" EXIT INT TERM; cd app/api && npm i && npm run migrate",
     "prepare": "concurrently -n shared,api,web 'cd app/shared && npm i --no-audit' 'cd app/api && npm i --no-audit' 'cd app/web && npm i --no-audit'",
-    "pre-push": "npm ci && cd app/shared && npm run build && cd ../api && npm run build && cd ../web && npm run build"
+    "pre-push": "npm ci && npm run build && ./scripts/e2e.sh",
+    "test": "npx cypress run -q",
+    "tunnel": "./scripts/ssh-tunnel.sh"
   }
 }

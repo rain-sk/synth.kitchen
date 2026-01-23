@@ -16,12 +16,16 @@
   });
 
   describe("authenticated index route", () => {
-    beforeEach(() => {
+    before(() => {
       (cy as any).register(testEmail, testPassword);
     });
 
-    afterEach(() => {
-      (cy as any).delete(testPassword);
+    beforeEach(() => {
+      (cy as any).login(testEmail, testPassword);
+    });
+
+    after(() => {
+      (cy as any).delete(testEmail, testPassword);
     });
 
     it("redirects authorized users to /dashboard", () => {
