@@ -51,14 +51,9 @@ export const validateRegistration =
       error.username.push("Username is already in use.");
     }
 
-    const invalidPasswordRegExp = new RegExp(
-      /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*)$/
-    );
-    const invalidPassword = invalidPasswordRegExp.test(password);
+    const invalidPassword = password.length < 8;
     if (invalidPassword) {
-      error.password.push(
-        "Password must be at least 8 characters, and must contain at least one number, one lowercase and one uppercase letter."
-      );
+      error.password.push("Password must be at least 8 characters.");
     }
 
     if (
