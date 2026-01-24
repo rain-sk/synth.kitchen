@@ -60,6 +60,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 	const registerRef = useRef(false);
 	const register = useCallback(
 		async (email: string, password: string) => {
+			let response: RegisterResponse | undefined;
 			if (registerRef.current) {
 				return;
 			}
@@ -69,7 +70,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
 				};
-				const response = await fetch(`${apiBase}/auth/register`, {
+				response = await fetch(`${apiBase}/auth/register`, {
 					headers,
 					method: 'post',
 					body: JSON.stringify({
@@ -89,6 +90,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 				console.error(e);
 			}
 			registerRef.current = false;
+			return response;
 		},
 		[setJwt],
 	);

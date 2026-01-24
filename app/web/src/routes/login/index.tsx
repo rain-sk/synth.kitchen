@@ -90,6 +90,8 @@ export const LoginRoute: React.FC = () => {
 								if ('jwt' in registerResponse) {
 									navigate('/');
 								} else if ('errors' in registerResponse) {
+									console.log(registerResponse.errors);
+									setErrors(registerResponse.errors);
 								}
 							}
 						}
@@ -129,6 +131,9 @@ export const LoginRoute: React.FC = () => {
 		.map((array) => array.length)
 		.reduce((collector, value) => collector + value);
 
+	const showFormErrors = errors.form.length > 0;
+	const showSpecificErrors = errorsCount > errors.form.length;
+
 	return loading ? (
 		<Loader />
 	) : user ? (
@@ -143,36 +148,51 @@ export const LoginRoute: React.FC = () => {
 				<h2>{registration ? 'register' : 'login'}</h2>
 				<form onSubmit={handleSubmit}>
 					{errorsCount > 0 && (
-						<>
-							<p>There are {errorsCount} errors.</p>
-							<ol>
-								{errors.email.map((error) => (
-									<li key={error}>
-										<a href="#email">{error}</a>
-									</li>
-								))}
-								{errors.username.map((error) => (
-									<li key={error}>
-										<a href="#username">{error}</a>
-									</li>
-								))}
-								{errors.password.map((error) => (
-									<li key={error}>
-										<a href="#password">{error}</a>
-									</li>
-								))}
-								{errors.confirmPassword.map((error) => (
-									<li key={error}>
-										<a href="#confirm-password">{error}</a>
-									</li>
-								))}
-							</ol>
-							<ul>
-								{errors.form.map((error) => (
-									<li key={error}>{error}</li>
-								))}
-							</ul>
-						</>
+						<section
+							tabIndex={0}
+							ref={(errorsSection) => errorsSection?.focus()}
+						>
+							<p>
+								There{' '}
+								{errorsCount > 1 ? (
+									<>are {errorsCount} errors</>
+								) : (
+									<>is an error</>
+								)}
+								.
+							</p>
+							{showFormErrors && (
+								<ul>
+									{errors.form.map((error) => (
+										<li key={error}>{error}</li>
+									))}
+								</ul>
+							)}
+							{showSpecificErrors && (
+								<ol>
+									{errors.email.map((error) => (
+										<li key={error}>
+											<a href="#email">{error}</a>
+										</li>
+									))}
+									{errors.username.map((error) => (
+										<li key={error}>
+											<a href="#username">{error}</a>
+										</li>
+									))}
+									{errors.password.map((error) => (
+										<li key={error}>
+											<a href="#password">{error}</a>
+										</li>
+									))}
+									{errors.confirmPassword.map((error) => (
+										<li key={error}>
+											<a href="#confirm-password">{error}</a>
+										</li>
+									))}
+								</ol>
+							)}
+						</section>
 					)}
 					<label htmlFor="email">email address</label>
 					<input

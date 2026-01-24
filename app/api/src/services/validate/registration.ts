@@ -35,6 +35,8 @@ export const validateRegistration =
       email: [] as string[],
       username: [] as string[],
       password: [] as string[],
+      confirmPassword: [] as string[],
+      form: [] as string[],
     };
 
     if (
@@ -59,7 +61,9 @@ export const validateRegistration =
     if (
       error.email.length > 0 ||
       error.username.length > 0 ||
-      error.password.length > 0
+      error.password.length > 0 ||
+      error.confirmPassword.length > 0 ||
+      error.form.length > 0
     ) {
       throw new ValidationError(error);
     }
