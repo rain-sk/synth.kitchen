@@ -54,14 +54,12 @@ export class UserService {
         .where(where, params)
         .getOneOrFail();
       return user;
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (_) {}
   };
 
   static login = async (
     emailOrUsername: string,
-    password: string
+    password: string,
   ): Promise<User | void> => {
     let user: User;
     try {
@@ -135,7 +133,7 @@ export class UserService {
         })) as PatchInfo[];
 
         await Promise.all(
-          userPatches.map((patch) => patchStates.delete({ patch }))
+          userPatches.map((patch) => patchStates.delete({ patch })),
         );
         await Promise.all(userPatches.map((patch) => patches.delete(patch.id)));
 

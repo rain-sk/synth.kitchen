@@ -16,9 +16,12 @@ import { useEffectOnce } from '../../lib/patch/components/module/use-effect-once
 
 import './styles.css';
 
-const validate = (email: string, password: string): string | undefined => {
-	email + password;
-	return undefined;
+type FormErrors = {
+	email: string[];
+	username: string[];
+	password: string[];
+	confirmPassword: string[];
+	form: string[];
 };
 
 export const LoginRoute: React.FC = () => {
@@ -58,24 +61,47 @@ export const LoginRoute: React.FC = () => {
 		[],
 	);
 
-	const [error, setError] = useState<string | undefined>();
+	const [errors, setErrors] = useState<FormErrors>({
+		email: [],
+		username: [],
+		password: [],
+		confirmPassword: [],
+		form: [],
+	});
 
 	const handleSubmit = useCallback(
 		async (e: FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
-			let error = validate(email.trim(), password);
-			if (email && password && !error) {
+			if (email && password) {
 				setFormSubmitted(true);
 				if (registration) {
 					try {
 						if (password !== confirmPassword) {
-							error = 'Passwords do not match.';
-						} else if (await register(email.trim(), password)) {
-							navigate('/');
+							setErrors({
+								email: [],
+								username: [],
+								password: [],
+								confirmPassword: ['Passwords do not match.'],
+								form: [],
+							});
+						} else {
+							const registerResponse = await register(email.trim(), password);
+							if (registerResponse) {
+								if ('jwt' in registerResponse) {
+									navigate('/');
+								} else if ('errors' in registerResponse) {
+								}
+							}
 						}
 					} catch (e) {
 						console.error(e);
-						error = 'Registration failed, please try again.';
+						setErrors({
+							email: [],
+							username: [],
+							password: [],
+							confirmPassword: [],
+							form: ['Registration failed, please try again.'],
+						});
 					}
 				} else {
 					try {
@@ -84,15 +110,24 @@ export const LoginRoute: React.FC = () => {
 						}
 					} catch (e) {
 						console.error(e);
-						error = 'Login failed, please try again.';
+						setErrors({
+							email: [],
+							username: [],
+							password: [],
+							confirmPassword: [],
+							form: ['Login failed, please try again.'],
+						});
 					}
 				}
 				setFormSubmitted(false);
 			}
-			setError(error);
 		},
 		[registration, email, password, confirmPassword],
 	);
+
+	const errorsCount = Object.values(errors)
+		.map((array) => array.length)
+		.reduce((collector, value) => collector + value);
 
 	return loading ? (
 		<Loader />
@@ -107,6 +142,38 @@ export const LoginRoute: React.FC = () => {
 			<section>
 				<h2>{registration ? 'register' : 'login'}</h2>
 				<form onSubmit={handleSubmit}>
+					{errorsCount > 0 && (
+						<>
+							<p>There are {errorsCount} errors.</p>
+							<ol>
+								{errors.email.map((error) => (
+									<li key={error}>
+										<a href="#email">{error}</a>
+									</li>
+								))}
+								{errors.username.map((error) => (
+									<li key={error}>
+										<a href="#username">{error}</a>
+									</li>
+								))}
+								{errors.password.map((error) => (
+									<li key={error}>
+										<a href="#password">{error}</a>
+									</li>
+								))}
+								{errors.confirmPassword.map((error) => (
+									<li key={error}>
+										<a href="#confirm-password">{error}</a>
+									</li>
+								))}
+							</ol>
+							<ul>
+								{errors.form.map((error) => (
+									<li key={error}>{error}</li>
+								))}
+							</ul>
+						</>
+					)}
 					<label htmlFor="email">email address</label>
 					<input
 						id="email"
@@ -132,7 +199,6 @@ export const LoginRoute: React.FC = () => {
 							/>
 						</>
 					)}
-					{error ? <p id="email-error">{error}</p> : null}
 					<button id="submit" disabled={formSubmitted ? true : false}>
 						{registration ? 'register' : 'login'}
 					</button>

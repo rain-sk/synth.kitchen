@@ -1,8 +1,8 @@
 import ReactDOM from 'react-dom/client';
 import React from 'react';
 
-import { AuthContextProvider } from './api/auth/context';
 import { SynthKitchen } from './app';
+import { AuthContextProvider } from './api/auth/context-provider';
 
 import './reset.css';
 import './styles.css';
