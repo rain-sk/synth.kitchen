@@ -24,6 +24,7 @@ export class TokenController {
     const token = authorization.split("Bearer ")[1];
     if (!token) {
       res.status(401).send("Malformed authorization header.");
+      return;
     }
 
     try {
