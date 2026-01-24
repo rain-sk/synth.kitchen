@@ -1,6 +1,6 @@
-export type LoginResponse = { jwt?: string; register?: true };
+export type LoginResponse = { jwt: string } | { register: true };
 
-export type FormErrors = {
+type FormErrors = {
   email: string[];
   username: string[];
   password: string[];

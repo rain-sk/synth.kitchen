@@ -1,5 +1,6 @@
 import React from 'react';
 import type {
+	LoginResponse,
 	RegisterResponse,
 	UserInfoAuthenticated,
 } from 'synth.kitchen-shared';
@@ -7,7 +8,7 @@ import type {
 type AuthContextValue = {
 	loading: boolean;
 	user?: UserInfoAuthenticated;
-	login: (email: string, password: string) => Promise<true | void>;
+	login: (email: string, password: string) => Promise<LoginResponse | void>;
 	register: (
 		email: string,
 		password: string,

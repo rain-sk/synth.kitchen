@@ -1,11 +1,11 @@
 import React, { PropsWithChildren, useCallback, useRef } from 'react';
+import { LoginResponse, RegisterResponse } from 'synth.kitchen-shared';
+
+import { AuthContext } from './context';
 import { useJwt } from './useJwt';
 import { useUser } from './useUser';
-import { LoginResponse, RegisterResponse } from 'synth.kitchen-shared';
 import { apiBase } from '../uri';
 import { fetchWithJwt } from '../../lib/shared/utils';
-import { navigate } from 'wouter/use-hash-location';
-import { AuthContext } from './context';
 
 export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 	children,
@@ -19,14 +19,14 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 			if (loginRef.current) {
 				return;
 			}
-
+			let response: LoginResponse | undefined;
 			loginRef.current = true;
 			try {
 				const headers = {
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
 				};
-				const response: LoginResponse = await fetch(`${apiBase}/auth/login`, {
+				response = await fetch(`${apiBase}/auth/login`, {
 					headers,
 					method: 'post',
 					body: JSON.stringify({
@@ -44,15 +44,12 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 						throw new Error(await res.text());
 					}
 				});
-				setJwt(response.jwt);
-				if (response.register) {
-					loginRef.current = false;
-					return response.register;
-				}
+				setJwt(response && 'jwt' in response ? response.jwt : undefined);
 			} catch (e) {
 				console.error(e);
 			}
 			loginRef.current = false;
+			return response;
 		},
 		[setJwt],
 	);
@@ -113,8 +110,6 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 			}).then(async (res) => res.json());
 
 			if (response.success) {
-				navigate('/logout');
-			} else {
 				location.reload();
 			}
 		} catch (error) {

@@ -88,7 +88,7 @@ export const LoginRoute: React.FC = () => {
 							const registerResponse = await register(email.trim(), password);
 							if (registerResponse) {
 								if ('jwt' in registerResponse) {
-									navigate('/');
+									location.reload();
 								} else if ('errors' in registerResponse) {
 									console.log(registerResponse.errors);
 									setErrors(registerResponse.errors);
@@ -107,8 +107,11 @@ export const LoginRoute: React.FC = () => {
 					}
 				} else {
 					try {
-						if (await login(email.trim(), password)) {
-							navigate('/register', { replace: true });
+						const loginResponse = await login(email.trim(), password);
+						if (loginResponse) {
+							if ('register' in loginResponse) {
+								navigate('/register', { replace: true });
+							}
 						}
 					} catch (e) {
 						console.error(e);
