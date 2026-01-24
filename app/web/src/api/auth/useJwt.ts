@@ -33,9 +33,13 @@ export const useJwt = () => {
 
 	const checkToken = useCallback(async () => {
 		if (!syncing.current && jwt) {
-			const response = await fetchWithJwt(`${apiBase}/token`);
-			if (!syncing.current && response.status !== 200) {
-				await sync();
+			try {
+				const response = await fetchWithJwt(`${apiBase}/token`);
+				if (!syncing.current && response.status !== 200) {
+					await sync();
+				}
+			} catch (error) {
+				console.error(error);
 			}
 		}
 	}, [jwt, sync]);
