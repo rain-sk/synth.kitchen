@@ -90,7 +90,6 @@ export const LoginRoute: React.FC = () => {
 								if ('jwt' in registerResponse) {
 									location.reload();
 								} else if ('errors' in registerResponse) {
-									console.log(registerResponse.errors);
 									setErrors(registerResponse.errors);
 								}
 							}
