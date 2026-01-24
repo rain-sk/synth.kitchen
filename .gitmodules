@@ -1,0 +1,3 @@
+[submodule "submodules/server-name-gen"]
+	path = submodules/server-name-gen
+	url = git@github.com:rain-sk/server-name-gen.git
