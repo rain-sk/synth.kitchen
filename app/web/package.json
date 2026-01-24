@@ -15,6 +15,7 @@
 		"react-dom": "^18.3.1",
 		"react-modal": "3.16.3",
 		"react-use": "17.6.0",
+		"server-name-gen": "file:../../submodules/server-name-gen",
 		"standardized-audio-context": "25.3.77",
 		"synth.kitchen-shared": "file:../shared",
 		"webmidi": "3.1.14",

@@ -18,7 +18,7 @@
     "lint": "tsc --preserveWatchOutput --watch"
   },
   "peerDependencies": {
-    "server-name-gen": "1.0.2",
+    "server-name-gen": "file:../../submodules/server-name-gen",
     "uuid": "13.0.0"
   },
   "devDependencies": {

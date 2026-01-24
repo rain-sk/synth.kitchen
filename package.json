@@ -20,7 +20,7 @@
     "lint:web": "cd app/web && npm run lint",
     "lint": "npm i --no-audit && concurrently -k -n shared,api,web 'npm run lint:shared' 'npm run lint:api' 'npm run lint:web'",
     "migrate": "npm run tunnel & tunnel=$!; trap \"kill $tunnel\" EXIT INT TERM; cd app/api && npm i && npm run migrate",
-    "prepare": "concurrently -n shared,api,web 'cd app/shared && npm i --no-audit' 'cd app/api && npm i --no-audit' 'cd app/web && npm i --no-audit'",
+    "prepare": "git submodule update && concurrently -n shared,api,web 'cd app/shared && npm i --no-audit' 'cd app/api && npm i --no-audit' 'cd app/web && npm i --no-audit'",
     "pre-push": "npm ci && npm run build && ./scripts/e2e.sh",
     "test": "npx cypress run -q",
     "tunnel": "./scripts/ssh-tunnel.sh"
