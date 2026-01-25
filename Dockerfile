@@ -3,7 +3,7 @@ FROM node:alpine AS build
 
 WORKDIR /src
 COPY app/ ./app/
-COPY submodules/ ./submodules/
+# COPY submodules/ ./submodules/
 COPY package.json ./package.json
 COPY package-lock.json ./package-lock.json
 
