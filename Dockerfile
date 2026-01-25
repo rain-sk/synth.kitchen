@@ -2,22 +2,16 @@ FROM node:alpine AS build
 
 
 WORKDIR /src
-COPY app/shared/ ./shared/
-COPY app/api/ ./api/
-COPY app/web/ ./web/
+COPY app/ ./app/
+COPY submodules/ ./submodules/
+COPY package.json ./package.json
+COPY package-lock.json ./package-lock.json
 
-WORKDIR /src/shared
-RUN npm ci
-
-WORKDIR /src/web
-RUN npm ci
+WORKDIR /src
 RUN npm run build:prod
+RUN rm -f /src/app/api/.env*
 
-WORKDIR /src/api
-RUN npm ci
-COPY .env* .
-RUN npm run build:prod
-RUN rm -f /src/api/.env
+WORKDIR /src/app/api
 RUN npm uninstall @types/bcrypt @types/cors @types/express @types/node concurrently esbuild ts-node typescript class-validator cors pg-hstore reflect-metadata
 
 
