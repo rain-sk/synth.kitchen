@@ -27,7 +27,8 @@ RUN python3 -m venv /opt/venv \
 COPY --from=build /src/app/api/node_modules /usr/src/api/node_modules
 COPY --from=build /src/app/api/build /usr/src/api
 COPY --from=build /src/app/web/build /usr/share/nginx/html
-COPY submodules/server-name-gen/ /usr/src/api/node_modules/server-name-gen/
+COPY submodules/server-name-gen/dist /usr/src/api/node_modules/server-name-gen/dist/
+COPY submodules/server-name-gen/package.json /usr/src/api/node_modules/server-name-gen/package.json
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
