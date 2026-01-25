@@ -24,9 +24,9 @@ RUN python3 -m venv /opt/venv \
     && ln -s /opt/venv/bin/supervisorctl /usr/local/bin/supervisorctl \
     && apk del py3-pip
 
-COPY --from=build /src/api/node_modules /usr/src/api/node_modules
-COPY --from=build /src/api/build /usr/src/api
-COPY --from=build /src/web/build /usr/share/nginx/html
+COPY --from=build /src/app/api/node_modules /usr/src/api/node_modules
+COPY --from=build /src/app/api/build /usr/src/api
+COPY --from=build /src/app/web/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
