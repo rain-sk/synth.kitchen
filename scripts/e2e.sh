@@ -10,6 +10,7 @@ trap cleanup EXIT INT TERM
 
 npm run dev &
 dev_pid=$!
+echo $dev_pid
 
 sleep 2
 
