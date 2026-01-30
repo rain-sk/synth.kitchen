@@ -11,7 +11,9 @@ export const useJwt = () => {
 
 	const logout = useCallback(() => {
 		localStorage.clear();
-		navigate('/login');
+		setTimeout(() => {
+			navigate('/login');
+		}, 1000);
 	}, [setJwt]);
 
 	const sync = useCallback(async () => {
