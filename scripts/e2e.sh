@@ -2,8 +2,6 @@
 
 cleanup() {
     if [[ -n "$dev_pid" ]]; then
-        kill -TERM "$dev_pid" 2>/dev/null || true
-        sleep 1
         kill -KILL "$dev_pid" 2>/dev/null || true
     
     fi
