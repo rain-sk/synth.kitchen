@@ -2,16 +2,16 @@
 
 cleanup() {
     if [[ -n "$dev_pid" ]]; then
-        echo "Terminating dev server"
-        kill -TERM "$dev_pid" 2>/dev/null || true
-
+        kill -TERM -$dev_pid 2>/dev/null || true
+        
         sleep 1
-
+        
         if ps -p "$dev_pid" > /dev/null 2>&1; then
-            echo "Killing dev server"
-            kill -KILL "$dev_pid" 2>/dev/null || true
+            kill -KILL -$dev_pid 2>/dev/null || true
         fi
-
+        
+        pkill -f "npm run dev" 2>/dev/null || true
+        
         dev_pid=""
     fi
 }
