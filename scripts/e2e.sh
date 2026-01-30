@@ -2,13 +2,18 @@
 
 cleanup() {
     if [[ -n "$dev_pid" ]]; then
-        kill $dev_pid 2>/dev/null || true
+        kill -TERM "$dev_pid" 2>/dev/null || true
+        sleep 1
+        kill -KILL "$dev_pid" 2>/dev/null || true
+    
     fi
 }
 trap cleanup EXIT INT TERM
 
 npm run dev &
 dev_pid=$!
+
+sleep 2
 
 npm run test
 test_exit_code=$?
