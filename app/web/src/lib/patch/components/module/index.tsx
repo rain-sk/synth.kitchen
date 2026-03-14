@@ -313,7 +313,7 @@ export const ModuleWrapper: React.FC<
 			className={classNames.join(' ')}
 			ref={setContainer}
 			onMouseDown={onMouseDown}
-			data-color={MODULE_COLORS[module.type]}
+			style={{'--bg-color': MODULE_COLORS[module.type]} as any}
 		>
 			<ModuleHeader module={module} />
 			<ModuleUi module={module} />
