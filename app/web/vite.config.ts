@@ -10,21 +10,19 @@ export default defineConfig({
 	plugins,
 	build: {
 		outDir: 'build',
-		rollupOptions: {
+		rolldownOptions: {
 			output: {
-				manualChunks: {
-					'react-use': ['react-use'],
-					shared: ['synth.kitchen-shared'],
-					'modern-screenshot': ['modern-screenshot'],
-					'extendable-media-recorder': ['extendable-media-recorder'],
-					'extendable-media-recorder-wav-encoder': [
-						'extendable-media-recorder-wav-encoder',
-					],
-					webmidi: ['webmidi'],
-					'standardized-audio-context': ['standardized-audio-context'],
+				codeSplitting: {
+					groups: [
+						{
+							test: /node_modules/,
+							name: 'libs',
+						},
+
+					]
 				},
-			},
-		},
+			}
+		}
 	},
 	server: {
 		watch: {

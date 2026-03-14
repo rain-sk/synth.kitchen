@@ -12,10 +12,11 @@
     "require": "./build/index.js"
   },
   "scripts": {
-    "dev": "concurrently -k -n tsc,build 'npm run lint' 'npx tsx --watch src/index.ts'",
+    "dev": "concurrently -k -n build 'npm run lint:watch' 'npx tsx --watch src/index.ts'",
     "prepare": "npm run build",
     "build": "tsc && node -r ts-node/register build.ts",
-    "lint": "tsc --preserveWatchOutput --watch"
+    "lint": "tsc",
+    "lint:watch": "tsc --preserveWatchOutput --watch"
   },
   "peerDependencies": {
     "server-name-gen": "file:../../submodules/server-name-gen",
@@ -24,7 +25,7 @@
   "devDependencies": {
     "@types/node": "^24.10.1",
     "concurrently": "9.2.1",
-    "esbuild": "0.27.2",
+    "esbuild": "0.27.4",
     "ts-node": "10.9.2",
     "typescript": "5.9.3"
   },
