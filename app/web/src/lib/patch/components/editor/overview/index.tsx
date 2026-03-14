@@ -9,8 +9,8 @@ import {
 import { useEffectOnce, useScroll } from 'react-use';
 import { Module, ModulePosition } from 'synth.kitchen-shared';
 
-import { recomputeOverview } from './utils/recompute-overview';
-import { convertRemToPixels, useRefBackedState } from '../../../shared/utils';
+import { recomputeOverview } from '../utils/recompute-overview';
+import { convertRemToPixels, useRefBackedState } from '../../../../shared/utils';
 
 const main = () => document.getElementById('patch');
 const point5Rem = convertRemToPixels(0.5);
