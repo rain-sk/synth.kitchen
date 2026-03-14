@@ -4,13 +4,13 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"extendable-media-recorder": "9.2.35",
-		"extendable-media-recorder-wav-encoder": "7.0.135",
+		"extendable-media-recorder": "9.2.36",
+		"extendable-media-recorder-wav-encoder": "7.0.136",
 		"hhmmss": "1.0.0",
 		"is-callable": "1.2.7",
 		"js-confetti": "0.13.1",
 		"lz-string": "1.5.0",
-		"modern-screenshot": "4.6.7",
+		"modern-screenshot": "4.6.8",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"react-modal": "3.16.3",
@@ -24,8 +24,9 @@
 	"scripts": {
 		"build": "tsc && vite build",
 		"build:prod": "vite build",
-		"dev": "concurrently \"vite --host\" \"npm:lint\"",
-		"lint": "tsc --preserveWatchOutput --watch"
+		"dev": "concurrently \"vite --host\" \"npm:lint:watch\"",
+		"lint": "tsc",
+		"lint:watch": "tsc --preserveWatchOutput --watch"
 	},
 	"devDependencies": {
 		"@types/is-callable": "1.1.2",
@@ -33,11 +34,11 @@
 		"@types/react": "^18.3.24",
 		"@types/react-dom": "^18.3.7",
 		"@types/react-modal": "3.16.3",
-		"@vitejs/plugin-react": "5.1.2",
+		"@vitejs/plugin-react": "6.0.1",
 		"concurrently": "9.2.1",
 		"hsluv": "1.0.1",
 		"typescript": "5.9.3",
-		"vite": "7.3.1",
-		"vite-bundle-analyzer": "1.3.2"
+		"vite": "8.0.0",
+		"vite-bundle-analyzer": "1.3.6"
 	}
 }
