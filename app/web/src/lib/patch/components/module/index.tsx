@@ -35,6 +35,7 @@ import { ScopeModule } from './scope';
 import { SequencerModule } from './sequencer';
 import { ShiftModule } from './shift';
 import { VcaModule } from './vca';
+import { MODULE_COLORS } from '../editor/overview/utils/module-colors';
 
 const useDragAndDrop = (
 	id: string,
@@ -312,6 +313,7 @@ export const ModuleWrapper: React.FC<
 			className={classNames.join(' ')}
 			ref={setContainer}
 			onMouseDown={onMouseDown}
+			data-color={MODULE_COLORS[module.type]}
 		>
 			<ModuleHeader module={module} />
 			<ModuleUi module={module} />
