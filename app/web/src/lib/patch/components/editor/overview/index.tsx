@@ -9,8 +9,11 @@ import {
 import { useEffectOnce, useScroll } from 'react-use';
 import { Module, ModulePosition } from 'synth.kitchen-shared';
 
-import { recomputeOverview } from '../utils/recompute-overview';
-import { convertRemToPixels, useRefBackedState } from '../../../../shared/utils';
+import { OverviewCanvas } from './overview-canvas';
+import {
+	convertRemToPixels,
+	useRefBackedState,
+} from '../../../../shared/utils';
 
 const main = () => document.getElementById('patch');
 const point5Rem = convertRemToPixels(0.5);
@@ -31,11 +34,26 @@ const computeVisibleBounds = (
 	} = main;
 	const { clientHeight: scrubHeight, clientWidth: scrubWidth } = scrubContainer;
 
-	// Get the
+	console.log('[computeVisibleBounds] main element:', {
+		scrollX: mainScrollX,
+		scrollY: mainScrollY,
+		width: mainWidth,
+		height: mainHeight,
+	});
+
+	console.log('[computeVisibleBounds] scrub container:', {
+		width: scrubWidth,
+		height: scrubHeight,
+	});
+
 	const scrubRatio = 16 / 9;
 	const overviewRatio = overviewSize.width / overviewSize.height;
 
-	// Compute highlight's size and position relative to the actual patch
+	console.log('[computeVisibleBounds] ratios:', {
+		scrubRatio,
+		overviewRatio,
+	});
+
 	const relativeHeight =
 		scrubRatio > overviewRatio
 			? overviewSize.height
@@ -49,13 +67,25 @@ const computeVisibleBounds = (
 	const relativeRight = (mainScrollX + mainWidth) / relativeWidth;
 	const relativeBottom = (mainScrollY + mainHeight) / relativeHeight;
 
-	// Normalize to the scrub container
+	console.log('[computeVisibleBounds] relative bounds:', {
+		relativeLeft,
+		relativeTop,
+		relativeRight,
+		relativeBottom,
+	});
+
 	const normalizedTop = scrubHeight * relativeTop;
 	const normalizedLeft = scrubWidth * relativeLeft;
 	const normalizedRight = scrubWidth * relativeRight;
 	const normalizedBottom = scrubHeight * relativeBottom;
 
-	// Constrain to the scrub container
+	console.log('[computeVisibleBounds] normalized bounds:', {
+		top: normalizedTop,
+		left: normalizedLeft,
+		right: normalizedRight,
+		bottom: normalizedBottom,
+	});
+
 	const constrainedLeft = Math.max(
 		0,
 		Math.min(normalizedLeft, scrubContainer.clientWidth - point5Rem),
@@ -72,6 +102,13 @@ const computeVisibleBounds = (
 		normalizedBottom,
 		scrubContainer.clientHeight,
 	);
+
+	console.log('[computeVisibleBounds] final bounds:', {
+		top: constrainedTop,
+		left: constrainedLeft,
+		right: constrainedRight,
+		bottom: constrainedBottom,
+	});
 
 	return {
 		top: constrainedTop,
@@ -95,7 +132,18 @@ export const Overview: React.FC<{
 		current: null,
 	});
 	const [overviewSize, setOverviewSize] = useState({ width: 1, height: 1 });
+
+	useEffect(() => {
+		console.log('[Overview] overviewSize updated:', overviewSize);
+	}, [overviewSize]);
 	const scroll = useScroll(mainRef);
+
+	useEffect(() => {
+		if (overviewSize.width > 1 || overviewSize.height > 1) {
+			console.log('[Overview] overviewSize:', overviewSize);
+		}
+	}, [overviewSize]);
+
 	const visibleBounds = useMemo(() => {
 		if (mainRef.current && containerRef.current) {
 			return computeVisibleBounds(
@@ -108,16 +156,6 @@ export const Overview: React.FC<{
 		}
 	}, [connectionsCount, modulesCount, sortedModules, scroll, overviewSize]);
 
-	useEffectOnce(() => {
-		const interval = setInterval(() => {
-			const element = main();
-			if (element) {
-				clearInterval(interval);
-				setMainRef({ current: element });
-			}
-		}, 16);
-	});
-
 	const delayedUpdateRef = useRef<any>();
 	useEffect(() => {
 		const node = main();
@@ -125,14 +163,13 @@ export const Overview: React.FC<{
 			if (delayedUpdateRef.current) {
 				clearTimeout(delayedUpdateRef.current);
 			}
-			const timeout = setTimeout(async () => {
-				const { width, height, dataUrl } = await recomputeOverview(
-					sortedModules,
-				);
-				setOverviewSize({ width, height });
-				if (scrubRef.current) {
-					scrubRef.current.style.backgroundImage = `url(${dataUrl})`;
-				}
+			const timeout = setTimeout(() => {
+				const rect = node.getBoundingClientRect();
+				setOverviewSize({ width: rect.width, height: rect.height });
+				console.log('[Overview] canvas size computed:', {
+					width: rect.width,
+					height: rect.height,
+				});
 				clearTimeout(timeout);
 				delayedUpdateRef.current = null;
 			}, 500);
@@ -153,8 +190,6 @@ export const Overview: React.FC<{
 				document.removeEventListener('mousemove', onMouseMove);
 				return;
 			}
-
-			console.log(e.pageX, e.pageY);
 		};
 		document.addEventListener('mousemove', onMouseMove);
 		document.addEventListener('mouseup', () => {
@@ -167,6 +202,28 @@ export const Overview: React.FC<{
 		setMinimized(!minimized);
 	}, [minimized]);
 
+	const handleScroll = useCallback(
+		(e: Event) => {
+			if (draggingRef.current) {
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		},
+		[draggingRef],
+	);
+
+	document.addEventListener('scroll', handleScroll, true);
+
+	useEffectOnce(() => {
+		const interval = setInterval(() => {
+			const element = main();
+			if (element) {
+				clearInterval(interval);
+				setMainRef({ current: element });
+			}
+		}, 16);
+	});
+
 	const classNames = [];
 	if (minimized) {
 		classNames.push('minimized');
@@ -175,6 +232,19 @@ export const Overview: React.FC<{
 		classNames.push('dragging');
 	}
 
+	console.log('[Overview] rendering with overviewSize:', overviewSize);
+	const container = document.getElementById('scrub-area');
+	const mainEl = document.getElementById('patch');
+	if (container && mainEl) {
+		const containerRect = container.getBoundingClientRect();
+		const mainRect = mainEl.getBoundingClientRect();
+		console.log('[Overview] scrub container size:', {
+			containerWidth: containerRect.width,
+			containerHeight: containerRect.height,
+			mainWidth: mainRect.width,
+			mainHeight: mainRect.height,
+		});
+	}
 	return (
 		<div
 			ref={(div) => {
@@ -198,7 +268,9 @@ export const Overview: React.FC<{
 					ref={(scrub) => {
 						scrubRef.current = scrub ?? undefined;
 					}}
-				/>
+				>
+					<OverviewCanvas modules={sortedModules} forceScale={1} />
+				</div>
 				<div
 					id="scrub-outline"
 					style={{

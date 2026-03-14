@@ -42,6 +42,7 @@ h1 {
 	animation: all 1s linear;
 	background-color: #6f5e4b;
 	z-index: 11;
+	overflow: hidden;
 }
 
 #overview.minimized {

@@ -17,7 +17,7 @@ export const Toolbar: React.FC<{
 		<>
 			<div className="toolbar">
 				<section>
-					{minimal || (
+					{!minimal && (
 						<>
 							<PatchNameField />
 							<SaveToCloud />
@@ -27,7 +27,7 @@ export const Toolbar: React.FC<{
 					<Redo />
 				</section>
 				<section>
-					{minimal || (
+					{!minimal && (
 						<>
 							<Record />
 							<Overview
