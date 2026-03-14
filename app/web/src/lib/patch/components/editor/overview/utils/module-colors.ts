@@ -14,10 +14,10 @@ export const MODULE_COLORS = {
 	[ModuleType.MIDI_TRIGGER]: '#f1b8d3',
 	[ModuleType.NOISE]: '#f1bcce',
 	[ModuleType.OSCILLATOR]: '#6ee198',
-	[ModuleType.OUTPUT]: '#6f5e4b',
+	[ModuleType.OUTPUT]: '#aad96c',
 	[ModuleType.PAN]: '#f1bae4',
 	[ModuleType.SCOPE]: '#c5d9a0',
 	[ModuleType.SEQUENCER]: '#aabae0',
-	[ModuleType.SHIFT]: '#9cade8',
+	[ModuleType.SHIFT]: '#9fade8',
 	[ModuleType.VCA]: '#81c8ad',
 } as const;
