@@ -1,13 +1,9 @@
 import { ModuleType, PATCH_STATE, PatchState } from "../types";
 import {
   Connection,
+  connectionKey,
   CONNECTIONS_STATE,
   CONNECTIONS_STATE_VERSIONS,
-  Connector,
-  Input,
-  ioKey,
-  Output,
-  paramKey,
 } from "../types/patch/connection";
 
 export function connectionsStateNeedsUpgrade(
@@ -16,12 +12,7 @@ export function connectionsStateNeedsUpgrade(
   return state.version !== CONNECTIONS_STATE_VERSIONS[0];
 }
 
-const connectorKey = (connector: Connector) =>
-  "type" in connector ? ioKey(connector) : paramKey(connector);
 
-const connectionKey = (output: Output, input: Input) => {
-  return `${connectorKey(output)}|${connectorKey(input)}`;
-};
 
 export function upgradeConnectionsState(
   state: PATCH_STATE[keyof PATCH_STATE]

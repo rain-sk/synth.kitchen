@@ -1,6 +1,6 @@
 import { Module, ModulePosition } from "./module";
 import { UserInfo } from "../user";
-import { Connection, CONNECTIONS_STATE, ConnectionsState } from "./connection";
+import { CONNECTIONS_STATE } from "./connection";
 
 export type PatchQuery =
   | {
@@ -62,9 +62,11 @@ export type Patch = PatchInfo & {
 export {
   Connection,
   ConnectionInfo,
+  connectionKey,
   ConnectionsState,
   CONNECTIONS_STATE_VERSIONS,
   Connector,
+  connectorKey,
   Input,
   Io,
   ioKey,

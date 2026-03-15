@@ -69,14 +69,18 @@ import {
   upgrade as upgradeShift,
 } from "./shift";
 import { needsUpgrade as vcaNeedsUpgrade, upgrade as upgradeVCA } from "./vca";
+import {
+  needsUpgrade as groupNeedsUpgrade,
+  upgrade as upgradeGroup,
+} from "./group";
 
 type ModuleUpgradeMap = {
   [T in ModuleType]: {
     needsUpgrade: (
-      state: ModuleState[T] | Exclude<ModuleState[T], "version">
+      state: ModuleState[T] | Exclude<ModuleState[T], "version">,
     ) => boolean;
     upgrade: (
-      state: ModuleState[T] | Exclude<ModuleState[T], "version">
+      state: ModuleState[T] | Exclude<ModuleState[T], "version">,
     ) => ModuleState[T];
   };
 };
@@ -155,18 +159,22 @@ const upgradeMap: ModuleUpgradeMap = {
     needsUpgrade: vcaNeedsUpgrade,
     upgrade: upgradeVCA,
   },
+  MODULE_GROUP: {
+    needsUpgrade: groupNeedsUpgrade,
+    upgrade: upgradeGroup,
+  },
 };
 
 export function moduleNeedsUpgrade<T extends ModuleType>(
   type: T,
-  state: ModuleState[T]
+  state: ModuleState[T],
 ) {
   return state && upgradeMap[type].needsUpgrade(state);
 }
 
 export function upgradeModule<T extends ModuleType>(
   type: T,
-  state: ModuleState[T]
+  state: ModuleState[T],
 ) {
   if (!state || !upgradeMap[type].needsUpgrade(state)) {
     return state;

@@ -5,9 +5,11 @@ export type { Sample, SampleInfo, SampleQuery } from "./sample";
 export {
   Connection,
   ConnectionInfo,
+  connectionKey,
   ConnectionsState,
   CONNECTIONS_STATE_VERSIONS,
   Connector,
+  connectorKey,
   Input,
   Io,
   ioKey,

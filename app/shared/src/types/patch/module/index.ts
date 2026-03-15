@@ -20,6 +20,7 @@ import { SHIFT_STATE, SHIFT_STATE_VERSIONS } from "./shift";
 import { OUTPUT_STATE, OUTPUT_STATE_VERSIONS } from "./output";
 import { VCA_STATE, VCA_STATE_VERSIONS } from "./vca";
 import { SCOPE_STATE, SCOPE_STATE_VERSIONS } from "./scope";
+import { MODULE_GROUP_STATE, MODULE_GROUP_STATE_VERSIONS } from "./group";
 
 export enum ModuleType {
   CLOCK = "CLOCK",
@@ -40,6 +41,7 @@ export enum ModuleType {
   SCOPE = "SCOPE",
   SEQUENCER = "SEQUENCER",
   SHIFT = "SHIFT",
+  MODULE_GROUP = "MODULE_GROUP",
   VCA = "VCA",
 }
 
@@ -63,6 +65,7 @@ export type ModuleState = {
   [ModuleType.SHIFT]: SHIFT_STATE[SHIFT_STATE_VERSIONS[0]];
   [ModuleType.OUTPUT]: OUTPUT_STATE[OUTPUT_STATE_VERSIONS[0]];
   [ModuleType.VCA]: VCA_STATE[VCA_STATE_VERSIONS[0]];
+  [ModuleType.MODULE_GROUP]: MODULE_GROUP_STATE[MODULE_GROUP_STATE_VERSIONS[0]];
 };
 
 const DefaultModuleStates: ModuleState = {
@@ -185,6 +188,13 @@ const DefaultModuleStates: ModuleState = {
     release: 0.1,
     peak: 1,
   },
+  [ModuleType.MODULE_GROUP]: {
+    version: "0.5.13",
+    name: "",
+    modules: {},
+    connections: {},
+    exposedParameters: {},
+  },
 };
 
 export const defaultModuleState = <T extends ModuleType>(
@@ -224,3 +234,4 @@ export { SEQUENCER_STATE, SEQUENCER_STATE_VERSIONS } from "./sequencer";
 export { SHIFT_STATE, SHIFT_STATE_VERSIONS } from "./shift";
 export { OUTPUT_STATE, OUTPUT_STATE_VERSIONS } from "./output";
 export { VCA_STATE, VCA_STATE_VERSIONS } from "./vca";
+export { MODULE_GROUP_STATE, MODULE_GROUP_STATE_VERSIONS } from "./group";

@@ -57,3 +57,10 @@ export type ConnectionsState = CONNECTIONS_STATE[CONNECTIONS_STATE_VERSIONS[0]];
 
 export const ioKey = (io: Omit<Io, "accessor">): string =>
   `${io.moduleId}_${io.type}_${io.channel}`;
+
+export const connectorKey = (connector: Connector) =>
+  "type" in connector ? ioKey(connector) : paramKey(connector);
+
+export const connectionKey = (output: Output, input: Input) => {
+  return `${connectorKey(output)}|${connectorKey(input)}`;
+};
