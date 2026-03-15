@@ -3,26 +3,20 @@ export const fetchWithJwt = async (
 	init: RequestInit = { headers: { Accept: 'application/json' } },
 ): Promise<Response> => {
 	const localJwt = localStorage.getItem('jwt')?.slice(1, -1);
-	if (!localJwt) {
-		return new Promise((_, reject) => {
-			reject('Missing JWT in localstorage');
-		});
-	}
 
-	const authorization = `Bearer ${localJwt}`;
-	return await fetch(
-		path,
+	const authorization = localJwt ? `Bearer ${localJwt}` : undefined;
+	const headers =
 		'headers' in init
 			? {
-					...init,
-					headers: {
-						...init.headers,
-						authorization,
-					},
+					...init.headers,
+					authorization,
 				}
-			: {
-					...init,
-					headers: { authorization },
-				},
-	);
+			: authorization
+				? { authorization }
+				: {};
+
+	return await fetch(path, {
+		...init,
+		headers,
+	});
 };
