@@ -17,6 +17,8 @@
     "build": "tsc && node -r ts-node/register build.ts",
     "lint": "tsc",
     "lint:watch": "tsc --preserveWatchOutput --watch",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "peerDependencies": {
     "server-name-gen": "file:../../submodules/server-name-gen",
