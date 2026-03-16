@@ -17,8 +17,7 @@ RUN npm uninstall @types/bcrypt @types/cors @types/express @types/node concurren
 
 FROM nginx:alpine AS serve
 
-RUN curl -fsSL https://bun.com/install | bash
-RUN apk add --no-cache tini python3 py3-pip
+RUN apk add --no-cache nodejs tini python3 py3-pip
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir supervisor \
     && ln -s /opt/venv/bin/supervisord /usr/local/bin/supervisord \
