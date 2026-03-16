@@ -5,6 +5,7 @@ import { AuthRouter } from "./routes/auth.router";
 import { PatchRouter } from "./routes/patch.router";
 import { ServerStatusRouter } from "./routes/status.router";
 import { TokenRouter } from "./routes/token.router";
+import { CustomModuleRouter } from "./routes/custom-module.router";
 
 import { apiBase, appOrigin, healthRoute } from "./env";
 
@@ -13,6 +14,7 @@ ServerRouter.use(`/${healthRoute}`, ServerStatusRouter);
 ServerRouter.use("/auth", AuthRouter);
 ServerRouter.use("/patch", PatchRouter);
 ServerRouter.use("/token", TokenRouter);
+ServerRouter.use("/module", CustomModuleRouter);
 ServerRouter.get("/", (_, res) => {
   res.status(400).send("400: Invalid request.");
 });

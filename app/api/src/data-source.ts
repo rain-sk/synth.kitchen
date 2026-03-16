@@ -11,10 +11,12 @@ import {
 } from "./env";
 
 import { AppInfo } from "./entity/AppInfo";
+import { CustomModule } from "./entity/CustomModule";
 import { EmailVerificationRequest } from "./entity/EmailVerificationRequest";
 import { PasswordResetRequest } from "./entity/PasswordResetRequest";
 import { Patch } from "./entity/Patch";
 import { Sample } from "./entity/Sample";
+import { SavedCustomModuleState } from "./entity/SavedCustomModuleState";
 import { SavedPatchState } from "./entity/SavedPatchState";
 import { User } from "./entity/User";
 
@@ -26,6 +28,7 @@ import { AppInfo1761908857941 } from "./migration/1761908857941-AppInfo";
 import { v0_5_11_1762583925581 } from "./migration/1762583925581-v0.5.11";
 import { v0_5_12_1762583925582 } from "./migration/1762583925582-v0.5.12";
 import { FixEmailVerification1764659512400 } from "./migration/1764659512400-FixEmailVerification";
+import { CustomModuleEntities1773604758550 } from "./migration/1773604758550-CustomModuleEntities";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -42,6 +45,8 @@ export const AppDataSource = new DataSource({
     EmailVerificationRequest,
     PasswordResetRequest,
     Sample,
+    CustomModule,
+    SavedCustomModuleState,
   ],
   migrations: [
     InitialSchema1758462191839,
@@ -52,6 +57,7 @@ export const AppDataSource = new DataSource({
     v0_5_11_1762583925581,
     v0_5_12_1762583925582,
     FixEmailVerification1764659512400,
+    CustomModuleEntities1773604758550,
   ],
   logging,
 });

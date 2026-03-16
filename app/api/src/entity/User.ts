@@ -10,6 +10,7 @@ import { UserInfoAuthenticated } from "synth.kitchen-shared";
 
 import { Patch } from "./Patch";
 import { EmailVerificationRequest } from "./EmailVerificationRequest";
+import { CustomModule } from "./CustomModule";
 
 @Entity()
 export class User implements UserInfoAuthenticated {
@@ -37,4 +38,7 @@ export class User implements UserInfoAuthenticated {
 
   @OneToMany(() => Patch, (patch) => patch.creator)
   patches: Promise<Patch[]>;
+
+  @OneToMany(() => CustomModule, (customModule) => customModule.creator)
+  customModules: Promise<CustomModule[]>;
 }

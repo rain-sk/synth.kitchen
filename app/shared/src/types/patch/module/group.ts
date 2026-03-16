@@ -5,6 +5,8 @@ export const MODULE_GROUP_STATE_VERSIONS: MODULE_GROUP_STATE_VERSIONS = [
   "0.5.13",
 ];
 
+export type ModuleGroup = MODULE_GROUP_STATE;
+
 export type MODULE_GROUP_STATE = {
   ["0.5.13"]: {
     version: "0.5.13";

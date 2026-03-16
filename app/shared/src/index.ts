@@ -5,8 +5,7 @@ export {
   connectionKey,
   ConnectionsState,
   Connector,
-  connectorKey,
-  CONNECTIONS_STATE_VERSIONS,
+  ContentQuery,
   Input,
   Io,
   ioKey,
@@ -24,16 +23,20 @@ export {
   PatchInfo,
   PatchQuery,
   PatchState,
-  RegisterResponse,
   Sample,
-  SampleInfo,
   SampleQuery,
+  SampleInfo,
   SavedPatchState,
   PATCH_STATE,
   PATCH_STATE_VERSIONS,
   UserInfo,
   UserInfoAuthenticated,
 } from "./types";
+
+export {
+  ModuleGroup,
+  MODULE_GROUP_STATE_VERSIONS,
+} from "./types/patch/module/group";
 
 export {
   CLOCK_STATE,
