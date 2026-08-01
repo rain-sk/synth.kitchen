@@ -80,13 +80,16 @@ TODO:
 
 ### MIDI
 
+Done:
+
+- [x] MIDICC module (MIDI_CC — control change receiver)
+- [x] MIDIClock module (MIDI_CLOCK — clock sync receiver)
+- [x] MIDITrigger module (MIDI_TRIGGER — note trigger receiver)
+
 TODO:
 
-- [ ] MidiDevice module
-- [ ] MidiOscillator module
-- [ ] MidiEnvelope module
-- [ ] MidiSequencer module
-- [ ] MidiSequencer module can output to external devices (latency compensation?)
+- [ ] MidiSequencer module (MIDI-triggered sequencer with external output)
+- [ ] MidiDevice module (direct MIDI device passthrough)
 
 ### Global Sync
 
