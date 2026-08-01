@@ -2,6 +2,8 @@ From: https://medium.com/@lukkoro/securely-connect-to-your-coolify-db-using-an-s
 
 # Setup
 
+> **Automated Alternative**: The `scripts/ssh-tunnel.sh` script automates all of the following steps. Set `REMOTE_USER`, `REMOTE_HOST`, and `POSTGRES_IMAGE` in your root `.env` file, then run `./scripts/ssh-tunnel.sh`. The `POSTGRES_IMAGE` value (e.g., `postgres:16-alpine`) must match what your Coolify instance uses for the database container.
+
 ## 1. Create a user
 
 First, we need to create a new user in our Coolify server that we will be using for the tunnel. Go to the terminal on your Coolify instance, and type the following

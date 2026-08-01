@@ -29,7 +29,7 @@ CONTAINER_ID=$(ssh "${REMOTE_USER}@${REMOTE_HOST}" "
 ")
 
 if [ -z \"$CONTAINER_ID\" ]; then
-  echo Error: No container found running image postgres:17-alpine.
+  echo Error: No container found running image ${POSTGRES_IMAGE}.
   exit 1
 fi
 
