@@ -10,14 +10,14 @@ Browser                              Docker Container
 │  Web Audio   │                     │  /api/* → :3000     │
 │  WebMidi.js  │                     └────────┬────────────┘
 └──────────────┘                              │
-                                        ┌─────────────────────┐
-                                        │  Bun + Express 5    │
-                                        │  (Supervisor mgmt)  │
-                                        └────────┬────────────┘
-                                                 │
-                                    ┌─────────────────────────┐
-                                    │  PostgreSQL 16          │
-                                    └─────────────────────────┘
+                                     ┌────────────────────┐
+                                     │  Bun + Express 5   │
+                                     │ (Supervisor mgmt)  │
+                                     └────────┬───────────┘
+                                              │
+                                      ┌─────────────────┐
+                                      │  PostgreSQL 16  │
+                                      └─────────────────┘
 ```
 
 Production: Single Docker container with Nginx serving the SPA and proxying `/api/*` to the Bun-based Express API. Supervisor manages both processes.

@@ -4,7 +4,7 @@ Welcome to the synth.kitchen codebase. This document provides quick orientation 
 
 ## Project Overview
 
-synth.kitchen is a web-based audio synthesis platform that enables users to create, share, and fork modular synthesizer patches directly in the browser. It integrates with external MIDI and can record its output to a downloadable .wav file. Built with React 18 (Vite), TypeScript-based Express API, PostgreSQL database, and Docker deployment via nginx.
+synth.kitchen is a web-based audio synthesis platform that enables users to create, share, and fork modular synthesizer patches directly in the browser. It integrates with external MIDI and can record its output to a downloadable .wav file. Built with React 18 (Vite), TypeScript-based Express API, PostgreSQL database, and Docker deployment with an nginx reverse proxy.
 
 ## Documentation Index
 
