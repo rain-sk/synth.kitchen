@@ -5,12 +5,12 @@
          "es2022"
       ],
       "outDir": "./build/",
-      "module": "commonjs",
+      "module": "Node16",
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
       "experimentalDecorators": true,
       "skipLibCheck": true,
-      "moduleResolution": "node",
+      "moduleResolution": "node16",
       "emitDecoratorMetadata": true,
    }
 }
