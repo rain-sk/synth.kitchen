@@ -14,7 +14,7 @@
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"react-modal": "3.16.3",
-		"react-use": "17.6.0",
+		"react-use": "^17.6.1",
 		"server-name-gen": "file:../../submodules/server-name-gen",
 		"standardized-audio-context": "25.3.77",
 		"synth.kitchen-shared": "file:../shared",
@@ -34,10 +34,10 @@
 		"@types/react-dom": "^18.3.7",
 		"@types/react-modal": "3.16.3",
 		"@vitejs/plugin-react": "5.1.2",
-		"concurrently": "9.2.1",
+		"concurrently": "^9.2.4",
 		"hsluv": "1.0.1",
 		"typescript": "7.0.2",
-		"vite": "7.3.1",
+		"vite": "^7.3.6",
 		"vite-bundle-analyzer": "1.3.2"
 	}
 }
