@@ -26,24 +26,24 @@
     "express": "5.2.1",
     "express-jwt": "8.5.1",
     "jsonwebtoken": "9.0.3",
-    "nodemailer": "7.0.12",
+    "nodemailer": "^9.0.3",
     "pg": "8.17.1",
     "pg-hstore": "2.3.4",
     "reflect-metadata": "0.2.2",
     "server-name-gen": "file:../../submodules/server-name-gen",
     "synth.kitchen-shared": "file:../shared",
-    "typeorm": "0.3.28",
-    "uuid": "13.0.0"
+    "typeorm": "^0.3.31",
+    "uuid": "^13.0.2"
   },
   "devDependencies": {
     "@types/bcrypt": "6.0.0",
     "@types/cors": "2.8.19",
     "@types/express": "5.0.6",
     "@types/node": "^24.10.1",
-    "concurrently": "9.2.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "concurrently": "^9.2.4",
     "esbuild": "0.27.2",
     "ts-node": "10.9.2",
-    "@typescript/native": "npm:typescript@^7.0.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2"
   }
 }
