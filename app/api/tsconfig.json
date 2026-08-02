@@ -1,6 +1,7 @@
 {
-   "compilerOptions": {
-      "target": "es2022",
+"compilerOptions": {
+       "strict": false,
+       "target": "es2022",
       "lib": [
          "es2022"
       ],
@@ -11,6 +12,7 @@
       "experimentalDecorators": true,
       "skipLibCheck": true,
       "moduleResolution": "node16",
-      "emitDecoratorMetadata": true,
-   }
+"emitDecoratorMetadata": true,
+       "types": ["node"]
+    }
 }
