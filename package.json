@@ -2,7 +2,7 @@
   "name": "synth.kitchen-api",
   "version": "0.5.13",
   "devDependencies": {
-    "concurrently": "9.2.1",
+    "concurrently": "10.0.4",
     "cypress": "15.8.2",
     "typescript": "7.0.2"
   },
