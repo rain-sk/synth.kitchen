@@ -11,7 +11,7 @@
     "build:api": "cd app/api && npm run build",
     "build:web": "cd app/web && npm run build",
     "build": "npm i && concurrently 'npm run build:shared' 'npm run build:api' 'npm run build:web'",
-    "build:prod": "npm ci && concurrently 'cd app/api && npm run build:prod' 'cd app/web && npm run build:prod'",
+    "build:prod": "npm ci && cd app/shared && npm i --no-audit && npm run build && concurrently 'cd app/api && npm run build:prod' 'cd app/web && npm run build:prod'",
     "dev:shared": "cd app/shared && npm run dev",
     "dev:api": "cd app/api && npm run dev",
     "dev:web": "cd app/web && npm run dev",
