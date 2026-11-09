@@ -4,6 +4,12 @@
 	"start_url": "/",
 	"icons": [
 		{
+			"src": "/favicon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any"
+		},
+		{
 			"src": "/android-chrome-192x192.png",
 			"sizes": "192x192",
 			"type": "image/png"
@@ -31,6 +37,6 @@
 	],
 	"orientation": "any",
 	"display": "fullscreen",
-	"theme_color": "#000000",
-	"background_color": "#bf82bb"
+	"theme_color": "#1b1723",
+	"background_color": "#1b1723"
 }

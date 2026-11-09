@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="cable" x1="344" y1="128" x2="256" y2="440" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7cd2e2"/>
+      <stop offset="0.5" stop-color="#dcc0f0"/>
+      <stop offset="1" stop-color="#e86a88"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="512" height="512" rx="116" fill="#1b1723"/>
+  <!-- S cable: endpoints land exactly on hex centres (the jacks) -->
+  <path d="M 344 128
+           C 344 88 300 72 256 72
+           C 196 72 152 104 152 148
+           C 152 192 204 212 256 226
+           C 320 244 360 268 360 320
+           C 360 368 316 440 256 440"
+        fill="none" stroke="url(#cable)" stroke-width="42" stroke-linecap="round"/>
+  <!-- hex jacks sharing the gradient; cable enters through the left vertex -->
+  <polygon points="302,92 386,92 404,128 386,164 302,164 284,128" fill="url(#cable)"/>
+  <circle cx="344" cy="128" r="17" fill="#1b1723"/>
+  <polygon points="214,404 298,404 316,440 298,476 214,476 196,440" fill="url(#cable)"/>
+  <circle cx="256" cy="440" r="17" fill="#1b1723"/>
+</svg>
