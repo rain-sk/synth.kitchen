@@ -39,7 +39,7 @@ export const SaveToDisk = () => {
 	}, [name, modules, modulePositions, connections]);
 
 	return (
-		<button type="button" onClick={onDownload}>
+		<button type="button" id="save-to-disk" onClick={onDownload}>
 			<span className="visually-hidden">save to disk</span>
 			<SaveToDiskSvg />
 		</button>

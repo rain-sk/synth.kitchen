@@ -22,7 +22,7 @@ export const SaveToCloud = () => {
 	}, [id, name, modules, modulePositions, connections, savePatch]);
 
 	return (
-		<button type="button" onClick={onSave}>
+		<button type="button" id="save-to-cloud" onClick={onSave}>
 			<span className="visually-hidden">save to cloud</span>
 			<SaveToCloudSvg />
 		</button>

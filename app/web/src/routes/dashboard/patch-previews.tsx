@@ -86,11 +86,16 @@ export const PatchPreview: React.FC<{ patchInfo: PatchInfo }> = ({
 				<h3>{patchInfo.name}</h3>
 			</Link>
 			<span className="menu">
-				<button type="button" onClick={onClickMenuButton}>
+				<button
+					type="button"
+					id={`menu-${patchInfo.slug}`}
+					onClick={onClickMenuButton}
+				>
 					<MenuDots />
 				</button>
 				{doShowMenu && (
 					<ul
+						id={`menu-popup-${patchInfo.slug}`}
 						className="menu-popup"
 						tabIndex={0}
 						ref={(ref) => {
@@ -98,13 +103,13 @@ export const PatchPreview: React.FC<{ patchInfo: PatchInfo }> = ({
 						}}
 					>
 						<li>
-							<button type="button" onClick={handleFork}>
+							<button type="button" id={`fork-${patchInfo.slug}`} onClick={handleFork}>
 								fork
 							</button>
 						</li>
 						{deleteEnabled && (
 							<li>
-								<button type="button" onClick={handleDelete}>
+								<button type="button" id={`delete-${patchInfo.slug}`} onClick={handleDelete}>
 									delete
 								</button>
 							</li>

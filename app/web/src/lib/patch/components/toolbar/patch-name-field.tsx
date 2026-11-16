@@ -19,6 +19,7 @@ export const PatchNameField = () => {
 
 	return (
 		<input
+			id="patch-name"
 			aria-label="patch name"
 			type="text"
 			value={name}

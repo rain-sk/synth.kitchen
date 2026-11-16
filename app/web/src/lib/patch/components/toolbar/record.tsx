@@ -88,7 +88,7 @@ export const Record: React.FC = () => {
 	}, []);
 
 	return (
-		<button type="button" onClick={recording ? handleStop : handleRecord}>
+		<button type="button" id="record" onClick={recording ? handleStop : handleRecord}>
 			{recording ? `stop (${hhmmss(recordingTime)})` : 'record'}
 		</button>
 	);
