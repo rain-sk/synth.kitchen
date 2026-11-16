@@ -52,3 +52,24 @@ Cypress.Commands.add("delete" as any, (email: string, password: string) => {
     cy.get("#confirm-delete").click();
   });
 });
+
+Cypress.Commands.add("visitEditor" as any, (path = "/patch/new") => {
+  // the editor is gated behind the audio/midi start button. stub midi so specs
+  // neither depend on the platform nor wait out the 5s ask-timeout
+  cy.visit(path, {
+    onBeforeLoad: (win: Window) => {
+      cy.stub(win.navigator, "requestMIDIAccess").resolves({
+        inputs: new Map(),
+        outputs: new Map(),
+        state: "connected",
+        on: () => {},
+        onstatechange: null,
+      });
+    },
+  });
+
+  // the click swaps #start for the canvas as soon as the stub resolves, so the
+  // element detaches mid-actionability-check. force it, then assert the result.
+  cy.get("#start").click({ force: true });
+  cy.get("#patch", { timeout: 10000 }).should("exist");
+});
