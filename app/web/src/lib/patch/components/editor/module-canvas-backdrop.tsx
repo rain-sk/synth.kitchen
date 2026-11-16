@@ -246,7 +246,10 @@ export const ModuleCanvasBackdrop: React.FC<
 				{children}
 				{deviceButtonPosition !== INVALID_POSITION &&
 					selectedModules.size === 0 && (
-						<AddModule position={deviceButtonPosition} />
+						<AddModule
+							position={deviceButtonPosition}
+							dismiss={() => setDeviceButtonPosition(INVALID_POSITION)}
+						/>
 					)}
 			</main>
 		</UseScrollContext.Provider>

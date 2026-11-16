@@ -40,9 +40,10 @@ const utilModules = (): ModuleType[] =>
 				ModuleType.SCOPE,
 		  ];
 
-export const AddModule: React.FC<{ position?: ModulePosition }> = ({
-	position,
-}) => {
+export const AddModule: React.FC<{
+	position?: ModulePosition;
+	dismiss: () => void;
+}> = ({ position, dismiss }) => {
 	const { dispatch } = useContext(PatchContext);
 
 	const handleAddModule = useCallback(
@@ -57,9 +58,10 @@ export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 		[dispatch, position],
 	);
 
-	const handleBlur = useCallback(() => {
+	const dismissAndDeselect = useCallback(() => {
 		dispatch(patchActions.deselectAllModulesAction());
-	}, [dispatch]);
+		dismiss();
+	}, [dispatch, dismiss]);
 
 	return (
 		<select
@@ -68,12 +70,12 @@ export const AddModule: React.FC<{ position?: ModulePosition }> = ({
 			autoFocus
 			onKeyDown={(e: any) => {
 				if (e.key.toLowerCase() === Key.ESCAPE) {
-					dispatch(patchActions.deselectAllModulesAction());
+					dismissAndDeselect();
 				}
 			}}
 			onMouseDown={(e: any) => e.stopPropagation()}
 			onChange={handleAddModule}
-			onBlur={handleBlur}
+			onBlur={dismissAndDeselect}
 			style={
 				position && position !== INVALID_POSITION
 					? {
