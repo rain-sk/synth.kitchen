@@ -1,0 +1,27 @@
+name: synth-kitchen-dev
+
+services:
+  db:
+    image: ${POSTGRES_IMAGE:?POSTGRES_IMAGE missing from .env}
+    container_name: sk-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_NAME:?POSTGRES_DB_NAME missing from .env}
+      POSTGRES_USER: ${POSTGRES_USERNAME:?POSTGRES_USERNAME missing from .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD missing from .env}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - sk-db-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB_NAME}",
+        ]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  sk-db-dev-data:
