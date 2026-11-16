@@ -3,32 +3,43 @@ import { WebMidi } from 'webmidi';
 export const midi = {
 	initialized: false,
 	setupError: '',
+	waiting: false,
 };
 
-/**
- * requestMIDIAccess() can hang forever when there is no MIDI service or a
- * permission prompt goes unanswered. The patch editor is gated behind
- * initMidi(), so that hang keeps the editor from ever opening.
- */
-export const MIDI_INIT_TIMEOUT_MS = 2500;
+export const MIDI_TIMEOUT_MS = 5000;
 
-export const initMidi = async () => {
-	const enabled = WebMidi.enable()
-		.catch((err: string) => {
-			midi.setupError = err;
-		})
+export type MidiInitOutcome = 'ready' | 'failed' | 'waiting';
+
+export const initMidi = async (
+	onLate: (outcome: 'ready' | 'failed') => void = () => {},
+): Promise<MidiInitOutcome> => {
+	midi.waiting = true;
+
+	const settled = WebMidi.enable()
 		.then(() => {
-			if (midi.setupError) {
-				console.error(midi.setupError);
-			} else {
-				midi.initialized = true;
-			}
+			midi.setupError = '';
+			midi.initialized = true;
+			midi.waiting = false;
+			return 'ready' as const;
+		})
+		.catch((err: unknown) => {
+			midi.setupError = `${err}`;
+			midi.initialized = false;
+			midi.waiting = false;
+			console.error(`MIDI unavailable: ${midi.setupError}`);
+			return 'failed' as const;
 		});
 
-	// Stop waiting on MIDI, but don't cancel it: if WebMidi answers after the
-	// timeout, the chain above still marks MIDI as initialized.
-	await Promise.race([
-		enabled,
-		new Promise((resolve) => setTimeout(resolve, MIDI_INIT_TIMEOUT_MS)),
+	const outcome = await Promise.race([
+		settled,
+		new Promise<'waiting'>((resolve) =>
+			setTimeout(resolve, MIDI_TIMEOUT_MS, 'waiting'),
+		),
 	]);
+
+	if (outcome === 'waiting') {
+		settled.then((late) => onLate(late));
+	}
+
+	return outcome;
 };
