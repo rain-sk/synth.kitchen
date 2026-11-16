@@ -150,18 +150,6 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 			);
 		}
 
-		// DEBUG
-		Object.values(newState.connections?.state ?? []).forEach(
-			([output, input]) => {
-				if (state.selectedModules.has(output.moduleId)) {
-					debugger;
-				}
-				if (state.selectedModules.has(input.moduleId)) {
-					debugger;
-				}
-			},
-		);
-
 		return cloneAndApplyWithHistory(state, newState);
 	} else if (
 		!state.focusedInput &&
