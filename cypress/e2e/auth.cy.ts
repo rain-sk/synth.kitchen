@@ -15,7 +15,10 @@
       cy.get("#confirm-password").focus().type(`${testPassword}{enter}`);
       cy.url().should("include", "/dashboard");
       cy.getAllLocalStorage().then((result) => {
-        expect(result["http://localhost:8080"]).to.have.key("jwt");
+        const store = result[Cypress.config("baseUrl") as string];
+        expect(store, `localStorage at ${Cypress.config("baseUrl")}`).to.have.key(
+          "jwt",
+        );
         (cy as any).delete(testEmail, testPassword);
       });
     });
@@ -29,9 +32,11 @@
 
       cy.url().should("include", "dashboard");
       cy.getAllLocalStorage().then((result) => {
-        expect(result["http://localhost:8080"]).to.have.key("jwt");
-        const jwtValue = result["http://localhost:8080"].jwt;
-        expect(jwtValue).to.exist;
+        const store = result[Cypress.config("baseUrl") as string];
+        expect(store, `localStorage at ${Cypress.config("baseUrl")}`).to.have.key(
+          "jwt",
+        );
+        expect(store.jwt).to.exist;
       });
     });
   });

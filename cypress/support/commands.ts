@@ -34,26 +34,25 @@ Cypress.Commands.add("login" as any, (email: string, password: string) => {
 });
 
 Cypress.Commands.add("delete" as any, (email: string, password: string) => {
-  cy.visit("/account");
+  // Idempotent teardown. This runs in beforeEach, so on a fresh database the
+  // user usually does not exist yet - and then /login forwards to /register.
+  // It does its own login rather than calling cy.login(), because login()
+  // asserts a dashboard redirect and setup must not fail when there is
+  // nothing to delete.
+  cy.visit("/logout");
+  cy.visit("/login");
+  cy.get("#email").focus().type(email);
+  cy.get("#password").focus().type(`${password}{enter}`);
 
-  (cy as any).waitForUrl(["login", "account"]).then((url) => {
-    if (url.includes("login")) {
-      (cy as any).login(email, password);
+  cy.location("pathname", { timeout: 10000 }).then((pathname) => {
+    if (pathname.includes("register") || pathname.includes("login")) {
+      return; // no such user, nothing to delete
     }
-  });
 
-  cy.location().then((loc) => {
-    if (loc.pathname.toString().includes("login")) {
-      (cy as any).login(email, password).wait(2000);
-
-      cy.location().then((loc) => {
-        if (!loc.pathname.toString().includes("register")) {
-          cy.url().should("include", "/account");
-          cy.get("#delete").trigger("click");
-          cy.get("#password").focus().type(`${password}{enter}`);
-        }
-      });
-    }
+    cy.visit("/account");
+    cy.get("#delete").click();
+    cy.get("#password").focus().type(password);
+    cy.get("#confirm-delete").click();
   });
 });
 
