@@ -16,6 +16,7 @@
     "dev:api": "cd app/api && npm run dev",
     "dev:web": "cd app/web && npm run dev",
     "dev": "npm i --no-audit && concurrently -k -n shared,api,web 'npm run dev:shared' 'npm run dev:api' 'npm run dev:web'",
+    "dev:local": "VITE_PORT=8081 npm run dev",
     "lint:shared": "cd app/shared && npm run lint",
     "lint:api": "cd app/api && npm run lint",
     "lint:web": "cd app/web && npm run lint",
@@ -24,6 +25,8 @@
     "prepare": "concurrently -n shared,api,web 'cd app/shared && npm i --no-audit' 'cd app/api && npm i --no-audit' 'cd app/web && npm i --no-audit'",
     "pre-push": "npm ci && npm run build && ./scripts/e2e.sh",
     "test": "npx cypress run -q",
+    "e2e:local": "npm run db up && npm run db migrate && VITE_PORT=8081 CYPRESS_BASE_URL=http://localhost:8081 ./scripts/e2e.sh",
+    "db": "./scripts/db.sh",
     "tunnel": "./scripts/ssh-tunnel.sh"
   }
 }
