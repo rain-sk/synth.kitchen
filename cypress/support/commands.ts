@@ -1,15 +1,12 @@
 /// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
+
+const api = (path: string) => `${Cypress.env("API_URL")}${path}`;
+
+const setJwt = (jwt: string) =>
+  cy.window().then((win) => {
+    win.localStorage.setItem("jwt", JSON.stringify(jwt));
+  });
+
 Cypress.Commands.add("register" as any, (email: string, password: string) => {
   cy.visit("/logout").wait(1000);
   cy.visit("/register");
@@ -34,8 +31,6 @@ Cypress.Commands.add("login" as any, (email: string, password: string) => {
 });
 
 Cypress.Commands.add("delete" as any, (email: string, password: string) => {
-  // idempotent teardown: on a fresh database there is usually nothing to
-  // delete, and then /login forwards to /register
   cy.visit("/logout");
   cy.visit("/login");
   cy.get("#email").focus().type(email);
@@ -43,7 +38,7 @@ Cypress.Commands.add("delete" as any, (email: string, password: string) => {
 
   cy.location("pathname", { timeout: 10000 }).then((pathname) => {
     if (pathname.includes("register") || pathname.includes("login")) {
-      return; // no such user, nothing to delete
+      return;
     }
 
     cy.visit("/account");
@@ -53,9 +48,80 @@ Cypress.Commands.add("delete" as any, (email: string, password: string) => {
   });
 });
 
+Cypress.Commands.add("loginByApi" as any, (email: string, password: string) => {
+  cy.visit("/logout");
+
+  return cy
+    .request({
+      method: "POST",
+      url: api("/auth/login"),
+      body: { email, password },
+      failOnStatusCode: false,
+    })
+    .then((res) =>
+      res.status === 200
+        ? res
+        : cy.request({
+            method: "POST",
+            url: api("/auth/register"),
+            body: { email, password },
+          }),
+    )
+    .then((res) => {
+      expect(res.status, `auth ${JSON.stringify(res.body)}`).to.equal(200);
+      return setJwt(res.body.jwt).then(() => res.body.jwt as string);
+    });
+});
+
+Cypress.Commands.add("deleteUserByApi" as any, (email: string, password: string) => {
+  return cy
+    .request({
+      method: "POST",
+      url: api("/auth/login"),
+      body: { email, password },
+      failOnStatusCode: false,
+    })
+    .then((res) => {
+      if (res.status !== 200) {
+        return cy.wrap(null);
+      }
+
+      return cy.request({
+        method: "DELETE",
+        url: api("/auth/user"),
+        headers: {
+          authorization: `Bearer ${res.body.jwt}`,
+          "x-password": password,
+        },
+      });
+    });
+});
+
+Cypress.Commands.add("seedPatch" as any, (email: string, password: string, patch: object) => {
+  return (cy as any).loginByApi(email, password).then((jwt: string) =>
+    cy
+      .request({
+        method: "POST",
+        url: api("/patch/"),
+        headers: { authorization: `Bearer ${jwt}` },
+        body: patch,
+      })
+      .then((res) => {
+        expect(res.status, `seed ${JSON.stringify(res.body)}`).to.equal(200);
+        return res.body.patch;
+      }),
+  );
+});
+
+Cypress.Commands.add("deletePatchByApi" as any, (id: string, jwt: string) => {
+  return cy.request({
+    method: "DELETE",
+    url: api(`/patch/${id}`),
+    headers: { authorization: `Bearer ${jwt}` },
+  });
+});
+
 Cypress.Commands.add("visitEditor" as any, (path = "/patch/new") => {
-  // the editor is gated behind the audio/midi start button. stub midi so specs
-  // neither depend on the platform nor wait out the 5s ask-timeout
   cy.visit(path, {
     onBeforeLoad: (win: Window) => {
       cy.stub(win.navigator, "requestMIDIAccess").resolves({
@@ -68,8 +134,6 @@ Cypress.Commands.add("visitEditor" as any, (path = "/patch/new") => {
     },
   });
 
-  // the click swaps #start for the canvas as soon as the stub resolves, so the
-  // element detaches mid-actionability-check. force it, then assert the result.
   cy.get("#start").click({ force: true });
   cy.get("#patch", { timeout: 10000 }).should("exist");
 });
