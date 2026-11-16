@@ -23,6 +23,10 @@ const connectionKey = (output: Output, input: Input) => {
   return `${connectorKey(output)}|${connectorKey(input)}`;
 };
 
+const isConnectionEntry = (
+  entry: [string, Connection | "0.5.5"]
+): entry is [string, Connection] => entry[0] !== "version";
+
 export function upgradeConnectionsState(
   state: PATCH_STATE[keyof PATCH_STATE]
 ): CONNECTIONS_STATE[CONNECTIONS_STATE_VERSIONS[0]] {
@@ -33,7 +37,7 @@ export function upgradeConnectionsState(
       connections = {
         version: "0.5.6",
         state: Object.fromEntries(
-          Object.entries(state).filter(([key]) => key !== "version")
+          Object.entries(connections).filter(isConnectionEntry)
         ),
       };
     }

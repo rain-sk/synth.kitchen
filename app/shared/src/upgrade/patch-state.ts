@@ -49,6 +49,7 @@ export const upgradePatchState = (
           ...state,
           version: "0.5.8",
           connections,
+          modules,
         };
         state = newState;
       }
