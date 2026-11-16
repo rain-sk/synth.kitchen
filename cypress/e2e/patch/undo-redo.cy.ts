@@ -1,8 +1,6 @@
 describe("patch: undo / redo", () => {
   beforeEach(() => {
-    cy.visit("/");
-    cy.get("#blank").trigger("click");
-    cy.get("#start").should("exist").click({ force: true });
+    (cy as any).visitEditor("/patch/new");
   });
 
   it("creates an undo step when moving a module", () => {

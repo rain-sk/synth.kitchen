@@ -1,17 +1,6 @@
-// The api upgrades every saved patch state at boot, in one transaction, and
-// refuses to start if any state is left un-upgraded. These specs run that path
-// against the patches that SeedPatches inserts (see
-// app/api/src/migration/seeds/patches.ts), which are pre-0.5.6: no patch state
-// version, no connections version, and module states with no version at all.
-//
-// Versions are spelled out here on purpose, rather than imported from
-// synth.kitchen-shared: a bump to PATCH_STATE_VERSIONS should make this spec
-// fail loudly so the upgrade chain gets a new step instead of silently
-// short-circuiting.
 const CURRENT_PATCH_STATE_VERSION = "0.5.8";
 const CURRENT_CONNECTIONS_STATE_VERSION = "0.5.7";
 
-// first patch in seeds/patches.ts, so the fixture is deterministic
 const SEEDED_SLUG = "agile-able-attitude-c090f09e";
 
 const api = (path: string) => `${Cypress.env("API_URL")}${path}`;
@@ -34,8 +23,6 @@ describe("patch: boot-time upgrade of seeded patches", () => {
         CURRENT_CONNECTIONS_STATE_VERSION,
       );
 
-      // a 0.5.5 connections map was flat; it has to have been wrapped, not
-      // copied from the patch state
       const keys = Object.keys(state.connections.state);
       expect(keys.length).to.be.greaterThan(0);
       for (const key of keys) {
@@ -44,7 +31,6 @@ describe("patch: boot-time upgrade of seeded patches", () => {
         expect(state.connections.state[key], key).to.have.lengthOf.at.least(2);
       }
 
-      // every module has to carry a version, or it still needs upgrading
       const unversioned = Object.values(state.modules)
         .filter((module: any) => typeof module.state?.version !== "string")
         .map((module: any) => module.type);
@@ -53,22 +39,19 @@ describe("patch: boot-time upgrade of seeded patches", () => {
   });
 
   it("renders the modules of a seeded patch", () => {
-    cy.visit(`/patch/${SEEDED_SLUG}`);
-    cy.get("#start").click();
-    cy.get("#patch", { timeout: 10000 }).should("exist");
+    (cy as any).visitEditor(`/patch/${SEEDED_SLUG}`);
 
     cy.get("#module-canvas > div").its("length").should("be.greaterThan", 1);
 
-    // Cables are painted onto a canvas by an audio-graph-driven draw pass, so
-    // asserting on painted pixels ties this spec to AudioWorklet behaviour in
-    // headless Electron (it flakes there). The upgraded connections state is
-    // asserted over the API above; here we only require that the loaded
-    // modules mounted with their ports present.
     cy.get("#connections")
       .should("have.prop", "tagName", "CANVAS")
       .and(($c) => {
-        expect(($c[0] as HTMLCanvasElement).width, "canvas width").to.be.greaterThan(0);
+        expect(
+          ($c[0] as HTMLCanvasElement).width,
+          "canvas width",
+        ).to.be.greaterThan(0);
       });
+
     cy.get(".connector")
       .its("length")
       .then((count) => expect(count, "module ports").to.be.greaterThan(10));

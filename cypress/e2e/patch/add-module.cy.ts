@@ -1,13 +1,7 @@
-// Clicking empty canvas opens the module palette at the click point. Clicking
-// on a module selects it instead - AddModule only renders while nothing is
-// selected (see ModuleCanvasBackdrop), so the click has to land on empty space.
-// The blank patch has one module: output (#0), anchored bottom-right.
 const EMPTY_CANVAS_CLICK: [number, number] = [120, 140];
 
 const openBlankPatch = () => {
-  cy.visit("/patch/new");
-  cy.get("#start").click();
-  cy.get("#patch", { timeout: 10000 }).should("exist");
+  (cy as any).visitEditor("/patch/new");
   cy.get("#0").should("exist");
 };
 
@@ -21,7 +15,6 @@ describe("patch: adding modules", () => {
 
     cy.get("#add-module").should("be.visible").should("have.focus");
 
-    // centred on the click, lifted 40px above it
     cy.get("#patch").then(($patch) => {
       const rect = $patch[0].getBoundingClientRect();
       cy.get("#add-module").should(($picker) => {
