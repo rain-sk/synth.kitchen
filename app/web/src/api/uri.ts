@@ -1,11 +1,10 @@
 export const apiBase = (() => {
-	switch (window.location.host) {
+	switch (window.location.hostname) {
 		case 'synth.kitchen':
 			return 'https://synth.kitchen/api';
 		case 'staging.synth.kitchen':
 			return 'https://staging.synth.kitchen/api';
-		case 'localhost:8080':
 		default:
-			return 'http://localhost:3000';
+			return '/api';
 	}
 })();
