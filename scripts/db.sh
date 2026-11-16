@@ -1,9 +1,5 @@
-#!/usr/bin/env bash
 #
-# Local dev database. Talks to the compose.yaml postgres only, never to
-# sk-db. See docs/todo/next.md ("dev / staging / prod database setup").
 #
-# usage: ./scripts/db.sh up | down | reset | status | psql | migrate
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -19,8 +15,6 @@ die() {
 
 [ -f "$ENV_FILE" ] || die "no $ENV_FILE (copy values from .env.example)"
 
-# app/api/.env is the source of truth: the api reads it via --env-file, so
-# the container has to match it rather than the other way round.
 sync_env() {
 	[ -f "$API_ENV" ] || die "no $API_ENV (copy app/api/.env.example)"
 
@@ -40,6 +34,15 @@ sync_env() {
 
 	[ -n "$api_db" ] || die "POSTGRES_DB_NAME missing from $API_ENV"
 	[ -n "$api_user" ] || die "POSTGRES_USERNAME missing from $API_ENV"
+
+	if [ -n "$api_pass" ]; then
+		case "$api_pass" in
+		*[!A-Za-z0-9]*)
+			die "POSTGRES_PASSWORD in $API_ENV uses characters outside A-Za-z0-9. compose interpolation and sed will mangle it - replace it with one from: head -c 24 /dev/urandom | base64 | tr -d '/+='"
+			;;
+		esac
+	fi
+
 	if [ -z "$api_pass" ]; then
 		api_pass="$(head -c 24 /dev/urandom | base64 | tr -d '/+=' | head -c 24)"
 		sed -i.bak "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=$api_pass|" "$API_ENV"
@@ -47,7 +50,6 @@ sync_env() {
 		echo "db.sh: generated a POSTGRES_PASSWORD in $API_ENV"
 	fi
 
-	# rewrite the local-db block in the root .env
 	local tmp
 	tmp="$(mktemp)"
 	grep -v '^POSTGRES_DB_NAME=' "$ENV_FILE" | grep -v '^POSTGRES_USERNAME=' |
