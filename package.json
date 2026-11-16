@@ -25,7 +25,7 @@
     "prepare": "concurrently -n shared,api,web 'cd app/shared && npm i --no-audit' 'cd app/api && npm i --no-audit' 'cd app/web && npm i --no-audit'",
     "pre-push": "npm ci && npm run build && ./scripts/e2e.sh",
     "test": "npx cypress run -q",
-    "e2e:local": "npm run db up && npm run db migrate && VITE_PORT=8081 CYPRESS_BASE_URL=http://localhost:8081 ./scripts/e2e.sh",
+    "e2e": "./scripts/e2e.sh",
     "db": "./scripts/db.sh",
     "tunnel": "./scripts/ssh-tunnel.sh"
   }
