@@ -18,8 +18,6 @@ const visitWithMidi = (behavior: "instant" | "denied" | "hang") =>
           );
           break;
         case "hang":
-          // Some platforms never settle requestMIDIAccess(): no MIDI service,
-          // or a permission prompt that is never answered.
           cy.stub(win.navigator, "requestMIDIAccess").returns(
             new Promise(() => {}) as unknown as Promise<MIDIAccess>,
           );
@@ -29,15 +27,31 @@ const visitWithMidi = (behavior: "instant" | "denied" | "hang") =>
   });
 
 describe("patch: audio/midi start gate", () => {
-  (["instant", "denied", "hang"] as const).forEach((behavior) => {
+  (["instant", "denied"] as const).forEach((behavior) => {
     it(`opens the editor when MIDI access is ${behavior}`, () => {
       visitWithMidi(behavior);
 
-      cy.get("#start").should("be.visible").click();
+      cy.get("#start").click({ force: true });
 
       cy.get("#patch", { timeout: 10000 }).should("exist");
       cy.get("#init").should("not.exist");
-      cy.contains("starting midi").should("not.exist");
+      cy.get("#start-without-midi").should("not.exist");
     });
+  });
+
+  it("asks before starting without MIDI when MIDI never answers", () => {
+    visitWithMidi("hang");
+
+    cy.get("#start").click({ force: true });
+
+    cy.get("#start-without-midi", { timeout: 10000 })
+      .should("be.visible")
+      .and("contain", "start without MIDI");
+    cy.get("#patch").should("not.exist");
+
+    cy.get("#start-without-midi").click();
+
+    cy.get("#patch").should("exist");
+    cy.get("#init").should("not.exist");
   });
 });

@@ -23,7 +23,13 @@ export const PatchEditor: React.FC<{
 	stateCallback?: (state: IPatchState) => void;
 }> = ({ slug, preset, stateCallback }) => {
 	const [randomPatch] = useRoute('/patch/random');
-	const { initialized, status, initAudioMidi } = useAudioMidiInit();
+	const {
+		initialized,
+		status,
+		askWithoutMidi,
+		initAudioMidi,
+		startWithoutMidi,
+	} = useAudioMidiInit();
 	const [state, dispatch] = useReducer(patchReducer, initialState);
 
 	const { loading, patchInfo } = useLoadPatch(
@@ -67,7 +73,14 @@ export const PatchEditor: React.FC<{
 			<DerivedConnectionStateContextProvider {...state}>
 				<MidiContextProvider>
 					{!initialized ? (
-						<Init loading={loading} name={name} status={status} init={init} />
+						<Init
+							loading={loading}
+							name={name}
+							status={status}
+							init={init}
+							askWithoutMidi={askWithoutMidi}
+							startWithoutMidi={startWithoutMidi}
+						/>
 					) : (
 						<ModuleCanvas state={state} dispatch={dispatch} minimal={minimal} />
 					)}

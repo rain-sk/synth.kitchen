@@ -16,7 +16,9 @@ export const Init: React.FC<{
 	name: string;
 	status: string;
 	init: () => void;
-}> = ({ loading, name, status, init }) => {
+	askWithoutMidi?: boolean;
+	startWithoutMidi?: () => void;
+}> = ({ loading, name, status, init, askWithoutMidi, startWithoutMidi }) => {
 	const handleKeyDown = useRef(onKeyDown(init));
 
 	useEffect(() => {
@@ -42,14 +44,25 @@ export const Init: React.FC<{
 			) : (
 				<>
 					<h1>patch/{name ? name : 'untitled'}</h1>
-					<button
-						type="button"
-						id="start"
-						onClick={onClickStart}
-						autoFocus
-				>
-						start
-					</button>
+					{askWithoutMidi ? (
+						<button
+							type="button"
+							id="start-without-midi"
+							onClick={startWithoutMidi}
+							autoFocus
+						>
+							start without MIDI
+						</button>
+					) : (
+						<button
+							type="button"
+							id="start"
+							onClick={onClickStart}
+							autoFocus
+					>
+							start
+						</button>
+					)}
 					<p>{status}</p>
 				</>
 			)}
