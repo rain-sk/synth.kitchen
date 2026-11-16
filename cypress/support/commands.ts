@@ -34,11 +34,8 @@ Cypress.Commands.add("login" as any, (email: string, password: string) => {
 });
 
 Cypress.Commands.add("delete" as any, (email: string, password: string) => {
-  // Idempotent teardown. This runs in beforeEach, so on a fresh database the
-  // user usually does not exist yet - and then /login forwards to /register.
-  // It does its own login rather than calling cy.login(), because login()
-  // asserts a dashboard redirect and setup must not fail when there is
-  // nothing to delete.
+  // idempotent teardown: on a fresh database there is usually nothing to
+  // delete, and then /login forwards to /register
   cy.visit("/logout");
   cy.visit("/login");
   cy.get("#email").focus().type(email);
@@ -55,19 +52,3 @@ Cypress.Commands.add("delete" as any, (email: string, password: string) => {
     cy.get("#confirm-delete").click();
   });
 });
-
-Cypress.Commands.add(
-  "waitForUrl" as any,
-  (patterns: string[], timeout = 5000) =>
-    cy.location({ timeout } as any).then((loc) => {
-      const pathname = loc.pathname;
-
-      if (!patterns.some((pat) => pathname.includes(pat))) {
-        throw new Error(
-          `Expected URL to contain one of ${JSON.stringify(patterns)} but got "${pathname}"`,
-        );
-      }
-
-      return pathname;
-    }),
-);
