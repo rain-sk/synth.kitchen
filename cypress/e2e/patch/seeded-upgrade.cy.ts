@@ -44,11 +44,11 @@ describe("patch: boot-time upgrade of seeded patches", () => {
     cy.get("#module-canvas > div").its("length").should("be.greaterThan", 1);
 
     cy.get("#connections")
-      .should("have.prop", "tagName", "CANVAS")
+      .should("have.prop", "tagName", "svg")
       .and(($c) => {
         expect(
-          ($c[0] as HTMLCanvasElement).width,
-          "canvas width",
+          $c.find("[data-connection-key]").length,
+          "rendered cables",
         ).to.be.greaterThan(0);
       });
 
