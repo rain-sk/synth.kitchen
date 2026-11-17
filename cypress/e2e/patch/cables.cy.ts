@@ -7,34 +7,59 @@ const cable = () => cy.get("#connections [data-connection-key]");
 const cablePath = ($el: JQuery<HTMLElement>) =>
 	($el[0] as SVGPathElement).getAttribute("d");
 
-// cables sit below modules (z-index 10 vs 11), so the middle of a cable may be
-// covered by a module card - click a point along the stroke that is really exposed
+// cables live below modules and connectors, and a short cable can sit mostly
+// off-screen or behind the toolbar - centre it in the viewport, then click a
+// point along the stroke that is genuinely exposed
 const clickCable = (options: Partial<Cypress.ClickOptions> = {}) =>
 	cy.window().then((win) => {
 		const hit = win.document.querySelector(
 			"#connections [data-connection-key] .cable-hit",
 		) as SVGPathElement;
-		const cable = hit.closest("[data-connection-key]") as HTMLElement;
-		const svg = win.document
-			.getElementById("connections")!
-			.getBoundingClientRect();
-		const box = hit.getBoundingClientRect();
-		const [x1, y1, x2, y2] = (hit.getAttribute("d") as string)
-			.match(/-?\d+(\.\d+)?/g)!
-			.map(Number);
 
-		const point = Array.from({ length: 40 }, (_, i) => (i + 1) / 41)
-			.map((t) => [
-				Math.round(svg.left + x1 + (x2 - x1) * t),
-				Math.round(svg.top + y1 + (y2 - y1) * t),
-			])
-			.find(([x, y]) => cable.contains(win.document.elementFromPoint(x, y)));
+		const stroke = () =>
+			(hit
+				.closest("[data-connection-key]")!
+				.querySelector(".cable-accent")!.getAttribute("d") as string)
+				.match(/-?\d+(\.\d+)?/g)!
+				.map(Number);
 
-		expect(point, "an exposed point on the cable stroke").to.not.be.undefined;
+		const centreIn = () => {
+			const svg = win.document.getElementById("connections")!.getBoundingClientRect();
+			const [x1, y1, x2, y2] = stroke();
+			return [
+				svg.left + (x1 + x2) / 2,
+				svg.top + (y1 + y2) / 2,
+			] as [number, number];
+		};
 
-		cy.wrap(hit).click(point![0] - box.left, point![1] - box.top, {
-			...options,
-			force: true,
+		const patch = win.document.getElementById("patch") as HTMLElement;
+		const [midX, midY] = centreIn();
+
+		patch.scrollTop += midY - win.innerHeight / 2;
+		patch.scrollLeft += midX - win.innerWidth / 2;
+
+		return cy.wait(100).then(() => {
+			const svg = win.document.getElementById("connections")!.getBoundingClientRect();
+			const box = hit.getBoundingClientRect();
+			const [x1, y1, x2, y2] = stroke();
+			const cable = hit.closest("[data-connection-key]") as HTMLElement;
+
+			const point = Array.from({ length: 40 }, (_, i) => (i + 1) / 41)
+				.map((t) => [
+					Math.round(svg.left + x1 + (x2 - x1) * t),
+					Math.round(svg.top + y1 + (y2 - y1) * t),
+				])
+				.filter(
+					([x, y]) =>
+						x > 0 && y > 0 && cable.contains(win.document.elementFromPoint(x, y)),
+				);
+
+			expect(point, "an exposed point on the cable stroke").to.not.be.empty;
+
+			cy.wrap(hit).click(point[0][0] - box.left, point[0][1] - box.top, {
+				...options,
+				force: true,
+			});
 		});
 	});
 
@@ -77,6 +102,19 @@ context("patch: cables", () => {
 	it("auto-selects a cable when it is created", () => {
 		connect().then(() => {
 			cable().should("have.attr", "aria-pressed", "true");
+		});
+	});
+
+	it("activates a connector that already has a cable plugged in", () => {
+		connect().then(() => {
+			cy.get("body").type("{esc}");
+
+			cable().should("have.attr", "aria-pressed", "false");
+
+			cy.get(SPEAKER).click();
+
+			cy.get(SPEAKER).should("have.class", "active");
+			cable().should("have.attr", "aria-pressed", "false");
 		});
 	});
 
