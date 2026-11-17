@@ -1,15 +1,21 @@
+export enum SelectConnectionMode {
+	REPLACE,
+	ADD,
+	TOGGLE,
+}
+
 export type ISelectConnection = {
 	type: 'SelectConnection';
 	payload: {
 		connectionKeys: string[];
-		toggle?: boolean;
+		mode?: SelectConnectionMode;
 	};
 };
 
 export const selectConnectionAction = (
 	connectionKeys: string[],
-	toggle = false,
+	mode = SelectConnectionMode.REPLACE,
 ): ISelectConnection => ({
 	type: 'SelectConnection',
-	payload: { connectionKeys, toggle },
+	payload: { connectionKeys, mode },
 });

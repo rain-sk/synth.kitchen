@@ -2,10 +2,14 @@ import React, { useRef } from 'react';
 import { useAsync, useMouse, useScroll } from 'react-use';
 
 import { connectorButton } from '../../state/connection';
-import { selectConnectionAction } from '../../state/actions/select-connection';
+import {
+	selectConnectionAction,
+	SelectConnectionMode,
+} from '../../state/actions/select-connection';
 import { IPatchAction } from '../../state/actions';
 import { IPatchState } from '../../state/types/patch';
 import { getMain } from '../../../shared/utils';
+import { Modifier } from '../../constants/key';
 
 const line = (start: [number, number], end: [number, number]) =>
 	`M ${start[0]} ${start[1]} L ${end[0]} ${end[1]}`;
@@ -32,7 +36,9 @@ const Cables: React.FC<{
 	useScroll(mainRef);
 	const mouse = useMouse(mainRef);
 
-	const { connections, modules, selectedConnections } = state;
+	const { connections, modules, selectedConnections, heldModifiers } = state;
+
+	const shiftHeld = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
 	const el = mainRef.current;
 
@@ -88,6 +94,8 @@ const Cables: React.FC<{
 		? endpoint(state.activeConnectorKey)
 		: undefined;
 
+	const focusedCable = useRef<string | undefined>(undefined);
+
 	return (
 		<svg
 			id="connections"
@@ -115,17 +123,30 @@ const Cables: React.FC<{
 					aria-label={`Cable: ${cable.name}`}
 					aria-pressed={cable.selected}
 					onMouseDown={(event) => event.stopPropagation()}
+					onFocus={() => {
+						focusedCable.current = cable.key;
+						dispatch(
+							selectConnectionAction(
+								[cable.key],
+								shiftHeld
+									? SelectConnectionMode.ADD
+									: SelectConnectionMode.REPLACE,
+							),
+						);
+					}}
 					onClick={(event) =>
 						dispatch(
-							selectConnectionAction([cable.key], event.shiftKey),
+							selectConnectionAction(
+								[cable.key],
+								event.shiftKey
+									? SelectConnectionMode.TOGGLE
+									: SelectConnectionMode.REPLACE,
+							),
 						)
 					}
 					onKeyDown={(event) => {
-						if (event.key === 'Enter' || event.key === ' ') {
+						if (event.key === ' ') {
 							event.preventDefault();
-							dispatch(
-								selectConnectionAction([cable.key], event.shiftKey),
-							);
 						}
 					}}
 				>
