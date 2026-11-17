@@ -255,6 +255,77 @@ button {
 	top: 2.5rem;
 }
 
+.cable {
+	cursor: pointer;
+	outline: none;
+	pointer-events: auto;
+}
+
+.cable-hit {
+	fill: none;
+	stroke: transparent;
+	stroke-width: 18;
+	stroke-linecap: round;
+	pointer-events: stroke;
+}
+
+.cable:focus-visible .cable-hit {
+	stroke: rgba(201, 137, 0, 0.25);
+	stroke-width: 14;
+}
+
+.cable-outline {
+	fill: none;
+	stroke: #000000;
+	stroke-width: 5;
+	stroke-linecap: round;
+	pointer-events: none;
+}
+
+.cable-accent {
+	fill: none;
+	stroke: #ffecdc;
+	stroke-width: 3;
+	stroke-linecap: round;
+	pointer-events: none;
+}
+
+.cap-outline {
+	fill: #000000;
+	pointer-events: none;
+}
+
+.cap-accent {
+	fill: #ffecdc;
+	pointer-events: none;
+}
+
+.cable.pending .cable-outline,
+.cable.pending .cap-outline {
+	stroke: #ffffff;
+	fill: #ffffff;
+}
+
+.cable.pending .cable-accent,
+.cable.pending .cap-accent {
+	stroke: #ffbf6f;
+	fill: #ffbf6f;
+}
+
+.cable.selected .cable-accent,
+.cable:focus-visible .cable-accent {
+	stroke: #c98900;
+}
+
+.cable.selected .cap-accent,
+.cable:focus-visible .cap-accent {
+	fill: #c98900;
+}
+
+.cable-accent.pending {
+	stroke: #ffbf6f;
+}
+
 #module-canvas {
 	pointer-events: all;
 	overscroll-behavior: contain;

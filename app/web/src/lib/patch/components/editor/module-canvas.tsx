@@ -47,7 +47,7 @@ export const ModuleCanvas: React.FC<{
 						/>
 					))}
 				</section>
-				<ConnectionsWrapper state={state} />
+				<ConnectionsWrapper state={state} dispatch={dispatch} />
 			</ModuleCanvasBackdrop>
 			<Toolbar
 				sortedModules={sortedModules}
