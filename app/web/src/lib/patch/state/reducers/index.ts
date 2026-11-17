@@ -21,6 +21,7 @@ import { focusInput } from './input-focus';
 import { keyboardEvent } from './keyboard-event';
 import { loadConnections } from './load-connections';
 import { loadPatch } from './load-patch';
+import { selectConnection } from './select-connection';
 import { selectModule } from './select-module';
 import { selectModules } from './select-modules';
 import { selectionDrag } from './selection-drag';
@@ -107,6 +108,9 @@ export const patchReducer: React.Reducer<IPatchState, IPatchAction> = (
 		}
 		case 'SelectionDrag': {
 			return selectionDrag(state, action);
+		}
+		case 'SelectConnection': {
+			return selectConnection(state, action);
 		}
 		case 'SelectModule': {
 			return selectModule(state, action);
