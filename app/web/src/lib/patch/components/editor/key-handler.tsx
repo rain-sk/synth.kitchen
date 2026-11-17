@@ -29,6 +29,15 @@ export const KeyHandler: React.FC = () => {
 			}
 
 			dispatch(patchActions.keyDownAction(key));
+
+			if (key === Key.ESCAPE) {
+				const canvas = document.getElementById('module-canvas');
+				const active = document.activeElement as Element | null;
+
+				if (canvas && active?.closest('[data-connection-key], .connector')) {
+					canvas.focus();
+				}
+			}
 		},
 		[selectedModules, dispatch],
 	);

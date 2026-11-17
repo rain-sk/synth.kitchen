@@ -36,7 +36,12 @@ export const ModuleCanvas: React.FC<{
 		<>
 			<ModuleCanvasBackdrop state={state} dispatch={dispatch}>
 				<KeyHandler />
-				<section id="module-canvas" role="tree" aria-multiselectable>
+				<section
+					id="module-canvas"
+					role="tree"
+					aria-multiselectable
+					tabIndex={-1}
+				>
 					{sortedModules.map(([module, position]) => (
 						<ModuleWrapper
 							key={module.id}
