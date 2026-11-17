@@ -766,17 +766,6 @@ main.selection-drag .connector:hover:before {
 	font-size: 0.667rem;
 }
 
-#load {
-	display: flex;
-	align-items: center;
-	padding: 0 0.5rem;
-	color: #fff;
-}
-
-input[type='file'] {
-	display: none;
-}
-
 .ReactModalPortal {
 	position: relative;
 	z-index: 30;

@@ -7,7 +7,6 @@ export const en = {
 		saveFailed: 'could not save',
 		loaded: 'loaded {name} — {modules} modules, {cables} cables',
 		loadFailed: 'could not load {name}',
-		loadRejected: 'that file is not a patch',
 		recordSaved: 'recorded {duration}',
 		recordBlocked: 'microphone unavailable',
 		midiConnected: 'midi connected',

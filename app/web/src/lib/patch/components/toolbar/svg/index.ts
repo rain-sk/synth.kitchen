@@ -1,5 +1,4 @@
 import { OpenFromCloudSvg } from './open-from-cloud';
-import { OpenFromDiskSvg } from './open-from-disk';
 import { SaveToCloudSvg } from './save-to-cloud';
 
-export { OpenFromCloudSvg, OpenFromDiskSvg, SaveToCloudSvg };
+export { OpenFromCloudSvg, SaveToCloudSvg };
