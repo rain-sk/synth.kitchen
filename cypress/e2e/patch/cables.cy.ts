@@ -88,6 +88,41 @@ context("patch: cables", () => {
 		});
 	});
 
+	it("selects a cable by focusing it, no key needed", () => {
+		connect().then(() => {
+			cable().should("have.attr", "aria-pressed", "true");
+
+			cy.get("body").type("{esc}");
+
+			cable().should("have.attr", "aria-pressed", "false");
+
+			cable().focus();
+
+			cable().should("have.attr", "aria-pressed", "true");
+		});
+	});
+
+	it("returns focus to the output connector when its cable is deleted", () => {
+		connect().then((out) => {
+			cable().focus();
+
+			cy.get("body").type("{backspace}");
+
+			cable().should("have.length", 0);
+			cy.focused().should("have.id", out[0].id);
+		});
+	});
+
+	it("returns focus to the canvas when escape clears selection", () => {
+		connect().then(() => {
+			cable().focus();
+
+			cy.get("body").type("{esc}");
+
+			cy.focused().should("have.id", "module-canvas");
+		});
+	});
+
 	it("toggles selection with shift-click", () => {
 		connect().then(() => {
 			cable().should("have.attr", "aria-pressed", "true");
