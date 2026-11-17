@@ -183,6 +183,9 @@ const Cables: React.FC<{
 						}
 					}}
 				>
+					{/* the halo is the visible feedback; the hit stroke never changes width,
+							hovering must not shrink the thing you are aiming at */}
+					<path className="cable-halo" d={hitArea(cable.from, cable.to)} />
 					<path className="cable-hit" d={hitArea(cable.from, cable.to)} />
 					<path className="cable-outline" d={line(cable.from, cable.to)} />
 					<path className="cable-accent" d={line(cable.from, cable.to)} />

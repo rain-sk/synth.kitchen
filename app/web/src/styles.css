@@ -358,9 +358,19 @@ button {
 	pointer-events: stroke;
 }
 
-.cable:focus-visible .cable-hit {
-	stroke: rgba(201, 137, 0, 0.25);
+/* the halo carries the hover/focus feedback so .cable-hit can stay 18px wide:
+   with pointer-events: stroke the visible width IS the target, and shrinking it
+   on hover made the cable harder to hit exactly when someone aimed at it */
+.cable-halo {
+	fill: none;
+	stroke: transparent;
 	stroke-width: 14;
+	stroke-linecap: round;
+	pointer-events: none;
+}
+
+.cable:focus-visible .cable-halo {
+	stroke: rgba(201, 137, 0, 0.25);
 }
 
 .cable-outline {
@@ -389,9 +399,8 @@ button {
 	pointer-events: none;
 }
 
-.cable:hover .cable-hit {
+.cable:hover .cable-halo {
 	stroke: rgba(255, 236, 220, 0.14);
-	stroke-width: 14;
 }
 
 .cable:hover .cable-accent {

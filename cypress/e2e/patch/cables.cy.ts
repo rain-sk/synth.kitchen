@@ -197,7 +197,41 @@ context("patch: cables", () => {
 					.join("\n");
 
 				expect(rules, ":hover accent").to.contain(".cable:hover .cable-accent");
-				expect(rules, ":hover halo").to.contain(".cable:hover .cable-hit");
+				expect(rules, ":hover halo").to.contain(".cable:hover .cable-halo");
+			});
+		});
+	});
+
+	// the hit stroke has pointer-events: stroke, so its width IS the target. hover and
+	// focus used to reuse it for the halo at 14px, shrinking the cable by ~22% at the
+	// moment someone aimed at it. Cypress dispatches synthetic events, which never set
+	// Chrome's :hover, so this asserts the stylesheet contract + the resting geometry
+	it("never shrinks the hit stroke for hover or focus feedback", () => {
+		connect().then(() => {
+			cy.get("#connections [data-connection-key] .cable-hit").should(
+				"have.css",
+				"stroke-width",
+				"18px",
+			);
+			cy.get("#connections [data-connection-key] .cable-halo").should(
+				"have.css",
+				"stroke-width",
+				"14px",
+			);
+
+			cy.document().then((doc) => {
+				const rules = Array.from(doc.styleSheets)
+					.flatMap((sheet) => Array.from(sheet.cssRules))
+					.map((rule) => rule.selectorText ?? "")
+					.filter(Boolean);
+
+				const touchingHit = rules.filter((sel) => /\.cable:(hover|focus-visible|selected) \.cable-hit/.test(sel));
+
+				expect(touchingHit, "no state rule may restyle the hit stroke").to.be.empty;
+				expect(rules, "hover feedback lives on the halo").to.include(".cable:hover .cable-halo");
+				expect(rules, "focus feedback lives on the halo").to.include(
+					".cable:focus-visible .cable-halo",
+				);
 			});
 		});
 	});
