@@ -300,6 +300,20 @@ button {
 	pointer-events: none;
 }
 
+.cable:hover .cable-hit {
+	stroke: rgba(255, 236, 220, 0.14);
+	stroke-width: 14;
+}
+
+.cable:hover .cable-accent {
+	stroke: #ffffff;
+	stroke-width: 4;
+}
+
+.cable:hover .cap-accent {
+	fill: #ffffff;
+}
+
 .cable.pending .cable-outline,
 .cable.pending .cap-outline {
 	stroke: #ffffff;
