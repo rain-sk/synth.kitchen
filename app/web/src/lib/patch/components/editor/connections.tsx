@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useAsync, useMouse, useScroll } from 'react-use';
 
 import { connectorButton } from '../../state/connection';
@@ -95,6 +95,23 @@ const Cables: React.FC<{
 		: undefined;
 
 	const focusedCable = useRef<string | undefined>(undefined);
+
+	useEffect(() => {
+		const key = focusedCable.current;
+
+		if (key === undefined || key in connections.state) {
+			return;
+		}
+
+		focusedCable.current = undefined;
+
+		const outputKey = key.split('|')[0];
+
+		(
+			document.getElementById(outputKey) ??
+			document.getElementById('module-canvas')
+		)?.focus();
+	}, [connections.state]);
 
 	return (
 		<svg
