@@ -9,6 +9,7 @@ import { LogoutRoute } from './routes/logout';
 import { PatchRoute } from './routes/patch';
 import { ResetPasswordRoute } from './routes/reset-password';
 import { Nav } from './lib/shared/components/nav';
+import { ToastsProvider } from './lib/shared/components/toasts';
 import { VerifyRoute } from './routes/account/verify';
 // import { LearnRoute } from './routes/learn';
 
@@ -23,7 +24,7 @@ const RedirectToPatch = () => {
 
 export const SynthKitchen: React.FC = () => {
 	return (
-		<>
+		<ToastsProvider>
 			<Nav />
 			<Switch>
 				<Route path="/" component={IndexRoute} />
@@ -45,6 +46,6 @@ export const SynthKitchen: React.FC = () => {
 				<Route path="/reset-password" component={ResetPasswordRoute} />
 				<Route path="/reset-password/:key" component={ResetPasswordRoute} />
 			</Switch>
-		</>
+		</ToastsProvider>
 	);
 };

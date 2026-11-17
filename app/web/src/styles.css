@@ -168,6 +168,95 @@ nav ul.nav-links a:visited {
 	color: #7cd2e2;
 }
 
+.toasts {
+	position: fixed;
+	right: 0.5rem;
+	bottom: 2.5rem;
+	z-index: 1001;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	align-items: flex-end;
+	 pointer-events: none;
+}
+
+.toasts-stack {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	align-items: flex-end;
+}
+
+.toast {
+	pointer-events: auto;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	max-width: min(20rem, calc(100vw - 1rem));
+	padding: 0.25rem 0.5rem;
+	border-radius: 0.5rem;
+	border: 1px solid #4f4658;
+	background-color: #ffecdc;
+	color: #4f4658;
+	font-size: 0.875rem;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.toast.pending {
+	background-color: #ffecdc;
+	opacity: 0.85;
+}
+
+.toast.success {
+	background-color: #b9ffce;
+}
+
+.toast.error {
+	background-color: #ffb3b3;
+	color: #4f1717;
+}
+
+.toast-action {
+	background-color: #4f4658;
+	color: #ffecdc;
+	border: none;
+	border-radius: 0.25rem;
+	padding: 0.125rem 0.375rem;
+	font-size: 0.75rem;
+}
+
+.toast-dismiss {
+	width: 1rem;
+	height: 1rem;
+	padding: 0;
+	border: none;
+	border-radius: 0.5rem;
+	background: transparent;
+	cursor: pointer;
+}
+
+.toast-dismiss::before {
+	content: '\00d7';
+	color: #4f4658;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.toast {
+		animation: toast-in 120ms ease-out;
+	}
+}
+
+@keyframes toast-in {
+	from {
+		opacity: 0;
+		transform: translateY(0.25rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 .toolbar {
 	position: absolute;
 	left: 0;
