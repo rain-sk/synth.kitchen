@@ -14,6 +14,22 @@ import { Modifier } from '../../constants/key';
 const line = (start: [number, number], end: [number, number]) =>
 	`M ${start[0]} ${start[1]} L ${end[0]} ${end[1]}`;
 
+// the invisible hit stroke is wide, so it is pulled back from both ends:
+// a connector dot must stay clickable where its cable is plugged in
+const INSET = 12;
+
+const hitArea = (from: [number, number], to: [number, number]) => {
+	const dx = to[0] - from[0];
+	const dy = to[1] - from[1];
+	const length = Math.hypot(dx, dy) || 1;
+	const t = Math.min(INSET / length, 0.4);
+
+	return line(
+		[from[0] + dx * t, from[1] + dy * t],
+		[to[0] - dx * t, to[1] - dy * t],
+	);
+};
+
 export const ConnectionsWrapper: React.FC<{
 	state: IPatchState;
 	dispatch: React.Dispatch<IPatchAction>;
@@ -167,7 +183,7 @@ const Cables: React.FC<{
 						}
 					}}
 				>
-					<path className="cable-hit" d={line(cable.from, cable.to)} />
+					<path className="cable-hit" d={hitArea(cable.from, cable.to)} />
 					<path className="cable-outline" d={line(cable.from, cable.to)} />
 					<path className="cable-accent" d={line(cable.from, cable.to)} />
 					<circle className="cap-outline" cx={cable.from[0]} cy={cable.from[1]} r={5} />
