@@ -198,16 +198,3 @@ export const disconnect = (
 		},
 	};
 };
-
-export const connectOrDisconnect = (
-	connections: ConnectionsState,
-	connectors: Record<string, ConnectorInfo>,
-	output: Output,
-	input: Input,
-): {
-	connections: ConnectionsState;
-	connectors: Record<string, ConnectorInfo>;
-} =>
-	connectionKey(output, input) in connections
-		? disconnect(connections, connectors, output, input)
-		: connect(connections, connectors, output, input);
