@@ -83,17 +83,44 @@ migrate() {
 	(cd "$ROOT/app/api" && npm run migrate)
 }
 
+# Prove the database behind the port is the container this script owns.
+# The sync_env guard only matches the hostname, and `ssh-tunnel.sh:49` forwards PRODUCTION
+# postgres to exactly 127.0.0.1:5432 - so a live tunnel passed that check and migrate/reset
+# ran DDL against prod. Identity, not hostname: the port must be published by sk-db-dev, and
+# no ssh process may own it.
+assert_local_listener() {
+	local port="${POSTGRES_PORT:-5432}"
+
+	if command -v lsof >/dev/null 2>&1; then
+		local pid comm
+		for pid in $(lsof -nP -iTCP:"$port" -sTCP:LISTEN -t 2>/dev/null); do
+			comm=$(ps -o comm= -p "$pid" 2>/dev/null | tr -d ' ')
+			case "$comm" in
+			ssh)
+				die "127.0.0.1:$port is an ssh tunnel - ssh-tunnel.sh forwards the PRODUCTION database there. Refusing to migrate. Close the tunnel, or set POSTGRES_PORT to something else in app/api/.env."
+				;;
+			esac
+		done
+	fi
+
+	if ! docker port sk-db-dev 5432/tcp 2>/dev/null | grep -q ":$port\$"; then
+		die "127.0.0.1:$port is not published by the sk-db-dev container this script manages. Refusing to run migrations against an unknown database. Run: ./scripts/db.sh up"
+	fi
+}
+
 case "${1:-}" in
 up)
 	sync_env
 	compose up -d
 	wait_healthy
+	assert_local_listener
 	;;
 down)
 	compose down
 	;;
 reset)
 	sync_env
+	assert_local_listener
 	compose down -v
 	compose up -d
 	wait_healthy
@@ -108,6 +135,7 @@ psql)
 	;;
 migrate)
 	sync_env
+	assert_local_listener
 	wait_healthy
 	migrate
 	;;
