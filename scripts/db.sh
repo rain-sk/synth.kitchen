@@ -19,11 +19,15 @@ die() {
 sync_env() {
 	[ -f "$API_ENV" ] || die "no $API_ENV (copy app/api/.env.example)"
 
-	local api_db api_user api_pass api_host
+	local api_db api_user api_pass api_host api_port
 	api_host=$(grep '^POSTGRES_HOST=' "$API_ENV" | cut -d= -f2- || true)
 	api_db=$(grep '^POSTGRES_DB_NAME=' "$API_ENV" | cut -d= -f2- || true)
 	api_user=$(grep '^POSTGRES_USERNAME=' "$API_ENV" | cut -d= -f2- || true)
 	api_pass=$(grep '^POSTGRES_PASSWORD=' "$API_ENV" | cut -d= -f2- || true)
+	# read the port from the same file as the rest, and keep it: a shell default here rewrote a
+	# deliberate non-5432 back to 5432, the exact port ssh-tunnel.sh forwards prod to
+	api_port=$(grep '^POSTGRES_PORT=' "$API_ENV" | cut -d= -f2- || true)
+	[ -n "$api_port" ] || api_port=5432
 
 	[ -n "$api_host" ] || die "POSTGRES_HOST missing from $API_ENV"
 	case "$api_host" in
@@ -59,7 +63,7 @@ sync_env() {
 		echo "POSTGRES_DB_NAME=$api_db"
 		echo "POSTGRES_USERNAME=$api_user"
 		echo "POSTGRES_PASSWORD=$api_pass"
-		echo "POSTGRES_PORT=${POSTGRES_PORT:-5432}"
+		echo "POSTGRES_PORT=$api_port"
 	} >>"$tmp"
 	mv "$tmp" "$ENV_FILE"
 	chmod 600 "$ENV_FILE"
@@ -76,7 +80,7 @@ wait_healthy() {
 		[ $tries -lt 60 ] || die "database never became healthy"
 		sleep 1
 	done
-	echo "db.sh: postgres healthy on 127.0.0.1:${POSTGRES_PORT:-5432}"
+	echo "db.sh: postgres healthy on 127.0.0.1:$(grep '^POSTGRES_PORT=' "$ENV_FILE" | cut -d= -f2-)"
 }
 
 migrate() {
@@ -89,7 +93,11 @@ migrate() {
 # ran DDL against prod. Identity, not hostname: the port must be published by sk-db-dev, and
 # no ssh process may own it.
 assert_local_listener() {
-	local port="${POSTGRES_PORT:-5432}"
+	# the port lives in $ENV_FILE, not in the shell - reading the shell defaulted to 5432 and
+	# false-refused whenever the dev database was deliberately published elsewhere
+	local port
+	port=$(grep '^POSTGRES_PORT=' "$ENV_FILE" | cut -d= -f2-)
+	[ -n "$port" ] || port=5432
 
 	if command -v lsof >/dev/null 2>&1; then
 		local pid comm
