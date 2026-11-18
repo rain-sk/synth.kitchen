@@ -39,5 +39,37 @@
         expect(store.jwt).to.exist;
       });
     });
+
+    // teardown had been a silent no-op: it typed the credentials and then read cy.location with a
+    // bare `.then`, which yields immediately, so it always saw /login and returned without deleting.
+    // register answering 200 with the existing account's jwt is what kept the suite green over it
+    it("teardown actually deletes the user", () => {
+      const email = "teardown@synth.kitchen";
+      const api = Cypress.env("API_URL") as string;
+      const login = () =>
+        cy.request({
+          method: "POST",
+          url: `${api}/auth/login`,
+          body: { email, password: testPassword },
+          failOnStatusCode: false,
+        });
+
+      cy.request({
+        method: "POST",
+        url: `${api}/auth/register`,
+        body: { email, password: testPassword },
+        failOnStatusCode: false,
+      });
+
+      login().then((res) => {
+        expect(res.status, "user exists before teardown").to.equal(200);
+
+        (cy as any).delete(email, testPassword);
+
+        login().then((after) => {
+          expect(after.status, "login must fail once torn down").to.not.equal(200);
+        });
+      });
+    });
   });
 }

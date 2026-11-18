@@ -31,21 +31,13 @@ Cypress.Commands.add("login" as any, (email: string, password: string) => {
 });
 
 Cypress.Commands.add("delete" as any, (email: string, password: string) => {
-  cy.visit("/logout");
-  cy.visit("/login");
-  cy.get("#email").focus().type(email);
-  cy.get("#password").focus().type(`${password}{enter}`);
-
-  cy.location("pathname", { timeout: 10000 }).then((pathname) => {
-    if (pathname.includes("register") || pathname.includes("login")) {
-      return;
-    }
-
-    cy.visit("/account");
-    cy.get("#delete").click();
-    cy.get("#password").focus().type(password);
-    cy.get("#confirm-delete").click();
-  });
+  // Teardown only, via the API. The previous UI flow typed the credentials, then read
+  // `cy.location("pathname", { timeout })` with a bare `.then` — a query without an assertion
+  // yields immediately, so it always saw `/login` (measured: `/login` at once, `/dashboard` 2s
+  // later), early-returned, and deleted nothing. Users persisted between runs, and
+  // `POST /auth/register` answering 200 with the existing account's jwt hid it.
+  // `deleteUserByApi` is idempotent (no user -> no-op) and origin-agnostic.
+  return (cy as any).deleteUserByApi(email, password);
 });
 
 Cypress.Commands.add("loginByApi" as any, (email: string, password: string) => {
