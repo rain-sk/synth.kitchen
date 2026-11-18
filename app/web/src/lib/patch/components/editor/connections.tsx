@@ -111,6 +111,9 @@ const Cables: React.FC<{
 		: undefined;
 
 	const focusedCable = useRef<string | undefined>(undefined);
+	// recorded at mousedown, before focus moves: the click of a gesture that just focused this cable
+	// was already handled by onFocus, so only a re-click on an already-focused cable acts
+	const wasFocused = useRef(false);
 
 	useEffect(() => {
 		const key = focusedCable.current;
@@ -155,19 +158,35 @@ const Cables: React.FC<{
 					tabIndex={0}
 					aria-label={`Cable: ${cable.name}`}
 					aria-pressed={cable.selected}
-					onMouseDown={(event) => event.stopPropagation()}
+					onMouseDown={(event) => {
+						event.stopPropagation();
+						// recorded before focus moves, so onClick can tell whether this gesture produced the
+						// focus that already applied the selection
+						wasFocused.current =
+							event.currentTarget.ownerDocument.activeElement === event.currentTarget;
+					}}
 					onFocus={() => {
 						focusedCable.current = cable.key;
+						// shift means toggle here, not add: a cable can already be selected without holding
+						// focus (auto-select on create, marquee), and shift-clicking one of those is the user
+						// taking it back out of the selection
 						dispatch(
 							selectConnectionAction(
 								[cable.key],
 								shiftHeld
-									? SelectConnectionMode.ADD
+									? SelectConnectionMode.TOGGLE
 									: SelectConnectionMode.REPLACE,
 							),
 						);
 					}}
-					onClick={(event) =>
+					onClick={(event) => {
+						// pointer order is mousedown → focus → mouseup → click. Pressing a cable that was not
+						// focused already selected it in onFocus, so dispatching here too double-applied:
+						// shift-click ADDed on focus then TOGGLEd it back off, and multi-select was a no-op
+						if (!wasFocused.current) {
+							return;
+						}
+
 						dispatch(
 							selectConnectionAction(
 								[cable.key],
@@ -175,8 +194,8 @@ const Cables: React.FC<{
 									? SelectConnectionMode.TOGGLE
 									: SelectConnectionMode.REPLACE,
 							),
-						)
-					}
+						);
+					}}
 					onKeyDown={(event) => {
 						if (event.key === ' ') {
 							event.preventDefault();

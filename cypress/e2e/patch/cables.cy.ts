@@ -105,6 +105,21 @@ context("patch: cables", () => {
 		});
 	});
 
+	it("shift-click selects a cable instead of undoing its own focus", () => {
+		// pointer order is mousedown → focus → mouseup → click. onFocus applied the press and onClick
+		// then toggled the same key back off, so shift-click cancelled itself and multi-select was a no-op
+		connect().then(() => {
+			cy.get("body").type("{esc}");
+			cable().should("have.attr", "aria-pressed", "false");
+
+			cy.get("body").type("{shift}", { release: false });
+			clickCable({ shiftKey: true });
+			cy.get("body").type("{shift}");
+
+			cable().should("have.attr", "aria-pressed", "true");
+		});
+	});
+
 	it("activates a connector that already has a cable plugged in", () => {
 		connect().then(() => {
 			cy.get("body").type("{esc}");
@@ -165,7 +180,11 @@ context("patch: cables", () => {
 		connect().then(() => {
 			cable().should("have.attr", "aria-pressed", "true");
 
+			// shift must really be held: a pointer press is applied by onFocus (focus precedes click),
+			// and that reads the app's modifier state, not the click event's shiftKey
+			cy.get("body").type("{shift}", { release: false });
 			clickCable({ shiftKey: true });
+			cy.get("body").type("{shift}");
 
 			cable().should("have.attr", "aria-pressed", "false");
 		});
