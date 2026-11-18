@@ -587,7 +587,10 @@ button {
 
 .module.selected,
 .module.selection_pending {
-	z-index: 1;
+	/* above #connections (10) like every other module — this sat at 1 from when modules were auto and
+	   the canvas was -1, and it stayed there when the base was raised to 11, so selecting a module dropped
+	   it below the cable layer and its cables painted over its connectors, endpoint circles included */
+	z-index: 12;
 }
 
 .module.OSCILLATOR {
