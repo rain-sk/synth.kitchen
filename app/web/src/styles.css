@@ -446,6 +446,12 @@ button {
 .module {
 	background: #aad96c;
 	position: absolute;
+	/* .module uses transform, so it is its own stacking context: a z-index on a descendant
+	   (.connector is 12) cannot lift it above #connections (10) — the whole subtree is ordered at
+	   auto/0 and cables covered 7 connectors, whose mousedown then stopPropagation'd into a cable
+	   select instead of patching. The old canvas sat at -1, so sitting under modules is the
+	   original relationship anyway */
+	z-index: 11;
 	box-sizing: content-box;
 	display: flex;
 	flex-direction: column;
