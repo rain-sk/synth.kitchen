@@ -1,5 +1,6 @@
 import { IsEmail } from "class-validator";
 import {
+  CreateDateColumn,
   Entity,
   Column,
   PrimaryGeneratedColumn,
@@ -34,6 +35,9 @@ export class User implements UserInfoAuthenticated {
 
   @Column({ type: "boolean", default: false })
   verified: boolean;
+
+  @CreateDateColumn({ type: "timestamp" })
+  createdAt!: Date;
 
   @OneToMany(() => Patch, (patch) => patch.creator)
   patches: Promise<Patch[]>;
