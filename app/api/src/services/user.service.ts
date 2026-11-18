@@ -126,21 +126,88 @@ export class UserService {
         const patchStates = manager.getRepository(SavedPatchState);
         const passwordResets = manager.getRepository(PasswordResetRequest);
         const verifications = manager.getRepository(EmailVerificationRequest);
-        // const samples = manager.getRepository(Sample);
 
         const userPatches = (await PatchService.getPatchInfo({
           creatorId: userId,
         })) as PatchInfo[];
+        const patchIds = userPatches.map((patch) => patch.id);
+        let stateIds: string[] = [];
 
-        await Promise.all(
-          userPatches.map((patch) => patchStates.delete({ patch })),
-        );
-        await Promise.all(userPatches.map((patch) => patches.delete(patch.id)));
+        // Every FK here is NO ACTION, and patch ↔ saved_patch_state is a cycle (patch.stateId → state.id,
+        // state.patchId → patch.id) with self-refs on patch.forkedFromId and state.ancestorId on top.
+        // No delete order breaks a cycle, so the pointers come first — they are all nullable. Forks made by
+        // other people survive, they just lose the lineage link. The old code deleted states before patches,
+        // which Postgres rejected outright, so deleting an account that owned any patch failed and rolled back
+        if (patchIds.length > 0) {
+          const states = await patchStates
+            .createQueryBuilder("state")
+            .where('"state"."patchId" IN (:...patchIds)', { patchIds })
+            .getMany();
+          stateIds = states.map((state) => state.id);
 
-        const user = await this.getUser({ id: userId });
-        passwordResets.delete({ user });
-        verifications.delete({ user });
-        users.delete(userId);
+          await patches
+            .createQueryBuilder()
+            .update(Patch)
+            .set({ state: null, forkedFrom: null })
+            .where("id IN (:...patchIds)", { patchIds })
+            .execute();
+
+          await patches
+            .createQueryBuilder()
+            .update(Patch)
+            .set({ forkedFrom: null })
+            .where('"forkedFromId" IN (:...patchIds)', { patchIds })
+            .execute();
+
+          if (stateIds.length > 0) {
+            await patchStates
+              .createQueryBuilder()
+              .update(SavedPatchState)
+              .set({ patch: null, ancestor: null })
+              .where("id IN (:...stateIds)", { stateIds })
+              .execute();
+
+            await patchStates
+              .createQueryBuilder()
+              .update(SavedPatchState)
+              .set({ ancestor: null })
+              .where('"ancestorId" IN (:...stateIds)', { stateIds })
+              .execute();
+          }
+        }
+
+        await patches
+          .createQueryBuilder()
+          .delete()
+          .from(Patch)
+          .where('"creatorId" = :userId', { userId })
+          .execute();
+
+        if (stateIds.length > 0) {
+          await patchStates
+            .createQueryBuilder()
+            .delete()
+            .from(SavedPatchState)
+            .where("id IN (:...stateIds)", { stateIds })
+            .execute();
+        }
+
+        // these two were floating promises — no await, so the rows could outlive the transaction
+        await passwordResets
+          .createQueryBuilder()
+          .delete()
+          .from(PasswordResetRequest)
+          .where('"userId" = :userId', { userId })
+          .execute();
+
+        await verifications
+          .createQueryBuilder()
+          .delete()
+          .from(EmailVerificationRequest)
+          .where('"userId" = :userId', { userId })
+          .execute();
+
+        await users.delete(userId);
       });
       return true;
     } catch (error) {

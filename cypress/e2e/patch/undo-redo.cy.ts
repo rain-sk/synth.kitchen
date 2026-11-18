@@ -14,33 +14,55 @@ describe("patch: undo / redo", () => {
   });
 
   it("restores the position of a module with undo/redo", () => {
-    let initialPosition: any = undefined;
-    let modifiedPosition: any = undefined;
+    // modules are positioned imperatively through a rAF batch (moveContainerRef → queueAnimation), so a
+    // one-shot jQuery .position() snapshot can land before the app has painted anything and then never match
+    // the restored value again — that was the intermittent failure here. read the position the app itself
+    // wrote (style.left) and let Cypress retry until it settles
+    const leftOf = () =>
+      cy.get("#0").then(($el) => parseFloat(($el[0] as HTMLElement).style.left));
 
-    cy.get("#0")
-      .then((div) => {
-        initialPosition = div.position();
-      })
-      .focus()
-      .type("{rightarrow}")
-      .wait(100)
-      .then((div) => {
-        modifiedPosition = div.position();
-        expect(modifiedPosition.left).to.not.equal(initialPosition.left);
-      });
-
-    cy.get("button#undo").trigger("click").wait(100);
-    cy.get("button#undo").should("be.disabled");
-    cy.get("button#redo").should("not.be.disabled");
-    cy.get("#0").then((div) => {
-      expect(div.position().left).to.equal(initialPosition.left);
+    cy.get("#0").should(($el) => {
+      expect(($el[0] as HTMLElement).style.left, "module has been positioned").to.not.equal("");
     });
 
-    cy.get("button#redo").trigger("click").wait(100);
-    cy.get("button#undo").should("not.be.disabled");
+    cy.get("button#undo").should("be.disabled");
     cy.get("button#redo").should("be.disabled");
-    cy.get("#0").then((div) => {
-      expect(div.position().left).to.deep.equal(modifiedPosition.left);
+
+    let initialLeft = 0;
+    let movedLeft = 0;
+
+    leftOf().then((left) => {
+      initialLeft = left;
+
+      cy.get("#0").focus().type("{rightarrow}");
+
+      leftOf().should((moved) => {
+        expect(moved, "arrow moved the module").to.not.equal(initialLeft);
+        movedLeft = moved;
+      });
+
+      cy.get("button#undo").should("not.be.disabled");
+      cy.get("button#undo").trigger("click");
+
+      cy.get("button#undo").should("be.disabled");
+      cy.get("button#redo").should("not.be.disabled");
+      cy.get("#0").should(($el) => {
+        expect(
+          parseFloat(($el[0] as HTMLElement).style.left),
+          "undo restores the original position",
+        ).to.equal(initialLeft);
+      });
+
+      cy.get("button#redo").trigger("click");
+
+      cy.get("button#undo").should("not.be.disabled");
+      cy.get("button#redo").should("be.disabled");
+      cy.get("#0").should(($el) => {
+        expect(
+          parseFloat(($el[0] as HTMLElement).style.left),
+          "redo re-applies the moved position",
+        ).to.equal(movedLeft);
+      });
     });
   });
 

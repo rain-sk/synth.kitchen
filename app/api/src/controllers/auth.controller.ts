@@ -156,6 +156,13 @@ export class AuthController {
 
     try {
       const success = await UserService.deleteUser(req.auth.id);
+      // deleteUser swallows failures and returns false, so a 200 here told the user their account was
+      // deleted while it was still in the database
+      if (!success) {
+        res.sendStatus(500);
+        return;
+      }
+
       res.status(200).json({ success });
     } catch (error) {
       console.error(error);
