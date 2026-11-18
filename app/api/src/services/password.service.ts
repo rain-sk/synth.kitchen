@@ -13,6 +13,11 @@ export class PasswordService {
   static requestReset = async (email: string) => {
     await AppDataSource.transaction(async (manager) => {
       const user = await UserService.getUser({ email });
+      // an unknown email is a silent no-op: creating nothing and raising nothing keeps the
+      // response identical, so this endpoint cannot be used to probe which addresses have accounts
+      if (!user) {
+        return;
+      }
       const passwordResetRepository =
         manager.getRepository(PasswordResetRequest);
       await manager
