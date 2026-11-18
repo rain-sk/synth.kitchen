@@ -94,6 +94,33 @@ describe("patch: toasts", () => {
 		cy.get('[data-toast-key^="save:"]').should("have.length", 1);
 	});
 
+	it("keeps the same bubble node across pending→success", () => {
+		// guards against Bubble being declared inside ToastsProvider: a component type created during
+		// render is a new type every render, so React remounts the bubble on each state change. That
+		// re-runs the entry animation mid-notification, swaps the live-region text with remove+add instead
+		// of updating it, and drops focus off .toast-action for keyboard users
+		cy.intercept("POST", "**/api/patch/", {
+			delay: 1500,
+			body: { patch: { id: "t1", slug: "toast-node-identity" } },
+		});
+
+		cy.get("#save-to-cloud").click();
+		cy.get(".toast.pending").should("exist");
+
+		cy.document().then((doc) => {
+			(doc.querySelector('[data-toast-key^="save:"]') as HTMLElement).dataset.probeMark = "1";
+
+			cy.get(".toast.success", { timeout: 8000 }).should("exist");
+			cy.document().then((doc2) => {
+				const after = doc2.querySelector('[data-toast-key^="save:"]') as HTMLElement | null;
+				expect(
+					after && after.dataset.probeMark,
+					"bubble must be updated in place, not remounted",
+				).to.equal("1");
+			});
+		});
+	});
+
 	it("dismisses after 15 seconds", () => {
 		stubCreate({ body: { patch: { id: "t1", slug: "toast-ttl" } } });
 
