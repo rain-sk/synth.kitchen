@@ -19,11 +19,11 @@
   },
   "peerDependencies": {
     "server-name-gen": "file:../../submodules/server-name-gen",
-    "uuid": "13.0.0"
+    "uuid": "13.0.2"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
-    "concurrently": "9.2.1",
+    "concurrently": "9.2.5",
     "esbuild": "0.27.2",
     "ts-node": "10.9.2",
     "typescript": "5.9.3"

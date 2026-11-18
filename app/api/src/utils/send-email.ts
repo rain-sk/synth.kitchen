@@ -1,5 +1,4 @@
-import { createTransport } from "nodemailer";
-import Mail from "nodemailer/lib/mailer";
+import { createTransport, SendMailOptions } from "nodemailer";
 import {
   mailEnabled,
   smtpHost,
@@ -35,14 +34,14 @@ if (smtpHost && !mailEnabled) {
 }
 
 // Configure the mailoptions object
-const defaultMailOptions: Omit<Mail.Options, "to" | "subject" | "text"> = {
+const defaultMailOptions: Omit<SendMailOptions, "to" | "subject" | "text"> = {
   from: transactionalEmail,
 };
 
 export const sendEmail = transporter
-  ? (options: Omit<Mail.Options, "from">) =>
+  ? (options: Omit<SendMailOptions, "from">) =>
       new Promise((resolve, reject) => {
-        const mailOptions: Mail.Options = {
+        const mailOptions: SendMailOptions = {
           ...defaultMailOptions,
           ...options,
         };
@@ -79,7 +78,7 @@ const makeEmailer = <
         mutableHtml = mutableHtml.replaceAll(`:${key}`, vars[key]);
       }
 
-      const mailOptions: Mail.Options = {
+      const mailOptions: SendMailOptions = {
         ...defaultMailOptions,
         to,
         subject: mutableSubject,
