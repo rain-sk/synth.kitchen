@@ -6,13 +6,13 @@ set -u
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 kill_tree() {
-    local pid=$1 depth=${2:-0}
+    local pid=$1 sig=${2:-TERM} depth=${3:-0}
     [ "$depth" -gt 6 ] && return
     local child
     for child in $(pgrep -P "$pid" 2>/dev/null); do
-        kill_tree "$child" $((depth + 1))
+        kill_tree "$child" "$sig" $((depth + 1))
     done
-    kill -TERM "$pid" 2>/dev/null || true
+    kill -"$sig" "$pid" 2>/dev/null || true
 }
 
 cleanup() {
@@ -20,20 +20,21 @@ cleanup() {
         # kill our own tree, then whatever is still bound to the ports we allocated. The old
         # `pkill -f "npm run dev"` also matched a developer's separate `npm run dev` / `npm run dev:api`
         # and took their stack down; a plain tree kill on dev_pid left grandchildren (concurrently → tsx/vite)
-        # holding the ports, so the next run silently moved up to 8081/3001
-        kill_tree "$dev_pid"
+        # holding the ports, so the next run silently moved up to 8086
+        kill_tree "$dev_pid" KILL
 
-        local port
+        # loop until the ports are genuinely free. concurrently -k respawns a child that only got TERM, so
+        # a single sweep plus a sleep could run before the rebound and leave the port held behind us
+        local port tries
         for port in "${port:-}" "${api_port:-}"; do
             [ -n "$port" ] || continue
-            lsof -ti "tcp:$port" -sTCP:LISTEN 2>/dev/null | xargs kill -TERM 2>/dev/null || true
-        done
-
-        sleep 1
-
-        for port in "${port:-}" "${api_port:-}"; do
-            [ -n "$port" ] || continue
-            lsof -ti "tcp:$port" -sTCP:LISTEN 2>/dev/null | xargs kill -KILL 2>/dev/null || true
+            tries=0
+            while lsof -ti "tcp:$port" -sTCP:LISTEN >/dev/null 2>&1; do
+                lsof -ti "tcp:$port" -sTCP:LISTEN 2>/dev/null | xargs kill -KILL 2>/dev/null || true
+                tries=$((tries + 1))
+                [ "$tries" -ge 10 ] && break
+                sleep 0.5
+            done
         done
 
         dev_pid=""
