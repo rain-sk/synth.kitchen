@@ -56,7 +56,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 
 	const registerRef = useRef(false);
 	const register = useCallback(
-		async (email: string, password: string) => {
+		async (email: string, password: string, captchaToken?: string) => {
 			let response: RegisterResponse | undefined;
 			if (registerRef.current) {
 				return;
@@ -73,6 +73,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 					body: JSON.stringify({
 						email,
 						password,
+						captchaToken,
 					}),
 				}).then(async (res) => {
 					if (res.status === 200 || res.status === 400) {
@@ -120,7 +121,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 	}, []);
 
 	const requestResetPassword = useCallback(
-		(email: string) =>
+		(email: string, captchaToken?: string) =>
 			fetch(`${apiBase}/auth/reset-password-request`, {
 				method: 'post',
 				headers: {
@@ -129,6 +130,7 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 				},
 				body: JSON.stringify({
 					email,
+					captchaToken,
 				}),
 			}),
 		[jwt],

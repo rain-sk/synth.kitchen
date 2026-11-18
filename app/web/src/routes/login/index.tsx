@@ -4,6 +4,7 @@ import {
 	useCallback,
 	useContext,
 	useMemo,
+	useRef,
 	useState,
 } from 'react';
 import { useTitle } from 'react-use';
@@ -11,8 +12,11 @@ import { Link, Redirect, useSearchParams } from 'wouter';
 import { navigate, usePathname } from 'wouter/use-browser-location';
 
 import { AuthContext } from '../../api/auth/context';
+import { capEndpoint } from '../../api/cap';
 import { Loader } from '../../lib/shared/components/loader';
 import { useEffectOnce } from '../../lib/patch/components/module/use-effect-once';
+
+import 'cap-widget';
 
 import './styles.css';
 
@@ -39,6 +43,10 @@ export const LoginRoute: React.FC = () => {
 	});
 
 	const [formSubmitted, setFormSubmitted] = useState(false);
+
+	// the cap widget solves its proof-of-work in the background on mount; the token is read at
+	// submit time and spent server-side, so a rejected submission resets the widget for a fresh one
+	const capWidgetRef = useRef<HTMLElementTagNameMap['cap-widget'] | null>(null);
 
 	const [email, setEmail] = useState('');
 	const handleChangeEmail = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -85,17 +93,24 @@ export const LoginRoute: React.FC = () => {
 								form: [],
 							});
 						} else {
-							const registerResponse = await register(email.trim(), password);
+							const captchaToken = capWidgetRef.current?.token ?? undefined;
+							const registerResponse = await register(
+								email.trim(),
+								password,
+								captchaToken
+							);
 							if (registerResponse) {
 								if ('jwt' in registerResponse) {
 									location.reload();
 								} else if ('errors' in registerResponse) {
 									setErrors(registerResponse.errors);
+									capWidgetRef.current?.reset();
 								}
 							}
 						}
 					} catch (e) {
 						console.error(e);
+						capWidgetRef.current?.reset();
 						setErrors({
 							email: [],
 							username: [],
@@ -219,6 +234,12 @@ export const LoginRoute: React.FC = () => {
 								value={confirmPassword}
 								onChange={handleChangeConfirmPassword}
 							/>
+							{capEndpoint && (
+								<cap-widget
+									ref={capWidgetRef}
+									data-cap-api-endpoint={capEndpoint}
+								/>
+							)}
 						</>
 					)}
 					<button id="submit" disabled={formSubmitted ? true : false}>

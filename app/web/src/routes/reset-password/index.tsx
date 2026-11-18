@@ -1,13 +1,17 @@
 import { useRoute } from 'wouter';
 import { navigate } from 'wouter/use-browser-location';
 import { AuthContext } from '../../api/auth/context';
+import { capEndpoint } from '../../api/cap';
 import {
 	ChangeEvent,
 	FormEvent,
 	useCallback,
 	useContext,
+	useRef,
 	useState,
 } from 'react';
+
+import 'cap-widget';
 
 const validatePassword = (password: string, passwordDuplicate: string) => {
 	if (password !== passwordDuplicate) return 'Passwords do not match.';
@@ -83,6 +87,8 @@ const RequestPasswordResetLink: React.FC = () => {
 
 	const [formSubmitted, setFormSubmitted] = useState(false);
 
+	const capWidgetRef = useRef<HTMLElementTagNameMap['cap-widget'] | null>(null);
+
 	const [email, setEmail] = useState('');
 	const handleChangeEmail = useCallback((e: ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.target.value);
@@ -96,8 +102,16 @@ const RequestPasswordResetLink: React.FC = () => {
 			const error = validateEmail(email.trim());
 			if (email && !error) {
 				setFormSubmitted(true);
-				await requestResetPassword(email.trim());
-				navigate('/login');
+				const captchaToken = capWidgetRef.current?.token ?? undefined;
+				const response = await requestResetPassword(email.trim(), captchaToken);
+				if (response.ok) {
+					navigate('/login');
+					return;
+				}
+				// the request was refused (rejected or expired captcha); re-solve so the user can retry
+				capWidgetRef.current?.reset();
+				setFormSubmitted(false);
+				setError('Please complete the captcha and try again.');
 			}
 			setError(error);
 		},
@@ -116,6 +130,12 @@ const RequestPasswordResetLink: React.FC = () => {
 					aria-describedby={error ? 'email-error' : ''}
 				/>
 				{error ? <p id="email-error">{error}</p> : null}
+				{capEndpoint && (
+					<cap-widget
+						ref={capWidgetRef}
+						data-cap-api-endpoint={capEndpoint}
+					/>
+				)}
 				<button disabled={formSubmitted ? true : false}>submit</button>
 			</form>
 		</main>

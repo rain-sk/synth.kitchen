@@ -12,10 +12,14 @@ type AuthContextValue = {
 	register: (
 		email: string,
 		password: string,
+		captchaToken?: string,
 	) => Promise<RegisterResponse | void>;
 	logout: () => void;
 	deleteUser: (password: string) => Promise<true | void>;
-	requestResetPassword: (email: string) => Promise<Response>;
+	requestResetPassword: (
+		email: string,
+		captchaToken?: string,
+	) => Promise<Response>;
 	resetPassword: (key: string, password: string) => Promise<Response>;
 	verifyAccount: (key: string) => Promise<Response>;
 };

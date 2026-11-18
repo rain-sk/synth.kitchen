@@ -19,6 +19,13 @@ export const smtpUsername = process.env.SMTP_USERNAME || "";
 // before this any test that registered a user put real mail in a real inbox
 export const mailEnabled =
   process.env.NODE_ENV === "production" || process.env.MAIL_ENABLED === "1";
+// captcha guards register and reset-password-request; like mailEnabled it is forced on in
+// production, opt-in elsewhere, and off on dev/e2e boxes where no cap instance is configured.
+// unlike mail a missing endpoint/secret is a refusal (CaptchaService is fail-closed), never a bypass
+export const captchaEnabled =
+  process.env.NODE_ENV === "production" || process.env.CAPTCHA_ENABLED === "1";
+export const captchaEndpoint = process.env.CAPTCHA_ENDPOINT || "";
+export const captchaSecret = process.env.CAPTCHA_SECRET || "";
 export const transactionalEmail =
   process.env.TRANSACTIONAL_EMAIL || "api@synth.kitchen";
 export const bcryptCost = parseInt(process.env.BCRYPT_COST || "12");
