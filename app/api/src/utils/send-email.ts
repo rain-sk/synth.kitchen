@@ -1,6 +1,7 @@
 import { createTransport } from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import {
+  mailEnabled,
   smtpHost,
   smtpPassword,
   smtpPort,
@@ -8,20 +9,30 @@ import {
   transactionalEmail,
 } from "../env";
 
-const transporter = smtpHost
-  ? createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: false,
-      auth: {
-        user: smtpUsername,
-        pass: smtpPassword,
-      },
-      tls: {
-        ciphers: "SSLv3",
-      },
-    })
-  : undefined;
+// creds are required at boot (env.ts:49 throws without them), so the transport is gated here rather
+// than by leaving SMTP_HOST empty. Without a transporter every makeEmailer below degrades to a no-op
+// instead of throwing, so register() still creates its verification row — it just never sends
+const transporter =
+  smtpHost && mailEnabled
+    ? createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: false,
+        auth: {
+          user: smtpUsername,
+          pass: smtpPassword,
+        },
+        tls: {
+          ciphers: "SSLv3",
+        },
+      })
+    : undefined;
+
+if (smtpHost && !mailEnabled) {
+  console.log(
+    "mail: disabled (NODE_ENV is not production). Set MAIL_ENABLED=1 to send from this box.",
+  );
+}
 
 // Configure the mailoptions object
 const defaultMailOptions: Omit<Mail.Options, "to" | "subject" | "text"> = {

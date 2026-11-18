@@ -14,6 +14,11 @@ export const smtpHost = process.env.SMTP_HOST || "";
 export const smtpPassword = process.env.SMTP_PASSWORD || "";
 export const smtpPort = parseInt(process.env.SMTP_PORT || "587");
 export const smtpUsername = process.env.SMTP_USERNAME || "";
+// mail is off unless this is production or someone asks for it explicitly. SMTP credentials live in
+// app/api/.env on every dev box, and register() sends a verification email (user.service.ts:115), so
+// before this any test that registered a user put real mail in a real inbox
+export const mailEnabled =
+  process.env.NODE_ENV === "production" || process.env.MAIL_ENABLED === "1";
 export const transactionalEmail =
   process.env.TRANSACTIONAL_EMAIL || "api@synth.kitchen";
 export const bcryptCost = parseInt(process.env.BCRYPT_COST || "12");
