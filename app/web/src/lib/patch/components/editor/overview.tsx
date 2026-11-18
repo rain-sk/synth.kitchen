@@ -2,7 +2,7 @@ import {
 	RefObject,
 	useCallback,
 	useEffect,
-	useMemo,
+	useLayoutEffect,
 	useRef,
 	useState,
 } from 'react';
@@ -10,75 +10,46 @@ import { useEffectOnce, useScroll } from 'react-use';
 import { Module, ModulePosition } from 'synth.kitchen-shared';
 
 import { recomputeOverview } from './utils/recompute-overview';
-import { convertRemToPixels, useRefBackedState } from '../../../shared/utils';
+import { useRefBackedState } from '../../../shared/utils';
 
 const main = () => document.getElementById('patch');
-const point5Rem = convertRemToPixels(0.5);
-
-const computeVisibleBounds = (
-	main: HTMLElement,
-	scrubContainer: HTMLDivElement,
-	overviewSize: {
-		width: number;
-		height: number;
-	},
-) => {
+// The minimap fits the snapshot into the scrub box with `background-size: contain`, so the world -> scrub
+// mapping is ONE uniform scale plus a letterbox offset. The old version divided x by scrubWidth and y by
+// scrubHeight separately, against a reference frame built from a hardcoded 16/9, which destroyed the aspect
+// ratio: at a 1663x392 viewport over a 1963x652 world the rectangle measured 381x132.6 where the correct box
+// is 322.7x60.6 - twice too tall, and pinned to the full width
+const computeVisibleBounds = (main: HTMLElement, scrubContainer: HTMLDivElement) => {
 	const {
-		scrollTop: mainScrollY,
-		scrollLeft: mainScrollX,
-		clientHeight: mainHeight,
-		clientWidth: mainWidth,
+		scrollTop,
+		scrollLeft,
+		clientHeight,
+		clientWidth,
+		scrollWidth: worldWidth,
+		scrollHeight: worldHeight,
 	} = main;
-	const { clientHeight: scrubHeight, clientWidth: scrubWidth } = scrubContainer;
 
-	// Get the
-	const scrubRatio = 16 / 9;
-	const overviewRatio = overviewSize.width / overviewSize.height;
+	const scrubWidth = scrubContainer.clientWidth;
+	const scrubHeight = scrubContainer.clientHeight;
 
-	// Compute highlight's size and position relative to the actual patch
-	const relativeHeight =
-		scrubRatio > overviewRatio
-			? overviewSize.height
-			: (scrubRatio / overviewRatio) * overviewSize.height;
-	const relativeWidth =
-		scrubRatio > overviewRatio
-			? (scrubRatio / overviewRatio) * overviewSize.width
-			: overviewSize.width;
-	const relativeTop = mainScrollY / relativeHeight;
-	const relativeLeft = mainScrollX / relativeWidth;
-	const relativeRight = (mainScrollX + mainWidth) / relativeWidth;
-	const relativeBottom = (mainScrollY + mainHeight) / relativeHeight;
+	if (!worldWidth || !worldHeight || !scrubWidth || !scrubHeight) {
+		return { top: 0, left: 0, right: 0, bottom: 0 };
+	}
 
-	// Normalize to the scrub container
-	const normalizedTop = scrubHeight * relativeTop;
-	const normalizedLeft = scrubWidth * relativeLeft;
-	const normalizedRight = scrubWidth * relativeRight;
-	const normalizedBottom = scrubHeight * relativeBottom;
+	const scale = Math.min(scrubWidth / worldWidth, scrubHeight / worldHeight);
 
-	// Constrain to the scrub container
-	const constrainedLeft = Math.max(
-		0,
-		Math.min(normalizedLeft, scrubContainer.clientWidth - point5Rem),
-	);
-	const constrainedRight = Math.min(
-		normalizedRight,
-		scrubContainer.clientWidth,
-	);
-	const constrainedTop = Math.max(
-		0,
-		Math.min(normalizedTop, scrubContainer.clientHeight - point5Rem),
-	);
-	const constrainedBottom = Math.min(
-		normalizedBottom,
-		scrubContainer.clientHeight,
-	);
+	// contain centres the letterboxed snapshot, so the rectangle has to start from the same offset or it
+	// drifts away from the image it is supposed to be framing
+	const offsetX = (scrubWidth - worldWidth * scale) / 2;
+	const offsetY = (scrubHeight - worldHeight * scale) / 2;
 
-	return {
-		top: constrainedTop,
-		left: constrainedLeft,
-		right: constrainedRight,
-		bottom: constrainedBottom,
-	};
+	const clamp = (value: number, max: number) => Math.max(0, Math.min(value, max));
+
+	const left = clamp(offsetX + scrollLeft * scale, scrubWidth);
+	const top = clamp(offsetY + scrollTop * scale, scrubHeight);
+	const right = clamp(left + clientWidth * scale, scrubWidth);
+	const bottom = clamp(top + clientHeight * scale, scrubHeight);
+
+	return { top, left, right, bottom };
 };
 
 const noop = () => {};
@@ -96,17 +67,34 @@ export const Overview: React.FC<{
 	});
 	const [overviewSize, setOverviewSize] = useState({ width: 1, height: 1 });
 	const scroll = useScroll(mainRef);
-	const visibleBounds = useMemo(() => {
-		if (mainRef.current && containerRef.current) {
-			return computeVisibleBounds(
-				mainRef.current,
-				containerRef.current,
-				overviewSize,
-			);
-		} else {
-			return { top: 0, left: 0, right: 0, bottom: 0 };
+
+	// measured after paint, not during a memo. The collapsed box is 2.667rem wide, so a memo that also
+	// left expanding out of its deps computed the rectangle once against a collapsed or zero-sized box and
+	// never recomputed it - the outline came back 0x0, which the border then rendered as a 16px square
+	const [visibleBounds, setVisibleBounds] = useState({
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+	});
+
+	useLayoutEffect(() => {
+		const patch = mainRef.current;
+		const scrub = scrubRef.current;
+
+		if (!patch || !scrub) {
+			return;
 		}
-	}, [connectionsCount, modulesCount, sortedModules, scroll, overviewSize]);
+
+		setVisibleBounds(computeVisibleBounds(patch, scrub));
+	}, [
+		connectionsCount,
+		modulesCount,
+		sortedModules,
+		scroll,
+		overviewSize,
+		minimized,
+	]);
 
 	useEffectOnce(() => {
 		const interval = setInterval(() => {
@@ -154,7 +142,6 @@ export const Overview: React.FC<{
 				return;
 			}
 
-			console.log(e.pageX, e.pageY);
 		};
 		document.addEventListener('mousemove', onMouseMove);
 		document.addEventListener('mouseup', () => {
@@ -202,16 +189,8 @@ export const Overview: React.FC<{
 				<div
 					id="scrub-outline"
 					style={{
-						top: `${Math.min(
-							visibleBounds.top,
-							(scrubRef.current?.clientHeight ?? 0) -
-								(visibleBounds.bottom - visibleBounds.top),
-						)}px`,
-						left: `${Math.min(
-							visibleBounds.left,
-							(scrubRef.current?.clientWidth ?? 0) -
-								(visibleBounds.right - visibleBounds.left),
-						)}px`,
+						top: `${visibleBounds.top}px`,
+						left: `${visibleBounds.left}px`,
 						width: `${visibleBounds.right - visibleBounds.left}px`,
 						height: `${visibleBounds.bottom - visibleBounds.top}px`,
 					}}
