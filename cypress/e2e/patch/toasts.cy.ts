@@ -61,8 +61,19 @@ describe("patch: toasts", () => {
 		cy.get(".toast.success").should("contain.text", "saved");
 	});
 
-	it("offers a retry when saving fails", () => {
-		stubCreate({ statusCode: 500, body: { error: "boom" } });
+	it("offers a retry, and the retry reports back while in flight", () => {
+		let attempts = 0;
+		cy.intercept("POST", "**/api/patch/", (req) => {
+			attempts += 1;
+			if (attempts === 1) {
+				req.reply({ statusCode: 500, body: { error: "boom" } });
+			} else {
+				req.reply({
+					delay: 900,
+					body: { patch: { id: "t1", slug: "toast-retry" } },
+				});
+			}
+		}).as("create");
 
 		cy.get("#save-to-cloud").click();
 
@@ -72,7 +83,15 @@ describe("patch: toasts", () => {
 
 		cy.get(".toast.error .toast-action").click();
 
-		cy.get('[data-toast-key^="save:"]').should("exist");
+		// the retry has to say so while it is still running: the bubble must go back to pending,
+		// not vanish until the request lands
+		cy.get(".toast.pending").should("contain.text", "saving");
+		cy.get(".toast.error").should("not.exist");
+		cy.get('[data-toast-key^="save:"]').should("have.length", 1);
+
+		cy.wait("@create");
+		cy.get(".toast.success").should("contain.text", "saved");
+		cy.get('[data-toast-key^="save:"]').should("have.length", 1);
 	});
 
 	it("dismisses after 15 seconds", () => {

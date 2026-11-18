@@ -72,8 +72,11 @@ export const ToastsProvider: React.FC<{ children: ReactNode }> = ({
 					type="button"
 					className="toast-action"
 					onClick={() => {
+						// no dismiss here: the only action in the app re-notifies this same key, and
+						// notify() replaces in place. Dismissing after run() wiped the fresh 'saving' bubble
+						// in the same batch, so retry showed nothing until the request settled and blinked the
+						// assertive region from an error to empty
 						toast.action?.run();
-						dismiss(toast.key);
 					}}
 				>
 					{toast.action.label}
