@@ -47,11 +47,11 @@ describe('oscillator upgrade: detune / transpose split', () => {
 });
 
 describe('oscillator upgrade: peak and level', () => {
-	it('introduces peak at 0.5.2 and mirrors it into level at current', () => {
+	it('mirrors the introduced peak into level and leaves no peak at the current version', () => {
 		const out = cents(0);
 
-		expect(out.peak).toBe(1);
 		expect(out.level).toBe(1);
+		expect('peak' in out).toBe(false);
 		expect(out.version).toBe(CURRENT);
 	});
 
@@ -69,11 +69,40 @@ describe('oscillator upgrade: peak and level', () => {
 		expect(out.version).toBe(CURRENT);
 	});
 
-	it('leaves peak in place alongside level at current', () => {
+	it('drops peak once it has been mirrored into level', () => {
 		const out = cents(0);
 
-		expect('peak' in out).toBe(true);
-		expect('level' in out).toBe(true);
+		expect(out.level).toBe(1);
+		expect('peak' in out).toBe(false);
+	});
+
+	it('drops a carried-forward peak too, not just the default one', () => {
+		const out = upgrade({
+			version: '0.5.11',
+			frequency: 220,
+			detune: 0,
+			transpose: 0,
+			waveform: 'square',
+			peak: 0.5,
+		} as any) as any;
+
+		expect(out.level).toBe(0.5);
+		expect('peak' in out).toBe(false);
+	});
+
+	it('produces exactly the fields the current state declares', () => {
+		const out = cents(0);
+
+		expect(Object.keys(out).sort()).toEqual(
+			[
+				'version',
+				'transpose',
+				'frequency',
+				'detune',
+				'level',
+				'waveform',
+			].sort(),
+		);
 	});
 });
 
