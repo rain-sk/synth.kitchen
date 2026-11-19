@@ -14,7 +14,7 @@
   "scripts": {
     "dev": "concurrently -k -n tsc,build 'npm run lint' 'npx tsx --watch src/index.ts'",
     "prepare": "npm run build",
-    "build": "tsc && node -r ts-node/register build.ts",
+    "build": "tsc -p tsconfig.build.json && node -r ts-node/register build.ts",
     "lint": "tsc --preserveWatchOutput --watch",
     "test": "vitest run",
     "coverage": "vitest run --coverage"
