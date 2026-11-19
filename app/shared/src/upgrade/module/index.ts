@@ -161,16 +161,26 @@ export function moduleNeedsUpgrade<T extends ModuleType>(
   type: T,
   state: ModuleState[T]
 ) {
-  return state && upgradeMap[type].needsUpgrade(state);
+  const migrator = upgradeMap[type];
+  if (!migrator) {
+    throw new Error(`No migration registered for module type "${type}".`);
+  }
+
+  return state && migrator.needsUpgrade(state);
 }
 
 export function upgradeModule<T extends ModuleType>(
   type: T,
   state: ModuleState[T]
 ) {
-  if (!state || !upgradeMap[type].needsUpgrade(state)) {
+  const migrator = upgradeMap[type];
+  if (!migrator) {
+    throw new Error(`No migration registered for module type "${type}".`);
+  }
+
+  if (!state || !migrator.needsUpgrade(state)) {
     return state;
   }
 
-  return upgradeMap[type].upgrade(state);
+  return migrator.upgrade(state);
 }
