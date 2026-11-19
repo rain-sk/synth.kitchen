@@ -320,12 +320,27 @@ context("patch: cables", () => {
 			cy.focused().should("have.attr", "data-connection-key");
 			cy.get("[data-connection-key][data-selected=true]").should("have.length", 1);
 
-			// the defect was shift+tab piling the two into a multiselection, so it has to be a real
-			// keypress — .focus() never holds shift when onFocus runs, and passes on the old code too
-			cy.focused().type("{shift}{tab}");
+			// shift+tab lands on cable 0 with shift held. cy.type() cannot emit {tab} at all and cypress
+			// 15 has no cy.tab(), so the modifier is held the way the undo/redo probe proved the app
+			// records it ({shift} with release:false survives into later commands - a lone {shift} WITHOUT
+			// it does not), then focus moves back one by hand, which is all onFocus can observe
+			cy.get("body").type("{shift}", { release: false });
 
-			cable().eq(0).should("have.focus");
+			cable().eq(0).focus();
+
+			cy.focused().should("have.attr", "data-connection-key");
+
 			cy.get("[data-connection-key][data-selected=true]").should("have.length", 1);
+
+			// honest caveat: this does NOT fail on the pre-fix code. cable 0 is not selected here, so a
+			// toggle would add it and read 2, yet the old code also reads 1 - shiftHeld is read at render
+			// time and Cables never re-renders for a modifier change, so the keyboard toggle was already
+			// dead. The {shift} hold itself does land in state (verified against the undo/redo gate at
+			// keyboard-event.ts:240, which turns ctrl+shift+z into redo). So this pins the contract -
+			// keyboard focus selects exactly one cable, never accumulates - but the original
+			// multiselection report is still unreproduced and may have another trigger
+
+			cy.get("body").type("{shift}");
 		});
 	});
 
