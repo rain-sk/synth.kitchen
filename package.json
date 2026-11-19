@@ -2,8 +2,8 @@
   "name": "synth.kitchen-api",
   "version": "0.5.13",
   "devDependencies": {
-    "concurrently": "9.2.1",
-    "cypress": "15.8.2",
+    "concurrently": "9.2.5",
+    "cypress": "15.21.1",
     "typescript": "5.9.3"
   },
   "scripts": {
@@ -28,5 +28,9 @@
     "e2e": "./scripts/e2e.sh",
     "db": "./scripts/db.sh",
     "tunnel": "./scripts/ssh-tunnel.sh"
+  },
+  "overrides": {
+    "tmp": "0.2.7",
+    "lodash": "4.18.1"
   }
 }

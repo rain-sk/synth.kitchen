@@ -114,6 +114,21 @@ const Cables: React.FC<{
 	// recorded at mousedown, before focus moves: the click of a gesture that just focused this cable
 	// was already handled by onFocus, so only a re-click on an already-focused cable acts
 	const wasFocused = useRef(false);
+	// true only in the window between a mousedown and the focus that mousedown caused. Shift means two
+	// different things depending on what moved focus: shift-click is "add to selection", shift+tab is "go to
+	// the previous cable". This is what tells them apart
+	const pointerFocus = useRef(false);
+
+	// the flag's lifetime ends at mouseup: onFocus consumes it, and a release on document also clears
+	// it — a press on an already-focused cable released outside fires neither onFocus nor click, and a
+	// flag left set would make the next shift+tab look like a shift-click
+	useEffect(() => {
+		const clear = () => {
+			pointerFocus.current = false;
+		};
+		document.addEventListener('mouseup', clear);
+		return () => document.removeEventListener('mouseup', clear);
+	}, []);
 
 	useEffect(() => {
 		const key = focusedCable.current;
@@ -164,16 +179,21 @@ const Cables: React.FC<{
 						// focus that already applied the selection
 						wasFocused.current =
 							event.currentTarget.ownerDocument.activeElement === event.currentTarget;
+						pointerFocus.current = true;
 					}}
 					onFocus={() => {
 						focusedCable.current = cable.key;
-						// shift means toggle here, not add: a cable can already be selected without holding
-						// focus (auto-select on create, marquee), and shift-clicking one of those is the user
-						// taking it back out of the selection
+						// shift means toggle, but only when a pointer caused the focus: shift-clicking a cable that
+						// is already selected is the user taking it back out of the selection. Both tab and
+						// shift+tab arrive here with shift held, so toggling on focus turned every backward tab into
+						// a multiselection — the keyboard was asking to go backwards, not to extend
+						const toggle = shiftHeld && pointerFocus.current;
+						pointerFocus.current = false;
+
 						dispatch(
 							selectConnectionAction(
 								[cable.key],
-								shiftHeld
+								toggle
 									? SelectConnectionMode.TOGGLE
 									: SelectConnectionMode.REPLACE,
 							),
