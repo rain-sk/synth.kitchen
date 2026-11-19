@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { FILTER_STATE_VERSIONS } from '../../types/patch/module';
 import { needsUpgrade, upgrade } from './filter';
+import { upgrade as upgradeOscillator } from './oscillator';
 
 const CURRENT = FILTER_STATE_VERSIONS[0]; // "0.5.12"
 
@@ -16,20 +17,23 @@ const legacy = (detune: number) => ({
 const at = (detune: number) => upgrade(legacy(detune) as any) as any;
 
 describe('filter upgrade: detune / transpose split', () => {
-	it('splits cents into semitones using modulo, keeping the sign', () => {
-		expect(at(150)).toMatchObject({ transpose: 1, detune: 50 });
-		expect(at(-150)).toMatchObject({ transpose: -1, detune: -50 });
+	it('splits cents into semitones, keeping the sign', () => {
 		expect(at(50)).toMatchObject({ transpose: 0, detune: 50 });
 		expect(at(0)).toMatchObject({ transpose: 0, detune: 0 });
+		expect(at(250)).toMatchObject({ transpose: 2, detune: 50 });
+		expect(at(-250)).toMatchObject({ transpose: -2, detune: -50 });
 	});
 
-	it('rolls exactly 100 cents up to one semitone, unlike oscillator', () => {
-		expect(at(100)).toMatchObject({ transpose: 1, detune: 0 });
+	it('keeps exactly 100 cents entirely in detune, matching oscillator', () => {
+		expect(at(100)).toMatchObject({ transpose: 0, detune: 100 });
+		expect(at(-100)).toMatchObject({ transpose: 0, detune: -100 });
+	});
 
-		const down = at(-100);
-		expect(down.transpose).toBe(-1);
-		expect(Object.is(down.detune, -0)).toBe(true);
-		expect(JSON.stringify(down)).not.toContain('-0');
+	it('still rolls past 100 cents into semitones, matching oscillator', () => {
+		expect(at(101)).toMatchObject({ transpose: 1, detune: 1 });
+		expect(at(-101)).toMatchObject({ transpose: -1, detune: -1 });
+		expect(at(150)).toMatchObject({ transpose: 1, detune: 50 });
+		expect(at(-150)).toMatchObject({ transpose: -1, detune: -50 });
 	});
 
 	it('round trips cents through transpose and detune', () => {
@@ -39,6 +43,25 @@ describe('filter upgrade: detune / transpose split', () => {
 				out.transpose * 100 + out.detune,
 				`round trip for ${input} cents`,
 			).toBe(input);
+		}
+	});
+
+	it('agrees with oscillator across the whole cent range', () => {
+		for (const cents of [
+			-1000, -250, -201, -200, -199, -150, -101, -100, -99, -50, 0, 50, 99,
+			100, 101, 150, 199, 200, 201, 250, 1000,
+		]) {
+			const filter = at(cents);
+			const oscillator = upgradeOscillator({
+				frequency: 440,
+				detune: cents,
+				waveform: 'sawtooth',
+			} as any) as any;
+
+			expect(
+				[filter.transpose, filter.detune],
+				`filter vs oscillator at ${cents} cents`,
+			).toEqual([oscillator.transpose, oscillator.detune]);
 		}
 	});
 
