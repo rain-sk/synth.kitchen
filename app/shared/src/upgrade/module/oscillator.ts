@@ -2,6 +2,7 @@ import {
   OSCILLATOR_STATE,
   OSCILLATOR_STATE_VERSIONS,
 } from "../../types/patch/module";
+import { splitCents } from "./cents";
 
 export function needsUpgrade(state: OSCILLATOR_STATE[keyof OSCILLATOR_STATE]) {
   return state.version !== OSCILLATOR_STATE_VERSIONS[0];
@@ -24,14 +25,7 @@ export function upgrade(
 
   switch (state.version) {
     case "0.5.0": {
-      const detuneSign = state.detune >= 0 ? 1 : -1;
-      let transpose = 0;
-      let detune = state.detune;
-      const detuneAbs = Math.abs(detune);
-      if (detuneAbs > 100) {
-        transpose = detuneSign * Math.floor(detuneAbs / 100);
-        detune = detuneSign * (detuneAbs % 100);
-      }
+      const { transpose, detune } = splitCents(state.detune);
       const newState: OSCILLATOR_STATE["0.5.2"] = {
         ...state,
         version: "0.5.2",
