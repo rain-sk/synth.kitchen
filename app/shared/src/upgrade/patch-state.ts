@@ -51,13 +51,15 @@ export const upgradePatchState = (
           connections,
           modules,
         };
-        state = newState;
+        return newState;
       }
-
-      default:
-        break;
     }
-    return state;
+
+    throw new Error(
+      `Unable to upgrade given state object. Patch state version: ${
+        (state as { version?: string }).version
+      }.`
+    );
   } else {
     const connections = upgradeConnectionsState(state);
     const modules: Record<string, Module> = {};
