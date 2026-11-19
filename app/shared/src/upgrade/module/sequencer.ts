@@ -1,4 +1,3 @@
-import { version } from "os";
 import {
   SEQUENCER_STATE,
   SEQUENCER_STATE_VERSIONS,
