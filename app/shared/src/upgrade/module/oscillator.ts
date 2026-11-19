@@ -56,6 +56,7 @@ export function upgrade(
         version: "0.5.12",
         level: state.peak,
       };
+      delete (newState as any).peak;
       state = newState;
     }
     case OSCILLATOR_STATE_VERSIONS[0]:
