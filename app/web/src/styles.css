@@ -87,7 +87,7 @@ h1 {
 	bottom: 0;
 	pointer-events: none;
 	background-repeat: no-repeat;
-	background-position: top left;
+	background-position: center;
 	background-size: contain;
 	overflow: hidden;
 }

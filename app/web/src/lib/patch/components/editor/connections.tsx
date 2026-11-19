@@ -119,6 +119,17 @@ const Cables: React.FC<{
 	// the previous cable". This is what tells them apart
 	const pointerFocus = useRef(false);
 
+	// the flag's lifetime ends at mouseup: onFocus consumes it, and a release on document also clears
+	// it — a press on an already-focused cable released outside fires neither onFocus nor click, and a
+	// flag left set would make the next shift+tab look like a shift-click
+	useEffect(() => {
+		const clear = () => {
+			pointerFocus.current = false;
+		};
+		document.addEventListener('mouseup', clear);
+		return () => document.removeEventListener('mouseup', clear);
+	}, []);
+
 	useEffect(() => {
 		const key = focusedCable.current;
 
@@ -189,10 +200,6 @@ const Cables: React.FC<{
 						);
 					}}
 					onClick={(event) => {
-						// cleared here too: pressing a cable that already had focus never reaches onFocus, and a
-						// flag left set would make the next shift+tab look like a shift-click
-						pointerFocus.current = false;
-
 						// pointer order is mousedown → focus → mouseup → click. Pressing a cable that was not
 						// focused already selected it in onFocus, so dispatching here too double-applied:
 						// shift-click ADDed on focus then TOGGLEd it back off, and multi-select was a no-op

@@ -319,6 +319,13 @@ context("patch: cables", () => {
 			cable().eq(1).focus();
 			cy.focused().should("have.attr", "data-connection-key");
 			cy.get("[data-connection-key][data-selected=true]").should("have.length", 1);
+
+			// the defect was shift+tab piling the two into a multiselection, so it has to be a real
+			// keypress — .focus() never holds shift when onFocus runs, and passes on the old code too
+			cy.focused().type("{shift}{tab}");
+
+			cable().eq(0).should("have.focus");
+			cy.get("[data-connection-key][data-selected=true]").should("have.length", 1);
 		});
 	});
 
