@@ -1,6 +1,5 @@
 FROM node:alpine AS build
 
-
 WORKDIR /src
 COPY app/ ./app/
 COPY submodules/ ./submodules/
@@ -14,12 +13,8 @@ RUN rm -f /src/app/api/.env*
 WORKDIR /src/app/api
 RUN npm uninstall @types/bcrypt @types/cors @types/express @types/node concurrently esbuild ts-node typescript class-validator cors pg-hstore reflect-metadata
 
-
 FROM nginx:alpine AS serve
 
-# apk upgrade first: nginx:alpine ships a frozen package snapshot that lags Alpine's security repo (zlib
-# CVE-2026-4738 was still 1.3.2-r1 in a fresh pull while the repo had 1.4-r0). update is required or
-# upgrade sees no index
 RUN apk update && apk upgrade --no-cache && apk add --no-cache nodejs tini python3 py3-pip
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir supervisor \

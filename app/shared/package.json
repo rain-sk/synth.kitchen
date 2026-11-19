@@ -15,7 +15,9 @@
     "dev": "concurrently -k -n tsc,build 'npm run lint' 'npx tsx --watch src/index.ts'",
     "prepare": "npm run build",
     "build": "tsc && node -r ts-node/register build.ts",
-    "lint": "tsc --preserveWatchOutput --watch"
+    "lint": "tsc --preserveWatchOutput --watch",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage"
   },
   "peerDependencies": {
     "server-name-gen": "file:../../submodules/server-name-gen",
@@ -23,10 +25,12 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^5.1.0",
     "concurrently": "9.2.5",
     "esbuild": "0.27.2",
     "ts-node": "10.9.2",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "^5.1.0"
   },
   "dependencies": {
     "standardized-audio-context": "25.3.77"
