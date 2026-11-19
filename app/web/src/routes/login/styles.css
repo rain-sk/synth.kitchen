@@ -21,6 +21,8 @@ main > section > form {
 main > section > h2,
 main > section > p,
 main > section > form label,
-main > section > form button {
+main > section > form button,
+main > section > form p,
+main > section > form cap-widget {
 	margin-top: 1rem;
 }

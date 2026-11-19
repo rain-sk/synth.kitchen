@@ -1,4 +1,4 @@
-import { useRoute } from 'wouter';
+import { Link, useRoute } from 'wouter';
 import { navigate } from 'wouter/use-browser-location';
 import { AuthContext } from '../../api/auth/context';
 import { capEndpoint } from '../../api/cap';
@@ -55,24 +55,31 @@ const NewPasswordForm: React.FC<{ resetKey: string }> = ({ resetKey }) => {
 
 	return (
 		<main>
-			<h2>set your new password</h2>
-			<form onSubmit={handleSubmit}>
-				<label htmlFor="password">new password</label>
-				<input
-					id="password"
-					type="password"
-					onChange={handleChangePassword}
-					aria-describedby={error ? 'password-error' : ''}
-				/>
-				<label htmlFor="password-duplicate">repeat your new password</label>
-				{error ? <p id="password-error">{error}</p> : null}
-				<input
-					id="password-duplicate"
-					type="password"
-					onChange={handleChangePasswordDuplicate}
-				/>
-				<button>submit</button>
-			</form>
+			<section>
+				<h2>set your new password</h2>
+				<form onSubmit={handleSubmit}>
+					<label htmlFor="password">new password</label>
+					<input
+						id="password"
+						type="password"
+						onChange={handleChangePassword}
+						aria-describedby={error ? 'password-error' : ''}
+					/>
+					<label htmlFor="password-duplicate">
+						repeat your new password
+					</label>
+					{error ? <p id="password-error">{error}</p> : null}
+					<input
+						id="password-duplicate"
+						type="password"
+						onChange={handleChangePasswordDuplicate}
+					/>
+					<button>submit</button>
+				</form>
+				<p>
+					<Link to="/login">back to login</Link>
+				</p>
+			</section>
 		</main>
 	);
 };
@@ -120,24 +127,29 @@ const RequestPasswordResetLink: React.FC = () => {
 
 	return (
 		<main>
-			<h2>request a password-reset link</h2>
-			<form onSubmit={handleSubmit}>
-				<label htmlFor="email">email address</label>
-				<input
-					id="email"
-					type="email"
-					onChange={handleChangeEmail}
-					aria-describedby={error ? 'email-error' : ''}
-				/>
-				{error ? <p id="email-error">{error}</p> : null}
-				{capEndpoint && (
-					<cap-widget
-						ref={capWidgetRef}
-						data-cap-api-endpoint={capEndpoint}
+			<section>
+				<h2>request a password-reset link</h2>
+				<form onSubmit={handleSubmit}>
+					<label htmlFor="email">email address</label>
+					<input
+						id="email"
+						type="email"
+						onChange={handleChangeEmail}
+						aria-describedby={error ? 'email-error' : ''}
 					/>
-				)}
-				<button disabled={formSubmitted ? true : false}>submit</button>
-			</form>
+					{error ? <p id="email-error">{error}</p> : null}
+					{capEndpoint && (
+						<cap-widget
+							ref={capWidgetRef}
+							data-cap-api-endpoint={capEndpoint}
+						/>
+					)}
+					<button disabled={formSubmitted ? true : false}>submit</button>
+				</form>
+				<p>
+					<Link to="/login">back to login</Link>
+				</p>
+			</section>
 		</main>
 	);
 };
