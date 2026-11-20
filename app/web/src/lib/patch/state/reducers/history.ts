@@ -123,9 +123,11 @@ const sync = (
 		}
 	}
 
+	const publish = { ...stateToLoad, connections: state.connections };
+
 	return blocked
-		? cloneAndApply(state, stateToLoad)
-		: unblockHistory(cloneAndApply(state, stateToLoad));
+		? cloneAndApply(state, publish)
+		: unblockHistory(cloneAndApply(state, publish));
 };
 
 const incrementHistoryPointer = (state: IPatchState, direction: 1 | -1) => {
