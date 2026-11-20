@@ -1,0 +1,24 @@
+# dependencies
+**/node_modules
+
+# vcs + scratch
+.git
+.nyc_output
+.nash_tmp
+*.log
+.DS_Store
+
+# test output
+**/coverage
+cypress/videos
+cypress/screenshots
+**/*.test.ts
+
+# build output
+app/api/build
+app/web/build
+app/shared/build
+
+# env
+**/.env
+**/.env.*
