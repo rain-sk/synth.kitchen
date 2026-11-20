@@ -1,3 +1,29 @@
+const SPEAKER = "#0_0_0";
+
+const cable = () => cy.get("#connections [data-connection-key]");
+
+const addOscillator = () => {
+  cy.get("#patch").click(140, 160);
+  cy.get("#add-module").select("OSCILLATOR");
+  cy.get("#module-canvas > div").should("have.length", 2);
+};
+
+const oscillatorOutput = () =>
+  cy
+    .get('.connector[aria-roledescription="output connector"]')
+    .then(($c) => {
+      const extra = $c.toArray().filter((el) => el.id !== "0_1_0");
+      expect(extra.length, "oscillator output").to.be.greaterThan(0);
+      return `#${extra[0].id}`;
+    });
+
+const connect = () =>
+  oscillatorOutput().then((out) => {
+    cy.get(out).click();
+    cy.get(SPEAKER).click();
+    return cy.wait(100).then(() => cy.wrap(out));
+  });
+
 describe("patch: undo / redo", () => {
   beforeEach(() => {
     (cy as any).visitEditor("/patch/new");
@@ -94,5 +120,53 @@ describe("patch: undo / redo", () => {
     cy.get("#0 .numparam input").should("have.value", 0.5);
     cy.get("button#undo").should("not.be.disabled");
     cy.get("button#redo").should("be.disabled");
+  });
+
+  it("restores a deleted cable", () => {
+    addOscillator();
+
+    connect().then(() => {
+      cable().should("have.length", 1);
+
+      cable().focus();
+      cy.get("body").type("{backspace}");
+      cable().should("have.length", 0);
+
+      cy.get("button#undo").should("not.be.disabled").trigger("click");
+
+      cable().should("have.length", 1);
+      cy.get("#patch").should("exist");
+    });
+  });
+
+  it("restores a deleted cable via the keyboard", () => {
+    addOscillator();
+
+    connect().then(() => {
+      cable().should("have.length", 1);
+
+      cable().focus();
+      cy.get("body").type("{backspace}");
+      cable().should("have.length", 0);
+
+      cy.get("body").type("{ctrl}z");
+
+      cable().should("have.length", 1);
+      cy.get("#patch").should("exist");
+    });
+  });
+
+  it("removes a cable that was just created, and puts it back on redo", () => {
+    addOscillator();
+
+    connect().then(() => {
+      cable().should("have.length", 1);
+
+      cy.get("button#undo").should("not.be.disabled").trigger("click");
+      cable().should("have.length", 0);
+
+      cy.get("button#redo").should("not.be.disabled").trigger("click");
+      cable().should("have.length", 1);
+    });
   });
 });
