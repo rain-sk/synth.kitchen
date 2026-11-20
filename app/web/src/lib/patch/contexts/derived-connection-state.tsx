@@ -1,12 +1,7 @@
 import React, { useMemo } from 'react';
 import { ConnectionsState, IoType } from 'synth.kitchen-shared';
 
-import {
-	connectorKey,
-	connectorInfo,
-	connectionInfo,
-} from '../state/connection';
-import { ConnectorInfo } from '../state/types/patch';
+import { connectorKey } from '../state/connection';import { ConnectorInfo } from '../state/types/patch';
 
 type DerivedConnectionState = {
 	activeConnectorIsInput: boolean;
@@ -29,10 +24,8 @@ export const DerivedConnectionStateContextProvider: React.FC<
 	}>
 > = ({ children, activeConnectorKey, connections, connectors }) => {
 	const [activeConnector, activeConnectorConnections] = useMemo(
-		() =>
-			activeConnectorKey
-				? connectorInfo(connectors, activeConnectorKey)
-				: [undefined, []],
+		(): ConnectorInfo | [undefined, string[]] =>
+			(activeConnectorKey && connectors[activeConnectorKey]) || [undefined, []],
 		[activeConnectorKey, connectors],
 	);
 
@@ -59,14 +52,24 @@ export const DerivedConnectionStateContextProvider: React.FC<
 		if (!activeConnectorKey) {
 			return new Set<string>();
 		}
-		const connectedConnectors = activeConnectorConnections
-			.filter((key) => key in connections)
-			.map((key) => connectionInfo(connections, key))
-			.map(([output, input]) =>
+		const connected = new Set<string>();
+		for (const key of activeConnectorConnections) {
+			const connection = connections.state[key];
+			if (!connection) {
+				continue;
+			}
+			const [output, input] = connection;
+			connected.add(
 				activeConnectorIsOutput ? connectorKey(input) : connectorKey(output),
 			);
-		return new Set<string>(connectedConnectors);
-	}, [activeConnectorConnections, activeConnectorIsOutput]);
+		}
+		return connected;
+	}, [
+		activeConnectorKey,
+		activeConnectorConnections,
+		activeConnectorIsOutput,
+		connections,
+	]);
 
 	return (
 		<DerivedConnectionStateContext.Provider

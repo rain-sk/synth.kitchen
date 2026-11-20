@@ -190,6 +190,16 @@ context("patch: cables", () => {
 		});
 	});
 
+	it("marks the far end of a cable attached to the active connector", () => {
+		connect().then((out) => {
+			cy.get("body").type("{esc}");
+
+			cy.get(out).click();
+
+			cy.get(SPEAKER).should("have.class", "connected");
+		});
+	});
+
 	it("does not offer to add a module when a cable is clicked", () => {
 		connect().then(() => {
 			cy.get("#add-module").should("not.exist");
