@@ -132,13 +132,17 @@ const incrementHistoryPointer = (state: IPatchState, direction: 1 | -1) => {
 	const historyPointer = state.historyPointer + direction;
 	const stateToLoad = state.history.load(historyPointer);
 
+	if (!stateToLoad) {
+		return state;
+	}
+
 	return cloneAndApply(sync(state, stateToLoad), {
 		historyPointer,
 	});
 };
 
 export const undo = (state: IPatchState) => {
-	if (state.historyPointer + 1 === state.history.length) {
+	if (state.historyPointer + 1 >= state.history.length) {
 		return state;
 	}
 

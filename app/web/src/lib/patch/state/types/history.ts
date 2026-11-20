@@ -37,6 +37,12 @@ export class History {
 
 		if (Object.values(state.modules).some((module) => !module.state)) {
 			// incomplete module state
+			console.warn(
+				'history: not recording, a module has no state',
+				Object.entries(state.modules)
+					.filter(([, module]) => !module.state)
+					.map(([id]) => id),
+			);
 			return this;
 		}
 
@@ -53,10 +59,25 @@ export class History {
 		return history;
 	};
 
-	load = (historyPointer: number): PatchState => {
+	load = (historyPointer: number): PatchState | undefined => {
 		const snapshot = this.stack[historyPointer];
+		if (!snapshot) {
+			console.warn(`history: no snapshot at pointer ${historyPointer}`);
+			return undefined;
+		}
+
 		const json = decompressFromBase64(snapshot.state);
-		return JSON.parse(json);
+		if (!json) {
+			console.warn(`history: corrupt snapshot at pointer ${historyPointer}`);
+			return undefined;
+		}
+
+		try {
+			return JSON.parse(json) as PatchState;
+		} catch (e) {
+			console.warn(`history: snapshot at ${historyPointer} is not valid json`, e);
+			return undefined;
+		}
 	};
 
 	get length() {
