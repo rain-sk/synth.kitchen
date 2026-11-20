@@ -6,6 +6,7 @@
   "author": "",
   "scripts": {
     "build": "node --env-file=.env -r ts-node/register build.ts",
+    "check:externals": "node scripts/check-externals.js",
     "dev": "concurrently -k -n server,lint 'npx tsx --env-file=.env --watch src/index.ts' 'npm:lint'",
     "lint": "tsc --preserveWatchOutput --watch --noEmit",
     "start": "node ./build/index.js",

@@ -358,9 +358,6 @@ button {
 	pointer-events: stroke;
 }
 
-/* the halo carries the hover/focus feedback so .cable-hit can stay 18px wide:
-   with pointer-events: stroke the visible width IS the target, and shrinking it
-   on hover made the cable harder to hit exactly when someone aimed at it */
 .cable-halo {
 	fill: none;
 	stroke: transparent;

@@ -1,4 +1,5 @@
 import { FILTER_STATE, FILTER_STATE_VERSIONS } from "../../types/patch/module";
+import { splitCents } from "./cents";
 
 export function needsUpgrade(state: FILTER_STATE[keyof FILTER_STATE]) {
   return state.version !== FILTER_STATE_VERSIONS[0];
@@ -24,12 +25,12 @@ export function upgrade(
   let skipUpgrade = false;
   switch (state.version) {
     case "0.5.0": {
-      const detune = state.detune;
+      const { transpose, detune } = splitCents(state.detune);
       const newState: FILTER_STATE["0.5.12"] = {
         ...state,
         version: "0.5.12",
-        transpose: (detune - (detune % 100)) / 100,
-        detune: detune % 100,
+        transpose,
+        detune,
       };
       state = newState;
       skipUpgrade = true;

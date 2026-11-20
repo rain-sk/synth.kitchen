@@ -96,7 +96,7 @@ until [ "$(curl -sf "$CYPRESS_BASE_URL/api/health" 2>/dev/null)" = "OK" ]; do
 done
 echo "e2e.sh: stack healthy, running cypress"
 
-npm run test
+npm run test:cypress
 test_exit_code=$?
 
 cleanup
