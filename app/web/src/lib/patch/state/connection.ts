@@ -138,25 +138,37 @@ export const disconnect = (
 } => {
 	const key = connectionKey(output, input);
 	if (!(key in connections.state)) {
-		console.error('unregistered connection', key);
-		throw Error('disconnecting unregistered connection');
+		console.warn('disconnect: connection already gone', key);
+		return { connections, connectors };
 	}
 
 	const outputKey = connectorKey(output);
 	const inputKey = connectorKey(input);
 
-	if (!(outputKey in connectors) || !(inputKey in connectors)) {
-		console.error('unregistered connector', {
+	const newConnectionsState = Object.fromEntries(
+		Object.entries(connections.state).filter(
+			([existingKey]) => existingKey !== key,
+		),
+	);
+
+	const outputInfo = connectors[outputKey];
+	const inputInfo = connectors[inputKey];
+
+	if (!outputInfo || !inputInfo) {
+		console.warn('disconnect: connector already gone', {
 			outputKey,
 			inputKey,
-			connectors,
 		});
-		throw Error('disconnecting one or more unregistered connectors');
+		return {
+			connections: {
+				version: CONNECTIONS_STATE_VERSIONS[0],
+				state: newConnectionsState,
+			},
+			connectors,
+		};
 	}
 
-	const outputInfo = connectorInfo(connectors, outputKey);
 	output = outputInfo[0] as Output;
-	const inputInfo = connectorInfo(connectors, inputKey);
 	input = inputInfo[0] as Input;
 
 	try {
@@ -184,12 +196,6 @@ export const disconnect = (
 	);
 	const inputConnections = inputInfo[1].filter(
 		(existingKey) => existingKey !== key,
-	);
-
-	const newConnectionsState = Object.fromEntries(
-		Object.entries(connections.state).filter(
-			([existingKey]) => existingKey !== key,
-		),
 	);
 
 	return {
