@@ -105,12 +105,14 @@ export const keyboardEvent: React.Reducer<IPatchState, IKeyboardEvent> = (
 		}
 
 		if (state.activeConnectorKey !== undefined) {
-			const [_, connections] = state.connectors[state.activeConnectorKey];
+			const activeConnector = state.connectors[state.activeConnectorKey];
+			const activeConnections = activeConnector ? activeConnector[1] : [];
+
 			return cloneAndApplyWithHistory(state, {
 				...disconnectSet(
 					state.connections,
 					state.connectors,
-					new Set(connections),
+					new Set(activeConnections),
 				),
 				activeConnectorKey: undefined,
 				selectedConnections: new Set(),
