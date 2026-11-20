@@ -9,6 +9,10 @@ import { LogoutRoute } from './routes/logout';
 import { PatchRoute } from './routes/patch';
 import { ResetPasswordRoute } from './routes/reset-password';
 import { Nav } from './lib/shared/components/nav';
+import {
+	ErrorBoundary,
+	ThrowOnPurpose,
+} from './lib/shared/components/error-boundary';
 import { ToastsProvider } from './lib/shared/components/toasts';
 import { VerifyRoute } from './routes/account/verify';
 // import { LearnRoute } from './routes/learn';
@@ -26,26 +30,39 @@ export const SynthKitchen: React.FC = () => {
 	return (
 		<ToastsProvider>
 			<Nav />
-			<Switch>
-				<Route path="/" component={IndexRoute} />
-				<Route path="/dashboard" component={DashboardRoute} />
+			<ErrorBoundary region="app">
+				{import.meta.env.DEV &&
+				new URLSearchParams(window.location.search).get('crash') === 'app' ? (
+					<ThrowOnPurpose />
+				) : (
+					<Switch>
+						<Route path="/" component={IndexRoute} />
+						<Route path="/dashboard" component={DashboardRoute} />
 
-				<Route path="/beta" component={RedirectToPatch} />
-				<Route path="/p" component={RedirectToPatch} />
-				<Route path="/p/:slug" component={RedirectToPatch} />
-				<Route path="/patch" component={RedirectToPatch} />
-				<Route path="/patch/:slug" component={PatchRoute} />
+						<Route path="/beta" component={RedirectToPatch} />
+						<Route path="/p" component={RedirectToPatch} />
+						<Route path="/p/:slug" component={RedirectToPatch} />
+						<Route path="/patch" component={RedirectToPatch} />
+						<Route path="/patch/:slug" component={PatchRoute} />
 
-				{/* <Route path="/learn" component={LearnRoute} /> */}
+						{/* <Route path="/learn" component={LearnRoute} /> */}
 
-				<Route path="/account/verify/:key" component={VerifyRoute} />
-				<Route path="/account" component={AccountRoute} />
-				<Route path="/login" component={LoginRoute} />
-				<Route path="/register" component={LoginRoute} />
-				<Route path="/logout" component={LogoutRoute} />
-				<Route path="/reset-password" component={ResetPasswordRoute} />
-				<Route path="/reset-password/:key" component={ResetPasswordRoute} />
-			</Switch>
+						<Route
+							path="/account/verify/:key"
+							component={VerifyRoute}
+						/>
+						<Route path="/account" component={AccountRoute} />
+						<Route path="/login" component={LoginRoute} />
+						<Route path="/register" component={LoginRoute} />
+						<Route path="/logout" component={LogoutRoute} />
+						<Route path="/reset-password" component={ResetPasswordRoute} />
+						<Route
+							path="/reset-password/:key"
+							component={ResetPasswordRoute}
+						/>
+					</Switch>
+				)}
+			</ErrorBoundary>
 		</ToastsProvider>
 	);
 };

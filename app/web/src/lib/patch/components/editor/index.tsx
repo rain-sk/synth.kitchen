@@ -10,6 +10,10 @@ import { ModuleCanvas } from './module-canvas';
 import { PatchContextProvider } from '../../contexts/patch';
 import { Init } from './init';
 import { AsyncQueueDispatcher } from './async-queue-dispatcher';
+import {
+	ErrorBoundary,
+	ThrowOnPurpose,
+} from '../../../shared/components/error-boundary';
 import { useAudioMidiInit } from './utils/use-audio-midi-init';
 import { useLoadPatch } from './utils/use-load-patch';
 import { Preset } from '../../../learn';
@@ -82,7 +86,19 @@ export const PatchEditor: React.FC<{
 							startWithoutMidi={startWithoutMidi}
 						/>
 					) : (
-						<ModuleCanvas state={state} dispatch={dispatch} minimal={minimal} />
+						<ErrorBoundary region="canvas" getState={() => state}>
+							{import.meta.env.DEV &&
+							new URLSearchParams(window.location.search).get('crash') ===
+							'canvas' ? (
+								<ThrowOnPurpose />
+							) : (
+								<ModuleCanvas
+									state={state}
+									dispatch={dispatch}
+									minimal={minimal}
+								/>
+							)}
+						</ErrorBoundary>
 					)}
 				</MidiContextProvider>
 			</DerivedConnectionStateContextProvider>

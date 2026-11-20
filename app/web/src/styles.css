@@ -785,3 +785,67 @@ main.selection-drag .connector:hover:before {
 	position: relative;
 	z-index: 30;
 }
+
+.crash {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	align-items: flex-start;
+	margin: 1rem auto;
+	padding: 1rem 1.25rem;
+	max-width: min(36rem, calc(100vw - 2rem));
+	border-radius: 0.75rem;
+	border: 1px solid #4f4658;
+	background-color: #ffecdc;
+	color: #4f4658;
+}
+
+.crash h2 {
+	margin: 0;
+	font-size: 1rem;
+}
+
+.crash p {
+	margin: 0;
+	font-size: 0.875rem;
+}
+
+.crash-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.crash button {
+	padding: 0.25rem 0.75rem;
+	border-radius: 0.5rem;
+	border: 1px solid #4f4658;
+	background-color: transparent;
+	color: #4f4658;
+	font-size: 0.8125rem;
+	cursor: pointer;
+}
+
+.crash button:hover {
+	background-color: rgba(79, 70, 88, 0.12);
+}
+
+.crash button#crash-try-again {
+	background-color: #4f4658;
+	color: #ffecdc;
+}
+
+.crash details {
+	width: 100%;
+	font-size: 0.75rem;
+}
+
+.crash pre {
+	max-height: 12rem;
+	overflow: auto;
+	white-space: pre-wrap;
+	word-break: break-word;
+	background-color: rgba(0, 0, 0, 0.06);
+	padding: 0.5rem;
+	border-radius: 0.5rem;
+}

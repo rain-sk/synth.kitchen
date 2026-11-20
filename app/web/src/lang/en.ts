@@ -19,6 +19,17 @@ export const en = {
 		savedAt: 'saved {time}',
 		neverSaved: 'not saved yet',
 	},
+	crash: {
+		title: 'the editor hit an error',
+		intro: 'your patch is still here, nothing has been deleted',
+		tryAgain: 'try again',
+		copyPatch: 'copy patch json',
+		downloadPatch: 'download patch json',
+		reloaded: 'unsaved changes will be lost',
+		detail: 'error details',
+		copied: 'copied',
+		canvasTitle: 'the canvas hit an error',
+	},
 };
 
 export type Catalog = typeof en;
