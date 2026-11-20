@@ -200,6 +200,30 @@ context("patch: cables", () => {
 		});
 	});
 
+	it("skips a cable whose connector button is gone instead of crashing", () => {
+		connect().then(() => {
+			cable().should("have.length", 1);
+
+			cable()
+				.first()
+				.then(($el) => {
+					const inputKey = $el.attr("data-input-key") as string;
+
+					cy.window().then((win) => {
+						win.document.getElementById(inputKey)!.remove();
+
+						cy.get("body").type("{esc}");
+
+						cy.get("#patch").should("exist");
+						cy.get("#connections").should("exist");
+						cy.get("#save-to-cloud").should("exist");
+						cy.get("#0").should("exist");
+						cable().should("have.length", 0);
+					});
+				});
+		});
+	});
+
 	it("does not offer to add a module when a cable is clicked", () => {
 		connect().then(() => {
 			cy.get("#add-module").should("not.exist");

@@ -36,15 +36,21 @@ let timeout: any;
 	clearTimeout(timeout);
 	timeout = setTimeout(buttonCacheCleanup, 60000);
 })();
-export const connectorButton = (key: string) => {
-	if (buttonCache[key]?.isConnected) {
-		return buttonCache[key];
+export const connectorButton = (
+	key: string,
+): HTMLButtonElement | undefined => {
+	const cached = buttonCache[key];
+	if (cached?.isConnected) {
+		return cached;
 	}
-	buttonCache[key] = document.getElementById(key) as HTMLButtonElement;
-	if (!buttonCache[key]) {
+
+	const button = document.getElementById(key);
+	if (!button) {
 		delete buttonCache[key];
-		throw Error(`Button for connector with key '${key}' not found`);
+		return undefined;
 	}
+
+	buttonCache[key] = button as HTMLButtonElement;
 	return buttonCache[key];
 };
 
