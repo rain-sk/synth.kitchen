@@ -32,7 +32,15 @@ const emptyErrors = (): FormErrors => ({
 	form: [],
 });
 
-export const AuthForm: React.FC<{ mode: AuthMode }> = ({ mode }) => {
+export const AuthForm: React.FC<{
+	mode: AuthMode;
+	/** called after a successful login. The standalone route leaves it off — the auth context
+	 * redirects on its own. The modal host uses it to finish what the user was doing. */
+	onAuthenticated?: () => void;
+	/** called after a successful register. Defaults to the reload those pages have always done;
+	 * the modal host must pass a handler, or registering throws away the user's patch. */
+	onRegistered?: () => void;
+}> = ({ mode, onAuthenticated, onRegistered }) => {
 	const registration = mode === 'register';
 	const [, navigate] = useLocation();
 
@@ -88,7 +96,12 @@ export const AuthForm: React.FC<{ mode: AuthMode }> = ({ mode }) => {
 							);
 							if (registerResponse) {
 								if ('jwt' in registerResponse) {
-									location.reload();
+									if (onRegistered) {
+										onRegistered();
+									} else {
+										// the standalone page has nothing on it to lose
+										location.reload();
+									}
 								} else if ('errors' in registerResponse) {
 									setErrors(registerResponse.errors);
 									capWidgetRef.current?.reset();
@@ -109,6 +122,8 @@ export const AuthForm: React.FC<{ mode: AuthMode }> = ({ mode }) => {
 						if (loginResponse) {
 							if ('register' in loginResponse) {
 								navigate('/register', { replace: true });
+							} else {
+								onAuthenticated?.();
 							}
 						}
 					} catch (e) {
@@ -122,7 +137,17 @@ export const AuthForm: React.FC<{ mode: AuthMode }> = ({ mode }) => {
 				setFormSubmitted(false);
 			}
 		},
-		[registration, email, password, confirmPassword, login, register, navigate],
+		[
+			registration,
+			email,
+			password,
+			confirmPassword,
+			login,
+			register,
+			navigate,
+			onAuthenticated,
+			onRegistered,
+		],
 	);
 
 	const errorsCount = Object.values(errors)
@@ -147,7 +172,7 @@ export const AuthForm: React.FC<{ mode: AuthMode }> = ({ mode }) => {
 
 	return (
 		<>
-			<form onSubmit={handleSubmit}>
+			<form className="auth-form" onSubmit={handleSubmit}>
 				{errorsCount > 0 && (
 					<section id="form-errors" tabIndex={0} ref={errorsRef}>
 						<p>
