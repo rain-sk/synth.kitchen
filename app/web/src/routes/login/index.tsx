@@ -3,6 +3,7 @@ import {
 	FormEvent,
 	useCallback,
 	useContext,
+	useEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -148,6 +149,19 @@ export const LoginRoute: React.FC = () => {
 		.map((array) => array.length)
 		.reduce((collector, value) => collector + value);
 
+	const errorsRef = useRef<HTMLElement | null>(null);
+	const errorsShown = errorsCount > 0;
+	const focusMovedToErrors = useRef(false);
+
+	useEffect(() => {
+		if (errorsShown && !focusMovedToErrors.current) {
+			focusMovedToErrors.current = true;
+			errorsRef.current?.focus();
+		} else if (!errorsShown) {
+			focusMovedToErrors.current = false;
+		}
+	}, [errorsShown]);
+
 	const showFormErrors = errors.form.length > 0;
 	const showSpecificErrors = errorsCount > errors.form.length;
 
@@ -165,10 +179,7 @@ export const LoginRoute: React.FC = () => {
 				<h2>{registration ? 'register' : 'login'}</h2>
 				<form onSubmit={handleSubmit}>
 					{errorsCount > 0 && (
-						<section
-							tabIndex={0}
-							ref={(errorsSection) => errorsSection?.focus()}
-						>
+						<section id="form-errors" tabIndex={0} ref={errorsRef}>
 							<p>
 								There{' '}
 								{errorsCount > 1 ? (
