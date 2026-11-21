@@ -136,7 +136,7 @@ export const ModuleCanvasBackdrop: React.FC<
 			return () => {
 				window.removeEventListener('resize', onResize, false);
 				document.removeEventListener('resize', onResize, false);
-				window.addEventListener('mouseout', onMouseout, false);
+				window.removeEventListener('mouseout', onMouseout, false);
 				containerRef.current?.removeEventListener('scroll', onScroll, false);
 			};
 		}
@@ -144,10 +144,13 @@ export const ModuleCanvasBackdrop: React.FC<
 
 	const onDrag = useCallback(
 		(e: MouseEvent) => {
-			selection.current.end = positionFromMouseEvent(
-				e,
-				containerRef.current as HTMLElement,
-			);
+			const container = containerRef.current;
+			if (!container) {
+				// the canvas unmounted mid-drag; detach or every mousemove lands here forever
+				detachBodyHandlers();
+				return;
+			}
+			selection.current.end = positionFromMouseEvent(e, container);
 
 			queueAnimation(drawSelection);
 
@@ -159,11 +162,12 @@ export const ModuleCanvasBackdrop: React.FC<
 
 	const onMouseUp = useCallback(
 		(e: MouseEvent) => {
-			dispatch(
-				patchActions.selectionDragEndAction(
-					positionFromMouseEvent(e, containerRef.current as HTMLElement),
-				),
-			);
+			const container = containerRef.current;
+			if (!container) {
+				detachBodyHandlers();
+				return;
+			}
+			dispatch(patchActions.selectionDragEndAction(positionFromMouseEvent(e, container)));
 
 			if (
 				Math.abs(selection.current.start[0] - selection.current.end[0]) < 5 &&
@@ -185,10 +189,11 @@ export const ModuleCanvasBackdrop: React.FC<
 
 	const onMouseDown = useCallback(
 		(e: ReactMouseEvent<HTMLDivElement>) => {
-			const position = positionFromMouseEvent(
-				e.nativeEvent,
-				containerRef.current as HTMLElement,
-			);
+			const container = containerRef.current;
+			if (!container) {
+				return;
+			}
+			const position = positionFromMouseEvent(e.nativeEvent, container);
 
 			selection.current.start = position;
 
@@ -204,6 +209,16 @@ export const ModuleCanvasBackdrop: React.FC<
 		},
 		[dispatch],
 	);
+
+	// these three live on document.body and were only ever detached in onMouseUp, so a drag
+	// interrupted by an unmount left them attached to a canvas that no longer existed
+	const detachBodyHandlers = useCallback(() => {
+		document.body.removeEventListener('mouseup', onMouseUp);
+		document.body.removeEventListener('mouseleave', onMouseUp);
+		document.body.removeEventListener('mousemove', onDrag);
+	}, [onMouseUp, onDrag]);
+
+	useEffect(() => detachBodyHandlers, [detachBodyHandlers]);
 
 	const classNames = [];
 	if (draggingSelection) {
