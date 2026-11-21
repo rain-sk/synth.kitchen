@@ -65,28 +65,53 @@ Cypress.Commands.add("loginByApi" as any, (email: string, password: string) => {
     });
 });
 
+// teardown must survive the e2e stack restarting the api under it (see AGENTS.md gotcha 12): the
+// vite proxy answers 500 with an empty text/plain body while the upstream is coming back, and a
+// single such hiccup used to fail a spec whose assertions were all correct. Retry across the
+// restart, then assert, so a genuine failure still fails loudly. 404 counts as done: no user.
+const throughRestart = (
+  req: () => Cypress.Chainable<Cypress.Response<any>>,
+  tries = 4,
+): Cypress.Chainable<Cypress.Response<any>> =>
+  req().then((res) => {
+    if (res.status === 200 || res.status === 404 || tries <= 0) {
+      return res;
+    }
+    cy.wait(1000);
+    return throughRestart(req, tries - 1);
+  });
+
 Cypress.Commands.add("deleteUserByApi" as any, (email: string, password: string) => {
-  return cy
-    .request({
+  return throughRestart(() =>
+    cy.request({
       method: "POST",
       url: api("/auth/login"),
       body: { email, password },
       failOnStatusCode: false,
-    })
-    .then((res) => {
-      if (res.status !== 200) {
-        return cy.wrap(null);
-      }
+    }),
+  ).then((res) => {
+    if (res.status !== 200) {
+      return cy.wrap(null);
+    }
 
-      return cy.request({
+    return throughRestart(() =>
+      cy.request({
         method: "DELETE",
         url: api("/auth/user"),
         headers: {
           authorization: `Bearer ${res.body.jwt}`,
           "x-password": password,
         },
-      });
+        failOnStatusCode: false,
+      }),
+    ).then((deleted) => {
+      expect(
+        deleted.status,
+        `delete user: ${deleted.status} ${JSON.stringify(deleted.body ?? "")}`,
+      ).to.equal(200);
+      return deleted;
     });
+  });
 });
 
 Cypress.Commands.add("seedPatch" as any, (email: string, password: string, patch: object) => {
