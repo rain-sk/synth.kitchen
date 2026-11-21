@@ -13,9 +13,11 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 	const [connectorKey] = useState(() => paramKey({ moduleId, name }));
 
 	const { activeConnectorKey, dispatch } = useContext(PatchContext);
-	const { activeConnectorIsOutput, connectedToActiveConnector } = useContext(
-		DerivedConnectionStateContext,
-	);
+	const {
+		activeConnectorIsOutput,
+		connectedToActiveConnector,
+		pluggedConnectorKeys,
+	} = useContext(DerivedConnectionStateContext);
 	const highlightInputs = activeConnectorIsOutput;
 	const isConnectedToActiveConnector = useMemo(
 		() => connectedToActiveConnector.has(connectorKey),
@@ -38,6 +40,7 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 
 	const isActive = activeConnectorKey === connectorKey;
 	const highlight = highlightInputs;
+	const isPlugged = pluggedConnectorKeys.has(connectorKey);
 
 	return (
 		<button
@@ -46,6 +49,7 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 			id={connectorKey}
 			type="button"
 			onClick={onClick}
+			data-plugged={isPlugged ? 'true' : 'false'}
 			className={`connector ${
 				isActive
 					? 'active'

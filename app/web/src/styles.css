@@ -678,6 +678,32 @@ button {
 	border: 1px solid #4f4658;
 }
 
+/* A parameter socket with nothing plugged into it takes up far less room, without
+   becoming harder to hit: the button keeps its 1.2rem box (that is the hit target,
+   widened further by the ::after below) and only the paint shrinks, to a fifth.
+   It yields to :hover — the halo is what shows the whole clickable area is still there
+   — and to the active / connected / highlight colours, which have to stay legible. */
+.connector[aria-roledescription="parameter connector"][data-plugged="false"]:not(.active):not(.connected):not(.highlight):not(:hover) {
+	background-color: transparent;
+	border-color: transparent;
+}
+
+.connector[aria-roledescription="parameter connector"][data-plugged="false"]:not(.active):not(.connected):not(.highlight):not(:hover)::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	/* a fifth of the button's 1.2rem box, stated in rem because a percentage here
+	   resolves against the content box and lands at a fifth of a fifth-small dot */
+	width: 0.24rem;
+	height: 0.24rem;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	background-color: #b9ffce;
+	display: block;
+	z-index: 12;
+}
+
 .connector:hover:before {
 	content: '';
 	position: absolute;

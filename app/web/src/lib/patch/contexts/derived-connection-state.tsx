@@ -7,6 +7,11 @@ type DerivedConnectionState = {
 	activeConnectorIsInput: boolean;
 	activeConnectorIsOutput: boolean;
 	connectedToActiveConnector: Set<string>;
+	// every connector currently carrying a cable, on either end. the drag-time
+	// connectedToActiveConnector above cannot answer that — it only knows about the
+	// connector the user is holding, so a socket that is plugged in but not part of
+	// the active drag looks identical to a free one
+	pluggedConnectorKeys: Set<string>;
 };
 
 export const DerivedConnectionStateContext =
@@ -14,6 +19,7 @@ export const DerivedConnectionStateContext =
 		activeConnectorIsInput: false,
 		activeConnectorIsOutput: false,
 		connectedToActiveConnector: new Set<string>(),
+		pluggedConnectorKeys: new Set<string>(),
 	});
 
 export const DerivedConnectionStateContextProvider: React.FC<
@@ -48,6 +54,15 @@ export const DerivedConnectionStateContextProvider: React.FC<
 		}
 	}, [activeConnector]);
 
+	const pluggedConnectorKeys = useMemo(() => {
+		const plugged = new Set<string>();
+		for (const [output, input] of Object.values(connections.state)) {
+			plugged.add(connectorKey(output));
+			plugged.add(connectorKey(input));
+		}
+		return plugged;
+	}, [connections]);
+
 	const connectedToActiveConnector = useMemo(() => {
 		if (!activeConnectorKey) {
 			return new Set<string>();
@@ -77,6 +92,7 @@ export const DerivedConnectionStateContextProvider: React.FC<
 				activeConnectorIsInput,
 				activeConnectorIsOutput,
 				connectedToActiveConnector,
+				pluggedConnectorKeys,
 			}}
 		>
 			{children}
