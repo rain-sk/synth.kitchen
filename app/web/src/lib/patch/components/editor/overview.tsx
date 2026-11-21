@@ -18,18 +18,19 @@ const main = () => document.getElementById('patch');
 // scrubHeight separately, against a reference frame built from a hardcoded 16/9, which destroyed the aspect
 // ratio: at a 1663x392 viewport over a 1963x652 world the rectangle measured 381x132.6 where the correct box
 // is 322.7x60.6 - twice too tall, and pinned to the full width
-const computeVisibleBounds = (main: HTMLElement, scrubContainer: HTMLDivElement) => {
-	const {
-		scrollTop,
-		scrollLeft,
-		clientHeight,
-		clientWidth,
-		scrollWidth: worldWidth,
-		scrollHeight: worldHeight,
-	} = main;
+const computeVisibleBounds = (
+	main: HTMLElement,
+	scrubContainer: HTMLDivElement,
+	snapshot?: { width: number; height: number },
+) => {
+	const { scrollTop, scrollLeft, clientHeight, clientWidth } = main;
 
 	const scrubWidth = scrubContainer.clientWidth;
 	const scrubHeight = scrubContainer.clientHeight;
+
+	const useSnapshot = !!snapshot && snapshot.width > 1 && snapshot.height > 1;
+	const worldWidth = useSnapshot ? snapshot!.width : main.scrollWidth;
+	const worldHeight = useSnapshot ? snapshot!.height : main.scrollHeight;
 
 	if (!worldWidth || !worldHeight || !scrubWidth || !scrubHeight) {
 		return { top: 0, left: 0, right: 0, bottom: 0 };
@@ -44,10 +45,15 @@ const computeVisibleBounds = (main: HTMLElement, scrubContainer: HTMLDivElement)
 
 	const clamp = (value: number, max: number) => Math.max(0, Math.min(value, max));
 
-	const left = clamp(offsetX + scrollLeft * scale, scrubWidth);
-	const top = clamp(offsetY + scrollTop * scale, scrubHeight);
-	const right = clamp(left + clientWidth * scale, scrubWidth);
-	const bottom = clamp(top + clientHeight * scale, scrubHeight);
+	const viewLeft = clamp(scrollLeft, worldWidth);
+	const viewTop = clamp(scrollTop, worldHeight);
+	const viewRight = clamp(scrollLeft + clientWidth, worldWidth);
+	const viewBottom = clamp(scrollTop + clientHeight, worldHeight);
+
+	const left = clamp(offsetX + viewLeft * scale, scrubWidth);
+	const top = clamp(offsetY + viewTop * scale, scrubHeight);
+	const right = clamp(offsetX + viewRight * scale, scrubWidth);
+	const bottom = clamp(offsetY + viewBottom * scale, scrubHeight);
 
 	return { top, left, right, bottom };
 };
@@ -86,7 +92,7 @@ export const Overview: React.FC<{
 			return;
 		}
 
-		setVisibleBounds(computeVisibleBounds(patch, scrub));
+		setVisibleBounds(computeVisibleBounds(patch, scrub, overviewSize));
 	}, [
 		connectionsCount,
 		modulesCount,
