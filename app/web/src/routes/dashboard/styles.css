@@ -1,95 +1,311 @@
-.patch-previews {
+#dashboard {
+	padding: 1.25rem 1rem 3rem;
+	box-sizing: border-box;
+}
+
+.dash-head {
 	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 0 0.25rem 1rem;
+	border-bottom: 1px solid #ffffff22;
+	margin-bottom: 1rem;
+}
+
+.dash-head h1 {
+	margin: 0;
+	font-size: 1.5rem;
+	letter-spacing: 0.04em;
+	text-transform: lowercase;
+}
+
+.dash-count {
+	margin: 0.15rem 0 0;
+	font-size: 0.8rem;
+	color: #ffffffaa;
+}
+
+.dash-tools {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.dash-search,
+.dash-sort {
+	height: 2rem;
+	box-sizing: border-box;
+	border: 1px solid #ffffff;
+	border-radius: 0.4rem;
+	background-color: #4f4658;
+	color: #ffecdc;
+	padding: 0 0.5rem;
+	font-family: inherit;
+	font-size: 0.8rem;
+}
+
+.dash-search {
+	width: 12rem;
+}
+
+.dash-search::placeholder {
+	color: #ffffff88;
+}
+
+.dash-search:focus-visible,
+.dash-sort:focus-visible,
+.dash-new:focus-visible,
+.patch-card:focus-within,
+.patch-menu-button:focus-visible,
+.patch-menu-popup button:focus-visible,
+.patch-cta:focus-visible {
+	outline: 2px solid #7cd2e2;
+	outline-offset: 2px;
+}
+
+.dash-new {
+	display: inline-flex;
+	align-items: center;
+	height: 2rem;
+	padding: 0 0.85rem;
+	border: 1px solid #ffffff;
+	border-radius: 0.4rem;
+	background-color: #9142a0;
+	color: #fff;
+	font-size: 0.8rem;
+	text-decoration: none;
+}
+
+.dash-new:hover {
+	background-color: #7c3389;
+}
+
+.patch-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+	gap: 0.9rem;
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	width: 100%;
-	flex-wrap: wrap;
-	justify-content: space-around;
 }
 
-/* Converted to dataurl with: https://www.svgviewer.dev/svg-to-data-uri
-<svg width="220" height="140" viewBox="-10 -20 240 180" xmlns="http://www.w3.org/2000/svg">
-  <circle stroke="#b1b1b1" stroke-width="3" fill="transparent" cx="50" cy="20" r="20"/>
-  <circle stroke="#b1b1b1" stroke-width="3" fill="#b1b1b1" cx="50" cy="20" r="5"/>
-  <circle stroke="#b1b1b1" stroke-width="3" fill="transparent" cx="30" cy="120" r="20"/>
-  <circle stroke="#b1b1b1" stroke-width="3" fill="#b1b1b1" cx="30" cy="120" r="5"/>
-  <circle stroke="#b1b1b1" stroke-width="3" fill="transparent" cx="200" cy="80" r="20"/>
-  <circle stroke="#b1b1b1" stroke-width="3" fill="#b1b1b1" cx="200" cy="80" r="5"/>
-  <line stroke="#b1b1b1" stroke-width="4" stroke-linecap="round" x1="50" y1="20" x2="200" y2="80"/>
-  <line stroke="#b1b1b1" stroke-width="4" stroke-linecap="round" x1="30" y1="120" x2="200" y2="80"/>
-</svg>
-*/
-
-.patch-previews > li {
+.patch-card {
 	position: relative;
 	display: block;
-	width: 16rem;
-	height: 9rem;
-	border: 1px solid white;
-	border-radius: 0.5rem;
-	margin-top: 1rem;
-	background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iLTEwIC0yMCAyNDAgMTgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxjaXJjbGUgc3Ryb2tlPSIjYjFiMWIxIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9InRyYW5zcGFyZW50IiBjeD0iNTAiIGN5PSIyMCIgcj0iMjAiLz4KICA8Y2lyY2xlIHN0cm9rZT0iI2IxYjFiMSIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSIjYjFiMWIxIiBjeD0iNTAiIGN5PSIyMCIgcj0iNSIvPgogIDxjaXJjbGUgc3Ryb2tlPSIjYjFiMWIxIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9InRyYW5zcGFyZW50IiBjeD0iMzAiIGN5PSIxMjAiIHI9IjIwIi8+CiAgPGNpcmNsZSBzdHJva2U9IiNiMWIxYjEiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0iI2IxYjFiMSIgY3g9IjMwIiBjeT0iMTIwIiByPSI1Ii8+CiAgPGNpcmNsZSBzdHJva2U9IiNiMWIxYjEiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0idHJhbnNwYXJlbnQiIGN4PSIyMDAiIGN5PSI4MCIgcj0iMjAiLz4KICA8Y2lyY2xlIHN0cm9rZT0iI2IxYjFiMSIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSIjYjFiMWIxIiBjeD0iMjAwIiBjeT0iODAiIHI9IjUiLz4KICA8bGluZSBzdHJva2U9IiNiMWIxYjEiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiB4MT0iNTAiIHkxPSIyMCIgeDI9IjIwMCIgeTI9IjgwIi8+CiAgPGxpbmUgc3Ryb2tlPSIjYjFiMWIxIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgeDE9IjMwIiB5MT0iMTIwIiB4Mj0iMjAwIiB5Mj0iODAiLz4KPC9zdmc+');
-	background-position: center;
-	background-size: contain;
+	border-radius: 0.6rem;
+	background-color: #4f4658;
+	border: 1px solid #ffffff33;
+	transition:
+		transform 120ms ease,
+		border-color 120ms ease,
+		box-shadow 120ms ease;
 }
 
-.patch-previews > li > .menu {
+.patch-card:hover,
+.patch-card:focus-within {
+	transform: translateY(-2px);
+	border-color: #7cd2e2;
+	box-shadow: 0 0.35rem 0.9rem #00000033;
+}
+
+/* accent is derived from the slug so every card is stable and distinct, without
+   pretending to depict the patch inside it */
+.patch-card::before {
+	content: '';
+	display: block;
+	height: 0.3rem;
+	border-radius: 0.55rem 0.55rem 0 0;
+	background-color: var(--accent);
+}
+
+.patch-card-face {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	gap: 0.35rem;
+	min-height: 6.25rem;
+	box-sizing: border-box;
+	padding: 0.9rem;
+	border-radius: 0 0 0.55rem 0.55rem;
+
+	text-decoration: none;
+}
+
+.patch-card-name {
+	color: #ffecdc;
+	font-size: 1rem;
+	line-height: 1.25;
+	word-break: break-word;
+}
+
+.patch-card-by {
+	color: #ffffff88;
+	font-size: 0.7rem;
+}
+
+.patch-card-menu {
 	position: absolute;
-	top: 0.25rem;
-	right: 0.25rem;
+	top: 0.5rem;
+	right: 0.5rem;
 }
 
-.patch-previews > li > .menu > button {
-	background-color: transparent;
+.patch-menu-button {
 	width: 1.75rem;
 	height: 1.75rem;
-	border-radius: 1rem;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	border: none;
+	border-radius: 50%;
+	background-color: #00000033;
 }
 
-.patch-previews .menu-popup {
+.patch-menu-button:hover {
+	background-color: #00000066;
+}
+
+.patch-menu-popup {
 	position: absolute;
-	top: 1.75rem;
+	top: 2rem;
 	right: 0;
+	z-index: 5;
+	min-width: 10.5rem;
 	list-style-type: none;
-	padding: 0;
+	margin: 0;
+	padding: 0.3rem;
+	border: 1px solid #ffffff;
+	border-radius: 0.5rem;
+	background-color: #4f4658;
+	box-shadow: 0 0.4rem 1rem #00000055;
 }
 
-.patch-previews .menu-popup > li > button {
-	width: 4rem;
-	height: 1.5rem;
-	border-radius: 0;
-	background-color: #ffffff;
-	color: #000000;
-}
-
-.patch-previews .menu-popup > li > button:hover {
-	background-color: #aaaaaa;
-	color: #000000;
-}
-
-.patch-previews > .menu > button:hover {
-	background-color: transparent;
-}
-
-.patch-previews > li > a {
-	display: flex;
+.patch-menu-popup button {
+	display: block;
 	width: 100%;
-	height: 100%;
-	align-items: center;
-	justify-content: center;
+	/* armed delete wraps to two lines; a fixed height made it overflow its row */
+	min-height: 1.9rem;
+	line-height: 1.2;
+	padding: 0.45rem 0.5rem;
+	border: none;
+	border-radius: 0.3rem;
+	background-color: transparent;
+	color: #ffecdc;
+	font-family: inherit;
+	font-size: 0.78rem;
+	text-align: left;
 }
 
-.patch-previews > li > a > h3 {
+.patch-menu-popup button:hover:not(:disabled) {
+	background-color: #ffffff22;
+}
+
+.patch-menu-popup button:disabled {
+	opacity: 0.6;
+	cursor: default;
+}
+
+.patch-menu-danger.is-armed {
+	background-color: #ffb3b3;
+	color: #4f1717;
+	font-weight: bold;
+}
+
+.patch-state {
 	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.6rem;
+	padding: 2rem 1rem;
+	color: #ffecdc;
+}
+
+.patch-state-title {
+	margin: 0;
+	font-size: 1rem;
+}
+
+.patch-state-hint {
+	margin: 0;
+	font-size: 0.8rem;
+	color: #ffffff99;
+}
+
+.patch-cta {
+	display: inline-flex;
 	align-items: center;
-	text-align: center;
-	min-height: 4rem;
-	margin: 1rem;
-	padding: 0.25rem;
-	border-radius: 0.25rem;
-	background-color: #000000aa;
+	height: 2rem;
+	padding: 0 0.85rem;
+	border: 1px solid #ffffff;
+	border-radius: 0.4rem;
+	background-color: #9142a0;
+	color: #fff;
+	font-size: 0.8rem;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.patch-cta:hover {
+	background-color: #7c3389;
+}
+
+.patch-card.is-skeleton {
+	min-height: 9.4rem;
+	border-color: #ffffff22;
+	background-image: linear-gradient(
+		90deg,
+		#4f4658 0%,
+		#5d5568 45%,
+		#4f4658 90%
+	);
+	background-size: 300% 100%;
+	animation: dash-shimmer 1.4s ease-in-out infinite;
+}
+
+.patch-card.is-skeleton::before {
+	display: none;
+}
+
+@keyframes dash-shimmer {
+	from {
+		background-position: 100% 0;
+	}
+	to {
+		background-position: 0 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.patch-card,
+	.patch-card.is-skeleton {
+		transition: none;
+		animation: none;
+	}
+}
+
+@media (max-width: 30rem) {
+	.dash-search {
+		width: 100%;
+	}
+	.dash-tools {
+		width: 100%;
+	}
+
+	/* one column on a phone: a row to scan, not a poster to admire */
+	.patch-grid {
+		grid-template-columns: 1fr;
+		gap: 0.6rem;
+	}
+
+	.patch-card-face {
+		min-height: 3.75rem;
+		justify-content: center;
+		padding: 0.75rem 3rem 0.75rem 0.9rem;
+	}
+
+	.patch-card-name {
+		font-size: 0.95rem;
+	}
 }

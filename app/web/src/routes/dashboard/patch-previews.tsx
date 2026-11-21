@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
 import { PatchInfo } from 'synth.kitchen-shared';
 import { Link } from 'wouter';
 
@@ -7,40 +13,69 @@ import { useRefBackedState } from '../../lib/shared/utils';
 import { AuthContext } from '../../api/auth/context';
 import { useApi } from '../../lib/patch/api';
 import { DashboardContext } from './context';
+import { t } from '../../lang';
 
-export const PatchPreview: React.FC<{ patchInfo: PatchInfo }> = ({
+export type CardPatch = PatchInfo & { createdAt?: string };
+
+// only colours the app already owns, so the grid stays in the same room as the editor
+const ACCENTS = ['#7cd2e2', '#bf82bb', '#9142a0', '#b9ffce', '#c8b6e0'];
+
+const accentOf = (seed: string) => {
+	let h = 0;
+	for (let i = 0; i < seed.length; i++) {
+		h = (h * 31 + seed.charCodeAt(i)) % ACCENTS.length;
+	}
+	return ACCENTS[h];
+};
+
+export const PatchPreview: React.FC<{ patchInfo: CardPatch }> = ({
 	patchInfo,
 }) => {
 	const { user } = useContext(AuthContext);
 	const { refresh } = useContext(DashboardContext);
 	const { deletePatch, forkPatch } = useApi();
+
 	const [showMenu, setShowMenu] = useState(false);
-	const [menuRef, menu, setMenu] = useRefBackedState<HTMLElement | undefined>(
+	const [confirming, setConfirming] = useState(false);
+	const [, menu, setMenu] = useRefBackedState<HTMLElement | undefined>(
 		undefined,
 	);
+	const wrapRef = useRef<HTMLElement | null>(null);
+	const confirmTimer = useRef<number>();
 
-	const onClickMenuButton = () => {
-		setShowMenu(!showMenu);
-	};
+	const owned = !!user && user.id === patchInfo.creator.id;
 
 	useEffect(() => {
-		const onBlur = (e: any) => {
-			if (
-				!menuRef.current?.contains(e.relatedTarget) ||
-				menuRef.current === e.relatedTarget
-			) {
+		if (!showMenu) {
+			return;
+		}
+		const onKey = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') {
 				setShowMenu(false);
-				menuRef.current?.removeEventListener('blur', onBlur);
+				setConfirming(false);
 			}
 		};
-		if (menuRef.current) {
-			menuRef.current.focus();
-			menuRef.current.addEventListener('blur', onBlur);
-		}
-		return () => {
-			menuRef.current?.removeEventListener('blur', onBlur);
+		const onAway = (e: MouseEvent) => {
+			if (!wrapRef.current?.contains(e.target as Node)) {
+				setShowMenu(false);
+				setConfirming(false);
+			}
 		};
-	}, [menu]);
+		document.addEventListener('keydown', onKey);
+		document.addEventListener('mousedown', onAway);
+		menu?.focus();
+		return () => {
+			document.removeEventListener('keydown', onKey);
+			document.removeEventListener('mousedown', onAway);
+		};
+	}, [menu, showMenu]);
+
+	useEffect(() => () => window.clearTimeout(confirmTimer.current), []);
+
+	const close = () => {
+		setShowMenu(false);
+		setConfirming(false);
+	};
 
 	const [forkingRef, forking, setForking] = useRefBackedState(false);
 	const handleFork = useCallback(async () => {
@@ -48,16 +83,15 @@ export const PatchPreview: React.FC<{ patchInfo: PatchInfo }> = ({
 			return;
 		}
 		setForking(true);
-
 		try {
 			await forkPatch(patchInfo.id);
 		} catch (e) {
 			console.error(e);
+			close();
+			refresh();
 		}
-		refresh();
 		setForking(false);
-		setShowMenu(false);
-	}, [patchInfo, refresh]);
+	}, [forkPatch, forkingRef, patchInfo, refresh]);
 
 	const [deletingRef, deleting, setDeleting] = useRefBackedState(false);
 	const handleDelete = useCallback(async () => {
@@ -65,52 +99,92 @@ export const PatchPreview: React.FC<{ patchInfo: PatchInfo }> = ({
 			return;
 		}
 		setDeleting(true);
-
 		try {
 			await deletePatch(patchInfo.id);
 		} catch (e) {
 			console.error(e);
 		}
+		close();
 		refresh();
 		setDeleting(false);
-		setShowMenu(false);
-	}, [patchInfo, refresh]);
+	}, [deletePatch, deletingRef, patchInfo, refresh]);
 
-	const deleteEnabled = user && user.id === patchInfo.creator.id;
+	const armed = confirming || deleting;
 
-	const doShowMenu = showMenu || forking || deleting;
+	const label = owned ? null : t('dashboard.by', { name: patchInfo.creator.username });
 
 	return (
-		<li>
-			<Link to={`/patch/${patchInfo.slug}`}>
-				<h3>{patchInfo.name}</h3>
+		<li
+			className={`patch-card${owned ? ' is-owned' : ''}`}
+			data-slug={patchInfo.slug}
+			data-created={patchInfo.createdAt ? Date.parse(patchInfo.createdAt) : 0}
+			style={{ ['--accent' as any]: accentOf(patchInfo.slug) }}
+		>
+			<Link
+				className="patch-card-face"
+				to={`/patch/${patchInfo.slug}`}
+				aria-label={`${t('dashboard.open')}: ${patchInfo.name}`}
+			>
+				<span className="patch-card-name">{patchInfo.name}</span>
+				{label && <span className="patch-card-by">{label}</span>}
 			</Link>
-			<span className="menu">
+			<span className="patch-card-menu" ref={wrapRef}>
 				<button
 					type="button"
 					id={`menu-${patchInfo.slug}`}
-					onClick={onClickMenuButton}
+					className="patch-menu-button"
+					aria-haspopup="true"
+					aria-expanded={showMenu}
+					aria-label={t('dashboard.more', { name: patchInfo.name })}
+					onClick={() => setShowMenu((v) => !v)}
 				>
 					<MenuDots />
 				</button>
-				{doShowMenu && (
+				{(showMenu || forking || deleting) && (
 					<ul
 						id={`menu-popup-${patchInfo.slug}`}
-						className="menu-popup"
-						tabIndex={0}
-						ref={(ref) => {
-							setMenu(ref ?? undefined);
-						}}
+						className="patch-menu-popup"
+						role="menu"
+						tabIndex={-1}
+						ref={(ref) => setMenu(ref ?? undefined)}
 					>
-						<li>
-							<button type="button" id={`fork-${patchInfo.slug}`} onClick={handleFork}>
-								fork
+						<li role="none">
+							<button
+								type="button"
+								id={`fork-${patchInfo.slug}`}
+								role="menuitem"
+								disabled={forking}
+								onClick={handleFork}
+							>
+								{forking ? t('dashboard.forking') : t('dashboard.fork')}
 							</button>
 						</li>
-						{deleteEnabled && (
-							<li>
-								<button type="button" id={`delete-${patchInfo.slug}`} onClick={handleDelete}>
-									delete
+						{owned && (
+							<li role="none">
+								<button
+									type="button"
+									id={`delete-${patchInfo.slug}`}
+									className={`patch-menu-danger${armed ? ' is-armed' : ''}`}
+									role="menuitem"
+									disabled={deleting}
+									onClick={() => {
+										if (!confirming) {
+											setConfirming(true);
+											window.clearTimeout(confirmTimer.current);
+											confirmTimer.current = window.setTimeout(
+												() => setConfirming(false),
+												4000,
+											);
+											return;
+										}
+										handleDelete();
+									}}
+								>
+									{deleting
+										? t('dashboard.deleting')
+										: confirming
+											? t('dashboard.confirmDelete')
+											: t('dashboard.delete')}
 								</button>
 							</li>
 						)}
@@ -121,11 +195,11 @@ export const PatchPreview: React.FC<{ patchInfo: PatchInfo }> = ({
 	);
 };
 
-export const PatchPreviews: React.FC<{ patches: PatchInfo[] }> = ({
+export const PatchPreviews: React.FC<{ patches: CardPatch[] }> = ({
 	patches,
 }) => {
 	return (
-		<ul className="patch-previews">
+		<ul className="patch-grid">
 			{patches.map((patchInfo) => (
 				<PatchPreview key={patchInfo.id} patchInfo={patchInfo} />
 			))}
