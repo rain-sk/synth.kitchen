@@ -2,6 +2,7 @@
   "name": "synth.kitchen-api",
   "version": "0.5.13",
   "devDependencies": {
+    "@types/node": "^26.6.6",
     "concurrently": "9.2.5",
     "cypress": "15.21.1",
     "typescript": "5.9.3"
