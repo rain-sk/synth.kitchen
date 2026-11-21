@@ -77,7 +77,13 @@ const modulesInRange = (
 
 		const moduleRect = {
 			x: position[0] - width / 2,
-			y: position[1] + navElement.clientHeight - height / 2 - onePointFourRem,
+			// the nav is not on every page, and this runs inside the reducer: a crash here
+			// takes the editor down mid-drag
+			y:
+				position[1] +
+				(navElement?.clientHeight ?? 0) -
+				height / 2 -
+				onePointFourRem,
 			width,
 			height: height + onePointFourRem,
 		};
@@ -113,6 +119,14 @@ const connectionsInRange = (
 		const inputRect =
 			connectorCache[inputKey] ??
 			document.getElementById(inputKey)?.getBoundingClientRect();
+		// a connector whose element is gone mid-drag — the module is unmounting, or a
+		// connection outlived its module. skipping it is correct; dereferencing threw
+		// "Cannot read properties of undefined (reading 'x')" inside useReducer, which
+		// tore down #patch and left the body mousemove handler flooding scrollLeft on null.
+		if (!outputRect || !inputRect) {
+			continue;
+		}
+
 		connectorCache[outputKey] = outputRect;
 		connectorCache[inputKey] = inputRect;
 
