@@ -4,7 +4,10 @@ import { ioKey, IoType } from 'synth.kitchen-shared';
 
 import { PatchContext } from '../../contexts/patch';
 import { patchActions } from '../../state/actions';
-import { DerivedConnectionStateContext } from '../../contexts/derived-connection-state';
+import {
+	DerivedConnectionStateContext,
+	isQuietConnector,
+} from '../../contexts/derived-connection-state';
 
 export const IoConnector = <Type extends IoType>({
 	name,
@@ -26,6 +29,7 @@ export const IoConnector = <Type extends IoType>({
 		activeConnectorIsInput,
 		activeConnectorIsOutput,
 		connectedToActiveConnector,
+		pluggedConnectorKeys,
 	} = useContext(DerivedConnectionStateContext);
 	const highlightOutputs = activeConnectorIsInput;
 	const highlightInputs = activeConnectorIsOutput;
@@ -67,6 +71,13 @@ export const IoConnector = <Type extends IoType>({
 	);
 
 	const isOutput = !isInput;
+	const isPlugged = pluggedConnectorKeys.has(connectorKey);
+	const quiet = isQuietConnector(isInput ? 'input' : 'output', {
+		isActive,
+		isPlugged,
+		activeConnectorIsInput,
+		activeConnectorIsOutput,
+	});
 
 	return (
 		<span className="io" data-omit>
@@ -77,6 +88,9 @@ export const IoConnector = <Type extends IoType>({
 				id={connectorKey}
 				type="button"
 				onClick={onClick}
+				data-direction={isInput ? 'input' : 'output'}
+				data-quiet={String(quiet)}
+				data-plugged={isPlugged ? 'true' : 'false'}
 				className={`connector ${
 					isActive
 						? 'active'

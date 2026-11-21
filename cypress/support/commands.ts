@@ -138,8 +138,12 @@ Cypress.Commands.add("deletePatchByApi" as any, (id: string, jwt: string) => {
   });
 });
 
-Cypress.Commands.add("visitEditor" as any, (path = "/patch/new") => {
+// every editor spec goes through here: the editor gates behind the audio/MIDI start dialog,
+// so a raw cy.visit never reaches #patch. extra passes through visit options a spec needs to
+// assert on — { preferReducedMotion: true } for the connector breathing
+Cypress.Commands.add("visitEditor" as any, (path = "/patch/new", extra: object = {}) => {
   cy.visit(path, {
+    ...extra,
     onBeforeLoad: (win: Window) => {
       cy.stub(win.navigator, "requestMIDIAccess").resolves({
         inputs: new Map(),

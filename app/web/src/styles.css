@@ -678,23 +678,22 @@ button {
 	border: 1px solid #4f4658;
 }
 
-/* A parameter socket with nothing plugged into it takes up far less room, without
-   becoming harder to hit: the button keeps its 1.2rem box (that is the hit target,
-   widened further by the ::after below) and only the paint shrinks, to a fifth.
-   It yields to :hover — the halo is what shows the whole clickable area is still there
-   — and to the active / connected / highlight colours, which have to stay legible. */
-.connector[aria-roledescription="parameter connector"][data-plugged="false"]:not(.active):not(.connected):not(.highlight):not(:hover) {
+/* Direction, not module kind, is the organising idea. `data-quiet` is computed by
+   isQuietConnector (lib/patch/contexts/derived-connection-state.tsx): the same direction as
+   the connector you are holding cannot take this cable, so it recedes; the opposite direction
+   is where the cable can land, so it stays prominent and is highlighted. With nothing active,
+   outputs stay prominent as the place to start and only empty inputs recede.
+   Only the paint moves — the button keeps its 1.2rem box, which is the hit target, widened
+   further by the ::after below. :hover is exempt, because the halo is what shows the whole
+   clickable area is still there. */
+.connector[data-quiet="true"]:not(.active):not(.connected):not(.highlight):not(:hover) {
 	background-color: transparent;
 	border-color: transparent;
 }
 
-.connector[aria-roledescription="parameter connector"][data-plugged="false"]:not(.active):not(.connected):not(.highlight):not(:hover)::before {
-	content: '';
-	position: absolute;
-	top: 50%;
-	left: 50%;
+.connector[data-quiet="true"]:not(.active):not(.connected):not(.highlight):not(:hover)::before {
 	/* a fifth of the button's 1.2rem box, stated in rem because a percentage here
-	   resolves against the content box and lands at a fifth of a fifth-small dot */
+	   resolves against the content box and lands smaller than a fifth */
 	width: 0.24rem;
 	height: 0.24rem;
 	transform: translate(-50%, -50%);
@@ -702,6 +701,47 @@ button {
 	background-color: #b9ffce;
 	display: block;
 	z-index: 12;
+}
+
+/* outputs are where every cable starts — ringed so the source reads at a glance */
+.connector[data-direction="output"] {
+	box-shadow: 0 0 0 0.15rem rgba(79, 70, 88, 0.45);
+}
+
+/* a connector carrying a cable breathes, so the live ones read at a glance — and live ones are
+   the ones that can be unplugged: a second click on the pair disconnects rather than connects,
+   see the `key in state.connections.state ? disconnect : connect` branch in
+   state/reducers/click-connector.ts. one click alone only selects it.
+   `alternate` is what makes the oscillation smooth instead of a sawtooth: the fill fades out
+   and back on an eased loop rather than snapping back to full.
+   the :not() guards are load-bearing — a @keyframes background-color outranks the
+   .active / .connected / .highlight rules in the cascade regardless of specificity, so
+   without them the state colours would never paint */
+.connector[data-plugged="true"]:not([data-quiet="true"]):not(.active):not(.connected):not(.highlight) {
+	animation: connector-live 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes connector-live {
+	from {
+		background-color: rgba(185, 255, 206, 1);
+	}
+	to {
+		background-color: rgba(185, 255, 206, 0.42);
+	}
+}
+
+/* an infinite loop is exactly what vestibular triggers index on: the breathing stops, the
+   colour stays, so a plugged connector is still a plain full dot */
+@media (prefers-reduced-motion: reduce) {
+	/* repeated in full on purpose: the rule above carries four :not()s, so a shorter selector
+	   here has lower specificity and the breathing keeps running. this cannot be proven in the
+	   e2e suite — cypress 15 exposes neither a preferReducedMotion option nor the old
+	   Cypress.automation bridge, so nothing can set the media feature — see
+	   connector-affordance.cy.ts, which proves the specificity by injecting the two selectors
+	   instead of trying to emulate the preference */
+	.connector[data-plugged="true"]:not([data-quiet="true"]):not(.active):not(.connected):not(.highlight) {
+		animation: none;
+	}
 }
 
 .connector:hover:before {

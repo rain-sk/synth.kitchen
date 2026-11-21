@@ -13,6 +13,38 @@ type DerivedConnectionState = {
 	// the active drag looks identical to a free one
 	pluggedConnectorKeys: Set<string>;
 };
+/**
+ * Should this connector be quiet — painted small while keeping its full hit target?
+ *
+ * The rule is directional: the connector you are holding decides what is relevant.
+ * Same direction as the active connector means it cannot take this cable, so it gets
+ * small; the opposite direction is where the cable can land, so it stays prominent and
+ * is highlighted. With nothing active, outputs stay prominent as the place to start and
+ * only empty inputs recede — an input carrying a cable is still worth seeing.
+ *
+ * The active connector itself is never quiet, and :hover is exempt in the stylesheet,
+ * where the halo shows the clickable area is still the full box.
+ */
+export const isQuietConnector = (
+	direction: 'input' | 'output',
+	options: {
+		isActive: boolean;
+		isPlugged: boolean;
+		activeConnectorIsInput: boolean;
+		activeConnectorIsOutput: boolean;
+	},
+): boolean => {
+	if (options.isActive) {
+		return false;
+	}
+	if (options.activeConnectorIsOutput) {
+		return direction === 'output';
+	}
+	if (options.activeConnectorIsInput) {
+		return direction === 'input';
+	}
+	return direction === 'input' && !options.isPlugged;
+};
 
 export const DerivedConnectionStateContext =
 	React.createContext<DerivedConnectionState>({
