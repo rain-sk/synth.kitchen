@@ -4,8 +4,10 @@ export class UserCreatedAt1795040317722 implements MigrationInterface {
   name = "UserCreatedAt1795040317722";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // IF NOT EXISTS: a database created after this column was added to the entity already
+    // has it from InitialSchema, and the seeds below run before this migration
     await queryRunner.query(
-      `ALTER TABLE "user" ADD "createdAt" TIMESTAMP NOT NULL DEFAULT now()`
+      `ALTER TABLE "user" ADD COLUMN IF NOT EXISTS "createdAt" TIMESTAMP NOT NULL DEFAULT now()`
     );
     // verification rows are deleted when an account verifies, so verified accounts keep the
     // migration-time value; unverified accounts get their true signup time
