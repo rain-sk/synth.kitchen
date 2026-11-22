@@ -2,10 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 
 import { PatchContext } from '../../contexts/patch';
 import { patchActions } from '../../state/actions';
-import {
-	DerivedConnectionStateContext,
-	isQuietConnector,
-} from '../../contexts/derived-connection-state';
+import { DerivedConnectionStateContext } from '../../contexts/derived-connection-state';
 import { Parameter, paramKey } from 'synth.kitchen-shared';
 
 export const ParameterConnector: React.FunctionComponent<Parameter> = ({
@@ -17,7 +14,6 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 
 	const { activeConnectorKey, dispatch } = useContext(PatchContext);
 	const {
-		activeConnectorIsInput,
 		activeConnectorIsOutput,
 		connectedToActiveConnector,
 		pluggedConnectorKeys,
@@ -45,12 +41,8 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 	const isActive = activeConnectorKey === connectorKey;
 	const highlight = highlightInputs;
 	const isPlugged = pluggedConnectorKeys.has(connectorKey);
-	const quiet = isQuietConnector('input', {
-		isActive,
-		isPlugged,
-		activeConnectorIsInput,
-		activeConnectorIsOutput,
-	});
+	const quiet = !isPlugged;
+	const live = activeConnectorIsOutput && isConnectedToActiveConnector;
 
 	return (
 		<button
@@ -59,9 +51,9 @@ export const ParameterConnector: React.FunctionComponent<Parameter> = ({
 			id={connectorKey}
 			type="button"
 			onClick={onClick}
-			/* parameters only ever receive a signal — inputs, never sources */
 			data-direction="input"
 			data-quiet={String(quiet)}
+			data-live={String(live)}
 			data-plugged={isPlugged ? 'true' : 'false'}
 			className={`connector ${
 				isActive
