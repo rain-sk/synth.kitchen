@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
-import { usePathname } from 'wouter/use-browser-location';
+import { usePathname, useSearch } from 'wouter/use-browser-location';
 
 import { AuthContext } from '../../../api/auth/context';
 import { AuthForm } from './auth-form';
@@ -22,18 +22,26 @@ export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
 	onAuthenticated,
 }) => {
 	const pathname = usePathname();
+	// wouter only re-renders on a pathname change, so the query is subscribed separately:
+	// without this the dialog never opens or closes on a client-side nav
+	const search = useSearch();
 	const [, navigate] = useLocation();
 	const { user } = useContext(AuthContext);
 
+	const value = new URLSearchParams(search).get(param);
+
+	// allow-list: an unknown or absent value means no dialog. the standalone pages render
+	// their own form, so the host stands down while one of them is mounted
 	const mode: AuthModalMode | null =
 		pathname === '/login' || pathname === '/register'
 			? null
-			: new URLSearchParams(window.location.search).get(param) === 'register'
-				? 'register'
-				: 'login';
+			: value === 'login' || value === 'register'
+				? value
+				: null;
 
 	const open = mode !== null && !user;
 	const closeButton = useRef<HTMLButtonElement | null>(null);
+	const trigger = useRef<Element | null>(null);
 
 	const close = useCallback(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -41,13 +49,18 @@ export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
 		navigate(`${pathname}${params.toString() ? `?${params}` : ''}`, {
 			replace: true,
 		});
+		const back = trigger.current;
+		trigger.current = null;
+		if (back instanceof HTMLElement && back.isConnected) back.focus();
 	}, [navigate, pathname]);
 
 	// focus lands in the dialog and comes back if it walks out, so tabbing never escapes into
 	// the patch behind the scrim. No focus trap library: one ref, one keydown handler.
 	useEffect(() => {
 		if (!open) return;
-		closeButton.current?.focus();
+		trigger.current = document.activeElement;
+		const field = document.querySelector<HTMLElement>('#auth-dialog input');
+		(field ?? closeButton.current)?.focus();
 
 		const keepFocusInside = (e: KeyboardEvent) => {
 			if (e.key === 'Escape') {
