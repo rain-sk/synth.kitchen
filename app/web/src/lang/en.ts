@@ -5,6 +5,7 @@ export const en = {
 		saving: 'saving…',
 		saved: 'saved',
 		saveFailed: 'could not save',
+		signInToSave: 'sign in to save',
 		loaded: 'loaded {name} — {modules} modules, {cables} cables',
 		loadFailed: 'could not load {name}',
 		recordSaved: 'recorded {duration}',

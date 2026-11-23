@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { usePathname, useSearch } from 'wouter/use-browser-location';
 
 import { AuthContext } from '../../../api/auth/context';
+import { runPendingIntent } from '../auth-pending';
 import { AuthForm } from './auth-form';
 
 export type AuthModalMode = 'login' | 'register';
@@ -89,6 +90,15 @@ export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
 		return () => document.body.classList.remove('auth-modal-open');
 	}, [open]);
 
+	// registration returns a jwt and `useUser(jwt)` repopulates `user` from it, so the host
+	// only has to close: no reload, and the patch on the page behind survives. the action that
+	// opened the dialog runs after the dialog is gone, so its toast is not a ghost of a failure
+	const finish = useCallback(() => {
+		close();
+		runPendingIntent();
+		onAuthenticated?.();
+	}, [close, onAuthenticated]);
+
 	if (!open || !mode) return null;
 
 	return (
@@ -120,12 +130,8 @@ export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
 				</header>
 				<AuthForm
 					mode={mode}
-					onAuthenticated={() => {
-						// the caller (the editor) finishes the save the user was trying to make;
-						// without that callback this just closes, and the patch is still there
-						onAuthenticated?.();
-						close();
-					}}
+					onAuthenticated={finish}
+					onRegistered={finish}
 				/>
 			</section>
 		</div>
