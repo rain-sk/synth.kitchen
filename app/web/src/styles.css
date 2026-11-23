@@ -443,11 +443,6 @@ button {
 .module {
 	background: #aad96c;
 	position: absolute;
-	/* .module uses transform, so it is its own stacking context: a z-index on a descendant
-	   (.connector is 12) cannot lift it above #connections (10) — the whole subtree is ordered at
-	   auto/0 and cables covered 7 connectors, whose mousedown then stopPropagation'd into a cable
-	   select instead of patching. The old canvas sat at -1, so sitting under modules is the
-	   original relationship anyway */
 	z-index: 11;
 	box-sizing: content-box;
 	display: flex;
@@ -584,9 +579,6 @@ button {
 
 .module.selected,
 .module.selection_pending {
-	/* above #connections (10) like every other module — this sat at 1 from when modules were auto and
-	   the canvas was -1, and it stayed there when the base was raised to 11, so selecting a module dropped
-	   it below the cable layer and its cables painted over its connectors, endpoint circles included */
 	z-index: 12;
 }
 
@@ -684,8 +676,6 @@ button {
 }
 
 .connector[data-quiet="true"]:not(:hover):not(:focus)::before {
-	/* a fifth of the button's 1.2rem box, stated in rem because a percentage here
-	   resolves against the content box and lands smaller than a fifth */
 	width: 0.24rem;
 	height: 0.24rem;
 	transform: translate(-50%, -50%);
@@ -892,8 +882,6 @@ main.selection-drag .connector:focus:before {
 	border-radius: 0.5rem;
 }
 
-/* above the toolbar (999) and the overview control (1001); .toasts sits over this at 1300,
-   so the save report is still readable with the dialog open */
 #auth-scrim {
 	position: fixed;
 	inset: 0;
@@ -946,8 +934,6 @@ main.selection-drag .connector:focus:before {
 	outline-offset: 0.1rem;
 }
 
-/* the page styles its form through `main > section > form`; the dialog hosts the same
-   component outside <main>, so the spacing is restated here rather than forked into markup */
 #auth-dialog .auth-form {
 	display: flex;
 	flex-direction: column;
@@ -976,4 +962,20 @@ body.auth-modal-open {
 
 .auth-switch a {
 	color: #182f34;
+}
+
+.draft-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.8rem;
+	color: #182f34;
+}
+
+.draft-status button {
+	padding: 0.1rem 0.4rem;
+	font-size: 0.75rem;
+	background-color: #ffb3b3;
+	border: none;
+	cursor: pointer;
 }

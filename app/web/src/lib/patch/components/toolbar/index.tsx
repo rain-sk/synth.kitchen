@@ -6,6 +6,7 @@ import { Module, ModulePosition } from 'synth.kitchen-shared';
 import { Overview } from '../editor/overview';
 import { Undo } from './undo';
 import { Redo } from './redo';
+import { DraftStatus } from './draft-status';
 
 export const Toolbar: React.FC<{
 	sortedModules: [Module, ModulePosition][];
@@ -21,6 +22,7 @@ export const Toolbar: React.FC<{
 						<>
 							<PatchNameField />
 							<SaveToCloud />
+							<DraftStatus />
 						</>
 					)}
 					<Undo />

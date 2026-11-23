@@ -4,7 +4,7 @@ import { Link } from 'wouter';
 import { usePathname, useSearch } from 'wouter/use-browser-location';
 
 import { AuthContext } from '../../../api/auth/context';
-import { runPendingIntent } from '../auth-pending';
+import { clearAuthParams, keepAfterAuth } from '../auth-after';
 import { t } from '../../../lang';
 import { AuthForm } from './auth-form';
 
@@ -12,29 +12,14 @@ export type AuthModalMode = 'login' | 'register';
 
 const param = 'auth';
 
-/**
- * Sign-in over whatever page is already mounted, so the work on that page survives.
- * Opened by the query param `?auth=login|register`; closing strips the param and writes
- * the clean URL with `replace: true`, so the back button lands where the user expects.
- *
- * The editor routes are the reason this exists — see docs/features/auth-modals.md. The
- * standalone /login and /register pages still render their own form, so this stays out of
- * the way when one of them is mounted: only one form host is live at a time.
- */
-export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
-	onAuthenticated,
-}) => {
+export const AuthModal = () => {
 	const pathname = usePathname();
-	// wouter only re-renders on a pathname change, so the query is subscribed separately:
-	// without this the dialog never opens or closes on a client-side nav
 	const search = useSearch();
 	const [, navigate] = useLocation();
 	const { user } = useContext(AuthContext);
 
 	const value = new URLSearchParams(search).get(param);
 
-	// allow-list: an unknown or absent value means no dialog. the standalone pages render
-	// their own form, so the host stands down while one of them is mounted
 	const mode: AuthModalMode | null =
 		pathname === '/login' || pathname === '/register'
 			? null
@@ -42,8 +27,6 @@ export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
 				? value
 				: null;
 
-	// the dialog never navigates away: the switch and the error path both rewrite the query in
-	// place, so the patch behind the scrim survives every failure
 	const otherMode: AuthModalMode = mode === 'login' ? 'register' : 'login';
 
 	const switchTo = (next: AuthModalMode) => {
@@ -56,19 +39,21 @@ export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
 	const closeButton = useRef<HTMLButtonElement | null>(null);
 	const trigger = useRef<Element | null>(null);
 
-	const close = useCallback(() => {
-		const params = new URLSearchParams(window.location.search);
-		params.delete(param);
-		navigate(`${pathname}${params.toString() ? `?${params}` : ''}`, {
-			replace: true,
-		});
-		const back = trigger.current;
-		trigger.current = null;
-		if (back instanceof HTMLElement && back.isConnected) back.focus();
-	}, [navigate, pathname]);
+	const leave = useCallback(
+		(to: string | null) => {
+			navigate(to ?? pathname, { replace: true });
+			const back = trigger.current;
+			trigger.current = null;
+			if (back instanceof HTMLElement && back.isConnected) back.focus();
+		},
+		[navigate, pathname],
+	);
 
-	// focus lands in the dialog and comes back if it walks out, so tabbing never escapes into
-	// the patch behind the scrim. No focus trap library: one ref, one keydown handler.
+	const close = useCallback(() => leave(clearAuthParams(pathname)), [
+		leave,
+		pathname,
+	]);
+
 	useEffect(() => {
 		if (!open) return;
 		trigger.current = document.activeElement;
@@ -94,22 +79,16 @@ export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
 		return () => document.removeEventListener('keydown', keepFocusInside);
 	}, [open, close]);
 
-	// the page behind is position:fixed and full viewport; lock it so the dialog cannot be
-	// scrolled out of the way on a short window
 	useEffect(() => {
 		if (!open) return;
 		document.body.classList.add('auth-modal-open');
 		return () => document.body.classList.remove('auth-modal-open');
 	}, [open]);
 
-	// registration returns a jwt and `useUser(jwt)` repopulates `user` from it, so the host
-	// only has to close: no reload, and the patch on the page behind survives. the action that
-	// opened the dialog runs after the dialog is gone, so its toast is not a ghost of a failure
-	const finish = useCallback(() => {
-		close();
-		runPendingIntent();
-		onAuthenticated?.();
-	}, [close, onAuthenticated]);
+	const finish = useCallback(
+		() => leave(keepAfterAuth(pathname)),
+		[leave, pathname],
+	);
 
 	if (!open || !mode) return null;
 
@@ -147,7 +126,7 @@ export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
 					onRegistered={finish}
 				/>
 				<p className="auth-switch">
-					{/* the form's own escape hatches navigate; this one flips the param and stays */}
+					{}
 					<Link
 						id="auth-switch"
 						to={`${pathname}?${switchTo(otherMode)}`}

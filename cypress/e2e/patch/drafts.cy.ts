@@ -1,0 +1,189 @@
+
+const EMAIL = "e2e-drafts@synth.kitchen";
+const PASSWORD = "password123";
+const SEEDED_SLUG = "agile-able-attitude-c090f09e";
+
+const api = (path: string) => `${Cypress.env("API_URL")}${path}`;
+const draftKey = (id = "new") => `synth.kitchen:draft:${id}`;
+
+const modules = () => cy.get("#module-canvas > div");
+
+const storage = () =>
+	cy.getAllLocalStorage().then(
+		(result) => result[Cypress.config("baseUrl") as string] ?? {},
+	);
+
+const reopen = (path: string, count?: number) => {
+	(cy as any).visitEditor(path);
+	cy.wait(600);
+	if (count !== undefined) modules().should("have.length", count);
+};
+
+describe("patch drafts", () => {
+	beforeEach(() => {
+		cy.clearAllLocalStorage();
+		(cy as any).visitEditor("/patch/new");
+		cy.get("#patch").click(140, 420);
+		cy.get("#add-module").select("OSCILLATOR");
+		modules().should("have.length", 2);
+		cy.get("#draft-state").should("contain.text", "unsaved changes");
+	});
+
+	after(() => {
+		cy.deleteUserByApi(EMAIL, PASSWORD);
+	});
+
+	it("survives a fresh document, and says so", () => {
+		storage().then((store) => {
+			expect(store[draftKey()], "draft written").to.be.a("string");
+			expect(JSON.parse(store[draftKey()]).version, "version stamped").to.be.a("string");
+		});
+
+		reopen("/patch/new", 2);
+		cy.get("#draft-state").should("contain.text", "unsaved changes");
+	});
+
+	it("revert empties the canvas and discards the draft", () => {
+		reopen("/patch/new", 2);
+
+		cy.get("#draft-reset").click();
+
+		modules().should("have.length", 0);
+		cy.get("#draft-state").should("not.exist");
+		storage().then((store) => {
+			expect(store, "draft discarded").to.not.have.key(draftKey());
+		});
+	});
+
+	it("revert restores the server copy, not a blank canvas", () => {
+		cy.deleteUserByApi(EMAIL, PASSWORD);
+		cy.loginByApi(EMAIL, PASSWORD);
+		reopen(`/patch/${SEEDED_SLUG}`);
+
+		modules().should("have.length.gt", 1);
+		const seeded = () => modules().its("length");
+
+		seeded().then((count: number) => {
+			cy.get("#patch").click(140, 420);
+			cy.get("#add-module").select("OSCILLATOR");
+			modules().should("have.length", count + 1);
+			cy.get("#draft-state").should("exist");
+
+			reopen(`/patch/${SEEDED_SLUG}`);
+			modules().should("have.length", count + 1);
+			cy.get("#draft-state").should("exist");
+
+			cy.get("#draft-reset").click();
+
+			modules().should("have.length", count);
+			cy.get("#draft-state").should("not.exist");
+			storage().then((store) => {
+				expect(store, "revert discards the draft").to.not.have.key(
+					draftKey(SEEDED_SLUG),
+				);
+			});
+		});
+	});
+
+	it("a confirmed save clears the draft", () => {
+		cy.deleteUserByApi(EMAIL, PASSWORD);
+		cy.intercept({ method: "POST", url: /\/patch\/?(\?.*)?$/ }).as("save");
+
+		cy.get("#save-to-cloud").click();
+		cy.get("#auth-dialog").should("exist");
+		cy.get("#email").type(EMAIL);
+		cy.get("#password").type(PASSWORD);
+		cy.get("#confirm-password").type(PASSWORD);
+		cy.get("#submit").click();
+
+		cy.wait("@save", { timeout: 10000 })
+			.its("response.statusCode")
+			.should("eq", 200);
+		cy.get("#draft-state").should("not.exist", { timeout: 8000 });
+
+		storage().then((store) => {
+			expect(store, "nothing left to protect").to.not.have.key(draftKey());
+
+			const jwt = JSON.parse(store.jwt);
+			cy.request({
+				url: api("/auth/user"),
+				headers: { authorization: `Bearer ${jwt}` },
+			})
+				.then((res) =>
+					cy.request({
+						url: api(`/patch?creatorId=${res.body.user.id}`),
+						headers: { authorization: `Bearer ${jwt}` },
+					}),
+				)
+				.then((res) => {
+					expect(res.status).to.equal(200);
+					expect(res.body.patches, "the save landed in the cloud").to.have.length(
+						1,
+					);
+				});
+		});
+	});
+
+	it("completes the save after a reload between asking and signing in", () => {
+		cy.deleteUserByApi(EMAIL, PASSWORD);
+		cy.intercept({ method: "POST", url: /\/patch\/?(\?.*)?$/ }).as("save");
+
+		cy.get("#save-to-cloud").click();
+		cy.location("search").should("include", "after=save");
+		cy.get("#auth-dialog").should("exist");
+
+		cy.reload();
+
+		cy.get("#auth-dialog", { timeout: 20000 }).should("exist");
+		cy.location("search").should("include", "after=save");
+		storage().then((store) =>
+			expect(store[draftKey()], "draft survives the reload").to.be.a("string"),
+		);
+
+		cy.get("#start", { timeout: 20000 }).click({ force: true });
+		cy.get("#patch", { timeout: 20000 }).should("exist");
+
+		cy.get("#draft-state").should("exist");
+		cy.get("#module-canvas > div").should("have.length", 2);
+
+		cy.get("#email").type(EMAIL);
+		cy.get("#password").type(PASSWORD);
+		cy.get("#confirm-password").type(PASSWORD);
+		cy.get("#submit").click();
+
+		cy.wait("@save", { timeout: 15000 }).then(({ request, response }) => {
+			expect(response?.statusCode, "save accepted").to.eq(200);
+			expect(
+				Object.keys((request.body as any).state.state.modules),
+				"saved the canvas, not a blank patch",
+			).to.have.length(2);
+		});
+		cy.location("search").should("not.include", "after=save");
+		cy.get("#draft-state").should("not.exist", { timeout: 8000 });
+	});
+
+
+	it("cancelling the ask drops the pending save", () => {
+		cy.get("#save-to-cloud").click();
+		cy.location("search").should("include", "after=save");
+
+		cy.get("#auth-close").click();
+
+		cy.location("search").should("not.include", "after=save");
+		cy.get("#auth-dialog").should("not.exist");
+		cy.get("#draft-state").should("exist");
+	});
+
+	it("logging out keeps the draft", () => {
+		storage().then((store) => {
+			expect(store[draftKey()], "draft before logout").to.be.a("string");
+
+			cy.visit("/logout");
+			cy.wait(1500);
+
+			storage().then((after) => {
+				expect(after[draftKey()], "draft survives signing out").to.be.a("string");
+			});
+		});
+	});
+});

@@ -16,6 +16,8 @@ import {
 } from '../../../shared/components/error-boundary';
 import { useAudioMidiInit } from './utils/use-audio-midi-init';
 import { useLoadPatch } from './utils/use-load-patch';
+import { useDraft } from './utils/use-draft';
+import { DraftContextProvider } from '../../contexts/draft';
 import { Preset } from '../../../learn';
 import { IPatchState } from '../../state/types/patch';
 
@@ -44,6 +46,14 @@ export const PatchEditor: React.FC<{
 		preset,
 	);
 
+	const draftValue = useDraft({
+		state,
+		dispatch,
+		initialized,
+		loading,
+		preset,
+	});
+
 	const init = useCallback(async () => {
 		await initAudioMidi();
 	}, []);
@@ -70,6 +80,7 @@ export const PatchEditor: React.FC<{
 
 	return (
 		<PatchContextProvider {...state} dispatch={dispatch}>
+			<DraftContextProvider value={draftValue}>
 			<AsyncQueueDispatcher
 				asyncActionQueue={state.asyncActionQueue}
 				dispatch={dispatch}
@@ -102,6 +113,7 @@ export const PatchEditor: React.FC<{
 					)}
 				</MidiContextProvider>
 			</DerivedConnectionStateContextProvider>
+			</DraftContextProvider>
 		</PatchContextProvider>
 	);
 };

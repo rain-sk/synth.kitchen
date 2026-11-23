@@ -1,12 +1,17 @@
-import { useCallback, useContext, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { usePathname, useSearch } from 'wouter/use-browser-location';
 
 import { PatchContext } from '../../contexts/patch';
+import { useDraftContext } from '../../contexts/draft';
 import { useApi } from '../../api';
 import { AuthContext } from '../../../../api/auth/context';
 import { t } from '../../../../lang';
-import { setPendingIntent } from '../../../shared/auth-pending';
+import {
+	askAuth,
+	clearAuthParams,
+	readAfterAuth,
+} from '../../../shared/auth-after';
 import { useToasts } from '../../../shared/components/toasts';
 import { Patch } from 'synth.kitchen-shared';
 import { SaveToCloudSvg } from './svg/save-to-cloud';
@@ -17,6 +22,7 @@ export const SaveToCloud = () => {
 
 	const { savePatch } = useApi();
 	const { notify, dismiss } = useToasts();
+	const { markSaved } = useDraftContext();
 	const { user, loading } = useContext(AuthContext);
 
 	const pathname = usePathname();
@@ -24,20 +30,26 @@ export const SaveToCloud = () => {
 	const [, navigate] = useLocation();
 
 	const toastKey = `save:${id ?? name ?? 'new'}`;
+	const after = readAfterAuth(search);
+	const fired = useRef(false);
 	const save = useRef<() => void>(() => {});
 
-	const performSave = useCallback(() => {
+	const performSave = useCallback((): Promise<boolean> => {
 		const patch: Partial<Patch> = {
 			id,
 			name,
-			state: { state: { name, modules, modulePositions, connections } } as any,
+			state: {
+				state: { name, modules, modulePositions, connections },
+			} as any,
 		};
 
 		notify({ key: toastKey, kind: 'pending', message: t('toast.saving') });
 
-		savePatch(patch)
+		return savePatch(patch)
 			.then(() => {
+				markSaved();
 				notify({ key: toastKey, kind: 'success', message: t('toast.saved') });
+				return true;
 			})
 			.catch(() => {
 				notify({
@@ -46,8 +58,10 @@ export const SaveToCloud = () => {
 					message: t('toast.saveFailed'),
 					action: { label: t('toast.retry'), run: () => save.current() },
 				});
+				return false;
 			});
 	}, [
+		markSaved,
 		id,
 		name,
 		modules,
@@ -58,14 +72,8 @@ export const SaveToCloud = () => {
 		toastKey,
 	]);
 
-	// pushing, not replacing: Back then closes the dialog rather than leaving the patch
-	// the pending intent is the save itself, never the gated wrapper: when it runs the jwt has
-	// arrived but this render's `user` can still be undefined, and re-gating re-opens the dialog
 	const askToRegister = useCallback(() => {
-		setPendingIntent(() => save.current());
-		const params = new URLSearchParams(search);
-		params.set('auth', 'register');
-		navigate(`${pathname}?${params.toString()}`);
+		navigate(askAuth(pathname, search, 'register', 'save'));
 		notify({
 			key: toastKey,
 			kind: 'info',
@@ -76,17 +84,31 @@ export const SaveToCloud = () => {
 	const onSave = useCallback(() => {
 		if (loading) return;
 
-		// an anonymous save cannot succeed, so it is not attempted: the endpoint answers 401
-		// and the retry on that toast can only fail again
 		if (!user) {
 			askToRegister();
 			return;
 		}
 
-		performSave();
+		void performSave();
 	}, [loading, user, askToRegister, performSave]);
 
-	save.current = performSave;
+	save.current = () => {
+		void performSave();
+	};
+
+	useEffect(() => {
+		if (after !== 'save' || loading || !user || fired.current) return;
+		fired.current = true;
+
+		void performSave().then((saved) => {
+			if (!saved) {
+				fired.current = false;
+				return;
+			}
+			const to = clearAuthParams(pathname);
+			if (to) navigate(to, { replace: true });
+		});
+	}, [after, loading, user, performSave, navigate, pathname]);
 
 	return (
 		<button
