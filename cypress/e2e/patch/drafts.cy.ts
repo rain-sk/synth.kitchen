@@ -174,6 +174,73 @@ describe("patch drafts", () => {
 		cy.get("#draft-state").should("exist");
 	});
 
+	it("saving the same patch twice updates it rather than duplicating", () => {
+		cy.deleteUserByApi(EMAIL, PASSWORD);
+		cy.intercept("POST", /\/patch\/?(\?.*)?$/).as("create");
+		cy.intercept("PUT", /\/patch\//).as("update");
+
+		cy.get("#save-to-cloud").click();
+		cy.get("#auth-dialog").should("exist");
+		cy.get("#email").type(EMAIL);
+		cy.get("#password").type(PASSWORD);
+		cy.get("#confirm-password").type(PASSWORD);
+		cy.get("#submit").click();
+
+		cy.wait("@create", { timeout: 15000 })
+			.its("response.statusCode")
+			.should("eq", 200);
+		cy.get("#patch", { timeout: 20000 }).should("exist");
+		cy.get("#draft-state").should("not.exist", { timeout: 8000 });
+
+		const slug = () => cy.location("pathname");
+
+		slug().then((first: string) => {
+			cy.get("#patch-name").clear().type("renamed");
+			cy.get("#draft-state").should("exist");
+
+			cy.get("#save-to-cloud").click();
+
+			cy.wait("@update", { timeout: 15000 })
+				.its("response.statusCode")
+				.should("eq", 200);
+			slug().should("eq", first);
+			cy.get("#draft-state").should("not.exist", { timeout: 8000 });
+
+			storage().then((store) => {
+				const jwt = JSON.parse(store.jwt);
+				cy.request({
+					url: api("/auth/user"),
+					headers: { authorization: `Bearer ${jwt}` },
+				})
+					.then((res) =>
+						cy.request({
+							url: api(`/patch?creatorId=${res.body.user.id}`),
+							headers: { authorization: `Bearer ${jwt}` },
+						}),
+					)
+					.then((res) => {
+						expect(
+							res.body.patches,
+							"one patch, not a duplicate",
+						).to.have.length(1);
+					});
+			});
+		});
+	});
+
+
+	it("keeps the pending save when switching the ask to login", () => {
+		cy.get("#save-to-cloud").click();
+		cy.location("search").should("include", "after=save");
+
+		cy.get("#auth-switch").click();
+
+		cy.location("search").should("include", "auth=login");
+		cy.location("search").should("include", "after=save");
+		cy.get("#auth-dialog").should("exist");
+	});
+
+
 	it("logging out keeps the draft", () => {
 		storage().then((store) => {
 			expect(store[draftKey()], "draft before logout").to.be.a("string");
