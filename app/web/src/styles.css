@@ -172,7 +172,7 @@ nav ul.nav-links a:visited {
 	position: fixed;
 	right: 0.5rem;
 	bottom: 2.5rem;
-	z-index: 1001;
+	z-index: 1300;
 	display: flex;
 	flex-direction: column;
 	gap: 0.25rem;
@@ -890,4 +890,90 @@ main.selection-drag .connector:focus:before {
 	background-color: rgba(0, 0, 0, 0.06);
 	padding: 0.5rem;
 	border-radius: 0.5rem;
+}
+
+/* above the toolbar (999) and the overview control (1001); .toasts sits over this at 1300,
+   so the save report is still readable with the dialog open */
+#auth-scrim {
+	position: fixed;
+	inset: 0;
+	z-index: 1200;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1rem;
+	background-color: rgba(24, 47, 52, 0.72);
+}
+
+#auth-dialog {
+	display: flex;
+	flex-direction: column;
+	width: 22rem;
+	max-width: calc(100vw - 2rem);
+	max-height: calc(100vh - 5rem);
+	overflow-y: auto;
+	padding: 1rem 1.5rem 1.5rem;
+	background-color: #ffecdc;
+	border: 0.15rem solid #182f34;
+	box-shadow: 0.4rem 0.4rem 0 rgba(24, 47, 52, 0.45);
+}
+
+#auth-dialog > header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+#auth-dialog > header > h2 {
+	margin: 0;
+	color: #182f34;
+	text-transform: capitalize;
+}
+
+#auth-close {
+	padding: 0 0.5rem;
+	font-size: 1.5rem;
+	line-height: 1;
+	color: #ffecdc;
+	background-color: #3c6a73;
+	border: none;
+	cursor: pointer;
+}
+
+#auth-close:focus-visible {
+	outline: 0.15rem solid #182f34;
+	outline-offset: 0.1rem;
+}
+
+/* the page styles its form through `main > section > form`; the dialog hosts the same
+   component outside <main>, so the spacing is restated here rather than forked into markup */
+#auth-dialog .auth-form {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+#auth-dialog .auth-form label,
+#auth-dialog .auth-form button,
+#auth-dialog .auth-form p,
+#auth-dialog .auth-form cap-widget {
+	margin-top: 1rem;
+}
+
+#auth-dialog #form-errors {
+	margin-top: 1rem;
+}
+
+body.auth-modal-open {
+	overflow: hidden;
+}
+
+.auth-switch {
+	margin: 1rem 0 0;
+	text-align: center;
+}
+
+.auth-switch a {
+	color: #182f34;
 }

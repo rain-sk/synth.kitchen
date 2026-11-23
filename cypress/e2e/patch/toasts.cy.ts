@@ -3,9 +3,19 @@
 const stubCreate = (response: Partial<Cypress.ResponseOptions<any>>) =>
 	cy.intercept("POST", "**/api/patch/", response).as("create");
 
+const EMAIL = "e2e-toasts@synth.kitchen";
+const PASSWORD = "password123";
+
 describe("patch: toasts", () => {
+	// save is gated on auth: anonymous clicks open the dialog and never reach the endpoint,
+	// so every toast below needs a session in the app's own storage before the editor mounts
 	beforeEach(() => {
+		(cy as any).loginByApi(EMAIL, PASSWORD);
 		(cy as any).visitEditor("/patch/new");
+	});
+
+	after(() => {
+		cy.deleteUserByApi(EMAIL, PASSWORD);
 	});
 
 	it("mounts a polite and an assertive live region", () => {

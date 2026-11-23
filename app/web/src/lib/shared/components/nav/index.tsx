@@ -1,11 +1,23 @@
 import React, { useContext } from 'react';
 import { Link } from 'wouter';
+import { usePathname, useSearch } from 'wouter/use-browser-location';
 import { AuthContext } from '../../../../api/auth/context';
 
 export const Nav: React.FC = () => {
 	const { user, loading } = useContext(AuthContext);
+	const pathname = usePathname();
+	const search = useSearch();
 
 	const authenticated = !loading && user !== undefined;
+
+	// only the editor has anything to lose by navigating, so only there does signing in
+	// open the dialog over the page instead of going to a page
+	const inEditor = pathname.startsWith('/patch');
+	const authHref = (mode: 'login' | 'register') => {
+		const params = new URLSearchParams(search);
+		params.set('auth', mode);
+		return `${pathname}?${params.toString()}`;
+	};
 
 	return (
 		<nav>
@@ -62,10 +74,20 @@ export const Nav: React.FC = () => {
 				) : (
 					<>
 						<li>
-							<Link to="/login">Login</Link>
+							<Link
+								id="nav-login"
+								to={inEditor ? authHref('login') : '/login'}
+							>
+								Login
+							</Link>
 						</li>
 						<li>
-							<Link to="/register">Register</Link>
+							<Link
+								id="nav-register"
+								to={inEditor ? authHref('register') : '/register'}
+							>
+								Register
+							</Link>
 						</li>
 					</>
 				)}

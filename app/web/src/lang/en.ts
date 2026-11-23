@@ -5,6 +5,7 @@ export const en = {
 		saving: 'saving…',
 		saved: 'saved',
 		saveFailed: 'could not save',
+		signInToSave: 'sign in to save',
 		loaded: 'loaded {name} — {modules} modules, {cables} cables',
 		loadFailed: 'could not load {name}',
 		recordSaved: 'recorded {duration}',
@@ -13,6 +14,11 @@ export const en = {
 		midiDenied: 'midi unavailable',
 		midiUnplugged: 'midi device unplugged',
 		upgraded: 'patch upgraded to this version',
+	},
+	auth: {
+		noAccount: 'no account for that email',
+		switchToRegister: 'need an account? register',
+		switchToLogin: 'already have an account? sign in',
 	},
 	patch: {
 		untitled: 'untitled',

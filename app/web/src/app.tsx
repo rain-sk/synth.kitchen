@@ -9,6 +9,7 @@ import { LogoutRoute } from './routes/logout';
 import { PatchRoute } from './routes/patch';
 import { ResetPasswordRoute } from './routes/reset-password';
 import { Nav } from './lib/shared/components/nav';
+import { AuthModal } from './lib/shared/components/auth-modal';
 import {
 	ErrorBoundary,
 	ThrowOnPurpose,
@@ -62,6 +63,9 @@ export const SynthKitchen: React.FC = () => {
 						/>
 					</Switch>
 				)}
+			</ErrorBoundary>
+			<ErrorBoundary region="auth">
+				<AuthModal />
 			</ErrorBoundary>
 		</ToastsProvider>
 	);
