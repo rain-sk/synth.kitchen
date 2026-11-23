@@ -1,9 +1,11 @@
 import { useCallback, useContext, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
+import { Link } from 'wouter';
 import { usePathname, useSearch } from 'wouter/use-browser-location';
 
 import { AuthContext } from '../../../api/auth/context';
 import { runPendingIntent } from '../auth-pending';
+import { t } from '../../../lang';
 import { AuthForm } from './auth-form';
 
 export type AuthModalMode = 'login' | 'register';
@@ -39,6 +41,16 @@ export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
 			: value === 'login' || value === 'register'
 				? value
 				: null;
+
+	// the dialog never navigates away: the switch and the error path both rewrite the query in
+	// place, so the patch behind the scrim survives every failure
+	const otherMode: AuthModalMode = mode === 'login' ? 'register' : 'login';
+
+	const switchTo = (next: AuthModalMode) => {
+		const params = new URLSearchParams(search);
+		params.set(param, next);
+		return params.toString();
+	};
 
 	const open = mode !== null && !user;
 	const closeButton = useRef<HTMLButtonElement | null>(null);
@@ -130,9 +142,22 @@ export const AuthModal: React.FC<{ onAuthenticated?: () => void }> = ({
 				</header>
 				<AuthForm
 					mode={mode}
+					hosted
 					onAuthenticated={finish}
 					onRegistered={finish}
 				/>
+				<p className="auth-switch">
+					{/* the form's own escape hatches navigate; this one flips the param and stays */}
+					<Link
+						id="auth-switch"
+						to={`${pathname}?${switchTo(otherMode)}`}
+						replace
+					>
+						{mode === 'login'
+							? t('auth.switchToRegister')
+							: t('auth.switchToLogin')}
+					</Link>
+				</p>
 			</section>
 		</div>
 	);

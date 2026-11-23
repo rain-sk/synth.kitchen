@@ -11,6 +11,7 @@ import { Link, useLocation } from 'wouter';
 
 import { AuthContext } from '../../../api/auth/context';
 import { capEndpoint } from '../../../api/cap';
+import { t } from '../../../lang';
 
 import 'cap-widget';
 
@@ -40,7 +41,10 @@ export const AuthForm: React.FC<{
 	/** called after a successful register. Defaults to the reload those pages have always done;
 	 * the modal host must pass a handler, or registering throws away the user's patch. */
 	onRegistered?: () => void;
-}> = ({ mode, onAuthenticated, onRegistered }) => {
+	/** true when hosted by the dialog: an unknown account is reported in place instead of
+	 * bouncing to /register, because leaving the page destroys the patch behind the dialog. */
+	hosted?: boolean;
+}> = ({ mode, onAuthenticated, onRegistered, hosted = false }) => {
 	const registration = mode === 'register';
 	const [, navigate] = useLocation();
 
@@ -121,7 +125,14 @@ export const AuthForm: React.FC<{
 						const loginResponse = await login(email.trim(), password);
 						if (loginResponse) {
 							if ('register' in loginResponse) {
-								navigate('/register', { replace: true });
+								if (hosted) {
+									setErrors({
+										...emptyErrors(),
+										form: [t('auth.noAccount')],
+									});
+								} else {
+									navigate('/register', { replace: true });
+								}
 							} else {
 								onAuthenticated?.();
 							}
@@ -147,6 +158,7 @@ export const AuthForm: React.FC<{
 			navigate,
 			onAuthenticated,
 			onRegistered,
+			hosted,
 		],
 	);
 

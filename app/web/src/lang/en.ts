@@ -15,6 +15,11 @@ export const en = {
 		midiUnplugged: 'midi device unplugged',
 		upgraded: 'patch upgraded to this version',
 	},
+	auth: {
+		noAccount: 'no account for that email',
+		switchToRegister: 'need an account? register',
+		switchToLogin: 'already have an account? sign in',
+	},
 	patch: {
 		untitled: 'untitled',
 		savedAt: 'saved {time}',

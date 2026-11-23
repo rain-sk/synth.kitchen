@@ -95,6 +95,94 @@ describe("auth modal", () => {
 		cy.get(scrim).should("not.exist");
 	});
 
+	it("an unknown account reports in place instead of bouncing to /register", () => {
+		editor();
+		cy.get("#nav-login").click();
+		cy.get("#email").type("nobody-here@synth.kitchen");
+		cy.get("#password").type("wrong-password");
+		cy.get("#submit").click();
+
+		cy.get(dialog).should("be.visible");
+		cy.location().should((loc) => {
+			expect(loc.pathname, "never left the editor").to.equal("/patch/new");
+			expect(loc.search, "still the dialog").to.include("auth=login");
+		});
+		cy.get("#module-canvas > div").should("have.length", 2);
+		cy.get("#form-errors").should("contain.text", "no account for that email");
+	});
+
+	it("the dialog's own switch changes mode without leaving the page", () => {
+		editor();
+		cy.get("#nav-login").click();
+		cy.get("#email").type("nobody-here@synth.kitchen");
+		cy.get("#password").type("wrong-password");
+		cy.get("#submit").click();
+		cy.get("#form-errors").should("contain.text", "no account");
+
+		cy.get("#auth-switch").click();
+
+		cy.location("search").should("include", "auth=register");
+		cy.get("#auth-title").should("have.text", "register");
+		cy.get("#confirm-password").should("exist");
+	});
+
+	it("escape strips the param and keeps the others", () => {
+		editor();
+		cy.visit("/patch/new?keep=1&auth=login");
+		cy.get(dialog).should("be.visible");
+		cy.get(dialog).trigger("keydown", { key: "Escape", bubbles: true });
+
+		cy.url().should("include", "keep=1").and("not.include", "auth=");
+		cy.get(scrim).should("not.exist");
+	});
+
+	it("the close button strips the param and returns focus to the trigger", () => {
+		editor();
+		cy.get("#nav-login").click();
+		cy.focused().should("have.id", "email");
+		cy.get("#auth-close").click();
+
+		cy.location("search").should("not.include", "auth=");
+		cy.get(scrim).should("not.exist");
+		cy.focused().should("have.id", "nav-login");
+	});
+
+	it("back closes the dialog instead of leaving the page", () => {
+		editor();
+		cy.get("#nav-login").click();
+		cy.get(dialog).should("be.visible");
+
+		cy.go("back");
+
+		cy.location("pathname").should("eq", "/patch/new");
+		cy.location("search").should("not.include", "auth=");
+		cy.get(scrim).should("not.exist");
+		cy.get("#module-canvas .module").should("have.length", 2);
+	});
+
+	it("clicking the backdrop closes it", () => {
+		editor();
+		cy.get("#nav-login").click();
+		cy.get(scrim).click(20, 20);
+		cy.get(scrim).should("not.exist");
+	});
+
+	it("an unknown account reports in place instead of bouncing to /register", () => {
+		editor();
+		cy.get("#nav-login").click();
+		cy.get("#email").type("nobody-here@synth.kitchen");
+		cy.get("#password").type("wrong-password");
+		cy.get("#submit").click();
+
+		cy.get(dialog).should("be.visible");
+		cy.location().should((loc) => {
+			expect(loc.pathname, "never left the editor").to.equal("/patch/new");
+			expect(loc.search, "still the dialog").to.include("auth=login");
+		});
+		cy.get("#module-canvas > div").should("have.length", 2);
+		cy.get("#form-errors").should("contain.text", "no account for that email");
+	});
+
 	it("the standalone page keeps hosting its own form", () => {
 		cy.visit("/login");
 		cy.get(dialog).should("not.exist");

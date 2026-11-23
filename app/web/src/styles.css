@@ -968,3 +968,12 @@ main.selection-drag .connector:focus:before {
 body.auth-modal-open {
 	overflow: hidden;
 }
+
+.auth-switch {
+	margin: 1rem 0 0;
+	text-align: center;
+}
+
+.auth-switch a {
+	color: #182f34;
+}
