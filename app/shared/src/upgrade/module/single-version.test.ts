@@ -36,8 +36,6 @@ type ModuleVersionInfo<T extends ModuleType = ModuleType> = {
   guarded: boolean;
 };
 
-// one version only: stamp legacy, pass the current version through, throw on anything else.
-// a module leaves this table the day it gains a second version.
 const singleVersion: ModuleVersionInfo[] = [
   {
     type: ModuleType.COMPRESSOR,

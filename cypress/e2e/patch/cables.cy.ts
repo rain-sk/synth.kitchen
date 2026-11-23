@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 
 const SPEAKER = "#0_0_0";
 
@@ -7,9 +6,6 @@ const cable = () => cy.get("#connections [data-connection-key]");
 const cablePath = ($el: JQuery<HTMLElement>) =>
 	($el[0] as SVGPathElement).getAttribute("d");
 
-// cables live below modules and connectors, and a short cable can sit mostly
-// off-screen or behind the toolbar - centre it in the viewport, then click a
-// point along the stroke that is genuinely exposed
 const clickCable = (options: Partial<Cypress.ClickOptions> = {}) =>
 	cy.window().then((win) => {
 		const hit = win.document.querySelector(
@@ -106,8 +102,6 @@ context("patch: cables", () => {
 	});
 
 	it("shift-click selects a cable instead of undoing its own focus", () => {
-		// pointer order is mousedown → focus → mouseup → click. onFocus applied the press and onClick
-		// then toggled the same key back off, so shift-click cancelled itself and multi-select was a no-op
 		connect().then(() => {
 			cy.get("body").type("{esc}");
 			cable().should("have.attr", "aria-pressed", "false");
@@ -180,8 +174,6 @@ context("patch: cables", () => {
 		connect().then(() => {
 			cable().should("have.attr", "aria-pressed", "true");
 
-			// shift must really be held: a pointer press is applied by onFocus (focus precedes click),
-			// and that reads the app's modifier state, not the click event's shiftKey
 			cy.get("body").type("{shift}", { release: false });
 			clickCable({ shiftKey: true });
 			cy.get("body").type("{shift}");
@@ -255,10 +247,6 @@ context("patch: cables", () => {
 		});
 	});
 
-	// the hit stroke has pointer-events: stroke, so its width IS the target. hover and
-	// focus used to reuse it for the halo at 14px, shrinking the cable by ~22% at the
-	// moment someone aimed at it. Cypress dispatches synthetic events, which never set
-	// Chrome's :hover, so this asserts the stylesheet contract + the resting geometry
 	it("never shrinks the hit stroke for hover or focus feedback", () => {
 		connect().then(() => {
 			cy.get("#connections [data-connection-key] .cable-hit").should(
@@ -313,11 +301,6 @@ context("patch: cables", () => {
 		cy.get("#0 h2").click();
 		cy.get("#0").should("have.class", "selected");
 
-		// the ladder is #connections 10 < .module 11 < .module.selected 12. .connector is 12 as well, but
-		// .module has a transform so it is its own stacking context - a z-index inside it can never lift a
-		// connector above the cable layer, the whole module subtree is ordered by .module's own value.
-		// .module.selected sat at 1 from when modules were auto and the canvas was -1, so selecting a module
-		// dropped it below #connections and its cables painted over its connectors
 		cy.get("#0").then(($module) => {
 			cy.get("#connections").then(($layer) => {
 				const moduleZ = parseFloat(getComputedStyle($module[0]).zIndex);
@@ -329,10 +312,6 @@ context("patch: cables", () => {
 	});
 
 	it("selects exactly one cable when the keyboard moves focus between cables", () => {
-		// the reported defect: shift+tab backwards through cables piled them into a multiselection.
-		// selection must follow focus one-for-one, because onFocus has no way to tell "previous
-		// focusable" from "add to selection" unless the gesture that moved focus is named - and it is,
-		// by pointerFocus in connections.tsx
 		cy.get("#patch").click(40, 240);
 		cy.get("#add-module").select("DELAY");
 		cy.get("#module-canvas > div").should("have.length", 3);
@@ -354,10 +333,6 @@ context("patch: cables", () => {
 			cy.focused().should("have.attr", "data-connection-key");
 			cy.get("[data-connection-key][data-selected=true]").should("have.length", 1);
 
-			// shift+tab lands on cable 0 with shift held. cy.type() cannot emit {tab} at all and cypress
-			// 15 has no cy.tab(), so the modifier is held the way the undo/redo probe proved the app
-			// records it ({shift} with release:false survives into later commands - a lone {shift} WITHOUT
-			// it does not), then focus moves back one by hand, which is all onFocus can observe
 			cy.get("body").type("{shift}", { release: false });
 
 			cable().eq(0).focus();
@@ -365,14 +340,6 @@ context("patch: cables", () => {
 			cy.focused().should("have.attr", "data-connection-key");
 
 			cy.get("[data-connection-key][data-selected=true]").should("have.length", 1);
-
-			// honest caveat: this does NOT fail on the pre-fix code. cable 0 is not selected here, so a
-			// toggle would add it and read 2, yet the old code also reads 1 - shiftHeld is read at render
-			// time and Cables never re-renders for a modifier change, so the keyboard toggle was already
-			// dead. The {shift} hold itself does land in state (verified against the undo/redo gate at
-			// keyboard-event.ts:240, which turns ctrl+shift+z into redo). So this pins the contract -
-			// keyboard focus selects exactly one cable, never accumulates - but the original
-			// multiselection report is still unreproduced and may have another trigger
 
 			cy.get("body").type("{shift}");
 		});

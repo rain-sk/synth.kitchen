@@ -8,9 +8,6 @@ import {
   transactionalEmail,
 } from "../env";
 
-// creds are required at boot (env.ts:49 throws without them), so the transport is gated here rather
-// than by leaving SMTP_HOST empty. Without a transporter every makeEmailer below degrades to a no-op
-// instead of throwing, so register() still creates its verification row — it just never sends
 const transporter =
   smtpHost && mailEnabled
     ? createTransport({

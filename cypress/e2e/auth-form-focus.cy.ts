@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 
 const EMAIL = "focus-steal@synth.kitchen";
 const PASSWORD = "password123";

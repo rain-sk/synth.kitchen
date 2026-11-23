@@ -111,8 +111,6 @@
 	box-shadow: 0 0.35rem 0.9rem #00000033;
 }
 
-/* accent is derived from the slug so every card is stable and distinct, without
-   pretending to depict the patch inside it */
 .patch-card::before {
 	content: '';
 	display: block;
@@ -185,7 +183,6 @@
 .patch-menu-popup button {
 	display: block;
 	width: 100%;
-	/* armed delete wraps to two lines; a fixed height made it overflow its row */
 	min-height: 1.9rem;
 	line-height: 1.2;
 	padding: 0.45rem 0.5rem;
@@ -293,7 +290,6 @@
 		width: 100%;
 	}
 
-	/* one column on a phone: a row to scan, not a poster to admire */
 	.patch-grid {
 		grid-template-columns: 1fr;
 		gap: 0.6rem;

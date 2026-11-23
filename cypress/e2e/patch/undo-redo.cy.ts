@@ -40,10 +40,6 @@ describe("patch: undo / redo", () => {
   });
 
   it("restores the position of a module with undo/redo", () => {
-    // modules are positioned imperatively through a rAF batch (moveContainerRef → queueAnimation), so a
-    // one-shot jQuery .position() snapshot can land before the app has painted anything and then never match
-    // the restored value again — that was the intermittent failure here. read the position the app itself
-    // wrote (style.left) and let Cypress retry until it settles
     const leftOf = () =>
       cy.get("#0").then(($el) => parseFloat(($el[0] as HTMLElement).style.left));
 

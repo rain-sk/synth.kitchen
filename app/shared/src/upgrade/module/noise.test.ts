@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { NOISE_STATE_VERSIONS } from '../../types/patch/module';
 import { needsUpgrade, upgrade } from './noise';
 
-const CURRENT = NOISE_STATE_VERSIONS[0]; // "0.5.13"
+const CURRENT = NOISE_STATE_VERSIONS[0];
 
 describe('noise upgrade', () => {
 	it('gives a legacy noise state the default level', () => {

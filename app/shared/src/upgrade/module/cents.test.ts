@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { splitCents } from './cents';
 
 const table: Array<[number, number, number]> = [
-	// cents,            transpose, detune
 	[0, 0, 0],
 	[1, 0, 1],
 	[50, 0, 50],

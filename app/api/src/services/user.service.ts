@@ -133,11 +133,6 @@ export class UserService {
         const patchIds = userPatches.map((patch) => patch.id);
         let stateIds: string[] = [];
 
-        // Every FK here is NO ACTION, and patch ↔ saved_patch_state is a cycle (patch.stateId → state.id,
-        // state.patchId → patch.id) with self-refs on patch.forkedFromId and state.ancestorId on top.
-        // No delete order breaks a cycle, so the pointers come first — they are all nullable. Forks made by
-        // other people survive, they just lose the lineage link. The old code deleted states before patches,
-        // which Postgres rejected outright, so deleting an account that owned any patch failed and rolled back
         if (patchIds.length > 0) {
           const states = await patchStates
             .createQueryBuilder("state")
@@ -192,7 +187,6 @@ export class UserService {
             .execute();
         }
 
-        // these two were floating promises — no await, so the rows could outlive the transaction
         await passwordResets
           .createQueryBuilder()
           .delete()

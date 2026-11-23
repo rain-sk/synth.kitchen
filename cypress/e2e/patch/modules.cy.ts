@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 
 const OUTPUT = "#0";
 const osc = () => cy.get(".module:not(#0)");
@@ -36,9 +35,6 @@ context("modules", () => {
 		});
 	});
 
-	// the guard is load-bearing: keyboard is the only removal path while the module menu
-	// is commented out (module-ui/module-header.tsx), and it filters id '0' at
-	// state/reducers/keyboard-event.ts
 	it("cannot delete the output module", () => {
 		addOscillator();
 
@@ -74,7 +70,6 @@ context("modules", () => {
 		osc().click();
 		cy.get("body").type("{backspace}");
 
-		// selection falls to the output module's input, which is still '0'
 		cy.get("body").type("{backspace}");
 
 		cy.get(OUTPUT).should("exist");

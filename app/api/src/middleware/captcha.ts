@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from "express";
 
 import { CaptchaService } from "../services/captcha.service";
 
-// sits in front of the bot-magnets: registration and password-reset requests.
-// the solved token rides as capToken; every rejection path is a 400, never a pass-through
 export const captchaRequired = async (
   req: Request,
   res: Response,

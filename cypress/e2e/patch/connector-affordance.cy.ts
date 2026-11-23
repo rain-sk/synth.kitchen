@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 
 const FREE = "rgba(0, 0, 0, 0)";
 
@@ -88,8 +87,6 @@ context("connector affordance", () => {
 			expect(getComputedStyle($el[0]).animationName).to.equal("none");
 		});
 
-		// an output is held, but gain hangs off a different one — this is the case that
-		// "animate every plugged input" gets wrong
 		cy.get(speakerOut).click();
 		cy.wait(200);
 
@@ -98,7 +95,6 @@ context("connector affordance", () => {
 			expect(getComputedStyle($el[0]).animationName).to.equal("none");
 		});
 
-		// clicking the held output again clears it, so no animation returns
 		cy.get(speakerOut).click();
 		cy.wait(200);
 		cy.get(gain).should("have.attr", "data-live", "false");

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { VCA_STATE_VERSIONS } from '../../types/patch/module';
 import { needsUpgrade, upgrade } from './vca';
 
-const CURRENT = VCA_STATE_VERSIONS[0]; // "0.5.7"
+const CURRENT = VCA_STATE_VERSIONS[0];
 
 const params = () => ({
 	attack: 0.01,

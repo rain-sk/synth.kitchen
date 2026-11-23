@@ -1,11 +1,8 @@
 import { captchaEnabled, captchaEndpoint, captchaSecret } from "../env";
 
-// token verification against the self-hosted cap instance, reCAPTCHA-shaped: { success }
 const verificationTimeout = 8000;
 
 export class CaptchaService {
-  // fail-closed: a missing endpoint, secret, or token refuses the request; only an
-  // explicit success:true accepts it
   static verify = async (token: unknown): Promise<boolean> => {
     if (!captchaEnabled) {
       return true;

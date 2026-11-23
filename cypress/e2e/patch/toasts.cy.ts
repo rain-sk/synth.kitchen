@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 
 const stubCreate = (response: Partial<Cypress.ResponseOptions<any>>) =>
 	cy.intercept("POST", "**/api/patch/", response).as("create");
@@ -7,8 +6,6 @@ const EMAIL = "e2e-toasts@synth.kitchen";
 const PASSWORD = "password123";
 
 describe("patch: toasts", () => {
-	// save is gated on auth: anonymous clicks open the dialog and never reach the endpoint,
-	// so every toast below needs a session in the app's own storage before the editor mounts
 	beforeEach(() => {
 		(cy as any).loginByApi(EMAIL, PASSWORD);
 		(cy as any).visitEditor("/patch/new");
@@ -93,8 +90,6 @@ describe("patch: toasts", () => {
 
 		cy.get(".toast.error .toast-action").click();
 
-		// the retry has to say so while it is still running: the bubble must go back to pending,
-		// not vanish until the request lands
 		cy.get(".toast.pending").should("contain.text", "saving");
 		cy.get(".toast.error").should("not.exist");
 		cy.get('[data-toast-key^="save:"]').should("have.length", 1);
@@ -105,10 +100,6 @@ describe("patch: toasts", () => {
 	});
 
 	it("keeps the same bubble node across pending→success", () => {
-		// guards against Bubble being declared inside ToastsProvider: a component type created during
-		// render is a new type every render, so React remounts the bubble on each state change. That
-		// re-runs the entry animation mid-notification, swaps the live-region text with remove+add instead
-		// of updating it, and drops focus off .toast-action for keyboard users
 		cy.intercept("POST", "**/api/patch/", {
 			delay: 1500,
 			body: { patch: { id: "t1", slug: "toast-node-identity" } },

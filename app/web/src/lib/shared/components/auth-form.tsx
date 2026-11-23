@@ -35,14 +35,8 @@ const emptyErrors = (): FormErrors => ({
 
 export const AuthForm: React.FC<{
 	mode: AuthMode;
-	/** called after a successful login. The standalone route leaves it off — the auth context
-	 * redirects on its own. The modal host uses it to finish what the user was doing. */
 	onAuthenticated?: () => void;
-	/** called after a successful register. Defaults to the reload those pages have always done;
-	 * the modal host must pass a handler, or registering throws away the user's patch. */
 	onRegistered?: () => void;
-	/** true when hosted by the dialog: an unknown account is reported in place instead of
-	 * bouncing to /register, because leaving the page destroys the patch behind the dialog. */
 	hosted?: boolean;
 }> = ({ mode, onAuthenticated, onRegistered, hosted = false }) => {
 	const registration = mode === 'register';
@@ -52,8 +46,6 @@ export const AuthForm: React.FC<{
 
 	const [formSubmitted, setFormSubmitted] = useState(false);
 
-	// the cap widget solves its proof-of-work in the background on mount; the token is read at
-	// submit time and spent server-side, so a rejected submission resets the widget for a fresh one
 	const capWidgetRef = useRef<HTMLElementTagNameMap['cap-widget'] | null>(null);
 
 	const [email, setEmail] = useState('');
@@ -103,7 +95,6 @@ export const AuthForm: React.FC<{
 									if (onRegistered) {
 										onRegistered();
 									} else {
-										// the standalone page has nothing on it to lose
 										location.reload();
 									}
 								} else if ('errors' in registerResponse) {

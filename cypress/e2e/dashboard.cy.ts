@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 
 const api = (path: string) => `${Cypress.env("API_URL")}${path}`;
 

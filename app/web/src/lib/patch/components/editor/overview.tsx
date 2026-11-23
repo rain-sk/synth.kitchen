@@ -13,11 +13,6 @@ import { recomputeOverview } from './utils/recompute-overview';
 import { useRefBackedState } from '../../../shared/utils';
 
 const main = () => document.getElementById('patch');
-// The minimap fits the snapshot into the scrub box with `background-size: contain`, so the world -> scrub
-// mapping is ONE uniform scale plus a letterbox offset. The old version divided x by scrubWidth and y by
-// scrubHeight separately, against a reference frame built from a hardcoded 16/9, which destroyed the aspect
-// ratio: at a 1663x392 viewport over a 1963x652 world the rectangle measured 381x132.6 where the correct box
-// is 322.7x60.6 - twice too tall, and pinned to the full width
 const computeVisibleBounds = (
 	main: HTMLElement,
 	scrubContainer: HTMLDivElement,
@@ -38,8 +33,6 @@ const computeVisibleBounds = (
 
 	const scale = Math.min(scrubWidth / worldWidth, scrubHeight / worldHeight);
 
-	// contain centres the letterboxed snapshot, so the rectangle has to start from the same offset or it
-	// drifts away from the image it is supposed to be framing
 	const offsetX = (scrubWidth - worldWidth * scale) / 2;
 	const offsetY = (scrubHeight - worldHeight * scale) / 2;
 
@@ -74,9 +67,6 @@ export const Overview: React.FC<{
 	const [overviewSize, setOverviewSize] = useState({ width: 1, height: 1 });
 	const scroll = useScroll(mainRef);
 
-	// measured after paint, not during a memo. The collapsed box is 2.667rem wide, so a memo that also
-	// left expanding out of its deps computed the rectangle once against a collapsed or zero-sized box and
-	// never recomputed it - the outline came back 0x0, which the border then rendered as a 16px square
 	const [visibleBounds, setVisibleBounds] = useState({
 		top: 0,
 		left: 0,

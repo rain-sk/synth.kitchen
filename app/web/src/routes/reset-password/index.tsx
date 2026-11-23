@@ -115,7 +115,6 @@ const RequestPasswordResetLink: React.FC = () => {
 					navigate('/login');
 					return;
 				}
-				// the request was refused (rejected or expired captcha); re-solve so the user can retry
 				capWidgetRef.current?.reset();
 				setFormSubmitted(false);
 				setError('Please complete the captcha and try again.');

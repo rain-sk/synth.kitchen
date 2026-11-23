@@ -4,7 +4,7 @@ import { FILTER_STATE_VERSIONS } from '../../types/patch/module';
 import { needsUpgrade, upgrade } from './filter';
 import { upgrade as upgradeOscillator } from './oscillator';
 
-const CURRENT = FILTER_STATE_VERSIONS[0]; // "0.5.12"
+const CURRENT = FILTER_STATE_VERSIONS[0];
 
 const legacy = (detune: number) => ({
 	frequency: 1200,

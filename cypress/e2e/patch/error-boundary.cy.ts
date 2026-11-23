@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 
 const visitCrash = (region: string, start = true) => {
 	cy.visit(`/patch/new?crash=${region}`, {

@@ -14,8 +14,6 @@ import { Modifier } from '../../constants/key';
 const line = (start: [number, number], end: [number, number]) =>
 	`M ${start[0]} ${start[1]} L ${end[0]} ${end[1]}`;
 
-// the invisible hit stroke is wide, so it is pulled back from both ends:
-// a connector dot must stay clickable where its cable is plugged in
 const INSET = 12;
 
 const hitArea = (from: [number, number], to: [number, number]) => {
@@ -111,17 +109,9 @@ const Cables: React.FC<{
 		: undefined;
 
 	const focusedCable = useRef<string | undefined>(undefined);
-	// recorded at mousedown, before focus moves: the click of a gesture that just focused this cable
-	// was already handled by onFocus, so only a re-click on an already-focused cable acts
 	const wasFocused = useRef(false);
-	// true only in the window between a mousedown and the focus that mousedown caused. Shift means two
-	// different things depending on what moved focus: shift-click is "add to selection", shift+tab is "go to
-	// the previous cable". This is what tells them apart
 	const pointerFocus = useRef(false);
 
-	// the flag's lifetime ends at mouseup: onFocus consumes it, and a release on document also clears
-	// it — a press on an already-focused cable released outside fires neither onFocus nor click, and a
-	// flag left set would make the next shift+tab look like a shift-click
 	useEffect(() => {
 		const clear = () => {
 			pointerFocus.current = false;
@@ -175,18 +165,12 @@ const Cables: React.FC<{
 					aria-pressed={cable.selected}
 					onMouseDown={(event) => {
 						event.stopPropagation();
-						// recorded before focus moves, so onClick can tell whether this gesture produced the
-						// focus that already applied the selection
 						wasFocused.current =
 							event.currentTarget.ownerDocument.activeElement === event.currentTarget;
 						pointerFocus.current = true;
 					}}
 					onFocus={() => {
 						focusedCable.current = cable.key;
-						// shift means toggle, but only when a pointer caused the focus: shift-clicking a cable that
-						// is already selected is the user taking it back out of the selection. Both tab and
-						// shift+tab arrive here with shift held, so toggling on focus turned every backward tab into
-						// a multiselection — the keyboard was asking to go backwards, not to extend
 						const toggle = shiftHeld && pointerFocus.current;
 						pointerFocus.current = false;
 
@@ -200,9 +184,6 @@ const Cables: React.FC<{
 						);
 					}}
 					onClick={(event) => {
-						// pointer order is mousedown → focus → mouseup → click. Pressing a cable that was not
-						// focused already selected it in onFocus, so dispatching here too double-applied:
-						// shift-click ADDed on focus then TOGGLEd it back off, and multi-select was a no-op
 						if (!wasFocused.current) {
 							return;
 						}
@@ -222,8 +203,7 @@ const Cables: React.FC<{
 						}
 					}}
 				>
-					{/* the halo is the visible feedback; the hit stroke never changes width,
-							hovering must not shrink the thing you are aiming at */}
+					{}
 					<path className="cable-halo" d={hitArea(cable.from, cable.to)} />
 					<path className="cable-hit" d={hitArea(cable.from, cable.to)} />
 					<path className="cable-outline" d={line(cable.from, cable.to)} />

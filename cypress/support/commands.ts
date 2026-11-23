@@ -31,12 +31,6 @@ Cypress.Commands.add("login" as any, (email: string, password: string) => {
 });
 
 Cypress.Commands.add("delete" as any, (email: string, password: string) => {
-  // Teardown only, via the API. The previous UI flow typed the credentials, then read
-  // `cy.location("pathname", { timeout })` with a bare `.then` — a query without an assertion
-  // yields immediately, so it always saw `/login` (measured: `/login` at once, `/dashboard` 2s
-  // later), early-returned, and deleted nothing. Users persisted between runs, and
-  // `POST /auth/register` answering 200 with the existing account's jwt hid it.
-  // `deleteUserByApi` is idempotent (no user -> no-op) and origin-agnostic.
   return (cy as any).deleteUserByApi(email, password);
 });
 
@@ -65,10 +59,6 @@ Cypress.Commands.add("loginByApi" as any, (email: string, password: string) => {
     });
 });
 
-// teardown must survive the e2e stack restarting the api under it (see AGENTS.md gotcha 12): the
-// vite proxy answers 500 with an empty text/plain body while the upstream is coming back, and a
-// single such hiccup used to fail a spec whose assertions were all correct. Retry across the
-// restart, then assert, so a genuine failure still fails loudly. 404 counts as done: no user.
 const throughRestart = (
   req: () => Cypress.Chainable<Cypress.Response<any>>,
   tries = 4,
@@ -138,9 +128,6 @@ Cypress.Commands.add("deletePatchByApi" as any, (id: string, jwt: string) => {
   });
 });
 
-// every editor spec goes through here: the editor gates behind the audio/MIDI start dialog,
-// so a raw cy.visit never reaches #patch. extra passes through visit options a spec needs to
-// assert on — { preferReducedMotion: true } for the connector breathing
 Cypress.Commands.add("visitEditor" as any, (path = "/patch/new", extra: object = {}) => {
   cy.visit(path, {
     ...extra,

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { CLOCK_STATE_VERSIONS } from '../../types/patch/module';
 import { needsUpgrade, upgrade } from './clock';
 
-const CURRENT = CLOCK_STATE_VERSIONS[0]; // "0.5.0"
+const CURRENT = CLOCK_STATE_VERSIONS[0];
 
 describe('clock upgrade', () => {
 	it('stamps an unversioned tempo state as the current version', () => {

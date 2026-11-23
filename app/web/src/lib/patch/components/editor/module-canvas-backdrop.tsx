@@ -146,7 +146,6 @@ export const ModuleCanvasBackdrop: React.FC<
 		(e: MouseEvent) => {
 			const container = containerRef.current;
 			if (!container) {
-				// the canvas unmounted mid-drag; detach or every mousemove lands here forever
 				detachBodyHandlers();
 				return;
 			}
@@ -210,8 +209,6 @@ export const ModuleCanvasBackdrop: React.FC<
 		[dispatch],
 	);
 
-	// these three live on document.body and were only ever detached in onMouseUp, so a drag
-	// interrupted by an unmount left them attached to a canvas that no longer existed
 	const detachBodyHandlers = useCallback(() => {
 		document.body.removeEventListener('mouseup', onMouseUp);
 		document.body.removeEventListener('mouseleave', onMouseUp);

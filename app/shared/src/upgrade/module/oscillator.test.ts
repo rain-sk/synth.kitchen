@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { OSCILLATOR_STATE_VERSIONS } from '../../types/patch/module';
 import { needsUpgrade, upgrade } from './oscillator';
 
-const CURRENT = OSCILLATOR_STATE_VERSIONS[0]; // "0.5.12"
+const CURRENT = OSCILLATOR_STATE_VERSIONS[0];
 
 const legacy = (detune: number) => ({
 	frequency: 440,

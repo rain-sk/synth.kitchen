@@ -17,7 +17,6 @@ import { t } from '../../lang';
 
 export type CardPatch = PatchInfo & { createdAt?: string };
 
-// only colours the app already owns, so the grid stays in the same room as the editor
 const ACCENTS = ['#7cd2e2', '#bf82bb', '#9142a0', '#b9ffce', '#c8b6e0'];
 
 const accentOf = (seed: string) => {

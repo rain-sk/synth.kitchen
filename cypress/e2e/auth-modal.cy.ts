@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 
 const dialog = "#auth-dialog";
 const scrim = "#auth-scrim";
@@ -238,7 +237,6 @@ describe("auth modal: interrupted save", () => {
 		cy.get(".toast.success").should("contain.text", "saved");
 
 		cy.getAllLocalStorage().then((result) => {
-			// stored JSON-stringified, the way useJwt reads it back
 			const jwt = JSON.parse(result[Cypress.config("baseUrl") as string].jwt);
 			expect(jwt, "session from the registration jwt").to.be.a("string").and.not.empty;
 			cy.request({

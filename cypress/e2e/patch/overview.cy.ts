@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 
 context("patch: overview minimap", () => {
 	beforeEach(() => {
@@ -10,7 +9,6 @@ context("patch: overview minimap", () => {
 
 		cy.get("#patch .module").should("have.length.at.least", 1);
 
-		// the minimap starts collapsed and its rectangle is display:none until expanded
 		cy.get("#overview").click();
 		cy.get("#scrub-outline").should("be.visible");
 
@@ -23,9 +21,6 @@ context("patch: overview minimap", () => {
 			const wantRatio = main.clientWidth / main.clientHeight;
 			const gotRatio = box.width / box.height;
 
-			// one uniform scale for both axes, so the rectangle keeps the viewport's shape. Normalising x by
-			// scrubWidth and y by scrubHeight separately made it twice too tall at this viewport: 381x132.6
-			// where the correct box is 322.7x60.6
 			expect(
 				Math.abs(gotRatio - wantRatio) / wantRatio,
 				`outline ratio ${gotRatio.toFixed(3)} vs viewport ratio ${wantRatio.toFixed(3)}`,
@@ -79,8 +74,6 @@ context("patch: overview minimap", () => {
 			const o = outline.getBoundingClientRect();
 			const mr = main.getBoundingClientRect();
 
-			// one uniform contain scale against the snapshot's own frame, which is the frame the
-			// image was actually painted in
 			const scale = Math.min(
 				scrub.clientWidth / img.naturalWidth,
 				scrub.clientHeight / img.naturalHeight,
@@ -126,9 +119,5 @@ context("patch: overview minimap", () => {
 		});
 	});
 
-	// deliberately not asserted here: the rectangle's position while the minimap expands keeps changing
-	// under the measurement (the box grows, so offsetY moves with it), and the aspect-ratio test above
-	// already pins the maths that was wrong. scroll tracking and the scrub drag stay untested - the drag
-	// handler is still a stub
 });
 

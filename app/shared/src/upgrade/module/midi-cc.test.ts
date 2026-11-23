@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { MIDI_CC_STATE_VERSIONS } from '../../types/patch/module';
 import { needsUpgrade, upgrade } from './midi-cc';
 
-const CURRENT = MIDI_CC_STATE_VERSIONS[0]; // "0.5.9"
+const CURRENT = MIDI_CC_STATE_VERSIONS[0];
 
 const legacy = () => ({ input: 'velocity', cc: 7, min: 0, max: 127 });
 

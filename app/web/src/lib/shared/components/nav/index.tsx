@@ -10,8 +10,6 @@ export const Nav: React.FC = () => {
 
 	const authenticated = !loading && user !== undefined;
 
-	// only the editor has anything to lose by navigating, so only there does signing in
-	// open the dialog over the page instead of going to a page
 	const inEditor = pathname.startsWith('/patch');
 	const authHref = (mode: 'login' | 'register') => {
 		const params = new URLSearchParams(search);

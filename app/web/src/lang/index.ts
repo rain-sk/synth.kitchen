@@ -1,7 +1,5 @@
 import en, { Catalog } from './en';
 
-// dot paths over the catalog, so a typo is a compile error rather than a blank toast.
-// swapping in an i18next instance should only change this module, never a call site.
 type DotKeys<T, Prefix extends string = ''> = T extends object
 	? {
 			[K in keyof T & string]: DotKeys<

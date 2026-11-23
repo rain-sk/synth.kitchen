@@ -40,9 +40,6 @@
       });
     });
 
-    // teardown had been a silent no-op: it typed the credentials and then read cy.location with a
-    // bare `.then`, which yields immediately, so it always saw /login and returned without deleting.
-    // register answering 200 with the existing account's jwt is what kept the suite green over it
     it("teardown actually deletes the user", () => {
       const email = "teardown@synth.kitchen";
       const api = Cypress.env("API_URL") as string;
