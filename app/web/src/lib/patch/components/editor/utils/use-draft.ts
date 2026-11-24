@@ -51,6 +51,7 @@ export const useDraft = ({
 
 	const baseline = useRef<string>('');
 	const resolved = useRef(false);
+	const pendingReload = useRef(false);
 	const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
 	const settled =
@@ -126,12 +127,18 @@ export const useDraft = ({
 		return () => window.removeEventListener('pagehide', flush);
 	}, [settled, state, state.id]);
 
+	// only a route load re-arms the restore: a LoadPatch of a draft puts its
+	// connections in connectionsToLoad, and re-arming on that flip makes the
+	// restore fire again against the draft it just applied, wiping the patch
 	useEffect(() => {
-		if (loading || state.connectionsToLoad) {
+		if (loading) {
+			pendingReload.current = true;
+		} else if (pendingReload.current) {
+			pendingReload.current = false;
 			resolved.current = false;
 			setReady(false);
 		}
-	}, [loading, state.connectionsToLoad]);
+	}, [loading]);
 
 	const reset = useCallback(() => {
 		clearDraft(state.id);
@@ -171,5 +178,12 @@ export const useDraft = ({
 		setDraft(null);
 	}, [state.id, state]);
 
-	return { draft, dirty: draft !== null, ready, reset, markSaved };
+	return {
+		draft,
+		dirty: draft !== null,
+		// a save is not safe while restored connections are still landing
+		ready: ready && !state.connectionsToLoad,
+		reset,
+		markSaved,
+	};
 };
