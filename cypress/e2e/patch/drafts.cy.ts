@@ -141,16 +141,17 @@ describe("patch drafts", () => {
 			expect(store[draftKey()], "draft survives the reload").to.be.a("string"),
 		);
 
-		cy.get("#start", { timeout: 20000 }).click({ force: true });
-		cy.get("#patch", { timeout: 20000 }).should("exist");
-
-		cy.get("#draft-state").should("exist");
-		cy.get("#module-canvas > div").should("have.length", 2);
-
 		cy.get("#email").type(EMAIL);
 		cy.get("#password").type(PASSWORD);
 		cy.get("#confirm-password").type(PASSWORD);
 		cy.get("#submit").click();
+
+		cy.get("#auth-dialog").should("not.exist", { timeout: 10000 });
+		cy.get("#start", { timeout: 20000 }).click();
+		cy.get("#patch", { timeout: 20000 }).should("exist");
+
+		cy.get("#module-canvas > div").should("have.length", 2);
+		cy.get("#draft-state").should("exist");
 
 		cy.wait("@save", { timeout: 15000 }).then(({ request, response }) => {
 			expect(response?.statusCode, "save accepted").to.eq(200);

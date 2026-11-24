@@ -7,6 +7,15 @@ const plugins =
 
 const apiOrigin = process.env.VITE_API_ORIGIN ?? 'http://localhost:3000';
 
+const port = Number(process.env.VITE_PORT ?? 8080);
+
+const proxy = {
+	'/api': {
+		target: apiOrigin,
+		rewrite: (path: string) => path.replace(/^\/api/, ''),
+	},
+};
+
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins,
@@ -33,12 +42,13 @@ export default defineConfig({
 			usePolling: true,
 		},
 		strictPort: true,
-		port: Number(process.env.VITE_PORT ?? 8080),
-		proxy: {
-			'/api': {
-				target: apiOrigin,
-				rewrite: (path) => path.replace(/^\/api/, ''),
-			},
-		},
+		port,
+		proxy,
+	},
+	preview: {
+		host: true,
+		strictPort: true,
+		port,
+		proxy,
 	},
 });

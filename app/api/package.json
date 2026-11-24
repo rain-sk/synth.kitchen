@@ -17,7 +17,8 @@
     "build:prod": "node -r ts-node/register build.ts",
     "postbuild:prod": "npm run migrate:prod",
     "migrate:prod": "npm run orm:prod -- migration:run -d ./src/data-source.ts",
-    "orm:prod": "node --trace-warnings -r ts-node/register node_modules/typeorm/cli.js"
+    "orm:prod": "node --trace-warnings -r ts-node/register node_modules/typeorm/cli.js",
+    "start:e2e": "node --env-file=.env ./build/index.js"
   },
   "dependencies": {
     "bcrypt": "6.0.0",

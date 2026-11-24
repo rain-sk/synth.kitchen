@@ -31,7 +31,9 @@
     "test:cypress": "npx cypress run -q",
     "e2e": "./scripts/e2e.sh",
     "db": "./scripts/db.sh",
-    "tunnel": "./scripts/ssh-tunnel.sh"
+    "tunnel": "./scripts/ssh-tunnel.sh",
+    "build:e2e": "rm -rf app/web/build app/api/build && (cd app/shared && npm run build) && VITE_CRASH_HOOKS=1 concurrently 'npm run build:api' 'npm run build:web'",
+    "serve:e2e": "concurrently -k -n api,web 'cd app/api && npm run start:e2e' 'cd app/web && npm run serve:e2e'"
   },
   "overrides": {
     "tmp": "0.2.7",

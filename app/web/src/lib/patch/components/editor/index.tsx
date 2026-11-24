@@ -8,6 +8,7 @@ import { DerivedConnectionStateContextProvider } from '../../contexts/derived-co
 import { MidiContextProvider } from '../../contexts/midi';
 import { ModuleCanvas } from './module-canvas';
 import { PatchContextProvider } from '../../contexts/patch';
+import { crashHooksEnabled, crashKind } from '../../../../crash-hooks';
 import { Init } from './init';
 import { AsyncQueueDispatcher } from './async-queue-dispatcher';
 import {
@@ -98,9 +99,7 @@ export const PatchEditor: React.FC<{
 						/>
 					) : (
 						<ErrorBoundary region="canvas" getState={() => state}>
-							{import.meta.env.DEV &&
-							new URLSearchParams(window.location.search).get('crash') ===
-							'canvas' ? (
+							{crashHooksEnabled && crashKind() === 'canvas' ? (
 								<ThrowOnPurpose />
 							) : (
 								<ModuleCanvas

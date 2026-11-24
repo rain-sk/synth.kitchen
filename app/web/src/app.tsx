@@ -10,6 +10,7 @@ import { PatchRoute } from './routes/patch';
 import { ResetPasswordRoute } from './routes/reset-password';
 import { Nav } from './lib/shared/components/nav';
 import { AuthModal } from './lib/shared/components/auth-modal';
+import { crashHooksEnabled, crashKind } from './crash-hooks';
 import {
 	ErrorBoundary,
 	ThrowOnPurpose,
@@ -32,8 +33,7 @@ export const SynthKitchen: React.FC = () => {
 		<ToastsProvider>
 			<Nav />
 			<ErrorBoundary region="app">
-				{import.meta.env.DEV &&
-				new URLSearchParams(window.location.search).get('crash') === 'app' ? (
+				{crashHooksEnabled && crashKind() === 'app' ? (
 					<ThrowOnPurpose />
 				) : (
 					<Switch>
