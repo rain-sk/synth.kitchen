@@ -26,7 +26,8 @@
 		"build": "tsc && vite build",
 		"build:prod": "vite build",
 		"dev": "concurrently \"vite --host\" \"npm:lint\"",
-		"lint": "tsc --preserveWatchOutput --watch"
+		"lint": "tsc --preserveWatchOutput --watch",
+		"serve:e2e": "vite preview --host --strictPort --port ${VITE_PORT:-8080}"
 	},
 	"devDependencies": {
 		"@types/is-callable": "1.1.2",

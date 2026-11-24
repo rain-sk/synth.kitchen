@@ -48,7 +48,8 @@ describe("patch drafts", () => {
 
 		cy.get("#draft-reset").click();
 
-		modules().should("have.length", 0);
+		modules().should("have.length", 1);
+		cy.get("#module-canvas [id='0']").should("exist");
 		cy.get("#draft-state").should("not.exist");
 		storage().then((store) => {
 			expect(store, "draft discarded").to.not.have.key(draftKey());
@@ -99,7 +100,7 @@ describe("patch drafts", () => {
 		cy.wait("@save", { timeout: 10000 })
 			.its("response.statusCode")
 			.should("eq", 200);
-		cy.get("#draft-state").should("not.exist", { timeout: 8000 });
+		cy.get("#draft-state", { timeout: 8000 }).should("not.exist");
 
 		storage().then((store) => {
 			expect(store, "nothing left to protect").to.not.have.key(draftKey());
@@ -140,16 +141,17 @@ describe("patch drafts", () => {
 			expect(store[draftKey()], "draft survives the reload").to.be.a("string"),
 		);
 
-		cy.get("#start", { timeout: 20000 }).click({ force: true });
-		cy.get("#patch", { timeout: 20000 }).should("exist");
-
-		cy.get("#draft-state").should("exist");
-		cy.get("#module-canvas > div").should("have.length", 2);
-
 		cy.get("#email").type(EMAIL);
 		cy.get("#password").type(PASSWORD);
 		cy.get("#confirm-password").type(PASSWORD);
 		cy.get("#submit").click();
+
+		cy.get("#auth-dialog", { timeout: 10000 }).should("not.exist");
+		cy.get("#start", { timeout: 20000 }).click();
+		cy.get("#patch", { timeout: 20000 }).should("exist");
+
+		cy.get("#module-canvas > div").should("have.length", 2);
+		cy.get("#draft-state").should("exist");
 
 		cy.wait("@save", { timeout: 15000 }).then(({ request, response }) => {
 			expect(response?.statusCode, "save accepted").to.eq(200);
@@ -159,7 +161,7 @@ describe("patch drafts", () => {
 			).to.have.length(2);
 		});
 		cy.location("search").should("not.include", "after=save");
-		cy.get("#draft-state").should("not.exist", { timeout: 8000 });
+		cy.get("#draft-state", { timeout: 8000 }).should("not.exist");
 	});
 
 
@@ -190,7 +192,7 @@ describe("patch drafts", () => {
 			.its("response.statusCode")
 			.should("eq", 200);
 		cy.get("#patch", { timeout: 20000 }).should("exist");
-		cy.get("#draft-state").should("not.exist", { timeout: 8000 });
+		cy.get("#draft-state", { timeout: 8000 }).should("not.exist");
 
 		const slug = () => cy.location("pathname");
 
@@ -204,7 +206,7 @@ describe("patch drafts", () => {
 				.its("response.statusCode")
 				.should("eq", 200);
 			slug().should("eq", first);
-			cy.get("#draft-state").should("not.exist", { timeout: 8000 });
+			cy.get("#draft-state", { timeout: 8000 }).should("not.exist");
 
 			storage().then((store) => {
 				const jwt = JSON.parse(store.jwt);

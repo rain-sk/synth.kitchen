@@ -14,7 +14,7 @@ import {
 	writeDraft,
 } from '../../../storage/draft';
 import { useApi } from '../../../api';
-import { blankPatchToClearCanvas } from '../../../state';
+import { blankPatchToLoad } from '../../../state';
 
 const patchState = (state: IPatchState) => ({
 	version: state.version,
@@ -47,6 +47,7 @@ export const useDraft = ({
 	const { notify, dismiss } = useToasts();
 	const { getPatch } = useApi();
 	const [draft, setDraft] = useState<Draft | null>(null);
+	const [ready, setReady] = useState(false);
 
 	const baseline = useRef<string>('');
 	const resolved = useRef(false);
@@ -64,6 +65,7 @@ export const useDraft = ({
 
 		if (!found) {
 			setDraft(null);
+			setReady(true);
 			baseline.current = JSON.stringify(patchState(state));
 			return;
 		}
@@ -71,12 +73,14 @@ export const useDraft = ({
 		if (state.id && sameState(found.patch.state, patchState(state))) {
 			clearDraft(state.id);
 			setDraft(null);
+			setReady(true);
 			baseline.current = JSON.stringify(patchState(state));
 			return;
 		}
 
 		baseline.current = JSON.stringify(found.patch.state);
 		setDraft(found);
+		setReady(true);
 
 		dispatch(patchActions.loadPatchAction({ ...found.patch }));
 		notify({
@@ -123,7 +127,10 @@ export const useDraft = ({
 	}, [settled, state, state.id]);
 
 	useEffect(() => {
-		if (loading || state.connectionsToLoad) resolved.current = false;
+		if (loading || state.connectionsToLoad) {
+			resolved.current = false;
+			setReady(false);
+		}
 	}, [loading, state.connectionsToLoad]);
 
 	const reset = useCallback(() => {
@@ -147,7 +154,7 @@ export const useDraft = ({
 					);
 				}
 			} else {
-				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
+				dispatch(patchActions.loadPatchAction(blankPatchToLoad()));
 			}
 			try {
 				await resetAudioContext();
@@ -164,5 +171,5 @@ export const useDraft = ({
 		setDraft(null);
 	}, [state.id, state]);
 
-	return { draft, dirty: draft !== null, reset, markSaved };
+	return { draft, dirty: draft !== null, ready, reset, markSaved };
 };

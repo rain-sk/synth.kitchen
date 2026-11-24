@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-#
-#
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -24,8 +22,6 @@ sync_env() {
 	api_db=$(grep '^POSTGRES_DB_NAME=' "$API_ENV" | cut -d= -f2- || true)
 	api_user=$(grep '^POSTGRES_USERNAME=' "$API_ENV" | cut -d= -f2- || true)
 	api_pass=$(grep '^POSTGRES_PASSWORD=' "$API_ENV" | cut -d= -f2- || true)
-	# read the port from the same file as the rest, and keep it: a shell default here rewrote a
-	# deliberate non-5432 back to 5432, the exact port ssh-tunnel.sh forwards prod to
 	api_port=$(grep '^POSTGRES_PORT=' "$API_ENV" | cut -d= -f2- || true)
 	[ -n "$api_port" ] || api_port=5432
 
@@ -87,9 +83,6 @@ migrate() {
 	(cd "$ROOT/app/api" && npm run migrate)
 }
 
-# Delete only rows owned by specs, at suite start. e2e users are namespaced e2e-*@synth.kitchen, so
-# the sweep cannot reach an admin, a seed, or a developer's own patches. Teardown cannot be the cleanup
-# path: a killed run never reaches it, and the next suite then fails on an exact card count.
 SWEEP_SQL='
 BEGIN;
 CREATE TEMP TABLE e2e_users ON COMMIT DROP AS
@@ -126,14 +119,7 @@ sweep_e2e() {
 		-v ON_ERROR_STOP=1 -q -c "$SWEEP_SQL"
 }
 
-# Prove the database behind the port is the container this script owns.
-# The sync_env guard only matches the hostname, and `ssh-tunnel.sh:49` forwards PRODUCTION
-# postgres to exactly 127.0.0.1:5432 - so a live tunnel passed that check and migrate/reset
-# ran DDL against prod. Identity, not hostname: the port must be published by sk-db-dev, and
-# no ssh process may own it.
 assert_local_listener() {
-	# the port lives in $ENV_FILE, not in the shell - reading the shell defaulted to 5432 and
-	# false-refused whenever the dev database was deliberately published elsewhere
 	local port
 	port=$(grep '^POSTGRES_PORT=' "$ENV_FILE" | cut -d= -f2-)
 	[ -n "$port" ] || port=5432

@@ -22,7 +22,7 @@ export const SaveToCloud = () => {
 
 	const { savePatch } = useApi();
 	const { notify, dismiss } = useToasts();
-	const { markSaved } = useDraftContext();
+	const { markSaved, ready } = useDraftContext();
 	const { user, loading } = useContext(AuthContext);
 
 	const pathname = usePathname();
@@ -97,7 +97,7 @@ export const SaveToCloud = () => {
 	};
 
 	useEffect(() => {
-		if (after !== 'save' || loading || !user || fired.current) return;
+		if (after !== 'save' || loading || !user || !ready || fired.current) return;
 		fired.current = true;
 
 		void performSave().then((saved) => {
@@ -108,7 +108,7 @@ export const SaveToCloud = () => {
 			const to = clearAuthParams(pathname);
 			if (to) navigate(to, { replace: true });
 		});
-	}, [after, loading, user, performSave, navigate, pathname]);
+	}, [after, loading, user, ready, performSave, navigate, pathname]);
 
 	return (
 		<button
