@@ -2,12 +2,14 @@ import React, { createContext, useContext } from 'react';
 
 type DraftContextValue = {
 	dirty: boolean;
+	ready: boolean;
 	reset: () => void;
 	markSaved: () => void;
 };
 
 const defaultValue: DraftContextValue = {
 	dirty: false,
+	ready: false,
 	reset: () => {},
 	markSaved: () => {},
 };
