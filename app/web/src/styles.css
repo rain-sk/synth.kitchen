@@ -670,12 +670,12 @@ button {
 	border: 1px solid #4f4658;
 }
 
-.connector[data-quiet="true"]:not(:hover):not(:focus) {
+.connector[data-quiet="true"]:not(:hover):not(:focus-visible):not(.active) {
 	background-color: transparent;
 	border-color: transparent;
 }
 
-.connector[data-quiet="true"]:not(:hover):not(:focus)::before {
+.connector[data-quiet="true"]:not(:hover):not(:focus-visible):not(.active)::before {
 	content: '';
 	position: absolute;
 	top: 50%;
@@ -712,8 +712,11 @@ button {
 	}
 }
 
+/* the grown halo means hover, keyboard focus, or armed — never sticky
+   mouse focus, which would keep an unarmed connector looking armed */
 .connector:hover:before,
-.connector:focus:before {
+.connector:focus-visible:before,
+.connector.active::before {
 	content: '';
 	position: absolute;
 	top: -50%;
@@ -750,7 +753,8 @@ button {
 } */
 
 main.selection-drag .connector:hover:before,
-main.selection-drag .connector:focus:before {
+main.selection-drag .connector:focus-visible:before,
+main.selection-drag .connector.active::before {
 	display: none;
 }
 
