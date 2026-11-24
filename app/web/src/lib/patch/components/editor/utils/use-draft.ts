@@ -150,6 +150,10 @@ export const useDraft = ({
 		dismiss(`draft:${key}`);
 
 		const load = async () => {
+			try {
+				await resetAudioContext();
+			} catch {}
+
 			if (state.id) {
 				const patch = await getPatch({ id: state.id });
 				if (patch) {
@@ -168,9 +172,6 @@ export const useDraft = ({
 				baselinePatch.current = baselinePatch.current ?? blankPatchToLoad();
 				dispatch(patchActions.loadPatchAction(baselinePatch.current));
 			}
-			try {
-				await resetAudioContext();
-			} catch {}
 		};
 
 		void load();
