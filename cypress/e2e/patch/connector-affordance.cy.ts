@@ -37,6 +37,24 @@ context("connector affordance", () => {
 		});
 	});
 
+	it("a free input carries a gradient drop shadow over cables", () => {
+		const shadow = ($el: JQuery<HTMLElement>) =>
+			getComputedStyle($el[0], "::before").boxShadow;
+
+		cy.get("#0_0_0").then(($el) => {
+			expect(shadow($el), "the pip is not just a flat dot").to.not.equal("none");
+			expect(shadow($el), "ink-coloured, with a blurred falloff").to.match(
+				/rgba\(79, 70, 88, 0?\.8+/,
+			);
+		});
+
+		plugOscToGain();
+
+		cy.get(gain).then(($el) => {
+			expect(shadow($el), "not needed once a cable owns the input").to.equal("none");
+		});
+	});
+
 	it("an input with a cable is normal sized", () => {
 		plugOscToGain();
 
