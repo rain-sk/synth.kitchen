@@ -55,8 +55,18 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-"$ROOT/scripts/db.sh" up
-"$ROOT/scripts/db.sh" migrate
+if [ "${E2E_FRESH_DB:-0}" = "1" ]; then
+    # the migration chain and the boot-time patch-state upgrade only ever run against a database that
+    # does not exist yet, and migrate is a recorded no-op against one that does - so a broken migration
+    # ships silently. This is the opt-in that proves the chain. It drops the volume, and with it any
+    # patch made by hand in sk-db-dev
+    echo "e2e.sh: E2E_FRESH_DB=1 - dropping the sk-db-dev volume and rebuilding from migrations"
+    "$ROOT/scripts/db.sh" reset
+else
+    echo "e2e.sh: reusing sk-db-dev; E2E_FRESH_DB=1 rebuilds it and proves the upgrade chain"
+    "$ROOT/scripts/db.sh" up
+    "$ROOT/scripts/db.sh" migrate
+fi
 "$ROOT/scripts/db.sh" sweep-e2e
 
 find_port() {
@@ -96,6 +106,39 @@ until [ "$(curl -sf "$CYPRESS_BASE_URL/api/health" 2>/dev/null)" = "OK" ]; do
     sleep 1
 done
 echo "e2e.sh: stack healthy, running cypress"
+
+# /api/health answers long before dev:shared finishes its first tsc --watch pass. If cypress starts in
+# that window the watcher rewrites app/shared/build/index.js under a live page: the api restarts, vite
+# reports "Could not Fast Refresh (PatchContext export is incompatible)" and remounts the editor mid-test,
+# so the canvas resets and state the test just wrote disappears. Wait for the build file to go quiet.
+SHARED_BUILD="$ROOT/app/shared/build/index.js"
+modified() {
+	stat -f %m "$SHARED_BUILD" 2>/dev/null || stat -c %Y "$SHARED_BUILD" 2>/dev/null || echo ""
+}
+
+last=""
+stable=0
+tries=0
+while [ "$stable" -lt 3 ]; do
+	if [ ! -f "$SHARED_BUILD" ]; then
+		echo "e2e.sh: waiting for $SHARED_BUILD to appear" >&2
+	else
+		now=$(modified)
+		if [ -n "$now" ] && [ "$now" = "$last" ]; then
+			stable=$((stable + 1))
+		else
+			stable=0
+		fi
+		last="$now"
+	fi
+	tries=$((tries + 1))
+	if [ $tries -ge 90 ]; then
+		echo "e2e.sh: $SHARED_BUILD still changing after 90s - starting anyway" >&2
+		break
+	fi
+	sleep 1
+done
+echo "e2e.sh: shared build quiet for 3s, cypress may start"
 
 npm run test:cypress
 test_exit_code=$?
