@@ -20,6 +20,19 @@ export const Init: React.FC<{
 	startWithoutMidi?: () => void;
 }> = ({ loading, name, status, init, askWithoutMidi, startWithoutMidi }) => {
 	const handleKeyDown = useRef(onKeyDown(init));
+	const startRef = useRef<HTMLButtonElement>(null);
+
+	useEffect(() => {
+		if (loading) {
+			return;
+		}
+
+		if (document.querySelector('[role="dialog"]')) {
+			return;
+		}
+
+		startRef.current?.focus();
+	}, [loading, askWithoutMidi]);
 
 	useEffect(() => {
 		if (!loading) {
@@ -48,8 +61,8 @@ export const Init: React.FC<{
 						<button
 							type="button"
 							id="start-without-midi"
+							ref={startRef}
 							onClick={startWithoutMidi}
-							autoFocus
 						>
 							start without MIDI
 						</button>
@@ -57,9 +70,9 @@ export const Init: React.FC<{
 						<button
 							type="button"
 							id="start"
+							ref={startRef}
 							onClick={onClickStart}
-							autoFocus
-					>
+						>
 							start
 						</button>
 					)}

@@ -6,6 +6,9 @@ const SEEDED_SLUG = "agile-able-attitude-c090f09e";
 const api = (path: string) => `${Cypress.env("API_URL")}${path}`;
 const draftKey = (id = "new") => `synth.kitchen:draft:${id}`;
 
+const typeInto = (id: string, value: string) =>
+	cy.get(`#${id}`).type(value, { delay: 40 }).should("have.value", value);
+
 const modules = () => cy.get("#module-canvas > div");
 
 const storage = () =>
@@ -92,9 +95,9 @@ describe("patch drafts", () => {
 
 		cy.get("#save-to-cloud").click();
 		cy.get("#auth-dialog").should("exist");
-		cy.get("#email").type(EMAIL);
-		cy.get("#password").type(PASSWORD);
-		cy.get("#confirm-password").type(PASSWORD);
+		typeInto("email", EMAIL);
+		typeInto("password", PASSWORD);
+		typeInto("confirm-password", PASSWORD);
 		cy.get("#submit").click();
 
 		cy.wait("@save", { timeout: 10000 })
@@ -141,9 +144,9 @@ describe("patch drafts", () => {
 			expect(store[draftKey()], "draft survives the reload").to.be.a("string"),
 		);
 
-		cy.get("#email").type(EMAIL);
-		cy.get("#password").type(PASSWORD);
-		cy.get("#confirm-password").type(PASSWORD);
+		typeInto("email", EMAIL);
+		typeInto("password", PASSWORD);
+		typeInto("confirm-password", PASSWORD);
 		cy.get("#submit").click();
 
 		cy.get("#auth-dialog", { timeout: 10000 }).should("not.exist");
@@ -183,9 +186,9 @@ describe("patch drafts", () => {
 
 		cy.get("#save-to-cloud").click();
 		cy.get("#auth-dialog").should("exist");
-		cy.get("#email").type(EMAIL);
-		cy.get("#password").type(PASSWORD);
-		cy.get("#confirm-password").type(PASSWORD);
+		typeInto("email", EMAIL);
+		typeInto("password", PASSWORD);
+		typeInto("confirm-password", PASSWORD);
 		cy.get("#submit").click();
 
 		cy.wait("@create", { timeout: 15000 })

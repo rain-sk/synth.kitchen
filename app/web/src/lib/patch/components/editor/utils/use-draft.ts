@@ -50,6 +50,7 @@ export const useDraft = ({
 	const [ready, setReady] = useState(false);
 
 	const baseline = useRef<string>('');
+	const baselinePatch = useRef<ISerializedPatch | undefined>(undefined);
 	const resolved = useRef(false);
 	const pendingReload = useRef(false);
 	const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -68,6 +69,7 @@ export const useDraft = ({
 			setDraft(null);
 			setReady(true);
 			baseline.current = JSON.stringify(patchState(state));
+			baselinePatch.current = serialize(state);
 			return;
 		}
 
@@ -76,6 +78,7 @@ export const useDraft = ({
 			setDraft(null);
 			setReady(true);
 			baseline.current = JSON.stringify(patchState(state));
+			baselinePatch.current = serialize(state);
 			return;
 		}
 
@@ -147,10 +150,15 @@ export const useDraft = ({
 		dismiss(`draft:${key}`);
 
 		const load = async () => {
+			try {
+				await resetAudioContext();
+			} catch {}
+
 			if (state.id) {
 				const patch = await getPatch({ id: state.id });
 				if (patch) {
 					baseline.current = JSON.stringify(patch.state.state);
+					baselinePatch.current = undefined;
 					dispatch(
 						patchActions.loadPatchAction({
 							id: patch.id,
@@ -161,11 +169,8 @@ export const useDraft = ({
 					);
 				}
 			} else {
-				dispatch(patchActions.loadPatchAction(blankPatchToLoad()));
-			}
-			try {
-				await resetAudioContext();
-			} catch {
+				baselinePatch.current = baselinePatch.current ?? blankPatchToLoad();
+				dispatch(patchActions.loadPatchAction(baselinePatch.current));
 			}
 		};
 
