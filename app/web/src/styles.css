@@ -690,6 +690,7 @@ button {
 }
 
 .connector[data-direction="output"] {
+	background-color: #b9dfff;
 	box-shadow: 0 0 0 0.15rem rgba(79, 70, 88, 0.45);
 }
 
@@ -729,6 +730,13 @@ button {
 	background: radial-gradient(circle, #b9ffce 0%, #7aa888 100%);
 	border: 1px solid #4f4658;
 	z-index: 11;
+}
+
+.connector[data-direction="output"]:hover:before,
+.connector[data-direction="output"]:focus-visible:before,
+.connector[data-direction="output"].active::before {
+	background: rgb(37, 74, 251);
+	background: radial-gradient(circle, #b9dfff 0%, #7a9cc4 100%);
 }
 
 .connector::after {
