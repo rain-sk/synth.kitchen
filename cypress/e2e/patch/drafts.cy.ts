@@ -48,7 +48,8 @@ describe("patch drafts", () => {
 
 		cy.get("#draft-reset").click();
 
-		modules().should("have.length", 0);
+		modules().should("have.length", 1);
+		cy.get("#module-canvas [id='0']").should("exist");
 		cy.get("#draft-state").should("not.exist");
 		storage().then((store) => {
 			expect(store, "draft discarded").to.not.have.key(draftKey());

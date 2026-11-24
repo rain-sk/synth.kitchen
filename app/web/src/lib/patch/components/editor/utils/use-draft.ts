@@ -14,7 +14,7 @@ import {
 	writeDraft,
 } from '../../../storage/draft';
 import { useApi } from '../../../api';
-import { blankPatchToClearCanvas } from '../../../state';
+import { blankPatchToLoad } from '../../../state';
 
 const patchState = (state: IPatchState) => ({
 	version: state.version,
@@ -147,7 +147,7 @@ export const useDraft = ({
 					);
 				}
 			} else {
-				dispatch(patchActions.loadPatchAction(blankPatchToClearCanvas()));
+				dispatch(patchActions.loadPatchAction(blankPatchToLoad()));
 			}
 			try {
 				await resetAudioContext();
