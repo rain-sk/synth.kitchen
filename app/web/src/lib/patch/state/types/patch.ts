@@ -46,6 +46,10 @@ export type IPatchState = PatchInfo &
 
 		// async work queue
 		asyncActionQueue: IPatchAction[];
+
+		// bumped by LoadPatch; module wrappers key off it so every load
+		// remounts its modules and its connectors re-register
+		loadEpoch: number;
 	};
 
 export const cloneAndApply = (
@@ -72,6 +76,8 @@ export const cloneAndApply = (
 		connectors: state.connectors,
 		io: state.io,
 		parameters: state.parameters,
+
+		loadEpoch: state.loadEpoch,
 
 		// mouse info
 		mouseDragStartPosition: state.mouseDragStartPosition,

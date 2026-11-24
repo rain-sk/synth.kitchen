@@ -44,7 +44,7 @@ export const ModuleCanvas: React.FC<{
 				>
 					{sortedModules.map(([module, position]) => (
 						<ModuleWrapper
-							key={module.id}
+							key={`${state.loadEpoch}:${module.id}`}
 							module={module}
 							position={position}
 							state={state}

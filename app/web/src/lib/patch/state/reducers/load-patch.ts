@@ -19,6 +19,7 @@ export const loadPatch: React.Reducer<IPatchState, ILoadPatch> = (
 		connections: { version: CONNECTIONS_STATE_VERSIONS[0], state: {} },
 		connectionsToLoad: action.payload.state.connections,
 		heldModifiers: state.heldModifiers,
+		loadEpoch: state.loadEpoch + 1,
 	};
 	return cloneAndApply(blockHistory(blankPatch()), newState);
 };

@@ -18,12 +18,16 @@ export const useNode = <NodeType extends Object, ModuleType extends Type>(
 	nodeFactory: () => NodeType,
 ) => {
 	const { current: id } = useRef(module.id);
+	const { loadEpoch } = useContext(PatchContext);
+	// epoch-keyed so a LoadPatch remount never re-uses the node of the
+	// generation being unmounted: its cleanup disconnects (nulls) that node
+	const cacheKey = `${loadEpoch}:${id}`;
 	const node = useMemo(
-		nodeMap.has(id) ? () => nodeMap.get(id) as NodeType : nodeFactory,
+		nodeMap.has(cacheKey) ? () => nodeMap.get(cacheKey) as NodeType : nodeFactory,
 		[],
 	);
-	if (!nodeMap.has(id)) {
-		nodeMap.set(id, node);
+	if (!nodeMap.has(cacheKey)) {
+		nodeMap.set(cacheKey, node);
 	}
 
 	// React runs all effects twice on mount because of a "dummy cycle"
@@ -32,7 +36,7 @@ export const useNode = <NodeType extends Object, ModuleType extends Type>(
 	useEffectOnce(() => () => {
 		if (node && 'disconnect' in node && isCallable(node.disconnect)) {
 			try {
-				nodeMap.delete(id);
+				nodeMap.delete(cacheKey);
 				node.disconnect();
 			} catch (e) {
 				console.warn(e);

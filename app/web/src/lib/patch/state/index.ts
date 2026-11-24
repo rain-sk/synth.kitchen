@@ -71,6 +71,8 @@ export const blankPatch = (): IPatchState => ({
 	slug: '', // no slug
 	creator: { id: '', username: '' },
 
+	loadEpoch: 0,
+
 	// modules and parameters
 	modules: {},
 	modulePositions: {},
