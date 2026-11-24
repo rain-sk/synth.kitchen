@@ -87,6 +87,45 @@ migrate() {
 	(cd "$ROOT/app/api" && npm run migrate)
 }
 
+# Delete only rows owned by specs, at suite start. e2e users are namespaced e2e-*@synth.kitchen, so
+# the sweep cannot reach an admin, a seed, or a developer's own patches. Teardown cannot be the cleanup
+# path: a killed run never reaches it, and the next suite then fails on an exact card count.
+SWEEP_SQL='
+BEGIN;
+CREATE TEMP TABLE e2e_users ON COMMIT DROP AS
+	SELECT id FROM "user" WHERE email LIKE $$e2e-%@synth.kitchen$$;
+CREATE TEMP TABLE doomed_patches ON COMMIT DROP AS
+	SELECT id FROM patch WHERE "creatorId" IN (SELECT id FROM e2e_users);
+CREATE TEMP TABLE doomed_states ON COMMIT DROP AS
+	SELECT "stateId" AS sid FROM patch
+	WHERE id IN (SELECT id FROM doomed_patches) AND "stateId" IS NOT NULL;
+UPDATE patch SET "forkedFromId" = NULL
+	WHERE "forkedFromId" IN (SELECT id FROM doomed_patches);
+UPDATE saved_patch_state SET "patchId" = NULL
+	WHERE "patchId" IN (SELECT id FROM doomed_patches);
+DELETE FROM patch WHERE id IN (SELECT id FROM doomed_patches);
+UPDATE saved_patch_state SET "ancestorId" = NULL
+	WHERE "ancestorId" IN (SELECT sid FROM doomed_states);
+DELETE FROM saved_patch_state WHERE id IN (SELECT sid FROM doomed_states);
+DELETE FROM email_verification_request WHERE "userId" IN (SELECT id FROM e2e_users);
+DELETE FROM password_reset_request WHERE "userId" IN (SELECT id FROM e2e_users);
+DELETE FROM "user" WHERE id IN (SELECT id FROM e2e_users);
+COMMIT;
+SELECT
+	(SELECT count(*) FROM "user" WHERE email LIKE $$e2e-%@synth.kitchen$$) AS e2e_users_left,
+	(SELECT count(*) FROM patch WHERE "creatorId" IN
+		(SELECT id FROM "user" WHERE email LIKE $$e2e-%@synth.kitchen$$)) AS e2e_patches_left,
+	(SELECT count(*) FROM patch) AS patches_total;
+'
+
+sweep_e2e() {
+	set -a
+	. "$ENV_FILE"
+	set +a
+	docker exec -i sk-db-dev psql -U "$POSTGRES_USERNAME" -d "$POSTGRES_DB_NAME" \
+		-v ON_ERROR_STOP=1 -q -c "$SWEEP_SQL"
+}
+
 # Prove the database behind the port is the container this script owns.
 # The sync_env guard only matches the hostname, and `ssh-tunnel.sh:49` forwards PRODUCTION
 # postgres to exactly 127.0.0.1:5432 - so a live tunnel passed that check and migrate/reset
@@ -147,8 +186,14 @@ migrate)
 	wait_healthy
 	migrate
 	;;
+sweep-e2e)
+	sync_env
+	assert_local_listener
+	wait_healthy
+	sweep_e2e
+	;;
 *)
-	echo "usage: $0 up | down | reset | status | psql | migrate" >&2
+	echo "usage: $0 up | down | reset | status | psql | migrate | sweep-e2e" >&2
 	exit 2
 	;;
 esac

@@ -1,5 +1,5 @@
 {
-  const testEmail = "test@synth.kitchen";
+  const testEmail = "e2e-test@synth.kitchen";
   const testPassword = "HbEPBNSht72RYcS81BntMn@f9yXWb83zc4m0s7radVdMxpnPMCJYxU";
 
   describe("auth", () => {
@@ -41,7 +41,7 @@
     });
 
     it("teardown actually deletes the user", () => {
-      const email = "teardown@synth.kitchen";
+      const email = "e2e-teardown@synth.kitchen";
       const api = Cypress.env("API_URL") as string;
       const login = () =>
         cy.request({

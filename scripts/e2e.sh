@@ -57,6 +57,7 @@ trap cleanup EXIT INT TERM
 
 "$ROOT/scripts/db.sh" up
 "$ROOT/scripts/db.sh" migrate
+"$ROOT/scripts/db.sh" sweep-e2e
 
 find_port() {
     local port=$1

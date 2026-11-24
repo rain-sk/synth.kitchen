@@ -1,5 +1,5 @@
 
-const EMAIL = "focus-steal@synth.kitchen";
+const EMAIL = "e2e-focus-steal@synth.kitchen";
 const PASSWORD = "password123";
 
 const activeId = () => cy.document().its("activeElement.id");

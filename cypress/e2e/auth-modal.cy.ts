@@ -97,7 +97,7 @@ describe("auth modal", () => {
 	it("an unknown account reports in place instead of bouncing to /register", () => {
 		editor();
 		cy.get("#nav-login").click();
-		cy.get("#email").type("nobody-here@synth.kitchen");
+		cy.get("#email").type("e2e-nobody-here@synth.kitchen");
 		cy.get("#password").type("wrong-password");
 		cy.get("#submit").click();
 
@@ -113,7 +113,7 @@ describe("auth modal", () => {
 	it("the dialog's own switch changes mode without leaving the page", () => {
 		editor();
 		cy.get("#nav-login").click();
-		cy.get("#email").type("nobody-here@synth.kitchen");
+		cy.get("#email").type("e2e-nobody-here@synth.kitchen");
 		cy.get("#password").type("wrong-password");
 		cy.get("#submit").click();
 		cy.get("#form-errors").should("contain.text", "no account");
@@ -169,7 +169,7 @@ describe("auth modal", () => {
 	it("an unknown account reports in place instead of bouncing to /register", () => {
 		editor();
 		cy.get("#nav-login").click();
-		cy.get("#email").type("nobody-here@synth.kitchen");
+		cy.get("#email").type("e2e-nobody-here@synth.kitchen");
 		cy.get("#password").type("wrong-password");
 		cy.get("#submit").click();
 

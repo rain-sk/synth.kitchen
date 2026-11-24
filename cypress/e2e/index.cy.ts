@@ -1,5 +1,5 @@
 {
-  const testEmail = "test@synth.kitchen";
+  const testEmail = "e2e-test@synth.kitchen";
   const testPassword = "HbEPBNSht72RYcS81BntMn@f9yXWb83zc4m0s7radVdMxpnPMCJYxU";
 
   describe("unauthenticated index route", () => {
