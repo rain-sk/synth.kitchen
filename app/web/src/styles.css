@@ -676,6 +676,10 @@ button {
 }
 
 .connector[data-quiet="true"]:not(:hover):not(:focus)::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
 	width: 0.24rem;
 	height: 0.24rem;
 	transform: translate(-50%, -50%);
