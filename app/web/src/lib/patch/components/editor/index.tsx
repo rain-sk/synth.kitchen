@@ -53,6 +53,7 @@ export const PatchEditor: React.FC<{
 		initialized,
 		loading,
 		preset,
+		slug,
 	});
 
 	const init = useCallback(async () => {

@@ -8,6 +8,7 @@ import { t } from '../../../../../lang';
 import { useToasts } from '../../../../shared/components/toasts';
 import {
 	Draft,
+	NEW_PATCH,
 	clearDraft,
 	readDraft,
 	sameState,
@@ -37,12 +38,14 @@ export const useDraft = ({
 	initialized,
 	loading,
 	preset,
+	slug,
 }: {
 	state: IPatchState;
 	dispatch: React.Dispatch<ReturnType<typeof patchActions.loadPatchAction>>;
 	initialized: boolean;
 	loading: boolean;
 	preset?: unknown;
+	slug?: string;
 }) => {
 	const { notify, dismiss } = useToasts();
 	const { getPatch } = useApi();
@@ -61,6 +64,7 @@ export const useDraft = ({
 
 	useEffect(() => {
 		if (!settled || resolved.current) return;
+		if (slug && slug !== NEW_PATCH && !state.id) return;
 		resolved.current = true;
 
 		const found = readDraft(state.id);
@@ -92,7 +96,7 @@ export const useDraft = ({
 			kind: 'info',
 			message: t('patch.draftRestored'),
 		});
-	}, [settled, state.id, key, dispatch, notify, state.modules]);
+	}, [settled, state.id, key, dispatch, notify, state.modules, slug]);
 
 	useEffect(() => {
 		if (!settled || !resolved.current) return;

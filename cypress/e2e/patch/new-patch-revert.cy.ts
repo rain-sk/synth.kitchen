@@ -6,10 +6,15 @@ const storage = () =>
 	);
 
 const speakerPosition = () =>
-	cy.get("#0").then(($el) => {
-		const el = $el[0] as HTMLElement;
-		return [parseFloat(el.style.left), parseFloat(el.style.top)];
-	});
+	cy
+		.get("#0")
+		.should(($el) => {
+			expect($el[0].style.left, "position painted").to.not.equal("");
+		})
+		.then(($el) => {
+			const el = $el[0] as HTMLElement;
+			return [parseFloat(el.style.left), parseFloat(el.style.top)];
+		});
 
 describe("patch drafts: a fresh /patch/new", () => {
 	beforeEach(() => {
