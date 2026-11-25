@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+"""Flag comment lines added in the commits about to be pushed.
+
+Reads pre-push stdin (local_ref local_oid remote_ref remote_oid), diffs the
+pushed range, and fails on added lines that open or continue a comment.
+Line comments inside strings can still trip it; --no-verify is the bypass
+for comments Rain asked for.
+"""
+import os
+import re
+import subprocess
+import sys
+
+CHECKED = {
+    ".ts": "js", ".tsx": "js", ".js": "js", ".jsx": "js", ".mjs": "js",
+    ".css": "css", ".scss": "css",
+    ".sh": "sh", ".bash": "sh", ".py": "sh",
+}
+
+FULL = {
+    "js": re.compile(r"^(//|/\*|\*/|\*($|\s)|<!--)"),
+    "css": re.compile(r"^(/\*|\*/|\*($|\s))"),
+    "sh": re.compile(r"^#(?!!)"),
+}
+
+TRAILING = {
+    "js": re.compile(r"\S\s+//(?![/*])"),
+    "css": None,
+    "sh": re.compile(r"\S\s+#\s"),
+}
+
+URL = re.compile(r"https?://|\bwww\.")
+
+def language(path):
+    return CHECKED.get(os.path.splitext(path)[1].lower())
+
+def flagged(lang, body):
+    stripped = body.strip()
+    if stripped and FULL[lang].match(stripped):
+        return stripped
+    trail = TRAILING[lang]
+    if trail and trail.search(body) and not URL.search(body):
+        return stripped
+    return None
+
+def range_for(local_oid, remote_oid):
+    if remote_oid and not remote_oid.startswith("0" * 8):
+        probe = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", remote_oid, local_oid],
+            capture_output=True)
+        if probe.returncode == 0:
+            return f"{remote_oid}..{local_oid}"
+    base = subprocess.run(
+        ["git", "merge-base", "origin/main", local_oid],
+        capture_output=True, text=True)
+    if base.returncode == 0 and base.stdout.strip():
+        return f"{base.stdout.strip()}..{local_oid}"
+    return local_oid
+
+def main():
+    problems = []
+    for entry in sys.stdin:
+        parts = entry.split()
+        if len(parts) != 4:
+            continue
+        _, local_oid, _, remote_oid = parts
+        if local_oid.startswith("0" * 8):
+            continue
+        rng = range_for(local_oid, remote_oid)
+        diff = subprocess.run(
+            ["git", "diff", "-U0", rng], capture_output=True, text=True).stdout
+        current = None
+        lineno = 0
+        for line in diff.splitlines():
+            if line.startswith("+++ b/"):
+                path = line[6:].split("\t")[0]
+                current = language(path)
+                continue
+            if line.startswith("@@"):
+                m = re.search(r"\+(\d+)", line)
+                lineno = int(m.group(1)) if m else 0
+                continue
+            if not line.startswith("+"):
+                if not line.startswith("-"):
+                    lineno += 1
+                continue
+            if current is not None:
+                hit = flagged(current, line[1:])
+                if hit:
+                    problems.append((path, lineno, hit))
+            lineno += 1
+    if problems:
+        print("check-comments: new comments found in pushed range", file=sys.stderr)
+        for path, lineno, text in problems:
+            print(f"  {path}:{lineno}: {text[:90]}", file=sys.stderr)
+        print("--no-verify only when Rain asked for the comments", file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
