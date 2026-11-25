@@ -10,7 +10,7 @@ import { useCallback, useState } from 'react';
 
 export type Preset = {
 	title: string;
-	content: () => JSX.Element;
+	content: () => React.JSX.Element;
 	setup?: IPatchAction[];
 	proceed: (state: IPatchState) => boolean;
 };

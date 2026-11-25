@@ -40,7 +40,7 @@ export const PatchPreview: React.FC<{ patchInfo: CardPatch }> = ({
 		undefined,
 	);
 	const wrapRef = useRef<HTMLElement | null>(null);
-	const confirmTimer = useRef<number>();
+	const confirmTimer = useRef<number>(undefined);
 
 	const owned = !!user && user.id === patchInfo.creator.id;
 

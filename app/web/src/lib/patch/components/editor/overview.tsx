@@ -61,11 +61,11 @@ export const Overview: React.FC<{
 	const [minimized, setMinimized] = useState(true);
 	const containerRef = useRef<HTMLDivElement>(undefined);
 	const scrubRef = useRef<HTMLDivElement>(undefined);
-	const [mainRef, setMainRef] = useState<RefObject<HTMLElement>>({
+	const [mainRef, setMainRef] = useState<RefObject<HTMLElement | null>>({
 		current: null,
 	});
 	const [overviewSize, setOverviewSize] = useState({ width: 1, height: 1 });
-	const scroll = useScroll(mainRef);
+	const scroll = useScroll(mainRef as React.RefObject<HTMLElement>);
 
 	const [visibleBounds, setVisibleBounds] = useState({
 		top: 0,
@@ -102,7 +102,7 @@ export const Overview: React.FC<{
 		}, 16);
 	});
 
-	const delayedUpdateRef = useRef<any>();
+	const delayedUpdateRef = useRef<any>(undefined);
 	useEffect(() => {
 		const node = main();
 		if (node) {

@@ -53,7 +53,7 @@ context("module reordering", () => {
 			oscText = $el.text();
 		});
 
-		cy.get("#0").focus().type("{leftarrow}", { length: 27 });
+		cy.get(OSC).click(20, 8).type("{rightarrow}".repeat(30));
 
 		renderOrder().should(($order) => {
 			expect($order[0], "output moves ahead in the sort").to.equal("0");
@@ -68,7 +68,9 @@ context("module reordering", () => {
 				"reordering must not remount the oscillator",
 			).to.equal(oscElement);
 		});
-		cy.get(OSC).invoke("text").should("equal", oscText);
+		cy.get(OSC).should(($el) => {
+			expect($el.text(), "internal text survives reorder").to.equal(oscText);
+		});
 		cy.get("#connections [data-connection-key]").should("have.length", 1);
 	});
 });
