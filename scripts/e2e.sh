@@ -56,7 +56,14 @@ fi
 
 find_port() {
     local port=$1
-    while lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1; do
+    while node -e '
+        require("net")
+            .createServer()
+            .once("error", () => process.exit(0))
+            .listen(Number(process.argv[1]), "0.0.0.0", function () {
+                this.close(() => process.exit(1));
+            });
+    ' "$port" 2>/dev/null; do
         port=$((port + 1))
     done
     echo "$port"

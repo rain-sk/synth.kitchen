@@ -104,7 +104,10 @@ const upgradePatchStates = async () =>
 const initServer = () => {
   server.listen(apiPort, (e) => {
     if (e) {
-      throw e;
+      // report and exit, never throw: an uncaught banner on a minified
+      // bundle prints the whole 146 KB line and buries its own message
+      console.error(`API failed to listen on port ${apiPort}: ${e.message}`);
+      process.exit(1);
     }
     console.log(`API server is online: ${apiHost}`);
   });
