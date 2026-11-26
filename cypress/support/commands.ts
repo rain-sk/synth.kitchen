@@ -46,7 +46,7 @@ Cypress.Commands.add("loginByApi" as any, (email: string, password: string) => {
     })
     .then((res) =>
       res.status === 200
-        ? res
+        ? cy.wrap(res)
         : cy.request({
             method: "POST",
             url: api("/auth/register"),
@@ -65,7 +65,7 @@ const throughRestart = (
 ): Cypress.Chainable<Cypress.Response<any>> =>
   req().then((res) => {
     if (res.status === 200 || res.status === 404 || tries <= 0) {
-      return res;
+      return cy.wrap(res);
     }
     cy.wait(1000);
     return throughRestart(req, tries - 1);
@@ -128,7 +128,7 @@ Cypress.Commands.add("deletePatchByApi" as any, (id: string, jwt: string) => {
   });
 });
 
-Cypress.Commands.add("visitEditor" as any, (path = "/patch/new", extra: object = {}) => {
+Cypress.Commands.add("visitEditor" as any, (path: string = "/patch/new", extra: object = {}) => {
   cy.visit(path, {
     ...extra,
     onBeforeLoad: (win: Window) => {
