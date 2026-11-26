@@ -2,9 +2,10 @@
   "name": "synth.kitchen-api",
   "version": "0.5.13",
   "devDependencies": {
+    "@types/node": "^26.6.11",
     "concurrently": "9.2.5",
     "cypress": "15.21.1",
-    "typescript": "5.9.3"
+    "typescript": "7.0.2"
   },
   "scripts": {
     "build:shared": "cd app/shared && npm run build",
