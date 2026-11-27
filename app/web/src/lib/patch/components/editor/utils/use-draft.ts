@@ -52,6 +52,9 @@ export const useDraft = ({
 	const [draft, setDraft] = useState<Draft | null>(null);
 	const [ready, setReady] = useState(false);
 
+	const latest = useRef<IPatchState | undefined>(undefined);
+	latest.current = state;
+
 	const baseline = useRef<string>('');
 	const baselinePatch = useRef<ISerializedPatch | undefined>(undefined);
 	const resolved = useRef(false);
@@ -106,12 +109,16 @@ export const useDraft = ({
 
 		if (timer.current) clearTimeout(timer.current);
 		timer.current = setTimeout(() => {
-			if (writeDraft(state.id, serialize(state))) {
+			const fresh = latest.current;
+			if (!fresh || fresh.id !== state.id) return;
+			const current = JSON.stringify(patchState(fresh));
+			if (current === baseline.current) return;
+			if (writeDraft(fresh.id, serialize(fresh))) {
 				baseline.current = current;
 				setDraft({
 					version: 'current',
 					savedAt: new Date().toISOString(),
-					patch: serialize(state),
+					patch: serialize(fresh),
 				});
 			}
 		}, 500);
@@ -151,6 +158,10 @@ export const useDraft = ({
 		clearDraft(state.id);
 		setDraft(null);
 		baseline.current = '';
+		baselinePatch.current = undefined;
+		if (timer.current) clearTimeout(timer.current);
+		resolved.current = false;
+		setReady(false);
 		dismiss(`draft:${key}`);
 
 		const load = async () => {
@@ -161,8 +172,6 @@ export const useDraft = ({
 			if (state.id) {
 				const patch = await getPatch({ id: state.id });
 				if (patch) {
-					baseline.current = JSON.stringify(patch.state.state);
-					baselinePatch.current = undefined;
 					dispatch(
 						patchActions.loadPatchAction({
 							id: patch.id,
