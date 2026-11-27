@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAsync, useMouse, useScroll } from 'react-use';
 
 import { connectorButton } from '../../state/connection';
@@ -28,6 +28,8 @@ const hitArea = (from: [number, number], to: [number, number]) => {
 	);
 };
 
+const emptySvg = () => <svg id="connections" role="group" aria-label="Patch cables" />;
+
 export const ConnectionsWrapper: React.FC<{
 	state: IPatchState;
 	dispatch: React.Dispatch<IPatchAction>;
@@ -35,7 +37,7 @@ export const ConnectionsWrapper: React.FC<{
 	const main = useAsync(getMain);
 
 	if (!main.value) {
-		return <svg id="connections" role="group" aria-label="Patch cables" />;
+		return emptySvg();
 	}
 
 	return <Cables main={main.value} state={state} dispatch={dispatch} />;
@@ -54,36 +56,75 @@ const Cables: React.FC<{
 
 	const shiftHeld = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
+	const [endpoints, setEndpoints] = useState<Record<string, [number, number] | undefined>>({});
+	const endpointsJson = useRef('');
+
+	useLayoutEffect(() => {
+		const el = mainRef.current;
+		if (!el || !el.isConnected) return;
+
+		const measure = () => {
+			const mainRect = el.getBoundingClientRect();
+			const keys = new Set<string>();
+			for (const connKey of Object.keys(connections.state)) {
+				for (const connectorKey of connKey.split('|')) keys.add(connectorKey);
+			}
+			if (state.activeConnectorKey) keys.add(state.activeConnectorKey);
+
+			const next: Record<string, [number, number] | undefined> = {};
+			for (const connectorKey of keys) {
+				const button = connectorButton(connectorKey);
+				if (!button) {
+					next[connectorKey] = undefined;
+					continue;
+				}
+				const rect = button.getBoundingClientRect();
+				next[connectorKey] = [
+					Math.floor(rect.left - mainRect.left + rect.width / 2),
+					Math.floor(rect.top - mainRect.top + rect.height / 2),
+				];
+			}
+
+			const json = JSON.stringify(next);
+			if (json !== endpointsJson.current) {
+				endpointsJson.current = json;
+				setEndpoints(next);
+			}
+			return next;
+		};
+
+		let raf = 0;
+		let frames = 0;
+		const tick = () => {
+			const next = measure();
+			const pending = Object.values(next).some((v) => v === undefined);
+			if (pending && frames++ < 90) {
+				raf = requestAnimationFrame(tick);
+			}
+		};
+		tick();
+
+		const observer = new ResizeObserver(measure);
+		observer.observe(el);
+		return () => {
+			cancelAnimationFrame(raf);
+			observer.disconnect();
+		};
+	});
+
 	const el = mainRef.current;
 
 	if (!el || !el.isConnected) {
-		return <svg id="connections" role="group" aria-label="Patch cables" />;
+		return emptySvg();
 	}
-
-	const mainRect = el.getBoundingClientRect();
-
-	const endpoint = (key: string): [number, number] | undefined => {
-		const button = connectorButton(key);
-
-		if (!button) {
-			return undefined;
-		}
-
-		const rect = button.getBoundingClientRect();
-
-		return [
-			Math.floor(rect.left - mainRect.left + rect.width / 2),
-			Math.floor(rect.top - mainRect.top + rect.height / 2),
-		];
-	};
 
 	const cables = Object.keys(connections.state)
 		.map((key) => {
 			const [outputKey, inputKey] = key.split('|');
 			const [output, input] = connections.state[key];
 
-			const from = endpoint(outputKey);
-			const to = endpoint(inputKey);
+			const from = endpoints[outputKey];
+			const to = endpoints[inputKey];
 
 			if (!from || !to) {
 				return undefined;
@@ -105,7 +146,7 @@ const Cables: React.FC<{
 		.filter((cable): cable is NonNullable<typeof cable> => cable !== undefined);
 
 	const activeEnd = state.activeConnectorKey
-		? endpoint(state.activeConnectorKey)
+		? endpoints[state.activeConnectorKey]
 		: undefined;
 
 	const focusedCable = useRef<string | undefined>(undefined);
@@ -203,7 +244,6 @@ const Cables: React.FC<{
 						}
 					}}
 				>
-					{}
 					<path className="cable-halo" d={hitArea(cable.from, cable.to)} />
 					<path className="cable-hit" d={hitArea(cable.from, cable.to)} />
 					<path className="cable-outline" d={line(cable.from, cable.to)} />
