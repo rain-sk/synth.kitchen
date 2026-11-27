@@ -69,7 +69,7 @@ export const blankPatch = (): IPatchState => ({
 	id: '', // no id
 	name: '', // 'Untitled'
 	slug: '', // no slug
-	creator: { id: '', username: '' },
+	creator: { id: '' },
 
 	loadEpoch: 0,
 

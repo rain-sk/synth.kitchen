@@ -1,5 +1,5 @@
 export type { LoginResponse, RegisterResponse } from "./auth";
-export type { UserInfo, UserInfoAuthenticated, AdminUser } from "./user";
+export type { UserInfo, UserInfoAuthenticated, AdminUser, PublicCreator } from "./user";
 
 export type { Sample, SampleInfo, SampleQuery } from "./sample";
 export {

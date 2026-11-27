@@ -57,7 +57,6 @@ const sanitizeCreator = (patch) => {
     ...patch,
     creator: {
       id: patch.creator.id,
-      username: patch.creator.username,
     },
   };
 };
