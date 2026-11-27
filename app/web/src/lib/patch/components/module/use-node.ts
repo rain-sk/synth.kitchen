@@ -19,8 +19,6 @@ export const useNode = <NodeType extends Object, ModuleType extends Type>(
 ) => {
 	const { current: id } = useRef(module.id);
 	const { loadEpoch } = useContext(PatchContext);
-	// epoch-keyed so a LoadPatch remount never re-uses the node of the
-	// generation being unmounted: its cleanup disconnects (nulls) that node
 	const cacheKey = `${loadEpoch}:${id}`;
 	const node = useMemo(
 		nodeMap.has(cacheKey) ? () => nodeMap.get(cacheKey) as NodeType : nodeFactory,

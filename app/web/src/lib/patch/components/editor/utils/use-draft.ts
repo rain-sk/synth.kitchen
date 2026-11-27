@@ -141,9 +141,6 @@ export const useDraft = ({
 		return () => window.removeEventListener('pagehide', flush);
 	}, [settled, state, state.id]);
 
-	// only a route load re-arms the restore: a LoadPatch of a draft puts its
-	// connections in connectionsToLoad, and re-arming on that flip makes the
-	// restore fire again against the draft it just applied, wiping the patch
 	useEffect(() => {
 		if (loading) {
 			pendingReload.current = true;
@@ -196,7 +193,6 @@ export const useDraft = ({
 	return {
 		draft,
 		dirty: draft !== null,
-		// a save is not safe while restored connections are still landing
 		ready: ready && !state.connectionsToLoad,
 		reset,
 		markSaved,

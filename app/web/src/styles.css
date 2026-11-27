@@ -687,8 +687,6 @@ button {
 	background-color: #b9ffce;
 	display: block;
 	z-index: 12;
-	/* unconnected inputs must stay findable where a cable crosses or ends
-	   nearby — the dot alone matches the cable accent too closely */
 	box-shadow:
 		0 0.06rem 0.2rem 0.04rem rgba(79, 70, 88, 0.85),
 		0 0.02rem 0.05rem 0 rgba(79, 70, 88, 0.6);
@@ -718,8 +716,6 @@ button {
 	}
 }
 
-/* the grown halo means hover, keyboard focus, or armed — never sticky
-   mouse focus, which would keep an unarmed connector looking armed */
 .connector:hover:before,
 .connector:focus-visible:before,
 .connector.active::before {

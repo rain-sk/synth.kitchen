@@ -47,8 +47,6 @@ export type IPatchState = PatchInfo &
 		// async work queue
 		asyncActionQueue: IPatchAction[];
 
-		// bumped by LoadPatch; module wrappers key off it so every load
-		// remounts its modules and its connectors re-register
 		loadEpoch: number;
 	};
 
