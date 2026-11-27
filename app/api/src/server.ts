@@ -14,7 +14,10 @@ ServerRouter.use("/auth", AuthRouter);
 ServerRouter.use("/patch", PatchRouter);
 ServerRouter.use("/token", TokenRouter);
 ServerRouter.get("/", (_, res) => {
-  res.status(400).send("400: Invalid request.");
+  res.status(400).json({ error: "Invalid request." });
+});
+ServerRouter.use((_, res) => {
+  res.status(404).json({ error: "Not found." });
 });
 
 export const server = express();
@@ -22,3 +25,7 @@ server.use(cors({ origin: appOrigin }));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 server.use(apiBase, ServerRouter);
+server.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error(err);
+  res.status(500).json({ error: "Internal server error." });
+});
