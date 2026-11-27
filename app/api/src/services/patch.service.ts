@@ -51,6 +51,46 @@ const getPatchParams = (query: PatchQuery): [string, PatchQuery] => {
   return [where, params];
 };
 
+const sanitizeCreator = (patch) => {
+  if (!patch || !patch.creator) return patch;
+  return {
+    ...patch,
+    creator: {
+      id: patch.creator.id,
+      username: patch.creator.username,
+    },
+  };
+};
+
+const sanitizePatch = (patch) => {
+  if (!patch) return patch;
+  const p = sanitizeCreator(patch);
+  if (p.state) {
+    p.state = {
+      ...p.state,
+      patch: p.state.patch ? sanitizePatch(p.state.patch) : null,
+      ancestor: p.state.ancestor ? sanitizeSavedPatchState(p.state.ancestor) : null,
+      descendants: (p.state.descendants ?? []).map((d) =>
+        sanitizeSavedPatchState(d)
+      ),
+    };
+  }
+  return p;
+};
+
+const sanitizeSavedPatchState = (state) => {
+  if (!state) return state;
+  return {
+    ...state,
+    patch: state.patch ? sanitizePatch(state.patch) : null,
+    ancestor: state.ancestor ? sanitizeSavedPatchState(state.ancestor) : null,
+    descendants: (state.descendants ?? []).map((d) => sanitizeSavedPatchState(d)),
+  };
+};
+
+const sanitizePatches = (patches) =>
+  Array.isArray(patches) ? patches.map((p) => sanitizePatch(p)) : patches;
+
 export class PatchService {
   static patchExists = async (query: PatchQuery): Promise<boolean> => {
     const [where, params] = getPatchParams(query);
@@ -107,7 +147,7 @@ export class PatchService {
       const result = query.creatorId
         ? await queryBuilder.getMany()
         : await queryBuilder.getOneOrFail();
-      return result;
+      return query.creatorId ? sanitizePatches(result) : sanitizePatch(result);
     } catch (error) {
       console.error(error);
     }
@@ -130,7 +170,7 @@ export class PatchService {
       const result = query.creatorId
         ? await queryBuilder.getMany()
         : await queryBuilder.getOneOrFail();
-      return result;
+      return query.creatorId ? sanitizePatches(result) : sanitizePatch(result);
     } catch (error) {
       console.error(error);
     }
@@ -138,13 +178,14 @@ export class PatchService {
 
   static getRandomPatch = async (): Promise<PatchInfo | null> => {
     try {
-      return await AppDataSource.getRepository(Patch)
+      const result = await AppDataSource.getRepository(Patch)
         .createQueryBuilder("patch")
         .leftJoinAndSelect("patch.creator", "creator")
         .where({ public: true })
         .andWhere("patch.stateId IS NOT NULL")
         .orderBy("RANDOM()")
         .getOne();
+      return sanitizePatch(result);
     } catch (error) {
       console.error(error);
       return null;
