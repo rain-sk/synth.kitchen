@@ -157,12 +157,8 @@ export const useDraft = ({
 	const reset = useCallback(() => {
 		clearDraft(state.id);
 		setDraft(null);
-		baseline.current = '';
-		baselinePatch.current = undefined;
-		if (timer.current) clearTimeout(timer.current);
-		resolved.current = false;
-		setReady(false);
 		dismiss(`draft:${key}`);
+		if (timer.current) clearTimeout(timer.current);
 
 		const load = async () => {
 			try {
@@ -185,6 +181,7 @@ export const useDraft = ({
 				baselinePatch.current = baselinePatch.current ?? blankPatchToLoad();
 				dispatch(patchActions.loadPatchAction(baselinePatch.current));
 			}
+			resolved.current = false;
 		};
 
 		void load();
