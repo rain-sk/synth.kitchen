@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useAsync, useMouse, useScroll } from 'react-use';
+import { useAsync, useMouse } from 'react-use';
 
 import { connectorButton } from '../../state/connection';
 import {
@@ -49,15 +49,18 @@ const Cables: React.FC<{
 	dispatch: React.Dispatch<IPatchAction>;
 }> = ({ main, state, dispatch }) => {
 	const mainRef = useRef<HTMLElement>(main);
-	useScroll(mainRef);
 	const mouse = useMouse(mainRef);
 
 	const { connections, modules, selectedConnections, heldModifiers } = state;
 
 	const shiftHeld = (heldModifiers & Modifier.SHIFT) === Modifier.SHIFT;
 
-	const [endpoints, setEndpoints] = useState<Record<string, [number, number] | undefined>>({});
-	const endpointsJson = useRef('');
+	const [layer, setLayer] = useState<{
+		endpoints: Record<string, [number, number] | undefined>;
+		width: number;
+		height: number;
+	}>({ endpoints: {}, width: 0, height: 0 });
+	const layerJson = useRef('');
 
 	useLayoutEffect(() => {
 		const el = mainRef.current;
@@ -71,46 +74,75 @@ const Cables: React.FC<{
 			}
 			if (state.activeConnectorKey) keys.add(state.activeConnectorKey);
 
-			const next: Record<string, [number, number] | undefined> = {};
+			const endpoints: Record<string, [number, number] | undefined> = {};
 			for (const connectorKey of keys) {
 				const button = connectorButton(connectorKey);
 				if (!button) {
-					next[connectorKey] = undefined;
+					endpoints[connectorKey] = undefined;
 					continue;
 				}
 				const rect = button.getBoundingClientRect();
-				next[connectorKey] = [
-					Math.floor(rect.left - mainRect.left + rect.width / 2),
-					Math.floor(rect.top - mainRect.top + rect.height / 2),
+				endpoints[connectorKey] = [
+					Math.floor(rect.left - mainRect.left + el.scrollLeft + rect.width / 2),
+					Math.floor(rect.top - mainRect.top + el.scrollTop + rect.height / 2),
 				];
 			}
 
+			const next = { endpoints, width: el.scrollWidth, height: el.scrollHeight };
 			const json = JSON.stringify(next);
-			if (json !== endpointsJson.current) {
-				endpointsJson.current = json;
-				setEndpoints(next);
+			if (json !== layerJson.current) {
+				layerJson.current = json;
+				setLayer(next);
 			}
-			return next;
+			return endpoints;
 		};
 
 		let raf = 0;
 		let frames = 0;
-		const tick = () => {
-			const next = measure();
-			const pending = Object.values(next).some((v) => v === undefined);
+		const reschedule = () => {
+			if (raf) return;
+			raf = requestAnimationFrame(() => {
+				raf = 0;
+				measure();
+			});
+		};
+
+		const retry = () => {
+			const endpoints = measure();
+			const pending = Object.values(endpoints).some((v) => v === undefined);
 			if (pending && frames++ < 90) {
-				raf = requestAnimationFrame(tick);
+				raf = requestAnimationFrame(retry);
 			}
 		};
-		tick();
+		retry();
 
-		const observer = new ResizeObserver(measure);
+		const observer = new ResizeObserver(reschedule);
 		observer.observe(el);
+		const canvas = el.querySelector('#module-canvas');
+		if (canvas) {
+			observer.observe(canvas);
+		}
+		const spacer = el.querySelector('#spacer');
+		if (spacer) {
+			observer.observe(spacer);
+		}
+
+		const mutations = new MutationObserver(reschedule);
+		if (canvas) {
+			mutations.observe(canvas, {
+				subtree: true,
+				childList: true,
+				attributes: true,
+				attributeFilter: ['style'],
+			});
+		}
+
 		return () => {
-			cancelAnimationFrame(raf);
+			if (raf) cancelAnimationFrame(raf);
 			observer.disconnect();
+			mutations.disconnect();
 		};
-	});
+	}, [connections.state, state.modulePositions, state.activeConnectorKey, state.loadEpoch]);
 
 	const el = mainRef.current;
 
@@ -123,8 +155,8 @@ const Cables: React.FC<{
 			const [outputKey, inputKey] = key.split('|');
 			const [output, input] = connections.state[key];
 
-			const from = endpoints[outputKey];
-			const to = endpoints[inputKey];
+			const from = layer.endpoints[outputKey];
+			const to = layer.endpoints[inputKey];
 
 			if (!from || !to) {
 				return undefined;
@@ -146,7 +178,7 @@ const Cables: React.FC<{
 		.filter((cable): cable is NonNullable<typeof cable> => cable !== undefined);
 
 	const activeEnd = state.activeConnectorKey
-		? endpoints[state.activeConnectorKey]
+		? layer.endpoints[state.activeConnectorKey]
 		: undefined;
 
 	const focusedCable = useRef<string | undefined>(undefined);
@@ -184,11 +216,11 @@ const Cables: React.FC<{
 			role="group"
 			aria-label={`Patch cables: ${cables.length}`}
 			style={{
-				position: 'fixed',
-				top: '2.5rem',
+				position: 'absolute',
 				left: 0,
-				width: '100%',
-				height: '100%',
+				top: 0,
+				width: layer.width,
+				height: layer.height,
 				overflow: 'visible',
 			}}
 		>
@@ -259,7 +291,13 @@ const Cables: React.FC<{
 					data-rubber-band
 					aria-hidden="true"
 					className="cable-accent pending"
-					d={line([mouse.elX, mouse.elY], activeEnd)}
+					d={line(
+						[
+							Math.floor(mouse.elX + el.scrollLeft),
+							Math.floor(mouse.elY + el.scrollTop),
+						],
+						activeEnd,
+					)}
 				/>
 			) : undefined}
 		</svg>

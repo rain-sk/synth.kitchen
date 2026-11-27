@@ -340,8 +340,9 @@ button {
 #connections {
 	z-index: 10;
 	pointer-events: none;
-	position: fixed;
-	top: 2.5rem;
+	position: absolute;
+	left: 0;
+	top: 0;
 }
 
 .cable {

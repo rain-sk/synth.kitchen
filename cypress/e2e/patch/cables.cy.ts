@@ -277,19 +277,34 @@ context("patch: cables", () => {
 		});
 	});
 
-	it("follows the canvas when it scrolls", () => {
+	it("anchors the cable layer inside the scrolled content", () => {
+		cy.get("#patch > #connections").should("exist");
+
+		cy.get("#connections").should(($el) => {
+			expect(getComputedStyle($el[0]).position, "layer sits in the scroll world").to.eq(
+				"absolute",
+			);
+		});
+	});
+
+	it("scrolls with the canvas instead of tracking the viewport", () => {
 		connect().then(() => {
 			cy.get("#connections [data-connection-key] .cable-hit").then((hit) => {
 				const before = cablePath(hit);
+				const topBefore = hit[0].getBoundingClientRect().top;
 
 				cy.get("#patch").then(($patch) => {
 					($patch[0] as HTMLElement).scrollTop += 200;
 
-					cy.get("#connections [data-connection-key] .cable-hit").should(
-						($el) => {
-							expect(cablePath($el), "cable follows scroll").to.not.eq(before);
-						},
-					);
+					cy.get("#connections [data-connection-key] .cable-hit").should(($el) => {
+						expect(cablePath($el), "endpoints stay in world space").to.eq(before);
+
+						const topAfter = ($el[0] as HTMLElement).getBoundingClientRect().top;
+						expect(topAfter, "cable scrolls with content").to.be.closeTo(
+							topBefore - 200,
+							1,
+						);
+					});
 				});
 			});
 		});
