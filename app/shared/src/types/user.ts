@@ -5,6 +5,10 @@ export type UserInfo = {
   username: string;
 };
 
+export type PublicCreator = {
+  id: string;
+};
+
 export type UserPatches = UserInfo & {
   patches: PatchInfo[];
 };

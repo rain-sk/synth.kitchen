@@ -1,5 +1,5 @@
 import { Module, ModulePosition } from "./module";
-import { UserInfo } from "../user";
+import { PublicCreator } from "../user";
 import { Connection, CONNECTIONS_STATE, ConnectionsState } from "./connection";
 
 export type PatchQuery =
@@ -17,7 +17,7 @@ export type PatchInfo = {
   id: string;
   name: string;
   slug: string;
-  creator: UserInfo;
+  creator: PublicCreator;
 };
 
 export type SavedPatchState = {

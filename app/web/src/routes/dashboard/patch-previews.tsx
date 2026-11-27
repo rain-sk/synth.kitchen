@@ -110,8 +110,6 @@ export const PatchPreview: React.FC<{ patchInfo: CardPatch }> = ({
 
 	const armed = confirming || deleting;
 
-	const label = owned ? null : t('dashboard.by', { name: patchInfo.creator.username });
-
 	return (
 		<li
 			className={`patch-card${owned ? ' is-owned' : ''}`}
@@ -125,7 +123,6 @@ export const PatchPreview: React.FC<{ patchInfo: CardPatch }> = ({
 				aria-label={`${t('dashboard.open')}: ${patchInfo.name}`}
 			>
 				<span className="patch-card-name">{patchInfo.name}</span>
-				{label && <span className="patch-card-by">{label}</span>}
 			</Link>
 			<span className="patch-card-menu" ref={wrapRef}>
 				<button

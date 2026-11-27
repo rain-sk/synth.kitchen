@@ -30,6 +30,7 @@ export {
   PATCH_STATE,
   PATCH_STATE_VERSIONS,
   UserInfo,
+  PublicCreator,
   UserInfoAuthenticated,
 } from "./types";
 
