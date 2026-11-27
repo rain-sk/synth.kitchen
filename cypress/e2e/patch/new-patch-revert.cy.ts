@@ -24,13 +24,11 @@ describe("patch drafts: a fresh /patch/new", () => {
 	});
 
 	it("offers no revert until the output module has been moved", () => {
-		cy.get("#draft-state").should("not.exist");
-		cy.get("#draft-reset").should("not.exist");
+		cy.get("#draft-reset").should("be.disabled");
 
 		cy.wait(1500);
 
-		cy.get("#draft-state").should("not.exist");
-		cy.get("#draft-reset").should("not.exist");
+		cy.get("#draft-reset").should("be.disabled");
 		storage().then((store) =>
 			expect(store[draftKey()], "an untouched new patch writes no draft").to.be
 				.undefined,
@@ -38,15 +36,14 @@ describe("patch drafts: a fresh /patch/new", () => {
 
 		cy.get("#0").focus().type("{rightarrow}");
 
-		cy.get("#draft-state", { timeout: 5000 }).should("exist");
-		cy.get("#draft-reset", { timeout: 5000 }).should("exist");
+		cy.get("#draft-reset", { timeout: 5000 }).should("be.enabled");
 	});
 
 	it("revert puts the output module back where it was", () => {
 		speakerPosition().then((origin) => {
 			cy.get("#0").focus().type("{rightarrow}{downarrow}");
 
-			cy.get("#draft-reset", { timeout: 5000 }).should("exist");
+			cy.get("#draft-reset", { timeout: 5000 }).should("be.enabled");
 
 			speakerPosition().then((moved) => {
 				expect(moved, "the keyboard moved the module").to.not.deep.equal(
@@ -62,7 +59,7 @@ describe("patch drafts: a fresh /patch/new", () => {
 					).to.deep.equal(origin);
 				});
 
-				cy.get("#draft-state", { timeout: 8000 }).should("not.exist");
+				cy.get("#draft-reset", { timeout: 8000 }).should("be.disabled");
 				storage().then((store) =>
 					expect(store[draftKey()], "revert discarded the draft").to.be
 						.undefined,
@@ -87,7 +84,7 @@ describe("patch drafts: a fresh /patch/new", () => {
 					origin,
 				);
 			});
-			cy.get("#draft-state", { timeout: 8000 }).should("not.exist");
+			cy.get("#draft-reset", { timeout: 8000 }).should("be.disabled");
 		});
 	});
 });

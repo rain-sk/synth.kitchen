@@ -985,18 +985,15 @@ body.auth-modal-open {
 	color: #182f34;
 }
 
-.draft-status {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4rem;
-	font-size: 0.8rem;
-	color: #182f34;
-}
-
-.draft-status button {
-	padding: 0.1rem 0.4rem;
+#draft-reset {
+	padding: 0 0.5rem;
 	font-size: 0.75rem;
-	background-color: #ffb3b3;
+	background-color: #d17b7b;
 	border: none;
 	cursor: pointer;
+}
+
+#draft-reset[disabled] {
+	background-color: #a6d0d9;
+	cursor: not-allowed;
 }

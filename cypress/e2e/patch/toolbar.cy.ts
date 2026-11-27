@@ -4,7 +4,7 @@ describe("patch: toolbar", () => {
   });
 
   it("exposes stable ids for the toolbar controls", () => {
-    ["patch-name", "save-to-cloud", "record", "undo", "redo"].forEach((id) =>
+    ["patch-name", "save-to-cloud", "record", "undo", "redo", "draft-reset"].forEach((id) =>
       cy.get(`#${id}`).should("exist"),
     );
   });

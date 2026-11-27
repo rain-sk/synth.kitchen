@@ -23,9 +23,8 @@ export const en = {
 	patch: {
 		untitled: 'untitled',
 		savedAt: 'saved {time}',
-		unsavedChanges: 'unsaved changes',
 		draftRestored: 'restored your unsaved changes',
-		revertToSaved: 'revert to the saved patch',
+		reset: 'reset',
 		neverSaved: 'not saved yet',
 	},
 	dashboard: {

@@ -22,11 +22,11 @@ export const Toolbar: React.FC<{
 						<>
 							<PatchNameField />
 							<SaveToCloud />
-							<DraftStatus />
 						</>
 					)}
 					<Undo />
 					<Redo />
+					<DraftStatus />
 				</section>
 				<section>
 					{minimal || (

@@ -29,7 +29,7 @@ describe("patch drafts", () => {
 		cy.get("#patch").click(140, 420);
 		cy.get("#add-module").select("OSCILLATOR");
 		modules().should("have.length", 2);
-		cy.get("#draft-state").should("contain.text", "unsaved changes");
+		cy.get("#draft-reset").should("be.enabled");
 	});
 
 	after(() => {
@@ -43,7 +43,7 @@ describe("patch drafts", () => {
 		});
 
 		reopen("/patch/new", 2);
-		cy.get("#draft-state").should("contain.text", "unsaved changes");
+		cy.get("#draft-reset").should("be.enabled");
 	});
 
 	it("revert empties the canvas and discards the draft", () => {
@@ -53,7 +53,7 @@ describe("patch drafts", () => {
 
 		modules().should("have.length", 1);
 		cy.get("#module-canvas [id='0']").should("exist");
-		cy.get("#draft-state").should("not.exist");
+		cy.get("#draft-reset").should("be.disabled");
 		storage().then((store) => {
 			expect(store, "draft discarded").to.not.have.key(draftKey());
 		});
@@ -71,16 +71,16 @@ describe("patch drafts", () => {
 			cy.get("#patch").click(140, 420);
 			cy.get("#add-module").select("OSCILLATOR");
 			modules().should("have.length", count + 1);
-			cy.get("#draft-state").should("exist");
+			cy.get("#draft-reset").should("be.enabled");
 
 			reopen(`/patch/${SEEDED_SLUG}`);
 			modules().should("have.length", count + 1);
-			cy.get("#draft-state").should("exist");
+			cy.get("#draft-reset").should("be.enabled");
 
 			cy.get("#draft-reset").click();
 
 			modules().should("have.length", count);
-			cy.get("#draft-state").should("not.exist");
+			cy.get("#draft-reset").should("be.disabled");
 			storage().then((store) => {
 				expect(store, "revert discards the draft").to.not.have.key(
 					draftKey(SEEDED_SLUG),
@@ -103,7 +103,7 @@ describe("patch drafts", () => {
 		cy.wait("@save", { timeout: 10000 })
 			.its("response.statusCode")
 			.should("eq", 200);
-		cy.get("#draft-state", { timeout: 8000 }).should("not.exist");
+		cy.get("#draft-reset", { timeout: 8000 }).should("be.disabled");
 
 		storage().then((store) => {
 			expect(store, "nothing left to protect").to.not.have.key(draftKey());
@@ -154,7 +154,7 @@ describe("patch drafts", () => {
 		cy.get("#patch", { timeout: 20000 }).should("exist");
 
 		cy.get("#module-canvas > div").should("have.length", 2);
-		cy.get("#draft-state").should("exist");
+		cy.get("#draft-reset").should("be.enabled");
 
 		cy.wait("@save", { timeout: 15000 }).then(({ request, response }) => {
 			expect(response?.statusCode, "save accepted").to.eq(200);
@@ -164,7 +164,7 @@ describe("patch drafts", () => {
 			).to.have.length(2);
 		});
 		cy.location("search").should("not.include", "after=save");
-		cy.get("#draft-state", { timeout: 8000 }).should("not.exist");
+		cy.get("#draft-reset", { timeout: 8000 }).should("be.disabled");
 	});
 
 
@@ -176,7 +176,7 @@ describe("patch drafts", () => {
 
 		cy.location("search").should("not.include", "after=save");
 		cy.get("#auth-dialog").should("not.exist");
-		cy.get("#draft-state").should("exist");
+		cy.get("#draft-reset").should("be.enabled");
 	});
 
 	it("saving the same patch twice updates it rather than duplicating", () => {
@@ -195,13 +195,13 @@ describe("patch drafts", () => {
 			.its("response.statusCode")
 			.should("eq", 200);
 		cy.get("#patch", { timeout: 20000 }).should("exist");
-		cy.get("#draft-state", { timeout: 8000 }).should("not.exist");
+		cy.get("#draft-reset", { timeout: 8000 }).should("be.disabled");
 
 		const slug = () => cy.location("pathname");
 
 		slug().then((first: string) => {
 			cy.get("#patch-name").clear().type("renamed");
-			cy.get("#draft-state").should("exist");
+			cy.get("#draft-reset").should("be.enabled");
 
 			cy.get("#save-to-cloud").click();
 
@@ -209,7 +209,7 @@ describe("patch drafts", () => {
 				.its("response.statusCode")
 				.should("eq", 200);
 			slug().should("eq", first);
-			cy.get("#draft-state", { timeout: 8000 }).should("not.exist");
+			cy.get("#draft-reset", { timeout: 8000 }).should("be.disabled");
 
 			storage().then((store) => {
 				const jwt = JSON.parse(store.jwt);
