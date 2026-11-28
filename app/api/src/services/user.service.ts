@@ -1,18 +1,10 @@
-import { compare, hash } from "bcrypt";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
-import { validateRegistration, ValidationError } from "./validate/registration";
-import { bcryptCost } from "../env";
-import { VerificationService } from "./verification.service";
-import { Sample } from "../entity/Sample";
-import { EmailVerificationRequest } from "../entity/EmailVerificationRequest";
-import { PasswordResetRequest } from "../entity/PasswordResetRequest";
+import { EmailCode } from "../entity/EmailCode";
 import { SavedPatchState } from "../entity/SavedPatchState";
 import { Patch } from "../entity/Patch";
 import { PatchService } from "./patch.service";
 import { PatchInfo } from "synth.kitchen-shared";
-
-const DUMMY_HASH = "$2b$13$2/hRN5NwkbOV73Ph01cJDeRVX/xk//IcFCONvv/sKXkxDFjl4c/vS";
 
 type GetUserInfo = { id: string } | { email: string } | { username: string };
 
@@ -59,65 +51,20 @@ export class UserService {
     } catch (_) {}
   };
 
-  static login = async (
-    emailOrUsername: string,
-    password: string,
-  ): Promise<User | void> => {
-    let user: User | undefined;
+  static createUser = async (email: string): Promise<User | void> => {
     try {
-      user = await this.getUser({
-        email: emailOrUsername,
-      });
-      if (!user) {
-        user = await this.getUser({ username: emailOrUsername });
+      const userRepo = AppDataSource.getRepository(User);
+      const existing = await userRepo.findOne({ where: { email } });
+      if (existing) {
+        return existing;
       }
+      const user = userRepo.create();
+      user.email = email;
+      user.username = null;
+      user.verified = false;
+      return await userRepo.save(user);
     } catch (e) {
       console.error(e);
-    }
-
-    const ok = await compare(password, user?.password ?? DUMMY_HASH);
-    if (user && ok) {
-      return user;
-    }
-  };
-
-  static register = async ({
-    email,
-    username,
-    password,
-  }: {
-    email: string;
-    username?: string;
-    password: string;
-  }): Promise<User | ValidationError | void> => {
-    let user: User | void = await this.login(email, password);
-
-    if (user) {
-      return user;
-    }
-
-    try {
-      await AppDataSource.transaction(async (manager) => {
-        await validateRegistration(manager)(email, username, password);
-        const userRepository = manager.getRepository(User);
-        user = await userRepository.create();
-        user.email = email;
-        user.username = username ?? email;
-        user.password = await hash(password, bcryptCost);
-        await userRepository.save(user);
-      });
-    } catch (error) {
-      if (error instanceof ValidationError) {
-        return error;
-      } else {
-        console.error(error);
-      }
-    }
-
-    if (user) {
-      VerificationService.initiateVerification(user);
-
-      return user;
     }
   };
 
@@ -127,8 +74,7 @@ export class UserService {
         const users = manager.getRepository(User);
         const patches = manager.getRepository(Patch);
         const patchStates = manager.getRepository(SavedPatchState);
-        const passwordResets = manager.getRepository(PasswordResetRequest);
-        const verifications = manager.getRepository(EmailVerificationRequest);
+        const verifications = manager.getRepository(EmailCode);
 
         const userPatches = (await PatchService.getPatchInfo({
           creatorId: userId,
@@ -190,17 +136,10 @@ export class UserService {
             .execute();
         }
 
-        await passwordResets
-          .createQueryBuilder()
-          .delete()
-          .from(PasswordResetRequest)
-          .where('"userId" = :userId', { userId })
-          .execute();
-
         await verifications
           .createQueryBuilder()
           .delete()
-          .from(EmailVerificationRequest)
+          .from(EmailCode)
           .where('"userId" = :userId', { userId })
           .execute();
 

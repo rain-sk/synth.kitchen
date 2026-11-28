@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 10;
+const WINDOW_MS = 60 * 60 * 1000;
+const MAX_PER_WINDOW = 3;
 
 type Entry = { count: number; resetAt: number };
 
@@ -16,12 +16,10 @@ const sweep = () => {
   }
 };
 
-export function loginRateLimit(req: Request, res: Response, next: NextFunction) {
+export function codeRateLimit(req: Request, res: Response, next: NextFunction) {
   const email =
-    typeof req.body?.email === "string"
-      ? req.body.email.trim().toLowerCase()
-      : "";
-  const key = `${req.ip ?? "unknown"}|${email}`;
+    typeof req.body?.email === "string" ? req.body.email.trim().toLowerCase() : "";
+  const key = email || "unknown";
   const now = Date.now();
 
   if (Math.random() < 0.02) {
@@ -38,7 +36,8 @@ export function loginRateLimit(req: Request, res: Response, next: NextFunction) 
   if (entry.count > MAX_PER_WINDOW) {
     const retryAfter = Math.ceil((entry.resetAt - now) / 1000);
     res.set("Retry-After", String(retryAfter));
-    return res.status(429).json({ error: "Too many requests." });
+    res.status(429).json({ error: "Too many requests.", retryAfter });
+    return;
   }
   return next();
 }

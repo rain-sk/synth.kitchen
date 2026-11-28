@@ -11,8 +11,7 @@ import {
 } from "./env";
 
 import { AppInfo } from "./entity/AppInfo";
-import { EmailVerificationRequest } from "./entity/EmailVerificationRequest";
-import { PasswordResetRequest } from "./entity/PasswordResetRequest";
+import { EmailCode } from "./entity/EmailCode";
 import { Patch } from "./entity/Patch";
 import { Sample } from "./entity/Sample";
 import { SavedPatchState } from "./entity/SavedPatchState";
@@ -27,6 +26,7 @@ import { v0_5_11_1762583925581 } from "./migration/1762583925581-v0.5.11";
 import { v0_5_12_1762583925582 } from "./migration/1762583925582-v0.5.12";
 import { FixEmailVerification1764659512400 } from "./migration/1764659512400-FixEmailVerification";
 import { UserCreatedAt1795040317722 } from "./migration/1795040317722-UserCreatedAt";
+import { DropPasswordAndAddEmailCodes1795040317723 } from "./migration/1795040317723-DropPasswordAndAddEmailCodes";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -40,8 +40,7 @@ export const AppDataSource = new DataSource({
     User,
     Patch,
     SavedPatchState,
-    EmailVerificationRequest,
-    PasswordResetRequest,
+    EmailCode,
     Sample,
   ],
   migrations: [
@@ -54,6 +53,7 @@ export const AppDataSource = new DataSource({
     v0_5_12_1762583925582,
     FixEmailVerification1764659512400,
     UserCreatedAt1795040317722,
+    DropPasswordAndAddEmailCodes1795040317723,
   ],
   logging,
 });

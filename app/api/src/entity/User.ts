@@ -5,12 +5,10 @@ import {
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
-  OneToOne,
 } from "typeorm";
 import { UserInfoAuthenticated } from "synth.kitchen-shared";
 
 import { Patch } from "./Patch";
-import { EmailVerificationRequest } from "./EmailVerificationRequest";
 
 @Entity()
 export class User implements UserInfoAuthenticated {
@@ -21,11 +19,8 @@ export class User implements UserInfoAuthenticated {
   @IsEmail()
   email: string;
 
-  @Column({ type: "text", unique: true })
-  username: string;
-
-  @Column({ type: "text" })
-  password: string;
+  @Column({ type: "text", unique: true, nullable: true })
+  username: string | null;
 
   @Column({
     type: "boolean",

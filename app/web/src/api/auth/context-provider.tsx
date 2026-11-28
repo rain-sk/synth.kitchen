@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useCallback, useRef } from 'react';
-import { LoginResponse, RegisterResponse } from 'synth.kitchen-shared';
+import { CodeRequestResponse } from 'synth.kitchen-shared';
 
 import { AuthContext } from './context';
 import { useJwt } from './useJwt';
@@ -13,100 +13,82 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 	const { jwt, setJwt, logout } = useJwt();
 	const { user, loading } = useUser(jwt);
 
-	const loginRef = useRef(false);
-	const login = useCallback(
-		async (email: string, password: string) => {
-			if (loginRef.current) {
+	const requestCodeRef = useRef(false);
+	const requestCode = useCallback(
+		async (email: string, captchaToken?: string) => {
+			if (requestCodeRef.current) {
 				return;
 			}
-			let response: LoginResponse | undefined;
-			loginRef.current = true;
+			requestCodeRef.current = true;
 			try {
-				const headers = {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				};
-				response = await fetch(`${apiBase}/auth/login`, {
-					headers,
+				const response = await fetch(`${apiBase}/auth/request-code`, {
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
 					method: 'post',
 					body: JSON.stringify({
 						email,
-						password,
-					}),
-				}).then(async (res) => {
-					if (res.status === 200) {
-						return (await res.json()) as LoginResponse;
-					} else if (res.status === 404) {
-						return {
-							register: true,
-						} as LoginResponse;
-					} else {
-						throw new Error(await res.text());
-					}
-				});
-				setJwt(response && 'jwt' in response ? response.jwt : undefined);
-			} catch (e) {
-				console.error(e);
-			}
-			loginRef.current = false;
-			return response;
-		},
-		[setJwt],
-	);
-
-	const registerRef = useRef(false);
-	const register = useCallback(
-		async (email: string, password: string, captchaToken?: string) => {
-			let response: RegisterResponse | undefined;
-			if (registerRef.current) {
-				return;
-			}
-			registerRef.current = true;
-			try {
-				const headers = {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				};
-				response = await fetch(`${apiBase}/auth/register`, {
-					headers,
-					method: 'post',
-					body: JSON.stringify({
-						email,
-						password,
 						captchaToken,
 					}),
-				}).then(async (res) => {
-					if (res.status === 200 || res.status === 400) {
-						registerRef.current = false;
-						return (await res.json()) as RegisterResponse;
-					} else {
-						throw new Error(await res.text());
-					}
 				});
-				setJwt(response && 'jwt' in response ? response.jwt : undefined);
+
+				if (response.status === 200) {
+					return (await response.json()) as CodeRequestResponse;
+				}
+				const body = (await response.json().catch(() => undefined)) as
+					| { error?: string }
+					| undefined;
+				return { success: false, message: body?.error ?? 'Request failed.' } as CodeRequestResponse;
+			} catch (e) {
+				console.error(e);
+			} finally {
+				requestCodeRef.current = false;
+			}
+		},
+		[],
+	);
+
+	const verifyCode = useCallback(
+		async (email: string, code: string) => {
+			try {
+				const response = await fetch(`${apiBase}/auth/verify-code`, {
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+					method: 'post',
+					body: JSON.stringify({ email, code }),
+				});
+
+				if (response.status === 200) {
+					const data = (await response.json()) as { jwt?: string };
+					if (data.jwt) {
+						setJwt(data.jwt);
+						return { jwt: data.jwt };
+					}
+					return;
+				}
+
+				const body = (await response.json().catch(() => undefined)) as
+					| { error?: string }
+					| undefined;
+				return { error: body?.error ?? 'Something went wrong, try again.' };
 			} catch (e) {
 				console.error(e);
 			}
-			registerRef.current = false;
-			return response;
 		},
 		[setJwt],
 	);
 
 	const deleteRef = useRef(false);
-	const deleteUser = useCallback(async (password: string) => {
+	const deleteUser = useCallback(async () => {
 		if (deleteRef.current) {
 			return;
 		}
 		deleteRef.current = true;
-
 		try {
-			const headers = {
-				Accept: 'application/json',
-				'x-password': password,
-			};
 			const response = await fetchWithJwt(`${apiBase}/auth/user`, {
-				headers,
 				method: 'delete',
 			}).then(async (res) => res.json());
 
@@ -120,55 +102,15 @@ export const AuthContextProvider: React.FC<PropsWithChildren> = ({
 		deleteRef.current = false;
 	}, []);
 
-	const requestResetPassword = useCallback(
-		(email: string, captchaToken?: string) =>
-			fetch(`${apiBase}/auth/reset-password-request`, {
-				method: 'post',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					email,
-					captchaToken,
-				}),
-			}),
-		[jwt],
-	);
-
-	const resetPassword = useCallback(
-		async (password: string, resetKey: string) =>
-			fetch(`${apiBase}/auth/reset-password`, {
-				method: 'post',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ password, resetKey }),
-			}),
-		[],
-	);
-
-	const verifyAccount = useCallback(
-		async (key: string) =>
-			await fetch(`${apiBase}/auth/verify/${key}`, {
-				method: 'get',
-			}),
-		[],
-	);
-
 	return (
 		<AuthContext.Provider
 			value={{
 				loading,
 				user,
-				login,
-				register,
+				requestCode,
+				verifyCode,
 				logout,
 				deleteUser,
-				requestResetPassword,
-				resetPassword,
-				verifyAccount,
 			}}
 		>
 			{children}

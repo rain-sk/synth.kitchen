@@ -96,60 +96,21 @@ const makeEmailer = <
     });
 };
 
-export const sendVerificationEmail = makeEmailer<{
+export const sendCodeEmail = makeEmailer<{
   appOrigin: string;
-  verificationKey: string;
+  code: string;
 }>(
-  "Verify your synth.kitchen account",
-  `Verify your account
+  "Your synth.kitchen sign-in code",
+  `Your sign-in code is: :code
 
-Visit the URL below to verify your synth.kitchen account:
-
-:appOrigin/account/verify/:verificationKey`,
+It expires in 10 minutes. Do not share it with anyone.`,
   `
 <html>
 <body>
-  <h1>Verify your account</h1>
-  <p><a href=":appOrigin/account/verify/:verificationKey">Click to&nbsp;verify your account</a>.</p>
-  <p>Or copy the link below and paste it into your browser:</p>
-  <p><b><i>:appOrigin/account/verify/:verificationKey</i></b></p>
-</body>
-</html>`
-);
-
-export const sendResetPasswordEmail = makeEmailer<{
-  appOrigin: string;
-  resetKey: string;
-}>(
-  "Reset your password at synth.kitchen",
-  `Reset your password
-
-Visit the URL below to reset your synth.kitchen password:
-
-:appOrigin/reset-password/:resetKey`,
-  `
-<html>
-<body>
-  <h1>Reset your password</h1>
-  <p><a href=":appOrigin/reset-password/:resetKey">Click to reset your password</a>.</p>
-  <p>Or copy the link below and paste it into your browser:</p>
-  <p><b><i>:appOrigin/reset-password/:resetKey</i></b></p>
-</body>
-</html>`
-);
-
-export const sendPasswordChangedEmail = makeEmailer<{ appOrigin: string }>(
-  "Your password at synth.kitchen was updated",
-  `Your password at synth.kitchen was updated. If this wasn't you, then visit the link below to update your password.
-
-:appOrigin/reset-password/`,
-  `
-<html>
-<body>
-  <h1>Your password was updated</h1>
-  <p>Your password at synth.kitchen was updated. If this was you, please carry on.
-  <p>If you didn't recently change your password, then <a href=":appOrigin/reset-password/">click here to reset your password<a/>, or copy the link below and paste it into your browser:</p>
-  <p><b><i>:appOrigin/reset-password/</i></b></p>
+  <h1>Your synth.kitchen sign-in code</h1>
+  <p>Your one-time code is:</p>
+  <p><b>:code</b></p>
+  <p>It expires in 10 minutes. Do not share it.</p>
 </body>
 </html>`
 );

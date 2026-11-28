@@ -1,14 +1,11 @@
 import { Request as JwtRequest } from "express-jwt";
-import { UserInfoAuthenticated } from "synth.kitchen-shared";
+import { UserInfoAuthenticated, CodeRequestResponse, VerifyCodeResponse } from "synth.kitchen-shared";
 
 import { User } from "../entity/User";
 import { jwtSign } from "../utils/jwt-sign";
-import { ValidationError } from "../services/validate/registration";
 
 import { UserService } from "../services/user.service";
-import { PasswordService } from "../services/password.service";
-import { isUUID } from "class-validator";
-import { VerificationService } from "../services/verification.service";
+import { CodeService } from "../services/code.service";
 
 export class AuthController {
   static getUser = async (req: JwtRequest, res) => {
@@ -39,121 +36,55 @@ export class AuthController {
     }
   };
 
-  static login = async (req, res) => {
+  static requestCode = async (req, res) => {
     const email = req.body.email;
-    const password = req.body.password;
 
-    if (!email || !password) {
-      res.status(401).send("");
+    if (!email || typeof email !== "string") {
+      res.status(400).send("");
       return;
     }
 
-    let user: User | void;
+    let echoCode: string | undefined;
     try {
-      user = await UserService.login(email, password);
+      const result = await CodeService.requestCode(email);
+      if (result && typeof result === "object") {
+        echoCode = result.echoCode;
+      }
     } catch (e) {
       console.error(e);
     }
 
-    if (!user || !user.id) {
-      res.status(404).send();
-      return;
-    }
-
-    const token = await jwtSign(user);
-    res.status(200).json({
-      jwt: token,
-    });
+    const response: CodeRequestResponse = {
+      success: true,
+      message: "If that email is valid, a sign-in code has been sent.",
+    };
+    res.status(200).json(echoCode ? { ...response, code: echoCode } : response);
   };
 
-  static register = async (req, res) => {
+  static verifyCode = async (req, res) => {
     const email = req.body.email;
-    const username = req.body.username;
-    const password = req.body.password;
+    const code = req.body.code;
 
-    let result: User | ValidationError | void;
-    try {
-      result = await UserService.register({ email, username, password });
-    } catch (e) {
-      console.error(e);
-    }
-
-    if (result && result instanceof ValidationError) {
-      res.status(400).json({ errors: Object.fromEntries(result.errors) });
-    } else if (result && result instanceof User && result.id) {
-      res.status(200).json({
-        jwt: await jwtSign(result),
-      });
-    } else {
-      res.status(400).send("Registration failed.");
-    }
-  };
-
-  static resetPassword = async (req, res) => {
-    const password = req.body.password;
-    const resetKey = req.body.resetKey;
-
-    if (!password && !resetKey) {
+    if (!email || typeof email !== "string" || !code || typeof code !== "string") {
       res.status(400).send("");
       return;
     }
 
     try {
-      await PasswordService.resetPassword(password, resetKey);
-    } catch (error) {
-      console.error(error);
-    }
-
-    // always return a successful code; don't give attackers any information
-    res.status(200).json({ success: true });
-  };
-
-  static requestResetPassword = async (req, res) => {
-    const email = req.body.email;
-
-    if (!email) {
-      res.status(400).send();
-      return;
-    }
-
-    try {
-      await PasswordService.requestReset(email);
-      res.status(200).json({ success: true });
+      const result = await CodeService.verifyCode(email, code);
+      if ("jwt" in result) {
+        res.status(200).json({ jwt: result.jwt });
+        return;
+      }
+      const response: VerifyCodeResponse = { error: result.error };
+      res.status(400).json(response);
     } catch (error) {
       console.error(error);
       res.status(500).send("");
     }
   };
 
-  static verify = async (req, res) => {
-    const key = req.params.key;
-
-    if (!key || !isUUID(key, 4)) {
-      res.status(400).send();
-      return;
-    }
-
-    try {
-      res.status(200).json({ success: await VerificationService.verify(key) });
-    } catch (error) {
-      console.error(error);
-      res.sendStatus(500);
-    }
-  };
-
   static deleteUser = async (req: JwtRequest, res) => {
-    const password = req.headers["x-password"];
-
-    if (!password || Array.isArray(password)) {
-      res.sendStatus(403);
-      return;
-    }
-
-    if (!(await UserService.login(req.auth.email, password))) {
-      res.sendStatus(403);
-      return;
-    }
-
     try {
       const success = await UserService.deleteUser(req.auth.id);
       if (!success) {

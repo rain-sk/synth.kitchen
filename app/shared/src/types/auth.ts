@@ -1,11 +1,9 @@
-export type LoginResponse = { jwt: string } | { register: true };
-
-type FormErrors = {
-  email: string[];
-  username: string[];
-  password: string[];
-  confirmPassword: string[];
-  form: string[];
+export type CodeRequestResponse = {
+  success: true | false;
+  message: string;
+  code?: string;
 };
 
-export type RegisterResponse = { jwt: string } | { errors: FormErrors };
+export type VerifyCodeResponse =
+  | { jwt: string }
+  | { error: string };

@@ -17,8 +17,7 @@ export const en = {
 	},
 	auth: {
 		noAccount: 'no account for that email',
-		switchToRegister: 'need an account? register',
-		switchToLogin: 'already have an account? sign in',
+		signInPageLink: 'open the sign in page',
 	},
 	patch: {
 		untitled: 'untitled',

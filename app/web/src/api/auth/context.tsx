@@ -1,38 +1,31 @@
 import React from 'react';
 import type {
-	LoginResponse,
-	RegisterResponse,
+	CodeRequestResponse,
+	VerifyCodeResponse,
 	UserInfoAuthenticated,
 } from 'synth.kitchen-shared';
 
 type AuthContextValue = {
 	loading: boolean;
 	user?: UserInfoAuthenticated;
-	login: (email: string, password: string) => Promise<LoginResponse | void>;
-	register: (
+	requestCode: (
 		email: string,
-		password: string,
 		captchaToken?: string,
-	) => Promise<RegisterResponse | void>;
+	) => Promise<CodeRequestResponse | void>;
+	verifyCode: (
+		email: string,
+		code: string,
+	) => Promise<VerifyCodeResponse | void>;
 	logout: () => void;
-	deleteUser: (password: string) => Promise<true | void>;
-	requestResetPassword: (
-		email: string,
-		captchaToken?: string,
-	) => Promise<Response>;
-	resetPassword: (key: string, password: string) => Promise<Response>;
-	verifyAccount: (key: string) => Promise<Response>;
+	deleteUser: () => Promise<true | void>;
 };
 
 const defaultContextValue: AuthContextValue = {
 	loading: true,
-	login: async () => {},
-	register: async () => {},
+	requestCode: async () => {},
+	verifyCode: async () => {},
 	logout: () => {},
 	deleteUser: async () => {},
-	requestResetPassword: async () => ({}) as Response,
-	resetPassword: async () => ({}) as Response,
-	verifyAccount: async () => ({}) as Response,
 };
 
 export const AuthContext =
