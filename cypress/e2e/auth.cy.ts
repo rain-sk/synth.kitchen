@@ -35,7 +35,8 @@
       });
       cy.url().should("include", "/dashboard");
 
-      cy.visit("/logout").wait(100);
+      cy.visit("/logout").wait(1500);
+      cy.visit("/login");
       cy.get("#email", { timeout: 15000 }).focus().type(testEmail);
       cy.get("#submit").click();
       cy.wait("@rc").its("response.body.code").then((code: string) => {
