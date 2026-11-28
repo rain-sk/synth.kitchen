@@ -7,15 +7,14 @@ import { apiBase } from '../uri';
 
 export const useJwt = () => {
 	const syncing = useRef(false);
-	const [jwt, setJwt] = useLocalStorage<string | undefined>('jwt', undefined);
+	const [jwt, setJwt, removeJwt] = useLocalStorage<string | undefined>('jwt', undefined);
 
 	const logout = useCallback(() => {
-		setJwt(undefined);
-		localStorage.removeItem('jwt');
+		removeJwt();
 		setTimeout(() => {
 			navigate('/login');
 		}, 1000);
-	}, [setJwt]);
+	}, [removeJwt]);
 
 	const sync = useCallback(async () => {
 		if (jwt !== undefined) {
