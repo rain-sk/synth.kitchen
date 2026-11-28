@@ -10,6 +10,7 @@ export const useJwt = () => {
 	const [jwt, setJwt] = useLocalStorage<string | undefined>('jwt', undefined);
 
 	const logout = useCallback(() => {
+		setJwt(undefined);
 		localStorage.removeItem('jwt');
 		setTimeout(() => {
 			navigate('/login');

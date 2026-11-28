@@ -80,7 +80,6 @@ Cypress.Commands.add("loginByApi" as any, (email: string, password?: string) => 
 });
 
 Cypress.Commands.add("deleteUserByApi" as any, (email: string, password?: string) => {
-  cy.visit("/logout");
   return apiSignIn(email).then((jwt) =>
     throughRestart(() =>
       cy.request({
