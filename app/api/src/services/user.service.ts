@@ -12,6 +12,8 @@ import { Patch } from "../entity/Patch";
 import { PatchService } from "./patch.service";
 import { PatchInfo } from "synth.kitchen-shared";
 
+const DUMMY_HASH = "$2b$13$2/hRN5NwkbOV73Ph01cJDeRVX/xk//IcFCONvv/sKXkxDFjl4c/vS";
+
 type GetUserInfo = { id: string } | { email: string } | { username: string };
 
 const getUserParams = (getUserInfo: GetUserInfo): [string, GetUserInfo] => {
@@ -61,7 +63,7 @@ export class UserService {
     emailOrUsername: string,
     password: string,
   ): Promise<User | void> => {
-    let user: User;
+    let user: User | undefined;
     try {
       user = await this.getUser({
         email: emailOrUsername,
@@ -73,7 +75,8 @@ export class UserService {
       console.error(e);
     }
 
-    if (user && (await compare(password, user.password))) {
+    const ok = await compare(password, user?.password ?? DUMMY_HASH);
+    if (user && ok) {
       return user;
     }
   };
