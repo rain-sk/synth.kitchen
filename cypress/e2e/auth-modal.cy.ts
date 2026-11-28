@@ -1,4 +1,3 @@
-
 const dialog = "#auth-dialog";
 const scrim = "#auth-scrim";
 
@@ -18,7 +17,7 @@ describe("auth modal", () => {
 
 	it("stays closed on a route it was never asked for", () => {
 		editor();
-		["/patch/random", "/login", "/register", "/reset-password"].forEach((path) => {
+		["/patch/random", "/login", "/account"].forEach((path) => {
 			cy.visit(path);
 			cy.get(scrim).should("not.exist");
 		});
@@ -39,18 +38,9 @@ describe("auth modal", () => {
 		cy.location("search").should("include", "auth=login");
 		cy.get(dialog).should("be.visible").and("have.attr", "aria-modal", "true");
 		cy.get("#auth-dialog .auth-form").should("exist");
+		cy.get("#email").should("be.visible");
 		cy.get("#module-canvas .module").should("have.length", 2);
 		cy.focused().should("have.id", "email");
-		cy.get("#nav-register").should("have.attr", "href").and("include", "auth=register");
-	});
-
-	it("nav register opens it in register mode", () => {
-		editor();
-		cy.get("#nav-register").click();
-
-		cy.location("search").should("include", "auth=register");
-		cy.get("#auth-title").should("have.text", "register");
-		cy.get("#confirm-password").should("exist");
 	});
 
 	it("escape strips the param and keeps the others", () => {
@@ -92,94 +82,6 @@ describe("auth modal", () => {
 		cy.get("#nav-login").click();
 		cy.get(scrim).click(20, 20);
 		cy.get(scrim).should("not.exist");
-	});
-
-	it("an unknown account reports in place instead of bouncing to /register", () => {
-		editor();
-		cy.get("#nav-login").click();
-		cy.get("#email").type("e2e-nobody-here@synth.kitchen");
-		cy.get("#password").type("wrong-password");
-		cy.get("#submit").click();
-
-		cy.get(dialog).should("be.visible");
-		cy.location().should((loc) => {
-			expect(loc.pathname, "never left the editor").to.equal("/patch/new");
-			expect(loc.search, "still the dialog").to.include("auth=login");
-		});
-		cy.get("#module-canvas > div").should("have.length", 2);
-		cy.get("#form-errors").should("contain.text", "no account for that email");
-	});
-
-	it("the dialog's own switch changes mode without leaving the page", () => {
-		editor();
-		cy.get("#nav-login").click();
-		cy.get("#email").type("e2e-nobody-here@synth.kitchen");
-		cy.get("#password").type("wrong-password");
-		cy.get("#submit").click();
-		cy.get("#form-errors").should("contain.text", "no account");
-
-		cy.get("#auth-switch").click();
-
-		cy.location("search").should("include", "auth=register");
-		cy.get("#auth-title").should("have.text", "register");
-		cy.get("#confirm-password").should("exist");
-	});
-
-	it("escape strips the param and keeps the others", () => {
-		editor();
-		cy.visit("/patch/new?keep=1&auth=login");
-		cy.get(dialog).should("be.visible");
-		cy.get(dialog).trigger("keydown", { key: "Escape", bubbles: true });
-
-		cy.url().should("include", "keep=1").and("not.include", "auth=");
-		cy.get(scrim).should("not.exist");
-	});
-
-	it("the close button strips the param and returns focus to the trigger", () => {
-		editor();
-		cy.get("#nav-login").click();
-		cy.focused().should("have.id", "email");
-		cy.get("#auth-close").click();
-
-		cy.location("search").should("not.include", "auth=");
-		cy.get(scrim).should("not.exist");
-		cy.focused().should("have.id", "nav-login");
-	});
-
-	it("back closes the dialog instead of leaving the page", () => {
-		editor();
-		cy.get("#nav-login").click();
-		cy.get(dialog).should("be.visible");
-
-		cy.go("back");
-
-		cy.location("pathname").should("eq", "/patch/new");
-		cy.location("search").should("not.include", "auth=");
-		cy.get(scrim).should("not.exist");
-		cy.get("#module-canvas .module").should("have.length", 2);
-	});
-
-	it("clicking the backdrop closes it", () => {
-		editor();
-		cy.get("#nav-login").click();
-		cy.get(scrim).click(20, 20);
-		cy.get(scrim).should("not.exist");
-	});
-
-	it("an unknown account reports in place instead of bouncing to /register", () => {
-		editor();
-		cy.get("#nav-login").click();
-		cy.get("#email").type("e2e-nobody-here@synth.kitchen");
-		cy.get("#password").type("wrong-password");
-		cy.get("#submit").click();
-
-		cy.get(dialog).should("be.visible");
-		cy.location().should((loc) => {
-			expect(loc.pathname, "never left the editor").to.equal("/patch/new");
-			expect(loc.search, "still the dialog").to.include("auth=login");
-		});
-		cy.get("#module-canvas > div").should("have.length", 2);
-		cy.get("#form-errors").should("contain.text", "no account for that email");
 	});
 
 	it("the standalone page keeps hosting its own form", () => {
@@ -192,17 +94,16 @@ describe("auth modal", () => {
 
 const api = (path: string) => `${Cypress.env("API_URL")}${path}`;
 const EMAIL = "e2e-modal@synth.kitchen";
-const PASSWORD = "password123";
 
 describe("auth modal: interrupted save", () => {
 	beforeEach(() => {
-		cy.deleteUserByApi(EMAIL, PASSWORD);
+		cy.deleteUserByApi(EMAIL);
 		cy.clearAllLocalStorage();
 		editor();
 	});
 
 	after(() => {
-		cy.deleteUserByApi(EMAIL, PASSWORD);
+		cy.deleteUserByApi(EMAIL);
 		cy.clearAllLocalStorage();
 	});
 
@@ -211,8 +112,8 @@ describe("auth modal: interrupted save", () => {
 
 		cy.get("#save-to-cloud").click();
 
-		cy.get(dialog).should("be.visible").and("contain.text", "register");
-		cy.location("search").should("include", "auth=register");
+		cy.get(dialog).should("be.visible").and("contain.text", "login");
+		cy.location("search").should("include", "auth=login");
 		cy.get("#module-canvas .module").should("have.length", 2);
 		cy.get(".toast.info").should("contain.text", "sign in to save");
 	});
@@ -223,10 +124,13 @@ describe("auth modal: interrupted save", () => {
 		cy.get("#save-to-cloud").click();
 		cy.get(dialog).should("be.visible");
 
+		cy.intercept("POST", "/api/auth/request-code").as("rc");
 		cy.get("#email").type(EMAIL);
-		cy.get("#password").type(PASSWORD);
-		cy.get("#confirm-password").type(PASSWORD);
 		cy.get("#submit").click();
+		cy.wait("@rc").its("response.body.code").then((code: string) => {
+			cy.get("#code").focus().type(code);
+			cy.get("#submit").click();
+		});
 
 		cy.window().should((win) => {
 			expect((win as any).__probe, "same window: no reload").to.equal("alive");
@@ -238,7 +142,7 @@ describe("auth modal: interrupted save", () => {
 
 		cy.getAllLocalStorage().then((result) => {
 			const jwt = JSON.parse(result[Cypress.config("baseUrl") as string].jwt);
-			expect(jwt, "session from the registration jwt").to.be.a("string").and.not.empty;
+			expect(jwt, "session from the code flow").to.be.a("string").and.not.empty;
 			cy.request({
 				url: api("/auth/user"),
 				headers: { authorization: `Bearer ${jwt}` },

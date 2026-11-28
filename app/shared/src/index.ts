@@ -9,7 +9,8 @@ export {
   Io,
   ioKey,
   IoType,
-  LoginResponse,
+  CodeRequestResponse,
+  VerifyCodeResponse,
   Module,
   ModulePosition,
   ModuleState,
@@ -22,7 +23,6 @@ export {
   PatchInfo,
   PatchQuery,
   PatchState,
-  RegisterResponse,
   Sample,
   SampleInfo,
   SampleQuery,
@@ -75,7 +75,7 @@ export {
   VCA_STATE_VERSIONS,
 } from "./types/patch/module";
 
-export { randomId, randomName } from "./utils";
+export { randomId, randomName, createRateLimiter, type RateLimiter, type RateLimitResult } from "./utils";
 
 export {
   APP_STATE_VERSIONS,

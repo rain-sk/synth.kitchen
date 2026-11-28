@@ -73,7 +73,7 @@ export const SaveToCloud = () => {
 	]);
 
 	const askToRegister = useCallback(() => {
-		navigate(askAuth(pathname, search, 'register', 'save'));
+		navigate(askAuth(pathname, search, 'login', 'save'));
 		notify({
 			key: toastKey,
 			kind: 'info',

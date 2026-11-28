@@ -1,4 +1,4 @@
-export type { LoginResponse, RegisterResponse } from "./auth";
+export type { CodeRequestResponse, VerifyCodeResponse } from "./auth";
 export type { UserInfo, UserInfoAuthenticated, AdminUser, PublicCreator } from "./user";
 
 export type { Sample, SampleInfo, SampleQuery } from "./sample";

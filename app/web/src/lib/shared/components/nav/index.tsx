@@ -11,7 +11,7 @@ export const Nav: React.FC = () => {
 	const authenticated = !loading && user !== undefined;
 
 	const inEditor = pathname.startsWith('/patch');
-	const authHref = (mode: 'login' | 'register') => {
+	const authHref = (mode: 'login') => {
 		const params = new URLSearchParams(search);
 		params.set('auth', mode);
 		return `${pathname}?${params.toString()}`;
@@ -76,18 +76,10 @@ export const Nav: React.FC = () => {
 								id="nav-login"
 								to={inEditor ? authHref('login') : '/login'}
 							>
-								Login
+								Sign in
 							</Link>
 						</li>
-						<li>
-							<Link
-								id="nav-register"
-								to={inEditor ? authHref('register') : '/register'}
-							>
-								Register
-							</Link>
-						</li>
-					</>
+						</>
 				)}
 				<li>
 					<Link to="#">About</Link>

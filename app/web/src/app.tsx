@@ -7,7 +7,6 @@ import { IndexRoute } from './routes/index';
 import { LoginRoute } from './routes/login';
 import { LogoutRoute } from './routes/logout';
 import { PatchRoute } from './routes/patch';
-import { ResetPasswordRoute } from './routes/reset-password';
 import { Nav } from './lib/shared/components/nav';
 import { AuthModal } from './lib/shared/components/auth-modal';
 import { crashHooksEnabled, crashKind } from './crash-hooks';
@@ -16,7 +15,6 @@ import {
 	ThrowOnPurpose,
 } from './lib/shared/components/error-boundary';
 import { ToastsProvider } from './lib/shared/components/toasts';
-import { VerifyRoute } from './routes/account/verify';
 // import { LearnRoute } from './routes/learn';
 
 const RedirectToPatch = () => {
@@ -48,19 +46,10 @@ export const SynthKitchen: React.FC = () => {
 
 						{/* <Route path="/learn" component={LearnRoute} /> */}
 
-						<Route
-							path="/account/verify/:key"
-							component={VerifyRoute}
-						/>
 						<Route path="/account" component={AccountRoute} />
 						<Route path="/login" component={LoginRoute} />
-						<Route path="/register" component={LoginRoute} />
+						<Route path="/register" component={() => <Redirect to="/login" replace />} />
 						<Route path="/logout" component={LogoutRoute} />
-						<Route path="/reset-password" component={ResetPasswordRoute} />
-						<Route
-							path="/reset-password/:key"
-							component={ResetPasswordRoute}
-						/>
 					</Switch>
 				)}
 			</ErrorBoundary>

@@ -71,6 +71,8 @@ find_port() {
 
 port=$(find_port "${E2E_PORT:-8080}")
 export VITE_PORT="$port"
+export TEST_CODE_ECHO="1"
+export RATE_LIMIT_MAX="1000"
 export CYPRESS_BASE_URL="http://localhost:$port"
 echo "e2e.sh: web on $port"
 

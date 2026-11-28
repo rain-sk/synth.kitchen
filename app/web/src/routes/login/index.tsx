@@ -1,6 +1,5 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Redirect, useSearchParams } from 'wouter';
-import { usePathname } from 'wouter/use-browser-location';
 import { useTitle } from 'react-use';
 
 import { AuthContext } from '../../api/auth/context';
@@ -13,11 +12,7 @@ import './styles.css';
 export const LoginRoute = () => {
 	const { user, loading } = useContext(AuthContext);
 	const [searchParams] = useSearchParams();
-	const path = usePathname();
-	const registration = useMemo(() => {
-		return path.includes('register');
-	}, [path]);
-	useTitle(registration ? 'synth.kitchen | register' : 'synth.kitchen | login');
+	useTitle('synth.kitchen | sign in');
 
 	const [redirect, setRedirect] = useState<string | null>(null);
 	useEffectOnce(() => {
@@ -35,8 +30,8 @@ export const LoginRoute = () => {
 	) : (
 		<main>
 			<section>
-				<h2>{registration ? 'register' : 'login'}</h2>
-				<AuthForm mode={registration ? 'register' : 'login'} />
+				<h2>sign in</h2>
+				<AuthForm />
 			</section>
 		</main>
 	);

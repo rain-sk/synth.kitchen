@@ -2,7 +2,7 @@ import { PatchInfo } from "./patch";
 
 export type UserInfo = {
   id: string;
-  username: string;
+  username: string | null;
 };
 
 export type PublicCreator = {

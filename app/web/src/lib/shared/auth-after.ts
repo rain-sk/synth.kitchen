@@ -16,7 +16,7 @@ export const readAfterAuth = (search: string): AfterAuth | null => {
 export const askAuth = (
 	pathname: string,
 	search: string,
-	mode: 'login' | 'register',
+	mode: 'login',
 	action?: AfterAuth,
 ) => {
 	const params = new URLSearchParams(search);

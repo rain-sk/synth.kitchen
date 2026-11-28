@@ -10,17 +10,7 @@ export const AccountRoute: React.FC = () => {
 	const { user, loading, deleteUser } = useContext(AuthContext);
 
 	const [confirmDelete, setConfirmDelete] = useState(false);
-	const onClickDelete = useCallback(() => {
-		setConfirmDelete(true);
-	}, []);
 
-	const [password, setPassword] = useState('');
-	const onPasswordChange = useCallback(
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			setPassword(e.target.value);
-		},
-		[],
-	);
 	const onSubmitDeleteAccount = useCallback(
 		async (e: React.FormEvent) => {
 			e.preventDefault();
@@ -28,9 +18,9 @@ export const AccountRoute: React.FC = () => {
 				return;
 			}
 
-			await deleteUser(password);
+			await deleteUser();
 		},
-		[confirmDelete, password],
+		[confirmDelete, deleteUser],
 	);
 
 	return (
@@ -52,18 +42,11 @@ export const AccountRoute: React.FC = () => {
 
 						{confirmDelete ? (
 							<form onSubmit={onSubmitDeleteAccount}>
-								<h4>
-									Enter your password to confirm the deletion of your account:
-								</h4>
-								<label>
-									Password{' '}
-									<input
-										id="password"
-										type="password"
-										onChange={onPasswordChange}
-									/>
-								</label>
-								<button id="confirm-delete">Delete my account</button>
+								<h4>Delete your account?</h4>
+								<button id="confirm-delete">Confirm deletion</button>
+								<button id="cancel-delete" type="button" onClick={() => setConfirmDelete(false)}>
+									keep my account
+								</button>
 							</form>
 						) : (
 							<label>
@@ -72,7 +55,7 @@ export const AccountRoute: React.FC = () => {
 									id="delete"
 									type="button"
 									value="delete"
-									onClick={onClickDelete}
+									onClick={() => setConfirmDelete(true)}
 								></input>
 							</label>
 						)}

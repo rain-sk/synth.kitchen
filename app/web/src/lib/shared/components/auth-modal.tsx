@@ -8,7 +8,7 @@ import { clearAuthParams, keepAfterAuth } from '../auth-after';
 import { t } from '../../../lang';
 import { AuthForm } from './auth-form';
 
-export type AuthModalMode = 'login' | 'register';
+export type AuthModalMode = 'login';
 
 const param = 'auth';
 
@@ -21,19 +21,11 @@ export const AuthModal = () => {
 	const value = new URLSearchParams(search).get(param);
 
 	const mode: AuthModalMode | null =
-		pathname === '/login' || pathname === '/register'
+		pathname === '/login'
 			? null
-			: value === 'login' || value === 'register'
+			: value === 'login'
 				? value
 				: null;
-
-	const otherMode: AuthModalMode = mode === 'login' ? 'register' : 'login';
-
-	const switchTo = (next: AuthModalMode) => {
-		const params = new URLSearchParams(search);
-		params.set(param, next);
-		return params.toString();
-	};
 
 	const open = mode !== null && !user;
 	const closeButton = useRef<HTMLButtonElement | null>(null);
@@ -120,21 +112,11 @@ export const AuthModal = () => {
 					</button>
 				</header>
 				<AuthForm
-					mode={mode}
-					hosted
 					onAuthenticated={finish}
-					onRegistered={finish}
 				/>
 				<p className="auth-switch">
-					{}
-					<Link
-						id="auth-switch"
-						to={`${pathname}?${switchTo(otherMode)}`}
-						replace
-					>
-						{mode === 'login'
-							? t('auth.switchToRegister')
-							: t('auth.switchToLogin')}
+					<Link id="auth-switch" to="/login" replace>
+						{t('auth.signInPageLink')}
 					</Link>
 				</p>
 			</section>

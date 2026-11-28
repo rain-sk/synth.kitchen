@@ -1,71 +1,66 @@
 {
   const testEmail = "e2e-test@synth.kitchen";
-  const testPassword = "HbEPBNSht72RYcS81BntMn@f9yXWb83zc4m0s7radVdMxpnPMCJYxU";
 
   describe("auth", () => {
     beforeEach(() => {
-      (cy as any).delete(testEmail, testPassword);
+      (cy as any).delete(testEmail);
       cy.clearAllLocalStorage();
     });
 
-    it("is possible to register", () => {
-      cy.visit("/register");
+    it("signs in through the email-code flow (new account)", () => {
+      cy.visit("/login");
+      cy.intercept("POST", "/api/auth/request-code").as("rc");
       cy.get("#email").focus().type(testEmail);
-      cy.get("#password").focus().type(testPassword);
-      cy.get("#confirm-password").focus().type(`${testPassword}{enter}`);
+      cy.get("#submit").click();
+      cy.wait("@rc").its("response.body.code").then((code: string) => {
+        cy.get("#code").focus().type(code);
+        cy.get("#submit").click();
+      });
       cy.url().should("include", "/dashboard");
       cy.getAllLocalStorage().then((result) => {
         const store = result[Cypress.config("baseUrl") as string];
-        expect(store, `localStorage at ${Cypress.config("baseUrl")}`).to.have.key(
-          "jwt",
-        );
-        (cy as any).delete(testEmail, testPassword);
+        expect(store, `localStorage at ${Cypress.config("baseUrl")}`).to.have.key("jwt");
+        (cy as any).delete(testEmail);
       });
     });
 
-    it("is possible to login", () => {
-      (cy as any).register(testEmail, testPassword);
-      cy.visit("/logout").wait(100);
-
+    it("signs in again after logout", () => {
+      cy.visit("/login");
+      cy.intercept("POST", "/api/auth/request-code").as("rc");
       cy.get("#email").focus().type(testEmail);
-      cy.get("#password").focus().type(`${testPassword}{enter}`);
-
-      cy.url().should("include", "dashboard");
-      cy.getAllLocalStorage().then((result) => {
-        const store = result[Cypress.config("baseUrl") as string];
-        expect(store, `localStorage at ${Cypress.config("baseUrl")}`).to.have.key(
-          "jwt",
-        );
-        expect(store.jwt).to.exist;
+      cy.get("#submit").click();
+      cy.wait("@rc").its("response.body.code").then((code: string) => {
+        cy.get("#code").focus().type(code);
+        cy.get("#submit").click();
       });
+      cy.url().should("include", "/dashboard");
+
+      cy.visit("/logout").wait(1500);
+      cy.visit("/login");
+      cy.get("#email", { timeout: 15000 }).focus().type(testEmail);
+      cy.get("#submit").click();
+      cy.wait("@rc").its("response.body.code").then((code: string) => {
+        cy.get("#code").focus().type(code);
+        cy.get("#submit").click();
+      });
+      cy.url().should("include", "dashboard");
+      (cy as any).delete(testEmail);
     });
 
-    it("teardown actually deletes the user", () => {
-      const email = "e2e-teardown@synth.kitchen";
-      const api = Cypress.env("API_URL") as string;
-      const login = () =>
-        cy.request({
-          method: "POST",
-          url: `${api}/auth/login`,
-          body: { email, password: testPassword },
-          failOnStatusCode: false,
-        });
-
-      cy.request({
-        method: "POST",
-        url: `${api}/auth/register`,
-        body: { email, password: testPassword },
-        failOnStatusCode: false,
-      });
-
-      login().then((res) => {
-        expect(res.status, "user exists before teardown").to.equal(200);
-
-        (cy as any).delete(email, testPassword);
-
-        login().then((after) => {
-          expect(after.status, "login must fail once torn down").to.not.equal(200);
-        });
+    it("invalidates the code on a wrong guess", () => {
+      cy.visit("/login");
+      cy.intercept("POST", "/api/auth/request-code").as("rc");
+      cy.get("#email").focus().type("e2e-invalidate@synth.kitchen");
+      cy.get("#submit").click();
+      cy.wait("@rc").its("response.body.code").then((code: string) => {
+        const wrong = code === "000000" ? "000001" : "000000";
+        cy.get("#code").focus().type(wrong);
+        cy.get("#submit").click();
+        cy.get("#form-errors").should("contain.text", "Something went wrong");
+        cy.get("#code").focus().type(code);
+        cy.get("#submit").click();
+        cy.get("#form-errors").should("contain.text", "Something went wrong");
+        (cy as any).delete("e2e-invalidate@synth.kitchen");
       });
     });
   });
