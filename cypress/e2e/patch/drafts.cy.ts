@@ -16,6 +16,18 @@ const storage = () =>
 		(result) => result[Cypress.config("baseUrl") as string] ?? {},
 	);
 
+const signInInModal = (email: string) => {
+	cy.intercept("POST", "/api/auth/request-code").as("rc");
+	typeInto("email", email);
+	cy.get("#submit").click();
+	cy.wait("@rc")
+		.its("response.body.code")
+		.then((code: string) => {
+			cy.get("#code").focus().type(code);
+			cy.get("#submit").click();
+		});
+};
+
 const reopen = (path: string, count?: number) => {
 	(cy as any).visitEditor(path);
 	cy.wait(600);
@@ -95,10 +107,7 @@ describe("patch drafts", () => {
 
 		cy.get("#save-to-cloud").click();
 		cy.get("#auth-dialog").should("exist");
-		typeInto("email", EMAIL);
-		typeInto("password", PASSWORD);
-		typeInto("confirm-password", PASSWORD);
-		cy.get("#submit").click();
+		signInInModal(EMAIL);
 
 		cy.wait("@save", { timeout: 10000 })
 			.its("response.statusCode")
@@ -144,10 +153,7 @@ describe("patch drafts", () => {
 			expect(store[draftKey()], "draft survives the reload").to.be.a("string"),
 		);
 
-		typeInto("email", EMAIL);
-		typeInto("password", PASSWORD);
-		typeInto("confirm-password", PASSWORD);
-		cy.get("#submit").click();
+		signInInModal(EMAIL);
 
 		cy.get("#auth-dialog", { timeout: 10000 }).should("not.exist");
 		cy.get("#start", { timeout: 20000 }).click();
@@ -186,10 +192,7 @@ describe("patch drafts", () => {
 
 		cy.get("#save-to-cloud").click();
 		cy.get("#auth-dialog").should("exist");
-		typeInto("email", EMAIL);
-		typeInto("password", PASSWORD);
-		typeInto("confirm-password", PASSWORD);
-		cy.get("#submit").click();
+		signInInModal(EMAIL);
 
 		cy.wait("@create", { timeout: 15000 })
 			.its("response.statusCode")
@@ -234,16 +237,7 @@ describe("patch drafts", () => {
 	});
 
 
-	it("keeps the pending save when switching the ask to login", () => {
-		cy.get("#save-to-cloud").click();
-		cy.location("search").should("include", "after=save");
 
-		cy.get("#auth-switch").click();
-
-		cy.location("search").should("include", "auth=login");
-		cy.location("search").should("include", "after=save");
-		cy.get("#auth-dialog").should("exist");
-	});
 
 
 	it("logging out keeps the draft", () => {

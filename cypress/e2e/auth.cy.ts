@@ -36,7 +36,7 @@
       cy.url().should("include", "/dashboard");
 
       cy.visit("/logout").wait(100);
-      cy.get("#email").focus().type(testEmail);
+      cy.get("#email", { timeout: 15000 }).focus().type(testEmail);
       cy.get("#submit").click();
       cy.wait("@rc").its("response.body.code").then((code: string) => {
         cy.get("#code").focus().type(code);
