@@ -17,7 +17,11 @@ const sweep = () => {
 };
 
 export function loginRateLimit(req: Request, res: Response, next: NextFunction) {
-  const key = req.ip ?? "unknown";
+  const email =
+    typeof req.body?.email === "string"
+      ? req.body.email.trim().toLowerCase()
+      : "";
+  const key = `${req.ip ?? "unknown"}|${email}`;
   const now = Date.now();
 
   if (Math.random() < 0.02) {
