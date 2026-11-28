@@ -21,6 +21,7 @@ ServerRouter.use((_, res) => {
 });
 
 export const server = express();
+server.set("trust proxy", 1);
 server.use(cors({ origin: appOrigin }));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
