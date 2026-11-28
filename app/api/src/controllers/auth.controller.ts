@@ -7,6 +7,9 @@ import { jwtSign } from "../utils/jwt-sign";
 import { UserService } from "../services/user.service";
 import { CodeService } from "../services/code.service";
 
+const isEmailShape = (value: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
 export class AuthController {
   static getUser = async (req: JwtRequest, res) => {
     try {
@@ -40,6 +43,11 @@ export class AuthController {
     const email = req.body.email;
 
     if (!email || typeof email !== "string") {
+      res.status(400).send("");
+      return;
+    }
+
+    if (!isEmailShape(email)) {
       res.status(400).send("");
       return;
     }
